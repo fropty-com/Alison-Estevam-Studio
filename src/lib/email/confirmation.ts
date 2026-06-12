@@ -59,12 +59,22 @@ export async function sendConfirmationEmail(params: {
                 <tr><td style="padding:8px 24px 24px;"></td></tr>
               </table>
 
-              <!-- CTA -->
-              <table cellpadding="0" cellspacing="0">
+              <!-- CTAs -->
+              <table cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:8px 0;">
                 <tr>
                   <td style="background:#7A9182;">
                     <a href="https://wa.me/${BRAND.whatsapp}" style="display:inline-block;padding:14px 28px;font-size:9px;letter-spacing:0.38em;text-transform:uppercase;color:#141412;text-decoration:none;font-weight:300;">
                       Confirmar no WhatsApp →
+                    </a>
+                  </td>
+                  <td style="background:rgba(245,240,232,0.05);border:1px solid rgba(245,240,232,0.10);">
+                    <a href="${BRAND.siteUrl}/reagendar/${referenceCode}" style="display:inline-block;padding:14px 20px;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.45);text-decoration:none;font-weight:300;">
+                      Reagendar
+                    </a>
+                  </td>
+                  <td style="background:rgba(245,240,232,0.03);border:1px solid rgba(245,240,232,0.07);">
+                    <a href="${BRAND.siteUrl}/cancelar/${referenceCode}" style="display:inline-block;padding:14px 20px;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.28);text-decoration:none;font-weight:300;">
+                      Cancelar
                     </a>
                   </td>
                 </tr>
