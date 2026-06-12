@@ -57,11 +57,12 @@ export async function POST(request: NextRequest) {
     const formattedWhatsapp = formatWhatsApp(whatsapp)
     let clientId: string
 
-    const { data: existingClient } = await supabase
+    const { data: existingClientData } = await supabase
       .from('clients')
       .select('id')
       .eq('whatsapp', formattedWhatsapp)
       .maybeSingle()
+    const existingClient = existingClientData as { id: string } | null
 
     if (existingClient) {
       clientId = existingClient.id
