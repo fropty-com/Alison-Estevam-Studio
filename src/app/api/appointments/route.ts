@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       .from('clients')
       .select('id')
       .eq('whatsapp', formattedWhatsapp)
-      .single()
+      .maybeSingle()
 
     if (existingClient) {
       clientId = existingClient.id
