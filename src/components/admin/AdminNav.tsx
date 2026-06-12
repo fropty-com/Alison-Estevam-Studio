@@ -5,14 +5,15 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { logoutAction } from '@/app/admin/actions'
 import { useTransition } from 'react'
+import { PendingBadge } from './PendingBadge'
 
 const NAV = [
-  { href: '/admin',            label: 'Dashboard',     icon: '◈' },
-  { href: '/admin/agenda',     label: 'Agenda',        icon: '◷' },
-  { href: '/admin/clientes',   label: 'Clientes',      icon: '◻' },
-  { href: '/admin/servicos',   label: 'Serviços',      icon: '◇' },
-  { href: '/admin/relatorios',    label: 'Relatórios',    icon: '◎' },
-  { href: '/admin/configuracoes', label: 'Configurações', icon: '⊞' },
+  { href: '/admin',               label: 'Dashboard',     icon: '◈', badge: true },
+  { href: '/admin/agenda',        label: 'Agenda',        icon: '◷', badge: false },
+  { href: '/admin/clientes',      label: 'Clientes',      icon: '◻', badge: false },
+  { href: '/admin/servicos',      label: 'Serviços',      icon: '◇', badge: false },
+  { href: '/admin/relatorios',    label: 'Relatórios',    icon: '◎', badge: false },
+  { href: '/admin/configuracoes', label: 'Configurações', icon: '⊞', badge: false },
 ]
 
 export function AdminNav() {
@@ -36,7 +37,7 @@ export function AdminNav() {
 
       {/* Nav */}
       <nav className="flex-1 py-5 px-3">
-        {NAV.map(({ href, label, icon }) => (
+        {NAV.map(({ href, label, icon, badge }) => (
           <Link
             key={href}
             href={href}
@@ -50,7 +51,8 @@ export function AdminNav() {
             )}
           >
             <span className="text-[13px] leading-none shrink-0">{icon}</span>
-            {label}
+            <span className="flex-1">{label}</span>
+            {badge && <PendingBadge />}
           </Link>
         ))}
       </nav>
