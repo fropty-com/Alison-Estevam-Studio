@@ -3,8 +3,6 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BRAND } from '@/config/brand'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function sendConfirmationEmail(params: {
   clientName:    string
   clientEmail:   string
@@ -91,6 +89,7 @@ export async function sendConfirmationEmail(params: {
 </html>`
 
   try {
+    const resend = new Resend(process.env.RESEND_API_KEY)
     await resend.emails.send({
       from:    `${BRAND.fullName} <agendamento@alisonestevan.com.br>`,
       to:      clientEmail,
