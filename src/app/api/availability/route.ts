@@ -3,6 +3,10 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { BOOKING } from '@/config/booking'
 import { addDays, format, startOfDay } from 'date-fns'
 
+type BlockedRow = { date_start: string; date_end: string }
+type SlotRow    = { id: string; date: string; start_time: string; end_time: string; status: string }
+type RuleRow    = { weekday: number; start_time: string; end_time: string }
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const year  = parseInt(searchParams.get('year')  ?? String(new Date().getFullYear()))
@@ -15,36 +19,39 @@ export async function GET(request: NextRequest) {
   const db = await createServiceClient() as any
 
   const monthStart = format(new Date(year, month - 1, 1), 'yyyy-MM-dd')
-  const monthEnd   = format(new Date(year, month, 0), 'yyyy-MM-dd')
+  const monthEnd   = format(new Date(year, month, 0),     'yyyy-MM-dd')
 
-  // Fetch blocked periods and existing slots in parallel
-  const [{ data: blocked }, { data: existingSlots }, { data: rules }] = await Promise.all([
+  // Fetch blocked periods, existing slots, and rules in parallel
+  const [blockedRes, slotsRes, rulesRes] = await Promise.all([
     db.from('blocked_periods')
       .select('date_start, date_end')
       .lte('date_start', monthEnd)
-      .gte('date_end', monthStart) as Promise<{ data: { date_start: string; date_end: string }[] | null }>,
-
+      .gte('date_end',   monthStart),
     db.from('time_slots')
       .select('id, date, start_time, end_time, status')
       .gte('date', monthStart)
       .lte('date', monthEnd)
       .order('date',       { ascending: true })
-      .order('start_time', { ascending: true }) as Promise<{
-        data: { id: string; date: string; start_time: string; end_time: string; status: string }[] | null
-      }>,
-
+      .order('start_time', { ascending: true }),
     db.from('availability_rules')
       .select('weekday, start_time, end_time')
-      .eq('active', true) as Promise<{
-        data: { weekday: number; start_time: string; end_time: string }[] | null
-      }>,
-  ])
+      .eq('active', true),
+  ]) as [
+    { data: BlockedRow[] | null },
+    { data: SlotRow[]    | null },
+    { data: RuleRow[]    | null },
+  ]
 
-  // Lazy slot generation — create slots for dates that have none yet
-  const datesWithSlots = new Set((existingSlots ?? []).map(s => s.date))
-  const today    = startOfDay(new Date())
-  const maxDate  = addDays(today, BOOKING.maxDaysAhead)
-  const daysInMonth = new Date(year, month, 0).getDate()
+  const blocked       = blockedRes.data ?? []
+  const existingSlots = slotsRes.data   ?? []
+  const rules         = rulesRes.data   ?? []
+
+  // Lazy slot generation — generate for dates with no slots yet
+  const datesWithSlots = new Set(existingSlots.map(s => s.date))
+  const today          = startOfDay(new Date())
+  const maxDate        = addDays(today, BOOKING.maxDaysAhead)
+  const daysInMonth    = new Date(year, month, 0).getDate()
+  const duration       = BOOKING.slotDurationMinutes
 
   const toInsert: { date: string; start_time: string; end_time: string; status: string }[] = []
 
@@ -52,23 +59,21 @@ export async function GET(request: NextRequest) {
     const dateObj = new Date(year, month - 1, d)
     const dateStr = format(dateObj, 'yyyy-MM-dd')
 
-    if (datesWithSlots.has(dateStr)) continue
-    if (startOfDay(dateObj) < today)  continue
-    if (dateObj > maxDate)            continue
-    if (BOOKING.blockedWeekdays.includes(dateObj.getDay())) continue
-    if (blocked?.some(b => dateStr >= b.date_start && dateStr <= b.date_end)) continue
+    if (datesWithSlots.has(dateStr))                                             continue
+    if (startOfDay(dateObj) < today)                                             continue
+    if (dateObj > maxDate)                                                       continue
+    if (BOOKING.blockedWeekdays.includes(dateObj.getDay()))                      continue
+    if (blocked.some(b => dateStr >= b.date_start && dateStr <= b.date_end))     continue
 
-    const rule = rules?.find(r => r.weekday === dateObj.getDay())
+    const rule = rules.find(r => r.weekday === dateObj.getDay())
     if (!rule) continue
 
-    // Parse HH:MM(:SS) times
     const [sh, sm] = rule.start_time.split(':').map(Number)
     const [eh, em] = rule.end_time.split(':').map(Number)
-    const endMinutes  = eh * 60 + em
-    const duration    = BOOKING.slotDurationMinutes
+    const endMin   = eh * 60 + em
 
     let cur = sh * 60 + sm
-    while (cur + duration <= endMinutes) {
+    while (cur + duration <= endMin) {
       const h1 = Math.floor(cur / 60), m1 = cur % 60
       const h2 = Math.floor((cur + duration) / 60), m2 = (cur + duration) % 60
       toInsert.push({
@@ -82,12 +87,12 @@ export async function GET(request: NextRequest) {
   }
 
   if (toInsert.length > 0) {
-    await (db.from('time_slots').insert(toInsert) as Promise<unknown>)
+    await db.from('time_slots').insert(toInsert)
   }
 
-  // Merge generated slots with existing for the response
-  const allSlots = [
-    ...(existingSlots ?? []),
+  // Merge generated slots with existing
+  const allSlots: SlotRow[] = [
+    ...existingSlots,
     ...toInsert.map((s, i) => ({ id: `gen-${i}`, ...s })),
   ]
 
@@ -101,19 +106,14 @@ export async function GET(request: NextRequest) {
     const dateObj = new Date(year, month - 1, d)
     const dateStr = format(dateObj, 'yyyy-MM-dd')
 
-    if (startOfDay(dateObj) < today) {
-      availability[dateStr] = { available: false, slots: [] }
-      continue
-    }
-    if (dateObj > maxDate) {
-      availability[dateStr] = { available: false, slots: [] }
-      continue
-    }
-    if (BOOKING.blockedWeekdays.includes(dateObj.getDay())) {
-      availability[dateStr] = { available: false, slots: [] }
-      continue
-    }
-    if (blocked?.some(b => dateStr >= b.date_start && dateStr <= b.date_end)) {
+    const unavailable = (
+      startOfDay(dateObj) < today ||
+      dateObj > maxDate ||
+      BOOKING.blockedWeekdays.includes(dateObj.getDay()) ||
+      blocked.some(b => dateStr >= b.date_start && dateStr <= b.date_end)
+    )
+
+    if (unavailable) {
       availability[dateStr] = { available: false, slots: [] }
       continue
     }
