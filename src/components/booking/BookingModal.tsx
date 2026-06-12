@@ -3,39 +3,45 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { cn, formatCurrency } from '@/lib/utils'
 import { buildBookingConfirmationUrl } from '@/lib/whatsapp/messages'
-import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, parseISO, isToday, isBefore, startOfDay } from 'date-fns'
+import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, parseISO, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
 
 /* ── Types ─────────────────────────────────────── */
+interface Service {
+  id: string
+  name: string
+  price: number
+  duration: number
+}
+
 interface Slot {
   id: string
   startTime: string
   available: boolean
 }
 
+interface DayAvailability {
+  available: boolean
+  slots: Slot[]
+}
+
+type AvailabilityMap = Record<string, DayAvailability>
+
 interface BookingState {
   step: 1 | 2 | 3
   selectedDate: Date | null
   selectedSlot: Slot | null
-  // Step 3 result
   result: {
-    clientName:  string
-    serviceName: string
-    date:        string
-    startTime:   string
+    clientName:    string
+    serviceName:   string
+    date:          string
+    startTime:     string
     referenceCode: string
-    whatsapp:    string
-    wppUrl:      string
+    whatsapp:      string
+    wppUrl:        string
   } | null
 }
-
-const SERVICES = [
-  { id: 'corte-cabelo',   name: 'Corte de Cabelo',  price: 60 },
-  { id: 'barba-completa', name: 'Barba Completa',    price: 60 },
-  { id: 'cabelo-barba',   name: 'Cabelo e Barba',    price: 100 },
-  { id: 'corte-feminino', name: 'Corte Feminino',    price: 100 },
-]
 
 /* ── Step indicator ────────────────────────────── */
 function StepDot({ num, status }: { num: number; status: 'active' | 'done' | 'idle' }) {
@@ -66,29 +72,34 @@ function StepDot({ num, status }: { num: number; status: 'active' | 'done' | 'id
 function MiniCalendar({
   current,
   selected,
+  availability,
+  loading,
   onSelectDay,
   onChangeMonth,
 }: {
   current:       Date
   selected:      Date | null
+  availability:  AvailabilityMap
+  loading:       boolean
   onSelectDay:   (date: Date) => void
   onChangeMonth: (dir: 1 | -1) => void
 }) {
-  const today   = startOfDay(new Date())
-  const daysInM = getDaysInMonth(current)
-  const firstDow = getDay(startOfMonth(current))
-  const isCurrentMonth = current.getFullYear() === today.getFullYear() && current.getMonth() === today.getMonth()
+  const today      = startOfDay(new Date())
+  const daysInM    = getDaysInMonth(current)
+  const firstDow   = getDay(startOfMonth(current))
+  const isCurrentM = current.getFullYear() === today.getFullYear() && current.getMonth() === today.getMonth()
 
   const days = Array.from({ length: daysInM }, (_, i) => {
-    const d = new Date(current.getFullYear(), current.getMonth(), i + 1)
+    const d       = new Date(current.getFullYear(), current.getMonth(), i + 1)
+    const dateStr = format(d, 'yyyy-MM-dd')
     const past    = isBefore(d, today)
-    const blocked = BOOKING.blockedWeekdays.includes(d.getDay())
-    return { day: i + 1, date: d, past, blocked, disabled: past || blocked }
+    const info    = availability[dateStr]
+    const disabled = past || (info !== undefined ? !info.available : BOOKING.blockedWeekdays.includes(d.getDay()))
+    return { day: i + 1, date: d, dateStr, disabled, hasSlots: info?.available ?? false }
   })
 
   return (
     <div className="bg-offwhite/3 border border-offwhite/7 p-[26px] rounded-none">
-      {/* Header */}
       <div className="flex justify-between items-center mb-[18px]">
         <span className="font-display font-light text-xl text-offwhite tracking-[0.07em]" aria-live="polite">
           {format(current, 'MMMM yyyy', { locale: ptBR }).replace(/^\w/, c => c.toUpperCase())}
@@ -96,34 +107,27 @@ function MiniCalendar({
         <div className="flex gap-2">
           <button
             onClick={() => onChangeMonth(-1)}
-            disabled={isCurrentMonth}
+            disabled={isCurrentM}
             aria-label="Mês anterior"
             className={cn(
               'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
-              'flex items-center justify-center',
-              'transition-all duration-200',
+              'flex items-center justify-center transition-all duration-200',
               'hover:border-sage hover:text-sage-light hover:bg-sage/7',
               'disabled:opacity-18 disabled:pointer-events-none'
             )}
-          >
-            ‹
-          </button>
+          >‹</button>
           <button
             onClick={() => onChangeMonth(1)}
             aria-label="Próximo mês"
             className={cn(
               'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
-              'flex items-center justify-center',
-              'transition-all duration-200',
+              'flex items-center justify-center transition-all duration-200',
               'hover:border-sage hover:text-sage-light hover:bg-sage/7'
             )}
-          >
-            ›
-          </button>
+          >›</button>
         </div>
       </div>
 
-      {/* Day names */}
       <div className="grid grid-cols-7 gap-[3px] mb-[5px]" aria-hidden="true">
         {['D','S','T','Q','Q','S','S'].map((d, i) => (
           <span key={i} className="text-center font-body font-light text-[8.5px] tracking-[0.15em] uppercase text-offwhite/18 py-[5px]">
@@ -132,16 +136,11 @@ function MiniCalendar({
         ))}
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-7 gap-[3px]" role="grid">
-        {/* Empty cells */}
-        {Array.from({ length: firstDow }).map((_, i) => (
-          <div key={`e-${i}`} aria-hidden="true" />
-        ))}
-        {/* Days */}
-        {days.map(({ day, date, disabled }) => {
-          const isSelected = selected && format(selected, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-          const todayDay   = format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
+      <div className={cn('grid grid-cols-7 gap-[3px] transition-opacity duration-300', loading && 'opacity-40')} role="grid">
+        {Array.from({ length: firstDow }).map((_, i) => <div key={`e-${i}`} aria-hidden="true" />)}
+        {days.map(({ day, date, dateStr, disabled }) => {
+          const isSelected = selected && format(selected, 'yyyy-MM-dd') === dateStr
+          const todayDay   = dateStr === format(today, 'yyyy-MM-dd')
           return (
             <div
               key={day}
@@ -152,8 +151,7 @@ function MiniCalendar({
               className={cn(
                 'aspect-square flex items-center justify-center',
                 'font-body font-light text-[11.5px] rounded-none',
-                'border border-transparent',
-                'transition-all duration-200',
+                'border border-transparent transition-all duration-200',
                 disabled   && 'text-offwhite/10 line-through cursor-default',
                 !disabled  && 'text-offwhite/48 cursor-pointer hover:bg-sage/13 hover:text-sage-light hover:border-sage/17',
                 todayDay   && !disabled && !isSelected && 'text-offwhite border-offwhite/17 font-normal',
@@ -165,6 +163,12 @@ function MiniCalendar({
           )
         })}
       </div>
+
+      {loading && (
+        <p className="text-center font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/22 mt-3">
+          Verificando disponibilidade…
+        </p>
+      )}
     </div>
   )
 }
@@ -172,19 +176,27 @@ function MiniCalendar({
 /* ── Slot picker ───────────────────────────────── */
 function SlotPicker({
   date,
+  slots,
   selected,
   onSelect,
 }: {
   date:     Date
+  slots:    Slot[]
   selected: Slot | null
   onSelect: (slot: Slot) => void
 }) {
-  // Static slots for now (Phase 3 will fetch from API)
-  const slots: Slot[] = BOOKING.defaultSlots.map((t, i) => ({
-    id:        `slot-${i}`,
-    startTime: t,
-    available: !['10:00', '15:00'].includes(t), // placeholder
-  }))
+  if (slots.length === 0) {
+    return (
+      <div className="mt-[18px]">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/22 mb-[10px]">
+          {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
+        </p>
+        <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+          Nenhum horário disponível para esta data.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="mt-[18px]">
@@ -203,8 +215,7 @@ function SlotPicker({
               className={cn(
                 'py-[13px] px-[6px] text-center',
                 'font-display text-[15px]',
-                'border rounded-none transition-all duration-200',
-                'select-none',
+                'border rounded-none transition-all duration-200 select-none',
                 !slot.available && 'text-offwhite/10 border-offwhite/7 line-through cursor-default',
                 slot.available && !isSel && 'text-offwhite/52 border-offwhite/7 cursor-pointer hover:border-sage hover:text-sage-light hover:bg-sage/7',
                 isSel && 'bg-sage border-sage text-offwhite',
@@ -223,23 +234,32 @@ function SlotPicker({
 function BookingForm({
   selectedDate,
   selectedSlot,
+  services,
   onConfirm,
 }: {
   selectedDate: Date
   selectedSlot: Slot
-  onConfirm:   (data: { name: string; serviceId: string; serviceName: string; whatsapp: string }) => void
+  services:     Service[]
+  onConfirm:   (data: {
+    name: string; serviceId: string; serviceName: string
+    whatsapp: string; email: string; referenceCode: string
+    date: string; startTime: string
+  }) => void
 }) {
   const [name,      setName]      = useState('')
   const [serviceId, setServiceId] = useState('')
   const [whatsapp,  setWhatsapp]  = useState('')
+  const [email,     setEmail]     = useState('')
   const [errors,    setErrors]    = useState<Record<string, string>>({})
   const [loading,   setLoading]   = useState(false)
+  const [apiError,  setApiError]  = useState<string | null>(null)
 
   const validate = () => {
     const e: Record<string, string> = {}
-    if (name.trim().length < 2)                         e.name = 'Por favor, informe seu nome.'
-    if (!serviceId)                                      e.service = 'Selecione um serviço.'
-    if (whatsapp.replace(/\D/g, '').length < 10)        e.whatsapp = 'Por favor, informe seu WhatsApp.'
+    if (name.trim().length < 2)          e.name     = 'Por favor, informe seu nome.'
+    if (!serviceId)                       e.service  = 'Selecione um serviço.'
+    if (whatsapp.replace(/\D/g, '').length < 10) e.whatsapp = 'Por favor, informe seu WhatsApp.'
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'E-mail inválido.'
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -247,10 +267,44 @@ function BookingForm({
   const handleSubmit = async () => {
     if (!validate()) return
     setLoading(true)
-    await new Promise(r => setTimeout(r, 900)) // simulated delay; Phase 3 will call API
-    const svc = SERVICES.find(s => s.id === serviceId)!
-    onConfirm({ name: name.trim(), serviceId, serviceName: svc.name, whatsapp: whatsapp.trim() })
-    setLoading(false)
+    setApiError(null)
+
+    try {
+      const res = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:      name.trim(),
+          whatsapp:  whatsapp.trim(),
+          email:     email.trim() || undefined,
+          serviceId,
+          slotId:    selectedSlot.id,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setApiError(data.error ?? 'Erro ao confirmar agendamento. Tente novamente.')
+        return
+      }
+
+      const svc = services.find(s => s.id === serviceId)!
+      onConfirm({
+        name:          name.trim(),
+        serviceId,
+        serviceName:   svc.name,
+        whatsapp:      whatsapp.trim(),
+        email:         email.trim(),
+        referenceCode: data.referenceCode,
+        date:          data.date,
+        startTime:     data.startTime,
+      })
+    } catch {
+      setApiError('Erro de conexão. Verifique sua internet e tente novamente.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const dateLabel = format(selectedDate, "d 'de' MMMM", { locale: ptBR })
@@ -258,7 +312,6 @@ function BookingForm({
 
   return (
     <div>
-      {/* Selected bar */}
       <div className="flex items-center gap-[11px] px-[15px] py-[13px] bg-sage/7 border border-sage/16 mb-[22px]">
         <span className="w-[5px] h-[5px] rounded-full bg-sage shrink-0 animate-pulse-dot" aria-hidden="true" />
         <span className="font-body font-light text-2xs tracking-[0.2em] uppercase text-sage-light">
@@ -266,7 +319,6 @@ function BookingForm({
         </span>
       </div>
 
-      {/* Name */}
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="f-nome">
           Seu nome
@@ -289,7 +341,6 @@ function BookingForm({
         {errors.name && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.name}</p>}
       </div>
 
-      {/* Service */}
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="f-servico">
           Serviço
@@ -307,7 +358,7 @@ function BookingForm({
           )}
         >
           <option value="">Selecione o serviço</option>
-          {SERVICES.map(s => (
+          {services.map(s => (
             <option key={s.id} value={s.id}>
               {s.name} — {formatCurrency(s.price)}
             </option>
@@ -316,7 +367,6 @@ function BookingForm({
         {errors.service && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.service}</p>}
       </div>
 
-      {/* WhatsApp */}
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="f-tel">
           WhatsApp
@@ -339,7 +389,34 @@ function BookingForm({
         {errors.whatsapp && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.whatsapp}</p>}
       </div>
 
-      {/* Submit */}
+      <div className="mb-[13px]">
+        <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="f-email">
+          E-mail <span className="text-offwhite/20">(opcional)</span>
+        </label>
+        <input
+          id="f-email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="Para receber confirmação por e-mail"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          className={cn(
+            'w-full bg-offwhite/3 border text-offwhite font-display text-lg px-[15px] py-[12px]',
+            'outline-none transition-all duration-250 rounded-none',
+            'placeholder:text-offwhite/18 placeholder:text-sm placeholder:font-body placeholder:font-light',
+            errors.email ? 'border-error/55 bg-error/4' : 'border-offwhite/9 focus:border-sage focus:bg-sage/5'
+          )}
+        />
+        {errors.email && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.email}</p>}
+      </div>
+
+      {apiError && (
+        <div className="mb-[13px] px-[15px] py-[12px] border border-error/30 bg-error/5">
+          <p className="font-body font-light text-[10px] tracking-[0.18em] text-error/80">{apiError}</p>
+        </div>
+      )}
+
       <button
         onClick={handleSubmit}
         disabled={loading}
@@ -350,7 +427,6 @@ function BookingForm({
           'transition-all duration-300',
           'hover:bg-sage hover:text-offwhite',
           'disabled:opacity-45 disabled:cursor-not-allowed',
-          'relative overflow-hidden'
         )}
       >
         {loading ? (
@@ -386,9 +462,12 @@ function Confirmation({
       <p className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[7px]">
         Perfeito, {result.clientName}. Até lá!
       </p>
-      <p className="font-body font-light text-2xs tracking-[0.24em] text-offwhite/32 mb-[26px] leading-[1.9]">
+      <p className="font-body font-light text-2xs tracking-[0.24em] text-offwhite/32 mb-[5px] leading-[1.9]">
         {result.serviceName}<br />
         {dateFormatted} · {result.startTime.replace(':', 'h')}
+      </p>
+      <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-offwhite/22 mb-[26px]">
+        Código: <span className="text-gold">{result.referenceCode}</span>
       </p>
       <a
         href={result.wppUrl}
@@ -416,16 +495,42 @@ function Confirmation({
 
 /* ── Modal ─────────────────────────────────────── */
 export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
-  const [state, setState] = useState<BookingState>({
+  const [currentMonth,  setCurrentMonth]  = useState(new Date())
+  const [availability,  setAvailability]  = useState<AvailabilityMap>({})
+  const [loadingAvail,  setLoadingAvail]  = useState(false)
+  const [services,      setServices]      = useState<Service[]>([])
+  const [state,         setState]         = useState<BookingState>({
     step: 1, selectedDate: null, selectedSlot: null, result: null,
   })
   const lastFocusRef = useRef<HTMLElement | null>(null)
 
   const reset = useCallback(() => {
     setCurrentMonth(new Date())
+    setAvailability({})
     setState({ step: 1, selectedDate: null, selectedSlot: null, result: null })
   }, [])
+
+  // Fetch services once on open
+  useEffect(() => {
+    if (!isOpen || services.length > 0) return
+    fetch('/api/services')
+      .then(r => r.json())
+      .then(d => setServices(d.services ?? []))
+      .catch(console.error)
+  }, [isOpen, services.length])
+
+  // Fetch availability whenever month changes or modal opens
+  useEffect(() => {
+    if (!isOpen) return
+    const y = currentMonth.getFullYear()
+    const m = currentMonth.getMonth() + 1
+    setLoadingAvail(true)
+    fetch(`/api/availability?year=${y}&month=${m}`)
+      .then(r => r.json())
+      .then(d => setAvailability(d.availability ?? {}))
+      .catch(console.error)
+      .finally(() => setLoadingAvail(false))
+  }, [isOpen, currentMonth])
 
   useEffect(() => {
     if (isOpen) {
@@ -455,18 +560,24 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     setState(s => ({ ...s, selectedSlot: slot, step: 2 }))
   }
 
-  const handleConfirm = (data: { name: string; serviceId: string; serviceName: string; whatsapp: string }) => {
-    const { selectedDate, selectedSlot } = state
-    if (!selectedDate || !selectedSlot) return
+  const handleChangeMonth = (dir: 1 | -1) => {
+    const next = dir === 1 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1)
+    setCurrentMonth(next)
+    setState(s => ({ ...s, selectedDate: null, selectedSlot: null, step: 1 }))
+  }
 
-    const dateStr  = format(selectedDate, 'yyyy-MM-dd')
-    const wppUrl   = buildBookingConfirmationUrl({
+  const handleConfirm = (data: {
+    name: string; serviceId: string; serviceName: string
+    whatsapp: string; email: string; referenceCode: string
+    date: string; startTime: string
+  }) => {
+    const wppUrl = buildBookingConfirmationUrl({
       clientName:    data.name,
       serviceName:   data.serviceName,
-      date:          dateStr,
-      startTime:     selectedSlot.startTime,
+      date:          data.date,
+      startTime:     data.startTime,
       whatsapp:      data.whatsapp,
-      referenceCode: 'AE-PENDENTE', // Phase 3 will get this from API
+      referenceCode: data.referenceCode,
     })
 
     setState(s => ({
@@ -475,9 +586,9 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
       result: {
         clientName:    data.name,
         serviceName:   data.serviceName,
-        date:          dateStr,
-        startTime:     selectedSlot.startTime,
-        referenceCode: 'AE-PENDENTE',
+        date:          data.date,
+        startTime:     data.startTime,
+        referenceCode: data.referenceCode,
         whatsapp:      data.whatsapp,
         wppUrl,
       },
@@ -489,6 +600,9 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
     if (state.step === n) return 'active'
     return 'idle'
   }
+
+  const selectedDateStr = state.selectedDate ? format(state.selectedDate, 'yyyy-MM-dd') : null
+  const currentSlots = selectedDateStr ? (availability[selectedDateStr]?.slots ?? []) : []
 
   return (
     <div
@@ -520,7 +634,6 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
             <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mt-[5px]">
               Agendamento online · Confirmação via WhatsApp
             </p>
-            {/* Steps */}
             <div className="flex items-center gap-2 mt-[18px]" aria-label="Etapas do agendamento">
               <StepDot num={1} status={stepStatus(1)} />
               <div className="w-[18px] h-px bg-offwhite/8 shrink-0" aria-hidden="true" />
@@ -545,12 +658,15 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
             <MiniCalendar
               current={currentMonth}
               selected={state.selectedDate}
+              availability={availability}
+              loading={loadingAvail}
               onSelectDay={selectDay}
-              onChangeMonth={dir => setCurrentMonth(dir === 1 ? addMonths(currentMonth, 1) : subMonths(currentMonth, 1))}
+              onChangeMonth={handleChangeMonth}
             />
             {state.selectedDate && (
               <SlotPicker
                 date={state.selectedDate}
+                slots={currentSlots}
                 selected={state.selectedSlot}
                 onSelect={selectSlot}
               />
@@ -560,11 +676,12 @@ export function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: ()
           {/* Right — Form / Confirmation */}
           <div>
             {state.step === 3 && state.result ? (
-              <Confirmation result={state.result} onRestart={() => { reset() }} />
+              <Confirmation result={state.result} onRestart={reset} />
             ) : state.selectedDate && state.selectedSlot ? (
               <BookingForm
                 selectedDate={state.selectedDate}
                 selectedSlot={state.selectedSlot}
+                services={services}
                 onConfirm={handleConfirm}
               />
             ) : (

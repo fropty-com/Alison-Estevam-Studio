@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { createAppointmentSchema } from '@/lib/validations/booking'
 import { generateReferenceCode, formatWhatsApp } from '@/lib/utils'
+import { sendConfirmationEmail } from '@/lib/email/confirmation'
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,12 +110,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Send confirmation email (non-blocking — failure doesn't break the booking)
+    if (email) {
+      sendConfirmationEmail({
+        clientName:    name,
+        clientEmail:   email,
+        serviceName:   service.name,
+        date:          slot.date,
+        startTime:     slot.start_time.substring(0, 5),
+        referenceCode,
+      })
+    }
+
     return NextResponse.json({
       referenceCode,
       clientName:  name,
       serviceName: service.name,
       date:        slot.date,
-      startTime:   slot.start_time,
+      startTime:   slot.start_time.substring(0, 5),
     }, { status: 201 })
 
   } catch (error) {
