@@ -44,7 +44,27 @@ export async function GET(request: NextRequest) {
 
   const blocked       = blockedRes.data ?? []
   const existingSlots = slotsRes.data   ?? []
-  const rules         = rulesRes.data   ?? []
+  const dbRules       = rulesRes.data   ?? []
+
+  // Fall back to default schedule (10h–19h, Mon–Sat) when DB has no rules configured
+  const useDemoMode = dbRules.length === 0
+  const rules: RuleRow[] = useDemoMode
+    ? [
+        { weekday: 1, start_time: '10:00', end_time: '19:00' },
+        { weekday: 2, start_time: '10:00', end_time: '19:00' },
+        { weekday: 3, start_time: '10:00', end_time: '19:00' },
+        { weekday: 4, start_time: '10:00', end_time: '19:00' },
+        { weekday: 5, start_time: '10:00', end_time: '19:00' },
+        { weekday: 6, start_time: '10:00', end_time: '19:00' },
+      ]
+    : dbRules
+
+  // Demo: deterministically "fill" some slots so the picker shows variety
+  // Pattern: on even days book 11h & 15h; on odd days book 13h & 17h
+  const getDemoBooked = (dayNum: number): Set<string> =>
+    dayNum % 2 === 0
+      ? new Set(['11:00', '15:00'])
+      : new Set(['13:00', '17:00'])
 
   // Lazy slot generation — generate for dates with no slots yet
   const datesWithSlots = new Set(existingSlots.map(s => s.date))
@@ -71,22 +91,25 @@ export async function GET(request: NextRequest) {
     const [sh, sm] = rule.start_time.split(':').map(Number)
     const [eh, em] = rule.end_time.split(':').map(Number)
     const endMin   = eh * 60 + em
+    const demoBooked = useDemoMode ? getDemoBooked(d) : new Set<string>()
 
     let cur = sh * 60 + sm
     while (cur + duration <= endMin) {
       const h1 = Math.floor(cur / 60), m1 = cur % 60
       const h2 = Math.floor((cur + duration) / 60), m2 = (cur + duration) % 60
+      const startStr = `${String(h1).padStart(2, '0')}:${String(m1).padStart(2, '0')}`
       toInsert.push({
         date:       dateStr,
-        start_time: `${String(h1).padStart(2, '0')}:${String(m1).padStart(2, '0')}`,
+        start_time: startStr,
         end_time:   `${String(h2).padStart(2, '0')}:${String(m2).padStart(2, '0')}`,
-        status:     'available',
+        status:     demoBooked.has(startStr) ? 'booked' : 'available',
       })
       cur += duration
     }
   }
 
-  if (toInsert.length > 0) {
+  // Only persist to DB when using real rules (not demo mode)
+  if (toInsert.length > 0 && !useDemoMode) {
     await db.from('time_slots').insert(toInsert)
   }
 

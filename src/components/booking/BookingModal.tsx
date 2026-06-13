@@ -94,8 +94,9 @@ function MiniCalendar({
     const dateStr = format(d, 'yyyy-MM-dd')
     const past    = isBefore(d, today)
     const info    = availability[dateStr]
-    const disabled = past || (info !== undefined ? !info.available : BOOKING.blockedWeekdays.includes(d.getDay()))
-    return { day: i + 1, date: d, dateStr, disabled, hasSlots: info?.available ?? false }
+    const unavailable = !past && (info !== undefined ? !info.available : BOOKING.blockedWeekdays.includes(d.getDay()))
+    const disabled    = past || unavailable
+    return { day: i + 1, date: d, dateStr, past, unavailable, disabled, hasSlots: info?.available ?? false }
   })
 
   return (
@@ -138,24 +139,30 @@ function MiniCalendar({
 
       <div className={cn('grid grid-cols-7 gap-[3px] transition-opacity duration-300', loading && 'opacity-40')} role="grid">
         {Array.from({ length: firstDow }).map((_, i) => <div key={`e-${i}`} aria-hidden="true" />)}
-        {days.map(({ day, date, dateStr, disabled }) => {
+        {days.map(({ day, date, dateStr, past, unavailable, disabled }) => {
           const isSelected = selected && format(selected, 'yyyy-MM-dd') === dateStr
           const todayDay   = dateStr === format(today, 'yyyy-MM-dd')
           return (
             <div
               key={day}
               role="gridcell"
-              aria-label={`${day} de ${format(current, 'MMMM', { locale: ptBR })}${disabled ? ' — indisponível' : ''}`}
+              aria-label={`${day} de ${format(current, 'MMMM', { locale: ptBR })}${past ? ' — passado' : unavailable ? ' — indisponível' : ''}`}
               aria-disabled={disabled}
               onClick={() => !disabled && onSelectDay(date)}
               className={cn(
-                'aspect-square flex items-center justify-center',
+                'aspect-square flex items-center justify-center relative',
                 'font-body font-light text-[11.5px] rounded-none',
                 'border border-transparent transition-all duration-200',
-                disabled   && 'text-offwhite/22 cursor-default',
-                !disabled  && 'text-offwhite/70 cursor-pointer hover:bg-sage/15 hover:text-sage-light hover:border-sage/30',
-                todayDay   && !disabled && !isSelected && 'text-offwhite border-offwhite/30 font-normal',
-                isSelected && 'bg-sage text-offwhite border-sage',
+                // Past: very faded, line-through
+                past        && 'text-offwhite/12 cursor-not-allowed line-through decoration-offwhite/10',
+                // Future unavailable (blocked weekday / no slots)
+                unavailable && 'text-offwhite/20 cursor-default',
+                // Available
+                !disabled   && 'text-offwhite/72 cursor-pointer hover:bg-gold/10 hover:text-gold hover:border-gold/25 hover:scale-110',
+                // Today marker
+                todayDay    && !disabled && !isSelected && 'text-offwhite border-offwhite/25 font-normal',
+                // Selected
+                isSelected  && 'bg-gold/90 text-charcoal-deep border-gold font-normal scale-105',
               )}
             >
               {day}
