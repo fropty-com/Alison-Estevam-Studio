@@ -28,7 +28,7 @@ export function ExperienciaSection() {
     <section
       id="experiencia"
       aria-labelledby="experiencia-titulo"
-      className="experiencia section-wrap bg-charcoal"
+      className="experiencia section-wrap bg-charcoal-mid"
     >
       {/* Section tag — override colors for dark bg */}
       <div
@@ -58,7 +58,7 @@ export function ExperienciaSection() {
             role="listitem"
             className={cn(
               'reveal', delay,
-              'group bg-charcoal px-[38px] py-[52px]',
+              'group bg-charcoal-deep/60 px-[38px] py-[52px]',
               'relative overflow-hidden transition-colors duration-400',
               'hover:bg-charcoal-mid',
               // Gold underline on hover

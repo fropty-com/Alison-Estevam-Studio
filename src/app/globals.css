@@ -12,9 +12,9 @@
   --ease-circ: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Dark palette (default) ── */
-  --c-charcoal:      14 14 12;      /* #0E0E0C — near black */
-  --c-charcoal-mid:  22 22 20;      /* #161614 */
-  --c-charcoal-deep: 8  8  6;       /* #080806 */
+  --c-charcoal:      12 12 10;      /* #0C0C0A — near black */
+  --c-charcoal-mid:  30 30 28;      /* #1E1E1C — visible section contrast */
+  --c-charcoal-deep: 6  6  4;       /* #060604 */
   --c-sage:          122 145 130;   /* #7A9182 */
   --c-sage-light:    160 180 168;   /* #A0B4A8 */
   --c-offwhite:      245 240 232;   /* #F5F0E8 */
@@ -28,16 +28,16 @@
 [data-theme="light"] {
   /* ── Light palette — pure white base ── */
   --c-charcoal:      255 255 255;   /* #FFFFFF — pure white */
-  --c-charcoal-mid:  248 248 246;   /* near white */
-  --c-charcoal-deep: 238 238 235;   /* subtle off-white */
-  --c-sage:          46 96 66;      /* #2E6042 — deep green for contrast */
-  --c-sage-light:    62 116 84;     /* #3E7454 */
-  --c-offwhite:      14 14 12;      /* #0E0E0C — near black text */
-  --c-offwhite-warm: 28 28 26;      /* dark text warm */
+  --c-charcoal-mid:  228 226 220;   /* #E4E2DC — warm light grey for alternation */
+  --c-charcoal-deep: 210 207 200;   /* #D2CFC8 */
+  --c-sage:          34 80 52;      /* #225034 — very dark green for contrast */
+  --c-sage-light:    48 100 68;     /* #306444 */
+  --c-offwhite:      0 0 0;         /* #000000 — pure black text */
+  --c-offwhite-warm: 10 10 8;       /* near-black warm */
   --c-cream:         255 255 255;   /* pure white */
-  --c-olive:         30 32 22;      /* very dark olive for text */
-  --c-gold:          172 132 52;    /* #AC8434 — deep gold for white bg */
-  --c-gold-light:    196 154 70;    /* adjusted gold light */
+  --c-olive:         18 20 12;      /* near-black olive for text */
+  --c-gold:          160 118 38;    /* #A07626 — dark gold for white bg */
+  --c-gold-light:    182 138 54;    /* adjusted */
 }
 
 /* ══════════════════════════════════════════════

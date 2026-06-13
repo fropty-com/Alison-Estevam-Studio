@@ -11,8 +11,8 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
     <section
       className={cn(
         'relative min-h-svh bg-charcoal overflow-hidden',
-        'flex flex-col items-center justify-end',
-        'px-6 pb-[14vh] md:px-[60px]',
+        'flex flex-col items-center justify-center',
+        'px-6 pt-[88px] pb-[6vh] md:px-[60px]',
         'text-center noise-overlay'
       )}
       aria-label="Apresentação"
