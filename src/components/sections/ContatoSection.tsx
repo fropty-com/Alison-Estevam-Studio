@@ -24,7 +24,7 @@ export function ContatoSection() {
         <div className="reveal relative overflow-hidden bg-offwhite/[0.03] border border-offwhite/8" style={{ minHeight: 360 }}>
           <iframe
             title="Localização Alison Estevam Studio"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=-46.6960%2C-23.5720%2C-46.6260%2C-23.5260&layer=mapnik"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-47.3050%2C-23.2160%2C-47.2650%2C-23.1860&layer=mapnik&marker=-23.2010%2C-47.2850"
             width="100%"
             height="100%"
             style={{ border: 0, minHeight: 360, filter: 'grayscale(1) invert(0.88) contrast(0.85)' }}
@@ -56,7 +56,9 @@ export function ContatoSection() {
                 <div>
                   <p className="font-body font-light text-xs tracking-[0.2em] uppercase text-offwhite/30 mb-[4px]">Endereço</p>
                   <p className="font-body font-light text-sm text-offwhite/60 leading-[1.7]">
-                    A confirmar em breve
+                    Rua Portugal, 443<br />
+                    Jd Celani — Salto SP<br />
+                    13326-145, Brasil
                   </p>
                 </div>
               </li>
@@ -76,7 +78,7 @@ export function ContatoSection() {
                     rel="noopener noreferrer"
                     className="font-body font-light text-sm text-offwhite/65 hover:text-offwhite transition-colors duration-200"
                   >
-                    (11) 97536-9904
+                    +55 11 97536-9904
                   </a>
                 </div>
               </li>
