@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { AuthModal } from '@/components/ui/AuthModal'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre',       section: 'sobre' },
@@ -21,6 +22,7 @@ export function Nav() {
   const [scrolled,      setScrolled]  = useState(false)
   const [activeSection, setActive]    = useState('')
   const [menuOpen,      setMenuOpen]  = useState(false)
+  const [authOpen,      setAuthOpen]  = useState(false)
 
   const handleScroll = useCallback(() => {
     setScrolled(window.scrollY > 55)
@@ -92,6 +94,13 @@ export function Nav() {
         <div className="hidden md:flex items-center gap-4">
           <ThemeToggle />
           <button
+            onClick={() => setAuthOpen(true)}
+            aria-label="Entrar na conta"
+            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+          >
+            Entrar
+          </button>
+          <button
             onClick={openBooking}
             aria-label="Agendar horário"
             className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(201,169,110,0.32)] hover:-translate-y-px active:translate-y-0"
@@ -111,6 +120,8 @@ export function Nav() {
           <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
         </button>
       </nav>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
 
       {/* Mobile drawer */}
       <div
@@ -138,6 +149,12 @@ export function Nav() {
           className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-8 py-[13px] mt-2"
         >
           Agendar
+        </button>
+        <button
+          onClick={() => { setMenuOpen(false); setAuthOpen(true) }}
+          className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/45 hover:text-offwhite/75 transition-colors"
+        >
+          Entrar
         </button>
       </div>
     </>
