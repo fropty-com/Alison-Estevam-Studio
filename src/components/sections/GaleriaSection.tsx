@@ -80,12 +80,12 @@ export function GaleriaSection() {
         </div>
       </div>
 
-      {/* ── Portfolio grid ── */}
+      {/* ── Portfolio carousel ── */}
       <div>
         <div className="flex items-center justify-between mb-8">
-          <div className="section-tag !mb-0" aria-hidden="true">The Portfolio</div>
+          <div className="section-tag !mb-0" aria-hidden="true">O Portfólio</div>
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/alisonestevam"
             target="_blank"
             rel="noopener noreferrer"
             className="font-body font-light text-2xs tracking-[0.3em] uppercase text-offwhite/28 hover:text-offwhite/60 transition-colors duration-200 flex items-center gap-2"
@@ -94,61 +94,42 @@ export function GaleriaSection() {
           </a>
         </div>
 
-        {/* Asymmetric grid: 1 tall left + 2x2 right */}
-        <div className="grid grid-cols-1 md:grid-cols-[1.4fr_1fr_1fr] gap-[3px]">
+        {/* Infinite horizontal scroll carousel */}
+        <div className="overflow-hidden relative" aria-label="Portfólio de cortes">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+            style={{ background: 'linear-gradient(to right, rgb(var(--c-charcoal-mid)), transparent)' }}
+            aria-hidden="true"
+          />
+          <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+            style={{ background: 'linear-gradient(to left, rgb(var(--c-charcoal-mid)), transparent)' }}
+            aria-hidden="true"
+          />
 
-          {/* Left — tall featured */}
-          <div className="gallery-img relative overflow-hidden row-span-2" style={{ aspectRatio: '2/3', minHeight: 400 }}>
-            <Image
-              src={CORTES[0].src}
-              alt={CORTES[0].alt}
-              fill
-              sizes="(max-width: 768px) 100vw, 45vw"
-              className="object-cover object-top"
-            />
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.7) 0%, transparent 45%)' }}
-              aria-hidden="true"
-            />
-            <p className="absolute bottom-5 left-5 font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/60">
-              {CORTES[0].label}
-            </p>
-          </div>
-
-          {/* Right top-left */}
-          <div className="gallery-img relative overflow-hidden" style={{ aspectRatio: '4/5' }}>
-            <Image src={CORTES[1].src} alt={CORTES[1].alt} fill sizes="(max-width:768px) 50vw, 22vw" className="object-cover object-top" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.6) 0%, transparent 45%)' }} aria-hidden="true" />
-            <p className="absolute bottom-4 left-4 font-body font-light text-xs tracking-[0.35em] uppercase text-offwhite/55">{CORTES[1].label}</p>
-          </div>
-
-          {/* Right top-right */}
-          <div className="gallery-img relative overflow-hidden" style={{ aspectRatio: '4/5' }}>
-            <Image src={CORTES[2].src} alt={CORTES[2].alt} fill sizes="(max-width:768px) 50vw, 22vw" className="object-cover object-top" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.6) 0%, transparent 45%)' }} aria-hidden="true" />
-            <p className="absolute bottom-4 left-4 font-body font-light text-xs tracking-[0.35em] uppercase text-offwhite/55">{CORTES[2].label}</p>
-          </div>
-
-          {/* Right bottom-left */}
-          <div className="gallery-img relative overflow-hidden" style={{ aspectRatio: '4/5' }}>
-            <Image src={CORTES[3].src} alt={CORTES[3].alt} fill sizes="(max-width:768px) 50vw, 22vw" className="object-cover object-top" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.6) 0%, transparent 45%)' }} aria-hidden="true" />
-            <p className="absolute bottom-4 left-4 font-body font-light text-xs tracking-[0.35em] uppercase text-offwhite/55">{CORTES[3].label}</p>
-          </div>
-
-          {/* Right bottom-right — label card */}
-          <div
-            className={cn(
-              'relative overflow-hidden flex flex-col items-center justify-center gap-3',
-              'border border-offwhite/8',
-              'bg-offwhite/[0.03]'
-            )}
-            style={{ aspectRatio: '4/5' }}
-          >
-            <Image src={CORTES[4].src} alt={CORTES[4].alt} fill sizes="(max-width:768px) 50vw, 22vw" className="object-cover object-top" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.6) 0%, transparent 45%)' }} aria-hidden="true" />
-            <p className="absolute bottom-4 left-4 font-body font-light text-xs tracking-[0.35em] uppercase text-offwhite/55">{CORTES[4].label}</p>
+          <div className="flex gap-[4px] animate-carousel hover:[animation-play-state:paused]">
+            {[...CORTES, ...CORTES, ...CORTES].map((c, i) => (
+              <div
+                key={i}
+                className="gallery-img relative shrink-0 overflow-hidden"
+                style={{ width: '220px', height: '290px' }}
+              >
+                <Image
+                  src={c.src}
+                  alt={c.alt}
+                  fill
+                  sizes="220px"
+                  className="object-cover object-top"
+                />
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: 'linear-gradient(to top, rgba(12,12,10,0.65) 0%, transparent 50%)' }}
+                  aria-hidden="true"
+                />
+                <p className="absolute bottom-4 left-4 font-body font-light text-xs tracking-[0.35em] uppercase text-offwhite/55">
+                  {c.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

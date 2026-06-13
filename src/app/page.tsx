@@ -3,6 +3,7 @@ import { ExperienciaSection }   from '@/components/sections/ExperienciaSection'
 import { ServicosSection }      from '@/components/sections/ServicosSection'
 import { GaleriaSection }       from '@/components/sections/GaleriaSection'
 import { DepoimentosSection }   from '@/components/sections/DepoimentosSection'
+import { ContatoSection }       from '@/components/sections/ContatoSection'
 import { HomeHero }             from '@/components/sections/HomeHero'
 import { RevealInit }           from '@/components/ui/RevealInit'
 import type { Metadata }        from 'next'
@@ -22,6 +23,7 @@ export default function HomePage() {
       <GaleriaSection />
       <ExperienciaSection />
       <DepoimentosSection />
+      <ContatoSection />
     </>
   )
 }

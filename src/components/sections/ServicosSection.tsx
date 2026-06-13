@@ -121,7 +121,10 @@ export function ServicosSection() {
               'border-b border-r border-offwhite/8',
               'p-[36px] flex flex-col gap-5',
               'reveal', i > 0 && `reveal-d${Math.min(i, 4)}`,
-              'group transition-colors duration-300 hover:bg-offwhite/[0.03]'
+              'group transition-colors duration-300',
+              ('isVip' in s && s.isVip)
+                ? 'bg-gold/[0.04] border-gold/20 hover:bg-gold/[0.07]'
+                : 'hover:bg-offwhite/[0.03]'
             )}
           >
             {/* Icon + Number */}
@@ -178,7 +181,7 @@ export function ServicosSection() {
                 href={'vipUrl' in s ? s.vipUrl : '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group/btn inline-flex items-center gap-2 font-body font-light text-2xs tracking-[0.3em] uppercase text-gold/70 hover:text-gold transition-colors duration-200 mt-1"
+                className="group/btn inline-flex items-center justify-center gap-2 mt-1 px-5 py-[10px] border border-gold/40 bg-gold/10 font-body font-light text-2xs tracking-[0.3em] uppercase text-gold hover:bg-gold/20 hover:border-gold/70 transition-all duration-200"
               >
                 Solicitar via WhatsApp
                 <span className="transition-transform duration-200 group-hover/btn:translate-x-1" aria-hidden="true">→</span>
@@ -189,16 +192,20 @@ export function ServicosSection() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mt-16 text-center">
+      <div className="mt-20 flex flex-col items-center gap-3">
+        <div className="w-px h-[40px] bg-gradient-to-b from-gold/40 to-transparent" aria-hidden="true" />
         <button
           onClick={openBooking}
           className={cn(
             'inline-flex items-center gap-4',
             'font-body font-light text-2xs tracking-[0.45em] uppercase',
-            'text-charcoal-deep bg-gold px-10 py-[15px]',
-            'transition-all duration-300 hover:bg-gold-light hover:-translate-y-px hover:shadow-[0_12px_32px_rgba(201,169,110,0.28)]'
+            'text-charcoal-deep bg-gold px-12 py-[16px]',
+            'relative overflow-hidden',
+            'transition-all duration-300 hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(201,169,110,0.32)]',
+            'active:translate-y-0'
           )}
         >
+          <span className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none" aria-hidden="true" />
           Agendar seu horário →
         </button>
       </div>

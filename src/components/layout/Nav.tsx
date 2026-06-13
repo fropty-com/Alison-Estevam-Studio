@@ -112,16 +112,20 @@ export function Nav() {
               Agendar
             </button>
           </div>
-          <button
-            className="flex md:hidden flex-col gap-[5px] bg-transparent border-none p-1 w-7"
-            onClick={() => setMenuOpen(v => !v)}
-            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={menuOpen}
-          >
-            <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[6px] rotate-45')} />
-            <span className={cn('block w-full h-px bg-offwhite/55 transition-opacity duration-300', menuOpen && 'opacity-0')} />
-            <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
-          </button>
+          {/* Mobile: theme toggle + hamburger */}
+          <div className="flex md:hidden items-center gap-3">
+            <ThemeToggle />
+            <button
+              className="flex flex-col gap-[5px] bg-transparent border-none p-1 w-7"
+              onClick={() => setMenuOpen(v => !v)}
+              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+              aria-expanded={menuOpen}
+            >
+              <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[6px] rotate-45')} />
+              <span className={cn('block w-full h-px bg-offwhite/55 transition-opacity duration-300', menuOpen && 'opacity-0')} />
+              <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -160,6 +164,9 @@ export function Nav() {
         >
           Entrar
         </button>
+        <div className="mt-2">
+          <ThemeToggle />
+        </div>
       </div>
     </>
   )

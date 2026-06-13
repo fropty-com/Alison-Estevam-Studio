@@ -68,41 +68,32 @@ export function SobreSection() {
         </div>
 
         {/* Stats column */}
-        <div className={cn(
-          'reveal reveal-d2 self-center',
-          'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1',
-        )}>
+        <div className="reveal reveal-d2 self-center grid grid-cols-1">
           {STATS.map((stat, i) => (
             <div
               key={stat.label}
               className={cn(
-                'flex items-center gap-7 py-[34px]',
+                'flex flex-col gap-[5px] py-[30px]',
                 'border-b border-offwhite/10',
                 i === 0 && 'border-t border-offwhite/10',
-                // On sm grid: right column gets left border
-                i % 2 === 1 && 'sm:border-l sm:border-offwhite/10 sm:pl-[12px] md:border-l-0 md:pl-0',
-                'sm:py-[22px] sm:gap-[18px] md:py-[34px] md:gap-7',
               )}
             >
               <span
                 className={cn(
-                  'font-data font-normal text-gold leading-none min-w-[95px] shrink-0',
+                  'font-data font-normal text-gold leading-none',
                   stat.size,
-                  'sm:min-w-[70px] sm:text-[40px] md:min-w-[95px] md:text-[50px]',
-                  stat.value === '✦' && '!text-[32px] md:!text-[32px]'
+                  stat.value === '✦' && '!text-[32px]'
                 )}
                 aria-hidden="true"
               >
                 {stat.value}
               </span>
-              <div>
-                <p className="font-body font-light text-md text-offwhite/85 tracking-[0.04em] leading-[1.5]">
-                  {stat.label}
-                </p>
-                <p className="font-body font-light text-2xs tracking-[0.14em] uppercase text-offwhite/30 mt-[3px]">
-                  {stat.sublabel}
-                </p>
-              </div>
+              <p className="font-body font-light text-base text-offwhite/85 tracking-[0.04em] leading-[1.4] mt-[6px]">
+                {stat.label}
+              </p>
+              <p className="font-body font-light text-2xs tracking-[0.14em] uppercase text-offwhite/30">
+                {stat.sublabel}
+              </p>
             </div>
           ))}
         </div>

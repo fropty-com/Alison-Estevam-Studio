@@ -152,6 +152,17 @@
 }
 
 /* ══════════════════════════════════════════════
+   CAROUSEL ANIMATION
+══════════════════════════════════════════════ */
+@keyframes carousel {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(-220px * 5 - 4px * 5)); }
+}
+.animate-carousel {
+  animation: carousel 22s linear infinite;
+}
+
+/* ══════════════════════════════════════════════
    REDUCED MOTION
 ══════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
