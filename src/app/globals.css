@@ -93,9 +93,14 @@
     @apply flex items-center gap-[18px] font-body font-light text-xs
            tracking-[0.5em] uppercase text-sage mb-[52px];
   }
-  .section-tag::before {
+  .section-tag::before,
+  .section-tag::after {
     content: '';
     @apply block w-[26px] h-px bg-sage opacity-45 shrink-0;
+  }
+  /* When not centering, hide the ::after pseudo */
+  .section-tag:not(.justify-center)::after {
+    display: none;
   }
 
   /* ── Reveal on scroll ── */
