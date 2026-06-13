@@ -227,16 +227,16 @@ export function ServicosSection() {
             /* Default state */
             <div className="border border-olive/8 p-[40px] flex flex-col justify-between min-h-[280px]">
               <div>
-                <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-olive/22 mb-5">
+                <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-olive/45 mb-5">
                   Selecione um serviço
                 </p>
-                <p className="font-display font-light italic text-2xl text-olive/28 leading-[1.45]">
+                <p className="font-display font-light italic text-2xl text-olive/55 leading-[1.45]">
                   &ldquo;Cada detalhe importa. Escolha o serviço para conhecer mais.&rdquo;
                 </p>
               </div>
               <div className="mt-8 flex items-center gap-3">
                 <span className="block w-5 h-px bg-gold/35" aria-hidden="true" />
-                <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-olive/20">
+                <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-olive/40">
                   Alison Estevam Studio
                 </span>
               </div>
