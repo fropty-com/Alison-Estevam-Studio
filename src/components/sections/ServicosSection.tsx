@@ -192,14 +192,15 @@ export function ServicosSection() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mt-20 flex flex-col items-center gap-3">
+      <div className="mt-20 flex flex-col items-center gap-3 px-6">
         <div className="w-px h-[40px] bg-gradient-to-b from-gold/40 to-transparent" aria-hidden="true" />
         <button
           onClick={openBooking}
           className={cn(
-            'inline-flex items-center gap-4',
+            'inline-flex items-center justify-center gap-4',
             'font-body font-light text-2xs tracking-[0.45em] uppercase',
-            'text-charcoal-deep bg-gold px-12 py-[16px]',
+            'text-charcoal-deep bg-gold',
+            'w-full max-w-[320px] py-[16px]',
             'relative overflow-hidden',
             'transition-all duration-300 hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_16px_40px_rgba(201,169,110,0.32)]',
             'active:translate-y-0'

@@ -136,7 +136,7 @@ export function Nav() {
         role="dialog"
         aria-label="Menu"
         className={cn(
-          'fixed inset-0 z-[190] flex flex-col items-center justify-center gap-9',
+          'fixed inset-0 z-[190] flex flex-col items-center justify-center gap-7',
           'bg-charcoal-deep/98 backdrop-blur-[20px]',
           'transition-opacity duration-400 ease-brand-out',
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -147,26 +147,28 @@ export function Nav() {
             key={label}
             href={href}
             onClick={() => setMenuOpen(false)}
-            className="font-display font-light text-6xl tracking-[0.06em] text-offwhite/50 hover:text-offwhite transition-colors duration-300"
+            className="font-body font-light text-sm tracking-[0.45em] uppercase text-offwhite/45 hover:text-offwhite transition-colors duration-300"
           >
             {label}
           </a>
         ))}
+
+        {/* Divider */}
+        <div className="w-[32px] h-px bg-gold/30 my-1" aria-hidden="true" />
+
+        {/* Primary CTA */}
         <button
           onClick={() => { setMenuOpen(false); openBooking() }}
-          className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-8 py-[13px] mt-2"
+          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-charcoal-deep bg-gold px-10 py-[14px] hover:bg-gold-light transition-colors duration-300"
         >
           Agendar
         </button>
         <button
           onClick={() => { setMenuOpen(false); setAuthOpen(true) }}
-          className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/45 hover:text-offwhite/75 transition-colors"
+          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/18 px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300"
         >
           Entrar
         </button>
-        <div className="mt-2">
-          <ThemeToggle />
-        </div>
       </div>
     </>
   )

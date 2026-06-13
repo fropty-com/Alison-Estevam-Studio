@@ -89,8 +89,60 @@ export function Footer() {
         </ul>
       </nav>
 
+      {/* Social media */}
+      <div className="col-span-full pt-7 border-t border-offwhite/4">
+        <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/18 mb-5">
+          Redes Sociais
+        </p>
+        <div className="flex items-center gap-5">
+          {/* Instagram */}
+          <a
+            href="https://www.instagram.com/alisonestevam"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram @alisonestevam"
+            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <rect x="2" y="2" width="14" height="14" rx="4" stroke="currentColor" strokeWidth="1.3"/>
+              <circle cx="9" cy="9" r="3.2" stroke="currentColor" strokeWidth="1.3"/>
+              <circle cx="13" cy="5" r="0.9" fill="currentColor"/>
+            </svg>
+            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
+          </a>
+
+          {/* Facebook */}
+          <a
+            href="https://www.facebook.com/alisonestevam"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook @alisonestevam"
+            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M10.5 3H12V1H10C8.34 1 7 2.34 7 4v1.5H5.5V7.5H7V17h3V7.5h2l.5-3H10V4c0-.55.45-1 1-1h-.5Z" fill="currentColor"/>
+            </svg>
+            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
+          </a>
+
+          {/* TikTok */}
+          <a
+            href="https://www.tiktok.com/@alisonestevam"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok @alisonestevam"
+            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M13 1h-2.5v10.5a2.5 2.5 0 1 1-2.5-2.5c.28 0 .55.04.8.12V6.5A5.5 5.5 0 1 0 14 12V6a6.5 6.5 0 0 0 3 1V4.5A3.5 3.5 0 0 1 13 1Z" fill="currentColor"/>
+            </svg>
+            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
+          </a>
+        </div>
+      </div>
+
       {/* Bottom bar */}
-      <div className="col-span-full flex flex-col md:flex-row justify-between items-start md:items-center gap-2 pt-7 border-t border-offwhite/4">
+      <div className="col-span-full flex flex-col md:flex-row justify-between items-start md:items-center gap-2 pt-5 border-t border-offwhite/4">
         <p className="font-body font-light text-xs tracking-[0.2em] text-offwhite/14">
           ©️ {year} {BRAND.name}. Todos os direitos reservados.
         </p>
