@@ -26,7 +26,7 @@ export function SobreSection() {
     <section
       id="sobre"
       aria-labelledby="sobre-titulo"
-      className="sobre section-wrap bg-offwhite-warm"
+      className="sobre section-wrap bg-charcoal-mid"
     >
       <div className="section-tag" aria-hidden="true">Sobre</div>
 
@@ -36,7 +36,7 @@ export function SobreSection() {
         <div className="reveal">
           <h2
             id="sobre-titulo"
-            className="font-display font-light text-5xl leading-[1.14] tracking-[0.02em] text-olive mb-[30px] text-balance"
+            className="font-display font-light text-5xl leading-[1.14] tracking-[0.02em] text-offwhite mb-[30px] text-balance"
           >
             Precisão que vira{' '}
             <em className="font-medium not-italic">
@@ -49,7 +49,7 @@ export function SobreSection() {
           <blockquote
             className={cn(
               'font-display font-light text-xl italic leading-[1.65] tracking-[0.02em]',
-              'text-olive mb-[34px] pl-[18px]',
+              'text-offwhite/70 mb-[34px] pl-[18px]',
               'border-l-2 border-gold/32'
             )}
           >
@@ -59,10 +59,10 @@ export function SobreSection() {
             <strong className="font-medium italic">excelente</strong>
           </blockquote>
 
-          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-olive/65 mb-[17px]">
+          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-offwhite/55 mb-[17px]">
             Desde 2018, aperfeiçoando cada técnica e cada detalhe. Hoje, o atendimento é exclusivo — um cliente por vez, sem pressa, com atenção total ao que realmente importa.
           </p>
-          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-olive/65">
+          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-offwhite/55">
             Um espaço pensado para proporcionar conforto, requinte e uma experiência que você vai querer repetir.
           </p>
         </div>
@@ -77,10 +77,10 @@ export function SobreSection() {
               key={stat.label}
               className={cn(
                 'flex items-center gap-7 py-[34px]',
-                'border-b border-olive/10',
-                i === 0 && 'border-t border-olive/10',
+                'border-b border-offwhite/10',
+                i === 0 && 'border-t border-offwhite/10',
                 // On sm grid: right column gets left border
-                i % 2 === 1 && 'sm:border-l sm:border-olive/10 sm:pl-[12px] md:border-l-0 md:pl-0',
+                i % 2 === 1 && 'sm:border-l sm:border-offwhite/10 sm:pl-[12px] md:border-l-0 md:pl-0',
                 'sm:py-[22px] sm:gap-[18px] md:py-[34px] md:gap-7',
               )}
             >
@@ -96,10 +96,10 @@ export function SobreSection() {
                 {stat.value}
               </span>
               <div>
-                <p className="font-body font-light text-md text-olive tracking-[0.04em] leading-[1.5]">
+                <p className="font-body font-light text-md text-offwhite/85 tracking-[0.04em] leading-[1.5]">
                   {stat.label}
                 </p>
-                <p className="font-body font-light text-2xs tracking-[0.14em] uppercase text-olive/32 mt-[3px]">
+                <p className="font-body font-light text-2xs tracking-[0.14em] uppercase text-offwhite/30 mt-[3px]">
                   {stat.sublabel}
                 </p>
               </div>

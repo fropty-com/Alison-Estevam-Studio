@@ -57,12 +57,13 @@ export function Nav() {
         aria-label="Navegação principal"
         className={cn(
           'fixed top-0 left-0 right-0 z-[200]',
-          'flex justify-between items-center',
+          'grid grid-cols-[1fr_auto_1fr] items-center',
           'px-6 py-7 md:px-[60px]',
           'transition-all duration-500 ease-brand-circ',
           scrolled && 'bg-charcoal-deep/97 backdrop-blur-brand py-[15px] shadow-[0_1px_0_rgba(245,240,232,0.05)]'
         )}
       >
+        {/* Left */}
         <Link
           href="/"
           aria-label={`${BRAND.name} — Início`}
@@ -71,6 +72,7 @@ export function Nav() {
           Escolha o seu momento
         </Link>
 
+        {/* Center — always truly centered */}
         <ul className="hidden md:flex gap-10 list-none" role="list">
           {NAV_LINKS.map(({ href, label, section }) => (
             <li key={section}>
@@ -91,34 +93,36 @@ export function Nav() {
           ))}
         </ul>
 
-        <div className="hidden md:flex items-center gap-4">
-          <ThemeToggle />
+        {/* Right */}
+        <div className="flex items-center gap-4 justify-end">
+          <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
+            <button
+              onClick={() => setAuthOpen(true)}
+              aria-label="Entrar na conta"
+              className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+            >
+              Entrar
+            </button>
+            <button
+              onClick={openBooking}
+              aria-label="Agendar horário"
+              className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(201,169,110,0.32)] hover:-translate-y-px active:translate-y-0"
+            >
+              Agendar
+            </button>
+          </div>
           <button
-            onClick={() => setAuthOpen(true)}
-            aria-label="Entrar na conta"
-            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+            className="flex md:hidden flex-col gap-[5px] bg-transparent border-none p-1 w-7"
+            onClick={() => setMenuOpen(v => !v)}
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={menuOpen}
           >
-            Entrar
-          </button>
-          <button
-            onClick={openBooking}
-            aria-label="Agendar horário"
-            className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(201,169,110,0.32)] hover:-translate-y-px active:translate-y-0"
-          >
-            Agendar
+            <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[6px] rotate-45')} />
+            <span className={cn('block w-full h-px bg-offwhite/55 transition-opacity duration-300', menuOpen && 'opacity-0')} />
+            <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
           </button>
         </div>
-
-        <button
-          className="flex md:hidden flex-col gap-[5px] bg-transparent border-none p-1 w-7"
-          onClick={() => setMenuOpen(v => !v)}
-          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-          aria-expanded={menuOpen}
-        >
-          <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[6px] rotate-45')} />
-          <span className={cn('block w-full h-px bg-offwhite/55 transition-opacity duration-300', menuOpen && 'opacity-0')} />
-          <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
-        </button>
       </nav>
 
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />

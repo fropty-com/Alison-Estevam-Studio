@@ -18,3 +18,5 @@
 /coverage
 /.vercel
 *.log
+
+.vercel

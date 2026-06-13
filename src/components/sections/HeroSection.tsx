@@ -32,19 +32,10 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center">
 
-        {/* Eyebrow */}
-        <p
-          className="font-body font-light text-2xs tracking-label uppercase text-gold mb-[30px]
-                     opacity-0 animate-fade-up [animation-delay:300ms]"
-          aria-hidden="true"
-        >
-          Barbearia · Atendimento Exclusivo
-        </p>
-
         {/* Ornament divider */}
         <div
           className="flex items-center justify-center gap-[18px] mb-[42px]
-                     opacity-0 animate-fade-up [animation-delay:500ms]"
+                     opacity-0 animate-fade-up [animation-delay:300ms]"
           aria-hidden="true"
         >
           <div className="w-[54px] h-px bg-gradient-to-r from-transparent to-gold/48" />
@@ -57,12 +48,21 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
           className={cn(
             'font-display font-light tracking-display uppercase text-offwhite',
             'text-7xl leading-[0.94]',
-            'opacity-0 animate-fade-up [animation-delay:600ms]'
+            'opacity-0 animate-fade-up [animation-delay:500ms]'
           )}
         >
           Alison
           <span className="block text-offwhite/72 mt-[6px]">Estevam</span>
         </h1>
+
+        {/* Eyebrow — below title */}
+        <p
+          className="font-body font-light text-2xs tracking-label uppercase text-gold mt-[22px]
+                     opacity-0 animate-fade-up [animation-delay:700ms]"
+          aria-hidden="true"
+        >
+          Barbearia · Atendimento Exclusivo
+        </p>
 
         {/* Description */}
         <div className="mt-[38px] opacity-0 animate-fade-up [animation-delay:900ms]">

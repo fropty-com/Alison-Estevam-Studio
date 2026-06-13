@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import { Nav }           from './Nav'
 import { NavScheduleBtn } from './NavScheduleBtn'
 import { Footer }        from './Footer'
-import { Cursor }        from '@/components/ui/Cursor'
 import { BookingProvider } from '@/components/booking/BookingProvider'
 
 function ThemeInit() {
@@ -27,7 +26,6 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <BookingProvider>
       <ThemeInit />
-      <Cursor />
       <Nav />
       <NavScheduleBtn />
       <main>{children}</main>

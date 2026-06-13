@@ -141,7 +141,7 @@ export function ServicosSection() {
     <section
       id="servicos"
       aria-labelledby="servicos-titulo"
-      className="bg-cream section-wrap"
+      className="bg-charcoal section-wrap"
     >
       <div className="section-tag" aria-hidden="true">Serviços</div>
 
@@ -151,12 +151,12 @@ export function ServicosSection() {
         <div>
           <h2
             id="servicos-titulo"
-            className="reveal font-display font-light text-5xl text-olive leading-[1.05] mb-[48px] text-balance"
+            className="reveal font-display font-light text-5xl text-offwhite leading-[1.05] mb-[48px] text-balance"
           >
             O que ofereço
           </h2>
 
-          <div role="list" className="divide-y divide-olive/8">
+          <div role="list" className="divide-y divide-offwhite/8">
             {SERVICOS.map((s, i) => (
               <button
                 key={s.num}
@@ -176,7 +176,7 @@ export function ServicosSection() {
                     'border transition-all duration-300',
                     active === i
                       ? 'border-sage bg-sage/10 text-sage'
-                      : 'border-olive/12 text-olive/40 group-hover:border-sage/40 group-hover:text-sage'
+                      : 'border-offwhite/12 text-offwhite/40 group-hover:border-sage/40 group-hover:text-sage'
                   )}
                 >
                   {s.icon}
@@ -187,7 +187,7 @@ export function ServicosSection() {
                   className={cn(
                     'flex-1 font-display font-light text-[clamp(18px,2vw,26px)] tracking-[0.02em]',
                     'transition-colors duration-250',
-                    active === i ? 'text-olive' : 'text-olive/60 group-hover:text-olive/85'
+                    active === i ? 'text-offwhite' : 'text-offwhite/60 group-hover:text-offwhite/85'
                   )}
                 >
                   {s.nome}
@@ -209,8 +209,8 @@ export function ServicosSection() {
                 {/* Arrow */}
                 <span
                   className={cn(
-                    'text-olive/25 transition-all duration-300 shrink-0 ml-1 text-base',
-                    active === i ? 'rotate-180 text-sage' : 'group-hover:text-olive/45'
+                    'text-offwhite/25 transition-all duration-300 shrink-0 ml-1 text-base',
+                    active === i ? 'rotate-180 text-sage' : 'group-hover:text-offwhite/45'
                   )}
                   aria-hidden="true"
                 >
@@ -225,18 +225,18 @@ export function ServicosSection() {
         <div className="md:sticky md:top-[100px]">
           {activeServico === null ? (
             /* Default state */
-            <div className="border border-olive/8 p-[40px] flex flex-col justify-between min-h-[280px]">
+            <div className="border border-offwhite/8 p-[40px] flex flex-col justify-between min-h-[280px]">
               <div>
-                <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-olive/45 mb-5">
+                <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/45 mb-5">
                   Selecione um serviço
                 </p>
-                <p className="font-display font-light italic text-2xl text-olive/55 leading-[1.45]">
+                <p className="font-display font-light italic text-2xl text-offwhite/55 leading-[1.45]">
                   &ldquo;Cada detalhe importa. Escolha o serviço para conhecer mais.&rdquo;
                 </p>
               </div>
               <div className="mt-8 flex items-center gap-3">
                 <span className="block w-5 h-px bg-gold/35" aria-hidden="true" />
-                <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-olive/40">
+                <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-offwhite/40">
                   Alison Estevam Studio
                 </span>
               </div>
@@ -295,7 +295,7 @@ export function ServicosSection() {
             /* Regular service panel */
             <div
               id={`servico-detail-${activeServico.num}`}
-              className="border border-olive/10 p-[40px] min-h-[280px] flex flex-col gap-6"
+              className="border border-offwhite/10 p-[40px] min-h-[280px] flex flex-col gap-6"
             >
               {/* Header */}
               <div className="flex items-start gap-4">
@@ -303,10 +303,10 @@ export function ServicosSection() {
                   {activeServico.icon}
                 </span>
                 <div>
-                  <p className="font-body font-light text-2xs tracking-[0.45em] uppercase text-olive/35 mb-1">
+                  <p className="font-body font-light text-2xs tracking-[0.45em] uppercase text-offwhite/35 mb-1">
                     {activeServico.num}
                   </p>
-                  <h3 className="font-display font-light text-3xl text-olive tracking-[0.02em]">
+                  <h3 className="font-display font-light text-3xl text-offwhite tracking-[0.02em]">
                     {activeServico.nome}
                   </h3>
                 </div>
@@ -318,7 +318,7 @@ export function ServicosSection() {
                   <span className="font-display font-normal text-4xl text-gold tracking-[0.02em]">
                     {activeServico.preco}
                   </span>
-                  <span className="font-body font-light text-xs tracking-[0.2em] text-olive/30 uppercase">
+                  <span className="font-body font-light text-xs tracking-[0.2em] text-offwhite/30 uppercase">
                     por sessão
                   </span>
                 </div>
@@ -326,7 +326,7 @@ export function ServicosSection() {
               {activeServico.isComingSoon && (
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 bg-gold/40 rounded-full animate-pulse-dot" aria-hidden="true" />
-                  <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-olive/35">Em breve</span>
+                  <span className="font-body font-light text-xs tracking-[0.3em] uppercase text-offwhite/35">Em breve</span>
                 </div>
               )}
 
@@ -334,7 +334,7 @@ export function ServicosSection() {
               <div className="w-8 h-px bg-gold/28" aria-hidden="true" />
 
               {/* Description */}
-              <p className="font-body font-light text-base leading-[2] text-olive/65">
+              <p className="font-body font-light text-base leading-[2] text-offwhite/60">
                 {activeServico.desc}
               </p>
 
@@ -348,7 +348,7 @@ export function ServicosSection() {
                     {activeServico.complementos.map(c => (
                       <span
                         key={c.label}
-                        className="font-body font-light text-sm tracking-[0.1em] text-olive/55 border border-olive/14 px-3 py-[5px] transition-colors duration-250 hover:border-gold hover:text-gold"
+                        className="font-body font-light text-sm tracking-[0.1em] text-offwhite/55 border border-offwhite/12 px-3 py-[5px] transition-colors duration-250 hover:border-gold hover:text-gold"
                       >
                         {c.label}
                       </span>

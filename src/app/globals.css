@@ -12,9 +12,9 @@
   --ease-circ: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Dark palette (default) ── */
-  --c-charcoal:      28 28 26;      /* #1C1C1A */
-  --c-charcoal-mid:  46 46 43;      /* #2E2E2B */
-  --c-charcoal-deep: 20 20 18;      /* #141412 */
+  --c-charcoal:      14 14 12;      /* #0E0E0C — near black */
+  --c-charcoal-mid:  22 22 20;      /* #161614 */
+  --c-charcoal-deep: 8  8  6;       /* #080806 */
   --c-sage:          122 145 130;   /* #7A9182 */
   --c-sage-light:    160 180 168;   /* #A0B4A8 */
   --c-offwhite:      245 240 232;   /* #F5F0E8 */
@@ -26,18 +26,18 @@
 }
 
 [data-theme="light"] {
-  /* ── Light palette ── */
-  --c-charcoal:      250 247 242;   /* #FAF7F2 — main bg */
-  --c-charcoal-mid:  242 237 227;   /* warmer beige mid */
-  --c-charcoal-deep: 233 227 214;   /* deeper beige */
-  --c-sage:          58 108 80;     /* #3A6C50 — darker sage for contrast */
-  --c-sage-light:    76 128 98;     /* #4C8062 */
-  --c-offwhite:      38 36 32;      /* #262420 — dark text */
-  --c-offwhite-warm: 56 53 46;      /* slightly lighter dark */
-  --c-cream:         255 253 248;   /* near-white */
-  --c-olive:         52 54 38;      /* darker olive */
-  --c-gold:          180 142 68;    /* #B48E44 — deeper gold for light bg */
-  --c-gold-light:    202 162 86;    /* adjusted gold light */
+  /* ── Light palette — pure white base ── */
+  --c-charcoal:      255 255 255;   /* #FFFFFF — pure white */
+  --c-charcoal-mid:  248 248 246;   /* near white */
+  --c-charcoal-deep: 238 238 235;   /* subtle off-white */
+  --c-sage:          46 96 66;      /* #2E6042 — deep green for contrast */
+  --c-sage-light:    62 116 84;     /* #3E7454 */
+  --c-offwhite:      14 14 12;      /* #0E0E0C — near black text */
+  --c-offwhite-warm: 28 28 26;      /* dark text warm */
+  --c-cream:         255 255 255;   /* pure white */
+  --c-olive:         30 32 22;      /* very dark olive for text */
+  --c-gold:          172 132 52;    /* #AC8434 — deep gold for white bg */
+  --c-gold-light:    196 154 70;    /* adjusted gold light */
 }
 
 /* ══════════════════════════════════════════════
@@ -96,29 +96,6 @@
   .section-tag::before {
     content: '';
     @apply block w-[26px] h-px bg-sage opacity-45 shrink-0;
-  }
-
-  /* ── Custom cursor (pointer devices only) ── */
-  @media (pointer: fine) {
-    body, a, button, [data-cursor] { cursor: none; }
-
-    .cursor {
-      @apply fixed w-2 h-2 bg-sage rounded-full pointer-events-none z-[9999];
-      transform: translate(-50%, -50%);
-      transition: transform 0.15s var(--ease-out),
-                  background 0.2s ease,
-                  border-color 0.2s ease;
-      will-change: left, top;
-    }
-    .cursor-ring {
-      @apply fixed w-8 h-8 border border-sage/45 rounded-full pointer-events-none z-[9998];
-      transform: translate(-50%, -50%);
-      will-change: left, top;
-    }
-    .cursor--expanded {
-      transform: translate(-50%, -50%) scale(2.4);
-      @apply bg-transparent border border-sage;
-    }
   }
 
   /* ── Reveal on scroll ── */
