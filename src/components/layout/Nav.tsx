@@ -57,7 +57,7 @@ export function Nav() {
         aria-label="Navegação principal"
         className={cn(
           'fixed top-0 left-0 right-0 z-[200]',
-          'grid grid-cols-[1fr_auto_1fr] items-center',
+          'flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]',
           'px-6 py-7 md:px-[60px]',
           'transition-all duration-500 ease-brand-circ',
           scrolled && 'bg-charcoal-deep/97 backdrop-blur-brand py-[15px] shadow-[0_1px_0_rgba(245,240,232,0.05)]'
