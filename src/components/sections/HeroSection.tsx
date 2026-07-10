@@ -16,12 +16,8 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
     >
       <div className="lg:max-w-[560px] lg:mx-auto">
 
-        {/* "ALISON" (theme-aware) + "ESTEVAM" (fixed light — its lower half
-            sits on the photo below, regardless of site theme) as one tight
-            two-line heading. The image slides up via negative margin to
-            cover the bottom portion of "ESTEVAM"; z-10 keeps the text
-            painting above the image. */}
-        <h1 className="relative z-10 text-center">
+        {/* "ALISON" — sits directly above the image, flush against it */}
+        <h1 className="text-center overflow-hidden">
           <span
             className={cn(
               'block font-display font-normal uppercase text-offwhite',
@@ -30,18 +26,10 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
           >
             Alison
           </span>
-          <span
-            className={cn(
-              'block font-display font-normal uppercase text-[#F1F1F1]',
-              'text-[12.8vw] leading-[0.8] lg:text-[55px] tracking-[0]'
-            )}
-          >
-            Estevam
-          </span>
         </h1>
 
-        {/* Vertical image, overlay buttons */}
-        <div className="relative -mt-[6vw] lg:-mt-[26px] overflow-hidden" style={{ aspectRatio: '3/4' }}>
+        {/* Vertical image with "ESTEVAM" fully inside it, overlay buttons */}
+        <div className="relative mt-1 overflow-hidden" style={{ aspectRatio: '3/4' }}>
           <Image
             src="/images/hero-barbershop.jpg"
             alt="Alison Estevam Studio — barbearia"
@@ -55,6 +43,22 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
             style={{ background: 'linear-gradient(to top, rgba(20,20,18,0.75) 0%, rgba(20,20,18,0.15) 45%, rgba(20,20,18,0.35) 100%)' }}
             aria-hidden="true"
           />
+
+          {/* "ESTEVAM" — entirely inside the photo. Fixed light color (not
+              theme-swapped): it always sits on a dark photo regardless of
+              the site's light/dark theme. Horizontal padding + a
+              conservative font size keep it clear of the photo's edges
+              even with real-device font-rendering differences. */}
+          <div className="absolute top-5 left-0 right-0 text-center px-6">
+            <span
+              className={cn(
+                'block font-display font-normal uppercase text-[#F1F1F1]',
+                'text-[11vw] leading-[0.8] lg:text-[46px] tracking-[0]'
+              )}
+            >
+              Estevam
+            </span>
+          </div>
 
           {/* Overlay CTAs — also fixed light/gold, independent of theme */}
           <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-[14px] px-8">
