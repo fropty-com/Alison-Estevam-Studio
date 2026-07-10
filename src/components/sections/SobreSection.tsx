@@ -32,7 +32,10 @@ export function SobreSection() {
           &ldquo;O cuidado com os detalhes é o que separa o bom do excelente.&rdquo;
         </blockquote>
 
-        <div className="reveal reveal-d3 flex flex-col gap-[18px] font-body font-light text-[15px] leading-[1.3] tracking-[0.07em] text-offwhite/55 text-left md:text-center">
+        <div
+          className="reveal reveal-d3 flex flex-col gap-[10px] font-light text-[15px] leading-[1.3] tracking-[0.07em] text-offwhite/55 text-left md:text-center"
+          style={{ fontFamily: 'var(--font-jost)' }}
+        >
           <p>
             Sou barbeiro desde 2018. Comecei como funcionário em barbearias convencionais, e em 2024 decidi montar meu próprio espaço.
           </p>
@@ -44,14 +47,14 @@ export function SobreSection() {
           </p>
         </div>
 
-        <div className="reveal reveal-d4 mt-[38px] flex justify-center">
+        <div className="reveal reveal-d4 mt-[38px] flex justify-end">
           <Image
             src="/images/assinatura-dark.png"
             alt="Assinatura de Alison Estevam"
             width={176}
             height={117}
             priority
-            className="theme-swap-dark w-[120px] h-auto"
+            className="theme-swap-dark w-[85px] h-auto"
           />
           <Image
             src="/images/assinatura-light.png"
@@ -59,7 +62,7 @@ export function SobreSection() {
             width={183}
             height={115}
             priority
-            className="theme-swap-light w-[120px] h-auto"
+            className="theme-swap-light w-[85px] h-auto"
           />
         </div>
       </div>
