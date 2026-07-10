@@ -56,8 +56,8 @@ export function Nav() {
       <nav
         role="navigation"
         aria-label="Navegação principal"
-        className="lg:hidden sticky top-0 z-[200] mx-4 mt-4 flex items-center justify-between
-                   border border-offwhite/18 bg-charcoal/95 backdrop-blur-brand px-5 py-[13px]"
+        className="lg:hidden sticky top-0 z-[200] mx-3 mt-3 flex items-center justify-between
+                   border border-offwhite/18 bg-charcoal/95 backdrop-blur-brand px-4 py-[8px]"
       >
         <button
           className="flex flex-col gap-[6px] bg-transparent border-none p-1 w-6"
@@ -72,7 +72,7 @@ export function Nav() {
         <button
           onClick={openBooking}
           aria-label="Agendar horário"
-          className="font-body font-medium text-2xs tracking-nav uppercase bg-offwhite text-charcoal px-5 py-[9px]"
+          className="font-body font-medium text-2xs tracking-nav uppercase bg-offwhite text-charcoal px-4 py-[6px]"
         >
           Agendar
         </button>
