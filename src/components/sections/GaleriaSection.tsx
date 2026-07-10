@@ -4,15 +4,15 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 const CORTES = [
-  { src: '/images/portfolio-2.png', alt: 'Corte editorial masculino — buzz cut' },
-  { src: '/images/portfolio-5.jpg', alt: 'Corte editorial masculino — ondulado' },
-  { src: '/images/portfolio-3.jpg', alt: 'Corte editorial masculino — cacheado' },
-  { src: '/images/portfolio-1.jpg', alt: 'Corte editorial masculino — high top fade' },
-  { src: '/images/portfolio-4.jpg', alt: 'Corte editorial masculino — afro fade' },
-  { src: '/images/portfolio-7.jpg', alt: 'Corte editorial masculino — textura curta' },
-  { src: '/images/portfolio-6.jpg', alt: 'Corte editorial masculino — cabelo molhado' },
-  { src: '/images/portfolio-8.jpg', alt: 'Corte editorial masculino — fade lateral' },
-  { src: '/images/portfolio-9.jpg', alt: 'Corte editorial masculino — ondulado natural' },
+  { src: '/images/portfolio-2.png',  alt: 'Corte editorial masculino — buzz cut' },
+  { src: '/images/portfolio-10.jpg', alt: 'Corte editorial masculino — ondulado molhado' },
+  { src: '/images/portfolio-3.jpg',  alt: 'Corte editorial masculino — cacheado' },
+  { src: '/images/portfolio-1.jpg',  alt: 'Corte editorial masculino — high top fade' },
+  { src: '/images/portfolio-4.jpg',  alt: 'Corte editorial masculino — afro fade' },
+  { src: '/images/portfolio-9.jpg',  alt: 'Corte editorial masculino — ondulado natural' },
+  { src: '/images/portfolio-11.jpg', alt: 'Corte editorial masculino — ondulado de perfil' },
+  { src: '/images/portfolio-8.jpg',  alt: 'Corte editorial masculino — fade lateral' },
+  { src: '/images/portfolio-7.jpg',  alt: 'Corte editorial masculino — textura curta' },
 ]
 
 export function GaleriaSection() {
