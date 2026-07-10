@@ -1,152 +1,126 @@
 'use client'
 
-import Link from 'next/link'
 import { BRAND } from '@/config/brand'
-import { buildVipRequestUrl } from '@/lib/whatsapp/messages'
+import { cn } from '@/lib/utils'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre' },
-  { href: '#experiencia', label: 'Experiência' },
+  { href: '#portfolio',   label: 'Portfólio' },
   { href: '#servicos',    label: 'Serviços' },
-  { href: '#vip',         label: 'Horário VIP' },
+  { href: '#cuidados',    label: 'Cuidados' },
+  { href: '#depoimentos', label: 'Depoimentos' },
 ]
 
+function PhoneIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M13.5 10.5c-.83 0-1.63-.13-2.38-.38a.75.75 0 0 0-.77.19l-1.47 1.47a11.24 11.24 0 0 1-4.66-4.66l1.47-1.47a.75.75 0 0 0 .19-.77A7.54 7.54 0 0 1 5.5 2.5.75.75 0 0 0 4.75 2H2.5a.75.75 0 0 0-.75.75C1.75 9.1 6.9 14.25 13.25 14.25A.75.75 0 0 0 14 13.5v-2.25a.75.75 0 0 0-.5-.75Z" fill="currentColor"/>
+    </svg>
+  )
+}
+
+function InstagramIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="1.5" y="1.5" width="13" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.3"/>
+      <circle cx="8" cy="8" r="2.7" stroke="currentColor" strokeWidth="1.3"/>
+      <circle cx="12" cy="4" r="0.8" fill="currentColor"/>
+    </svg>
+  )
+}
+
 export function Footer() {
-  const vipUrl = buildVipRequestUrl({ clientName: '' })
-  const year   = new Date().getFullYear()
+  const year = new Date().getFullYear()
 
   return (
     <footer
+      id="contato"
       role="contentinfo"
-      className="bg-charcoal border-t border-offwhite/5 px-6 pt-[72px] pb-[52px] md:px-[60px]
-                 grid grid-cols-1 md:grid-cols-[1.2fr_1fr_1fr] gap-9 items-start"
+      className="bg-charcoal border-t border-offwhite/8 px-6 pt-[64px] pb-[36px] md:px-[60px] md:pt-[88px]"
     >
-      {/* Brand */}
-      <div>
-        <div className="font-display font-light text-3xl tracking-display uppercase text-offwhite leading-[1.4]">
-          Alison<br />Estevam
+      <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-[52px] md:gap-9">
+
+        {/* Brand */}
+        <div>
+          <div className="font-display font-normal text-4xl tracking-[0.03em] uppercase text-offwhite leading-[1.15]">
+            Alison<br />Estevam
+          </div>
         </div>
-        <div className="w-5 h-px bg-gold/40 my-[17px]" aria-hidden="true" />
-        <p className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/20 leading-[1.85]">
-          Barbearia · Atendimento Exclusivo<br />
-          Fundada em {BRAND.foundedYear}
-        </p>
-      </div>
 
-      {/* Navigation */}
-      <nav aria-label="Navegação do rodapé">
-        <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/18 mb-5">
-          Navegação
-        </p>
-        <ul className="flex flex-col gap-3 list-none">
-          {NAV_LINKS.map(({ href, label }) => (
-            <li key={label}>
-              <a
-                href={href}
-                className="group font-body font-light text-sm tracking-[0.24em] uppercase
-                           text-offwhite/28 hover:text-offwhite/60 transition-colors duration-300
-                           inline-flex items-center gap-2"
-              >
-                <span className="block w-0 h-px bg-gold transition-[width] duration-300 ease-brand-out group-hover:w-[11px] shrink-0" aria-hidden="true" />
-                {label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        {/* Como chegar + contact */}
+        <div>
+          <p className="font-display font-normal text-lg tracking-[0.1em] uppercase text-offwhite mb-5">
+            Como Chegar
+          </p>
+          <p className="font-body font-light text-sm text-offwhite/55 leading-[1.8] mb-5">
+            Rua Portugal, 443<br />
+            Jardim Celani - Salto / SP<br />
+            13.326-145, Brasil
+          </p>
+          <p className="font-body font-medium text-xs tracking-[0.05em] text-offwhite/75 leading-[1.9] mb-6">
+            SEGUNDA A SEXTA · 10h às 20h<br />
+            SÁBADO · 8h às 15h
+          </p>
 
-      {/* Scheduling */}
-      <nav aria-label="Agendamento">
-        <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/18 mb-5">
-          Agendamento
-        </p>
-        <ul className="flex flex-col gap-3 list-none">
-          <li>
-            <button
-              onClick={() => window.dispatchEvent(new Event('open-booking'))}
-              className="group font-body font-light text-sm tracking-[0.24em] uppercase
-                         text-offwhite/28 hover:text-offwhite/60 transition-colors duration-300
-                         inline-flex items-center gap-2 bg-transparent border-none p-0"
-              aria-label="Abrir agendamento"
-            >
-              <span className="block w-0 h-px bg-gold transition-[width] duration-300 ease-brand-out group-hover:w-[11px] shrink-0" aria-hidden="true" />
-              Agendar horário
-            </button>
-          </li>
-          <li>
+          <div className="flex flex-col gap-4">
             <a
-              href={vipUrl}
+              href={`https://wa.me/${BRAND.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group font-body font-light text-sm tracking-[0.24em] uppercase
-                         text-offwhite/28 hover:text-offwhite/60 transition-colors duration-300
-                         inline-flex items-center gap-2"
+              className="inline-flex items-center gap-3 group"
             >
-              <span className="block w-0 h-px bg-gold transition-[width] duration-300 ease-brand-out group-hover:w-[11px] shrink-0" aria-hidden="true" />
-              Solicitar VIP
+              <span className="w-8 h-8 rounded-full bg-gold text-charcoal-deep flex items-center justify-center shrink-0">
+                <PhoneIcon />
+              </span>
+              <span className="font-body font-light text-sm text-offwhite/70 group-hover:text-offwhite transition-colors">
+                (11) 97536-9904
+              </span>
             </a>
-          </li>
-        </ul>
-      </nav>
-
-      {/* Social media */}
-      <div className="col-span-full pt-7 border-t border-offwhite/4">
-        <p className="font-body font-light text-xs tracking-[0.4em] uppercase text-offwhite/18 mb-5">
-          Redes Sociais
-        </p>
-        <div className="flex items-center gap-5">
-          {/* Instagram */}
-          <a
-            href="https://www.instagram.com/alisonestevam"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram @alisonestevam"
-            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <rect x="2" y="2" width="14" height="14" rx="4" stroke="currentColor" strokeWidth="1.3"/>
-              <circle cx="9" cy="9" r="3.2" stroke="currentColor" strokeWidth="1.3"/>
-              <circle cx="13" cy="5" r="0.9" fill="currentColor"/>
-            </svg>
-            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
-          </a>
-
-          {/* Facebook */}
-          <a
-            href="https://www.facebook.com/alisonestevam"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook @alisonestevam"
-            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M10.5 3H12V1H10C8.34 1 7 2.34 7 4v1.5H5.5V7.5H7V17h3V7.5h2l.5-3H10V4c0-.55.45-1 1-1h-.5Z" fill="currentColor"/>
-            </svg>
-            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
-          </a>
-
-          {/* TikTok */}
-          <a
-            href="https://www.tiktok.com/@alisonestevam"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="TikTok @alisonestevam"
-            className="group flex items-center gap-2 text-offwhite/28 hover:text-offwhite transition-colors duration-300"
-          >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M13 1h-2.5v10.5a2.5 2.5 0 1 1-2.5-2.5c.28 0 .55.04.8.12V6.5A5.5 5.5 0 1 0 14 12V6a6.5 6.5 0 0 0 3 1V4.5A3.5 3.5 0 0 1 13 1Z" fill="currentColor"/>
-            </svg>
-            <span className="font-body font-light text-xs tracking-[0.2em] uppercase">@alisonestevam</span>
-          </a>
+            <a
+              href={BRAND.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 group"
+            >
+              <span className="w-8 h-8 border border-gold text-gold flex items-center justify-center shrink-0">
+                <InstagramIcon />
+              </span>
+              <span className="font-body font-light text-sm tracking-[0.1em] text-offwhite/70 group-hover:text-offwhite transition-colors">
+                @ALISONESTEVAM
+              </span>
+            </a>
+          </div>
         </div>
+
+        {/* Navigation */}
+        <nav aria-label="Navegação do rodapé">
+          <p className="font-display font-normal text-lg tracking-[0.1em] uppercase text-offwhite mb-5">
+            Navegação
+          </p>
+          <ul className="flex flex-col gap-4 list-none">
+            {NAV_LINKS.map(({ href, label }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  className={cn(
+                    'font-body font-light text-sm tracking-[0.15em] uppercase',
+                    'text-offwhite/55 hover:text-offwhite transition-colors duration-300'
+                  )}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       {/* Bottom bar */}
-      <div className="col-span-full flex flex-col md:flex-row justify-between items-start md:items-center gap-2 pt-5 border-t border-offwhite/4">
-        <p className="font-body font-light text-xs tracking-[0.2em] text-offwhite/14">
-          ©️ {year} {BRAND.name}. Todos os direitos reservados.
+      <div className="max-w-[1100px] mx-auto mt-[52px] pt-6 border-t border-offwhite/8 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+        <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30">
+          © {year} {BRAND.name}. Todos os direitos reservados.
         </p>
-        <p className="font-body font-light text-xs tracking-[0.2em] text-offwhite/14">
+        <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30">
           Crafted with intention.
         </p>
       </div>

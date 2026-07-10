@@ -1,6 +1,8 @@
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { BRAND } from '@/config/brand'
 
 interface HeroSectionProps {
   onScheduleClick: () => void
@@ -9,107 +11,100 @@ interface HeroSectionProps {
 export function HeroSection({ onScheduleClick }: HeroSectionProps) {
   return (
     <section
-      className={cn(
-        'relative min-h-svh bg-charcoal overflow-hidden',
-        'flex flex-col items-center justify-center',
-        'px-6 pt-[88px] pb-[6vh] md:px-[60px]',
-        'text-center noise-overlay'
-      )}
+      className="relative bg-charcoal pt-6 pb-10 lg:pt-[132px] lg:pb-[100px] px-4 lg:px-[60px]"
       aria-label="Apresentação"
     >
-      {/* Radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        aria-hidden="true"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 55% at 50% 28%, rgba(201,169,110,0.045) 0%, transparent 65%),
-            radial-gradient(ellipse 50% 40% at 15% 85%, rgba(122,145,130,0.025) 0%, transparent 60%)
-          `
-        }}
-      />
+      <div className="lg:max-w-[560px] lg:mx-auto">
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center">
-
-        {/* Ornament divider */}
-        <div
-          className="flex items-center justify-center gap-[18px] mb-[42px]
-                     opacity-0 animate-fade-up [animation-delay:300ms]"
-          aria-hidden="true"
-        >
-          <div className="w-[54px] h-px bg-gradient-to-r from-transparent to-gold/48" />
-          <div className="w-[3px] h-[3px] bg-gold rounded-full opacity-55" />
-          <div className="w-[54px] h-px bg-gradient-to-l from-transparent to-gold/48" />
-        </div>
-
-        {/* Title */}
-        <h1
-          className={cn(
-            'font-display font-light tracking-display uppercase text-offwhite',
-            'text-7xl leading-[0.94]',
-            'opacity-0 animate-fade-up [animation-delay:500ms]'
-          )}
-        >
-          Alison
-          <span className="block text-offwhite/72 mt-[6px]">Estevam</span>
+        {/* "ALISON" — sits above the image */}
+        <h1 className="text-center overflow-hidden">
+          <span
+            className={cn(
+              'block font-display font-normal uppercase text-offwhite',
+              'text-[15vw] leading-[0.8] md:text-[64px] tracking-[0]'
+            )}
+          >
+            Alison
+          </span>
         </h1>
 
-        {/* Eyebrow — below title */}
-        <p
-          className="font-body font-light text-2xs tracking-label uppercase text-gold mt-[22px]
-                     opacity-0 animate-fade-up [animation-delay:700ms]"
-          aria-hidden="true"
-        >
-          Barbearia · Atendimento Exclusivo
-        </p>
+        {/* Vertical image with overlapping "ESTEVAM", overlay buttons */}
+        <div className="relative mt-1 overflow-hidden" style={{ aspectRatio: '3/4' }}>
+          <Image
+            src="/images/hero-barbershop.jpg"
+            alt="Alison Estevam Studio — barbearia"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 480px"
+            className="object-cover grayscale"
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(20,20,18,0.75) 0%, rgba(20,20,18,0.15) 45%, rgba(20,20,18,0.35) 100%)' }}
+            aria-hidden="true"
+          />
 
-        {/* Description */}
-        <div className="mt-[38px] opacity-0 animate-fade-up [animation-delay:900ms]">
-          <p className="max-w-[315px] font-body font-light text-sm leading-[2.05] tracking-[0.1em] text-offwhite/26 text-center mx-auto">
-            Uma experiência que vai além do corte. Cada detalhe pensado para o seu bem-estar — do ambiente à finalização.
-          </p>
+          {/* "ESTEVAM" — overlaps the top of the image. Fixed light color (not
+              theme-swapped): it always sits on a dark photo regardless of
+              the site's light/dark theme. */}
+          <div className="absolute top-0 left-0 right-0 text-center pt-0">
+            <span
+              className={cn(
+                'block font-display font-normal uppercase text-[#F1F1F1]',
+                'text-[15vw] leading-[0.8] lg:text-[64px] tracking-[0]',
+                '-translate-y-[28%]'
+              )}
+            >
+              Estevam
+            </span>
+          </div>
+
+          {/* Overlay CTAs — also fixed light/gold, independent of theme */}
+          <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-[14px] px-8">
+            <button
+              onClick={onScheduleClick}
+              className={cn(
+                'w-full max-w-[320px] py-[16px] text-center',
+                'font-body font-semibold text-2xs tracking-[0.3em] uppercase',
+                'text-[#1E1E1C] bg-gold',
+                'transition-all duration-300 hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(203,163,57,0.3)]',
+                'active:translate-y-0'
+              )}
+            >
+              Agendar
+            </button>
+            <a
+              href="#servicos"
+              className={cn(
+                'w-full max-w-[260px] py-[13px] text-center',
+                'font-body font-light text-2xs tracking-[0.3em] uppercase',
+                'text-[#F1F1F1] border border-[#F1F1F1]/70',
+                'transition-all duration-300 hover:border-[#F1F1F1] hover:bg-[#F1F1F1]/10'
+              )}
+            >
+              Ver Serviços
+            </a>
+          </div>
         </div>
 
-        {/* CTAs */}
-        <div className="mt-[34px] flex flex-wrap justify-center gap-4 opacity-0 animate-fade-up [animation-delay:1100ms]">
-          <button
-            onClick={onScheduleClick}
-            className={cn(
-              'group inline-flex items-center gap-4',
-              'font-body font-light text-2xs tracking-[0.4em] uppercase',
-              'text-charcoal-deep bg-gold px-8 py-[14px]',
-              'relative overflow-hidden',
-              'transition-all duration-300 ease-brand-out',
-              'hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(201,169,110,0.26)]',
-              'active:translate-y-0'
-            )}
-          >
-            <span className="absolute inset-0 bg-gradient-to-br from-white/11 to-transparent pointer-events-none" aria-hidden="true" />
-            Agendar agora
-            <span className="text-sm transition-transform duration-300 ease-brand-out group-hover:translate-x-1.5" aria-hidden="true">→</span>
-          </button>
-
+        {/* Sub-actions */}
+        <div className="mt-6 flex items-center justify-between px-1">
+          <span className="font-body font-light text-2xs tracking-[0.05em] text-offwhite/45">
+            Prefere conversar antes?
+          </span>
           <a
-            href="#servicos"
+            href={`https://wa.me/${BRAND.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className={cn(
-              'inline-flex items-center gap-3',
-              'font-body font-light text-2xs tracking-[0.4em] uppercase',
-              'text-offwhite/55 border border-offwhite/18 px-8 py-[14px]',
-              'transition-all duration-300 hover:text-offwhite hover:border-offwhite/40'
+              'inline-flex items-center gap-2 px-4 py-[9px]',
+              'font-body font-medium text-2xs tracking-[0.15em] uppercase',
+              'text-sage border border-sage/60',
+              'transition-colors duration-200 hover:bg-sage/10'
             )}
           >
-            Ver serviços
+            WhatsApp
           </a>
-        </div>
-
-        {/* Scroll indicator */}
-        <div
-          className="mt-[50px] flex flex-col items-center gap-[10px] opacity-0 animate-fade-up [animation-delay:1350ms]"
-          aria-hidden="true"
-        >
-          <div className="w-px h-[46px] bg-gradient-to-b from-gold/55 to-transparent animate-scroll-line" />
-          <span className="font-body font-light text-2xs tracking-label uppercase text-offwhite/16">rolar</span>
         </div>
       </div>
     </section>

@@ -238,7 +238,7 @@ function Field({ id, label, type, autoComplete, value, onChange, placeholder }: 
     <div>
       <label
         htmlFor={id}
-        className="block font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/35 mb-[7px]"
+        className="block font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/55 mb-[7px]"
       >
         {label}
       </label>
@@ -251,9 +251,9 @@ function Field({ id, label, type, autoComplete, value, onChange, placeholder }: 
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         className={cn(
-          'w-full bg-offwhite/4 border border-offwhite/10 px-4 py-[11px]',
-          'font-body font-light text-sm text-offwhite placeholder:text-offwhite/20',
-          'transition-colors duration-200 focus:outline-none focus:border-sage/55 focus:bg-offwhite/6'
+          'w-full bg-charcoal-mid border border-offwhite/22 px-4 py-[11px]',
+          'font-body font-light text-sm text-offwhite placeholder:text-offwhite/35',
+          'transition-colors duration-200 focus:outline-none focus:border-sage/75 focus:bg-sage/5'
         )}
       />
     </div>

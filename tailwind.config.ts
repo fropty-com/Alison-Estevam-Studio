@@ -45,7 +45,7 @@ const config: Config = {
 
     fontFamily: {
       display: ['var(--font-cormorant)', 'Georgia', 'serif'],
-      body:    ['var(--font-jost)', 'system-ui', 'sans-serif'],
+      body:    ['var(--font-montserrat)', 'system-ui', 'sans-serif'],
       data:    ['var(--font-lora)', 'Georgia', 'serif'],
     },
 

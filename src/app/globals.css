@@ -11,33 +11,43 @@
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
   --ease-circ: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* ── Dark palette (default) ── */
-  --c-charcoal:      12 12 10;      /* #0C0C0A — near black */
-  --c-charcoal-mid:  30 30 28;      /* #1E1E1C — visible section contrast */
-  --c-charcoal-deep: 6  6  4;       /* #060604 */
-  --c-sage:          122 145 130;   /* #7A9182 */
-  --c-sage-light:    160 180 168;   /* #A0B4A8 */
-  --c-offwhite:      245 240 232;   /* #F5F0E8 */
-  --c-offwhite-warm: 237 232 223;   /* #EDE8DF */
-  --c-cream:         250 247 242;   /* #FAF7F2 */
-  --c-olive:         75 77 57;      /* #4B4D39 */
-  --c-gold:          201 169 110;   /* #C9A96E */
-  --c-gold-light:    219 190 133;   /* #DBBE85 */
+  /* ── Brand palette ──────────────────────────────────────────
+     Only 4 brand colors, per brand guidelines: never pure black,
+     never pure white.
+       bg-light  #F1F1F1   bg-dark  #2E2E2B
+       olive     #4B4D39   gold     #CBA339
+     `sage` is kept as a token name (many components already use
+     it) but now resolves to the olive family instead of green —
+     there is no separate "sage green" in the new brand system.
+  ── */
+
+  /* ── Dark theme (default) ── */
+  --c-charcoal:      46 46 43;      /* #2E2E2B — brand dark bg */
+  --c-charcoal-mid:  46 46 43;      /* same bg — no alternation between sections */
+  --c-charcoal-deep: 30 30 28;      /* #1E1E1C — always dark: text-on-gold-button, modal scrim */
+  --c-sage:          150 156 115;   /* light olive — accent/text on dark bg */
+  --c-sage-light:    172 178 138;   /* lighter olive — hover state */
+  --c-offwhite:      241 241 241;   /* #F1F1F1 — brand text-light, used as text-on-dark */
+  --c-offwhite-warm: 233 233 229;
+  --c-cream:         241 241 241;
+  --c-olive:         75 77 57;      /* #4B4D39 — brand olive */
+  --c-gold:          203 163 57;    /* #CBA339 — brand gold */
+  --c-gold-light:    217 183 97;    /* lighter gold — hover state */
 }
 
 [data-theme="light"] {
-  /* ── Light palette — pure white base ── */
-  --c-charcoal:      255 255 255;   /* #FFFFFF — pure white */
-  --c-charcoal-mid:  228 226 220;   /* #E4E2DC — warm light grey for alternation */
-  --c-charcoal-deep: 210 207 200;   /* #D2CFC8 */
-  --c-sage:          34 80 52;      /* #225034 — very dark green for contrast */
-  --c-sage-light:    48 100 68;     /* #306444 */
-  --c-offwhite:      0 0 0;         /* #000000 — pure black text */
-  --c-offwhite-warm: 10 10 8;       /* near-black warm */
-  --c-cream:         255 255 255;   /* pure white */
-  --c-olive:         18 20 12;      /* near-black olive for text */
-  --c-gold:          160 118 38;    /* #A07626 — dark gold for white bg */
-  --c-gold-light:    182 138 54;    /* adjusted */
+  /* ── Light theme ── */
+  --c-charcoal:      241 241 241;   /* #F1F1F1 — brand light bg */
+  --c-charcoal-mid:  241 241 241;   /* same bg — no alternation between sections */
+  --c-charcoal-deep: 30 30 28;      /* always dark: text-on-gold-button, modal scrim */
+  --c-sage:          75 77 57;      /* #4B4D39 — olive as text/button color on light bg */
+  --c-sage-light:    95 98 72;      /* lighter olive — hover state */
+  --c-offwhite:      46 46 43;      /* #2E2E2B — brand text-dark, used as text-on-light */
+  --c-offwhite-warm: 60 60 55;
+  --c-cream:         46 46 43;
+  --c-olive:         75 77 57;      /* #4B4D39 — brand olive */
+  --c-gold:          203 163 57;    /* #CBA339 — brand gold (same both themes) */
+  --c-gold-light:    217 183 97;
 }
 
 /* ══════════════════════════════════════════════

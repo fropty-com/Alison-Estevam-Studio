@@ -1,102 +1,56 @@
-import { cn } from '@/lib/utils'
-
-const STATS = [
-  {
-    value:    '8+',
-    label:    'Anos de experiência',
-    sublabel: 'Desde 2018',
-    size:     'text-[50px]',
-  },
-  {
-    value:    '100%',
-    label:    'Atendimento exclusivo',
-    sublabel: 'Um cliente por vez',
-    size:     'text-[50px]',
-  },
-  {
-    value:    '✦',
-    label:    'Especialista em corte com tesoura',
-    sublabel: 'Técnica apurada',
-    size:     'text-[32px]',
-  },
-] as const
+import Image from 'next/image'
 
 export function SobreSection() {
   return (
     <section
       id="sobre"
       aria-labelledby="sobre-titulo"
-      className="sobre section-wrap bg-charcoal-mid"
+      className="bg-charcoal section-wrap"
     >
-      <div className="section-tag" aria-hidden="true">Sobre</div>
+      <div className="max-w-[560px] mx-auto text-center">
+        <div className="section-tag justify-center" aria-hidden="true">Sobre</div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-[48px] md:gap-[96px] items-start">
+        <h2
+          id="sobre-titulo"
+          className="reveal font-display font-normal text-[clamp(22px,6vw,40px)] leading-[1.25] tracking-[0.05em] uppercase text-offwhite mb-[42px] whitespace-nowrap"
+        >
+          Precisão que vira<br />assinatura
+        </h2>
 
-        {/* Text column */}
-        <div className="reveal">
-          <h2
-            id="sobre-titulo"
-            className="font-display font-light text-5xl leading-[1.14] tracking-[0.02em] text-offwhite mb-[30px] text-balance"
-          >
-            Precisão que vira{' '}
-            <em className="font-medium not-italic">
-              <strong className="font-medium italic">assinatura.</strong>
-            </em>
-          </h2>
+        <div className="reveal reveal-d1 relative w-full max-w-[300px] mx-auto overflow-hidden mb-[38px]" style={{ aspectRatio: '3/4' }}>
+          <Image
+            src="/images/alison1.png"
+            alt="Alison Estevam — barbeiro e fundador"
+            fill
+            sizes="300px"
+            className="object-cover object-top grayscale"
+            priority
+          />
+        </div>
 
-          <div className="w-[34px] h-px bg-gold opacity-50 mb-[30px]" aria-hidden="true" />
+        <blockquote className="reveal reveal-d2 font-display font-semibold text-lg md:text-xl italic leading-[1.5] tracking-[0.02em] text-offwhite/90 mb-[38px] text-balance">
+          &ldquo;O cuidado com os detalhes é o que separa o bom do excelente.&rdquo;
+        </blockquote>
 
-          <blockquote
-            className={cn(
-              'font-display font-light text-xl italic leading-[1.65] tracking-[0.02em]',
-              'text-offwhite/70 mb-[34px] pl-[18px]',
-              'border-l-2 border-gold/32'
-            )}
-          >
-            O cuidado com os detalhes é o que separa o{' '}
-            <strong className="font-medium italic">bom</strong>{' '}
-            do{' '}
-            <strong className="font-medium italic">excelente</strong>
-          </blockquote>
-
-          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-offwhite/55 mb-[17px]">
-            Desde 2018, aperfeiçoando cada técnica e cada detalhe. Hoje, o atendimento é exclusivo — um cliente por vez, sem pressa, com atenção total ao que realmente importa.
+        <div className="reveal reveal-d3 flex flex-col gap-[18px] font-body font-light text-[15px] leading-[1.9] tracking-[0.01em] text-offwhite/55 text-left md:text-center">
+          <p>
+            Sou barbeiro desde 2018. Comecei como funcionário em barbearias convencionais, e em 2024 decidi montar meu próprio espaço.
           </p>
-          <p className="font-body font-light text-base leading-[1.92] tracking-[0.02em] text-offwhite/55">
-            Um espaço pensado para proporcionar conforto, requinte e uma experiência que você vai querer repetir.
+          <p>
+            Então venho construindo uma trajetória sólida e hoje ofereço um modelo de atendimento único: exclusivo, reservado e completamente focado em você.
+          </p>
+          <p>
+            Tenho formação em visagismo e imagem masculina, e neste ano concluí um curso avançado de técnica com tesoura. Invisto em aprimorar o que já sei fazer bem.
           </p>
         </div>
 
-        {/* Stats column */}
-        <div className="reveal reveal-d2 self-center grid grid-cols-1">
-          {STATS.map((stat, i) => (
-            <div
-              key={stat.label}
-              className={cn(
-                'flex flex-col gap-[5px] py-[30px]',
-                'border-b border-offwhite/10',
-                i === 0 && 'border-t border-offwhite/10',
-              )}
-            >
-              <span
-                className={cn(
-                  'font-data font-normal text-gold leading-none',
-                  stat.size,
-                  stat.value === '✦' && '!text-[32px]'
-                )}
-                aria-hidden="true"
-              >
-                {stat.value}
-              </span>
-              <p className="font-body font-light text-base text-offwhite/85 tracking-[0.04em] leading-[1.4] mt-[6px]">
-                {stat.label}
-              </p>
-              <p className="font-body font-light text-2xs tracking-[0.14em] uppercase text-offwhite/30">
-                {stat.sublabel}
-              </p>
-            </div>
-          ))}
-        </div>
+        <p
+          className="reveal reveal-d4 font-display italic text-3xl text-offwhite/80 mt-[38px]"
+          aria-hidden="true"
+        >
+          Alison
+        </p>
+        <span className="sr-only">Assinado por Alison Estevam</span>
       </div>
     </section>
   )

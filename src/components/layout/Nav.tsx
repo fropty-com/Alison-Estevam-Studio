@@ -8,10 +8,12 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { AuthModal } from '@/components/ui/AuthModal'
 
 const NAV_LINKS = [
-  { href: '#sobre',       label: 'Sobre',       section: 'sobre' },
-  { href: '#experiencia', label: 'Experiência',  section: 'experiencia' },
-  { href: '#servicos',    label: 'Serviços',     section: 'servicos' },
-  { href: '#vip',         label: 'VIP',          section: 'vip' },
+  { href: '#sobre',       label: 'Sobre',             section: 'sobre' },
+  { href: '#portfolio',   label: 'Portfólio',         section: 'portfolio' },
+  { href: '#servicos',    label: 'Serviços',          section: 'servicos' },
+  { href: '#cuidados',    label: 'Cuidados',          section: 'cuidados' },
+  { href: '#depoimentos', label: 'Depoimentos',       section: 'depoimentos' },
+  { href: '#contato',     label: 'Como Chegar',       section: 'contato' },
 ] as const
 
 function openBooking() {
@@ -19,13 +21,11 @@ function openBooking() {
 }
 
 export function Nav() {
-  const [scrolled,      setScrolled]  = useState(false)
   const [activeSection, setActive]    = useState('')
   const [menuOpen,      setMenuOpen]  = useState(false)
   const [authOpen,      setAuthOpen]  = useState(false)
 
   const handleScroll = useCallback(() => {
-    setScrolled(window.scrollY > 55)
     let current = ''
     NAV_LINKS.forEach(({ section }) => {
       const el = document.getElementById(section)
@@ -52,28 +52,49 @@ export function Nav() {
 
   return (
     <>
+      {/* ── Mobile: thin bordered topbar ── */}
       <nav
         role="navigation"
         aria-label="Navegação principal"
-        className={cn(
-          'fixed top-0 left-0 right-0 z-[200]',
-          'flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]',
-          'px-6 py-7 md:px-[60px]',
-          'transition-all duration-500 ease-brand-circ',
-          scrolled && 'bg-charcoal-deep/97 backdrop-blur-brand py-[15px] shadow-[0_1px_0_rgba(245,240,232,0.05)]'
-        )}
+        className="lg:hidden sticky top-0 z-[200] mx-4 mt-4 flex items-center justify-between
+                   border border-offwhite/18 bg-charcoal/95 backdrop-blur-brand px-5 py-[13px]"
       >
-        {/* Left */}
+        <button
+          className="flex flex-col gap-[6px] bg-transparent border-none p-1 w-6"
+          onClick={() => setMenuOpen(v => !v)}
+          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+          aria-expanded={menuOpen}
+        >
+          <span className={cn('block w-full h-px bg-offwhite/70 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[3.5px] rotate-45')} />
+          <span className={cn('block w-full h-px bg-offwhite/70 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[3.5px] -rotate-45')} />
+        </button>
+
+        <button
+          onClick={openBooking}
+          aria-label="Agendar horário"
+          className="font-body font-medium text-2xs tracking-nav uppercase bg-offwhite text-charcoal px-5 py-[9px]"
+        >
+          Agendar
+        </button>
+      </nav>
+
+      {/* ── Desktop: full nav ── */}
+      <nav
+        role="navigation"
+        aria-label="Navegação principal (desktop)"
+        className="hidden lg:grid fixed top-0 left-0 right-0 z-[200] grid-cols-[1fr_auto_1fr] gap-6
+                   items-center px-8 xl:px-[60px] py-6 bg-charcoal/92 backdrop-blur-brand
+                   border-b border-offwhite/8"
+      >
         <Link
           href="/"
           aria-label={`${BRAND.name} — Início`}
-          className="font-body font-light text-2xs tracking-label uppercase text-offwhite/40 hover:text-offwhite/72 transition-colors leading-[1.3]"
+          className="font-display font-normal text-lg tracking-[0.08em] uppercase text-offwhite/85 hover:text-offwhite transition-colors leading-none justify-self-start whitespace-nowrap"
         >
-          Escolha o seu momento
+          Alison Estevam
         </Link>
 
-        {/* Center — always truly centered */}
-        <ul className="hidden md:flex gap-10 list-none" role="list">
+        <ul className="flex gap-5 xl:gap-8 list-none whitespace-nowrap" role="list">
           {NAV_LINKS.map(({ href, label, section }) => (
             <li key={section}>
               <a
@@ -93,39 +114,22 @@ export function Nav() {
           ))}
         </ul>
 
-        {/* Right */}
-        <div className="flex items-center gap-4 justify-end">
-          <div className="hidden md:flex items-center gap-4">
-            <ThemeToggle />
-            <button
-              onClick={() => setAuthOpen(true)}
-              aria-label="Entrar na conta"
-              className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
-            >
-              Entrar
-            </button>
-            <button
-              onClick={openBooking}
-              aria-label="Agendar horário"
-              className="font-body font-light text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(201,169,110,0.32)] hover:-translate-y-px active:translate-y-0"
-            >
-              Agendar
-            </button>
-          </div>
-          {/* Mobile: theme toggle + hamburger */}
-          <div className="flex md:hidden items-center gap-3">
-            <ThemeToggle />
-            <button
-              className="flex flex-col gap-[5px] bg-transparent border-none p-1 w-7"
-              onClick={() => setMenuOpen(v => !v)}
-              aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-              aria-expanded={menuOpen}
-            >
-              <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && 'translate-y-[6px] rotate-45')} />
-              <span className={cn('block w-full h-px bg-offwhite/55 transition-opacity duration-300', menuOpen && 'opacity-0')} />
-              <span className={cn('block w-full h-px bg-offwhite/55 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[6px] -rotate-45')} />
-            </button>
-          </div>
+        <div className="flex items-center gap-4 justify-self-end">
+          <ThemeToggle />
+          <button
+            onClick={() => setAuthOpen(true)}
+            aria-label="Entrar na conta"
+            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+          >
+            Entrar
+          </button>
+          <button
+            onClick={openBooking}
+            aria-label="Agendar horário"
+            className="font-body font-medium text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(203,163,57,0.32)] hover:-translate-y-px active:translate-y-0"
+          >
+            Agendar
+          </button>
         </div>
       </nav>
 
@@ -136,8 +140,8 @@ export function Nav() {
         role="dialog"
         aria-label="Menu"
         className={cn(
-          'fixed inset-0 z-[190] flex flex-col items-center justify-center gap-7',
-          'bg-charcoal-deep/98 backdrop-blur-[20px]',
+          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-7',
+          'bg-charcoal/98 backdrop-blur-[20px]',
           'transition-opacity duration-400 ease-brand-out',
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
@@ -147,19 +151,17 @@ export function Nav() {
             key={label}
             href={href}
             onClick={() => setMenuOpen(false)}
-            className="font-body font-light text-sm tracking-[0.45em] uppercase text-offwhite/45 hover:text-offwhite transition-colors duration-300"
+            className="font-body font-light text-sm tracking-[0.4em] uppercase text-offwhite/55 hover:text-offwhite transition-colors duration-300"
           >
             {label}
           </a>
         ))}
 
-        {/* Divider */}
         <div className="w-[32px] h-px bg-gold/30 my-1" aria-hidden="true" />
 
-        {/* Primary CTA */}
         <button
           onClick={() => { setMenuOpen(false); openBooking() }}
-          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-charcoal-deep bg-gold px-10 py-[14px] hover:bg-gold-light transition-colors duration-300"
+          className="font-body font-medium text-2xs tracking-[0.4em] uppercase text-charcoal-deep bg-gold px-10 py-[14px] hover:bg-gold-light transition-colors duration-300"
         >
           Agendar
         </button>
@@ -169,6 +171,10 @@ export function Nav() {
         >
           Entrar
         </button>
+
+        <div className="flex items-center gap-3 mt-2">
+          <ThemeToggle />
+        </div>
       </div>
     </>
   )

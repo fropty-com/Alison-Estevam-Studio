@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Cormorant_Garamond, Jost, Lora } from 'next/font/google'
+import { Cormorant_Garamond, Montserrat, Lora } from 'next/font/google'
 import { BRAND } from '@/config/brand'
 import { StructuredData } from '@/components/ui/StructuredData'
 import { PublicShell }    from '@/components/layout/PublicShell'
@@ -13,10 +13,10 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 })
 
-const jost = Jost({
+const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['200', '300', '400'],
-  variable: '--font-jost',
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-montserrat',
   display: 'swap',
 })
 
@@ -57,14 +57,14 @@ export const viewport: Viewport = {
   width:       'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor:  '#1C1C1A',
+  themeColor:  '#2E2E2B',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="pt-BR"
-      className={`${cormorant.variable} ${jost.variable} ${lora.variable}`}
+      className={`${cormorant.variable} ${montserrat.variable} ${lora.variable}`}
     >
       <head>
         <StructuredData />
