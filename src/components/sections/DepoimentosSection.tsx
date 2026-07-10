@@ -46,7 +46,7 @@ export function DepoimentosSection() {
       <div className="text-center mb-[52px]">
         <h2
           id="depoimentos-titulo"
-          className="reveal font-display font-normal text-[clamp(28px,4vw,42px)] leading-[1.25] tracking-[0.05em] uppercase text-offwhite"
+          className="reveal font-display font-normal text-[clamp(28px,4vw,42px)] leading-[1] tracking-[0.15em] uppercase text-offwhite"
         >
           Avaliação<br />dos Clientes
         </h2>
@@ -64,7 +64,7 @@ export function DepoimentosSection() {
           >
             <Stars count={d.stars} />
 
-            <p className="font-body font-medium text-[15px] leading-[1.7] text-charcoal">
+            <p className="font-body font-medium text-[15px] tracking-[0.07em] leading-[1.3] text-charcoal">
               {d.text}
             </p>
 

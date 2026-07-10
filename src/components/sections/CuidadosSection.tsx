@@ -39,6 +39,7 @@ export function CuidadosSection() {
       className="bg-charcoal section-wrap"
     >
       <div className="section-tag" aria-hidden="true">Cuidados</div>
+      <h2 id="cuidados-titulo" className="sr-only">Cuidados</h2>
 
       <div className="max-w-[720px] mx-auto border-t border-offwhite/8">
         {complements.map((c, i) => (
@@ -52,7 +53,7 @@ export function CuidadosSection() {
             <div className="relative w-[110px] md:w-[160px] shrink-0 overflow-hidden" style={{ aspectRatio: '3/4' }}>
               <Image
                 src={CUIDADO_IMAGES[c.slug] ?? '/images/hero-barbershop.jpg'}
-                alt=""
+                alt={`Cuidado ${c.name} — Alison Estevam Studio`}
                 fill
                 sizes="160px"
                 className="object-cover grayscale"
@@ -60,16 +61,16 @@ export function CuidadosSection() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="font-display font-normal text-2xl md:text-3xl tracking-[0.03em] uppercase text-offwhite mb-[8px]">
+              <h3 className="font-display font-normal text-2xl md:text-3xl tracking-[0.168em] leading-[1.3] uppercase text-offwhite mb-[8px]">
                 {c.name}
               </h3>
 
-              <p className="font-body font-light text-sm leading-[1.8] text-offwhite/50 mb-[16px] max-w-[420px]">
+              <p className="font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/50 mb-[16px] max-w-[420px]">
                 {c.description}
               </p>
 
               <div className="flex items-center gap-4 flex-wrap">
-                <span className="font-data italic font-normal text-xl text-gold">
+                <span className="font-data italic font-normal text-xl tracking-[0.168em] leading-[1.3] text-gold">
                   {formatCurrency(c.price)}
                 </span>
                 <button

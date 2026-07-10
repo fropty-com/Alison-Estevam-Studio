@@ -12,7 +12,7 @@ export function SobreSection() {
 
         <h2
           id="sobre-titulo"
-          className="reveal font-display font-normal text-[clamp(22px,6vw,40px)] leading-[1.25] tracking-[0.05em] uppercase text-offwhite mb-[42px] whitespace-nowrap"
+          className="reveal font-display font-normal text-[clamp(19px,5.2vw,40px)] leading-[1] tracking-[0.15em] uppercase text-offwhite mb-[42px] whitespace-nowrap"
         >
           Precisão que vira<br />assinatura
         </h2>
@@ -32,7 +32,7 @@ export function SobreSection() {
           &ldquo;O cuidado com os detalhes é o que separa o bom do excelente.&rdquo;
         </blockquote>
 
-        <div className="reveal reveal-d3 flex flex-col gap-[18px] font-body font-light text-[15px] leading-[1.9] tracking-[0.01em] text-offwhite/55 text-left md:text-center">
+        <div className="reveal reveal-d3 flex flex-col gap-[18px] font-body font-light text-[15px] leading-[1.3] tracking-[0.07em] text-offwhite/55 text-left md:text-center">
           <p>
             Sou barbeiro desde 2018. Comecei como funcionário em barbearias convencionais, e em 2024 decidi montar meu próprio espaço.
           </p>

@@ -44,6 +44,7 @@ export function ServicosSection() {
       className="bg-charcoal section-wrap"
     >
       <div className="section-tag" aria-hidden="true">Serviços</div>
+      <h2 id="servicos-titulo" className="sr-only">Serviços</h2>
 
       <div className="max-w-[720px] mx-auto border-t border-offwhite/8">
         {services.map((s, i) => (
@@ -57,7 +58,7 @@ export function ServicosSection() {
             <div className="relative w-[110px] md:w-[160px] shrink-0 overflow-hidden" style={{ aspectRatio: '3/4' }}>
               <Image
                 src={SERVICE_IMAGES[s.slug] ?? '/images/hero-barbershop.jpg'}
-                alt=""
+                alt={`Serviço ${s.name} — Alison Estevam Studio`}
                 fill
                 sizes="160px"
                 className="object-cover"
@@ -65,7 +66,7 @@ export function ServicosSection() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="font-display font-normal text-2xl md:text-3xl tracking-[0.03em] uppercase text-offwhite mb-[8px]">
+              <h3 className="font-display font-normal text-2xl md:text-3xl tracking-[0.168em] leading-[1.3] uppercase text-offwhite mb-[8px]">
                 {s.name.split(' ').map((word, wi) =>
                   s.is_whatsapp_only && wi > 0
                     ? <span key={wi} className="text-gold"> {word}</span>
@@ -73,12 +74,12 @@ export function ServicosSection() {
                 )}
               </h3>
 
-              <p className="font-body font-light text-sm leading-[1.8] text-offwhite/50 mb-[16px] max-w-[420px]">
+              <p className="font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/50 mb-[16px] max-w-[420px]">
                 {s.description}
               </p>
 
               <div className="flex items-center gap-4 flex-wrap">
-                <span className="font-data italic font-normal text-xl text-gold">
+                <span className="font-data italic font-normal text-xl tracking-[0.168em] leading-[1.3] text-gold">
                   {formatCurrency(s.price)}
                 </span>
                 <button

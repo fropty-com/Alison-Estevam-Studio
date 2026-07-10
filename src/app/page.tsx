@@ -8,7 +8,9 @@ import { RevealInit }           from '@/components/ui/RevealInit'
 import type { Metadata }        from 'next'
 
 export const metadata: Metadata = {
-  title: 'Alison Estevam Studio | Barbearia em Salto/SP',
+  // `absolute` bypasses the layout's `%s · Alison Estevam` template so the
+  // homepage title matches the brief exactly, with no suffix.
+  title: { absolute: 'Alison Estevam Studio | Barbearia em Salto/SP' },
   description: 'Atendimento exclusivo em barbearia, corte, barba, cuidados masculinos e horário reservado em Salto/SP.',
 }
 

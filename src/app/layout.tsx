@@ -31,11 +31,11 @@ const lora = Lora({
 export const metadata: Metadata = {
   metadataBase: new URL(BRAND.siteUrl),
   title: {
-    default:  `${BRAND.name} — Barbearia`,
+    default:  'Alison Estevam Studio | Barbearia em Salto/SP',
     template: `%s · ${BRAND.name}`,
   },
-  description: 'Barbearia Alison Estevam — Atendimento exclusivo, um cliente por vez. Especialista em corte com tesoura, barba completa e Pixie Cut. Agende o seu momento.',
-  keywords: ['barbearia', 'barbeiro', 'corte de cabelo', 'barba', 'Pixie Cut', 'Alison Estevam'],
+  description: 'Atendimento exclusivo em barbearia, corte, barba, cuidados masculinos e horário reservado em Salto/SP.',
+  keywords: ['barbearia', 'barbeiro', 'corte de cabelo', 'barba', 'cuidados masculinos', 'Salto SP', 'Alison Estevam'],
   authors:  [{ name: BRAND.name }],
   creator:  BRAND.name,
   openGraph: {
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
     locale:      'pt_BR',
     url:         BRAND.siteUrl,
     siteName:    BRAND.fullName,
-    title:       `${BRAND.name} — Barbearia`,
-    description: 'Atendimento exclusivo, um cliente por vez. Uma experiência que vai além do corte.',
+    title:       'Alison Estevam Studio | Barbearia em Salto/SP',
+    description: 'Atendimento exclusivo em barbearia, corte, barba, cuidados masculinos e horário reservado em Salto/SP.',
   },
   robots: {
     index: true, follow: true,
