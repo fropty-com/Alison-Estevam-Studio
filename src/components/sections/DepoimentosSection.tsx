@@ -9,15 +9,15 @@ const DEPOIMENTOS = [
   },
   {
     stars: 5,
-    text: 'Gosto muito do atendimento e da experiência, ambiente tranquilo e exclusivo é ótimo serviço.',
-    autor: 'Everton Santos',
-    servico: 'CORTE DE CABELO',
+    text: 'Atendimento impecável, o Alison realmente entende do que faz. Saí de lá completamente satisfeito.',
+    autor: 'Rafael Souza',
+    servico: 'BARBA',
   },
   {
     stars: 5,
-    text: 'Gosto muito do atendimento e da experiência, ambiente tranquilo e exclusivo é ótimo serviço.',
-    autor: 'Everton Santos',
-    servico: 'CORTE DE CABELO',
+    text: 'Ambiente exclusivo e reservado, exatamente o que eu procurava. Já virou meu barbeiro de confiança.',
+    autor: 'Lucas Almeida',
+    servico: 'CABELO E BARBA',
   },
 ] as const
 
