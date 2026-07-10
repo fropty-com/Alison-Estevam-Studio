@@ -49,11 +49,11 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
               the site's light/dark theme. Horizontal padding + a
               conservative font size keep it clear of the photo's edges
               even with real-device font-rendering differences. */}
-          <div className="absolute top-5 left-0 right-0 text-center px-6">
+          <div className="absolute top-3 left-0 right-0 text-center px-4">
             <span
               className={cn(
                 'block font-display font-normal uppercase text-[#F1F1F1]',
-                'text-[11vw] leading-[0.8] lg:text-[46px] tracking-[0]'
+                'text-[15vw] leading-[0.8] md:text-[64px] tracking-[0]'
               )}
             >
               Estevam
