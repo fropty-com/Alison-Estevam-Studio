@@ -36,7 +36,7 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
             fill
             priority
             sizes="(max-width: 768px) 100vw, 480px"
-            className="object-cover grayscale"
+            className="object-cover grayscale opacity-50"
           />
           <div
             className="absolute inset-0 pointer-events-none"
