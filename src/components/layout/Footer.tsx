@@ -13,7 +13,7 @@ const NAV_LINKS = [
 
 function PhoneIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M13.5 10.5c-.83 0-1.63-.13-2.38-.38a.75.75 0 0 0-.77.19l-1.47 1.47a11.24 11.24 0 0 1-4.66-4.66l1.47-1.47a.75.75 0 0 0 .19-.77A7.54 7.54 0 0 1 5.5 2.5.75.75 0 0 0 4.75 2H2.5a.75.75 0 0 0-.75.75C1.75 9.1 6.9 14.25 13.25 14.25A.75.75 0 0 0 14 13.5v-2.25a.75.75 0 0 0-.5-.75Z" fill="currentColor"/>
     </svg>
   )
@@ -21,7 +21,7 @@ function PhoneIcon() {
 
 function InstagramIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <rect x="1.5" y="1.5" width="13" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.3"/>
       <circle cx="8" cy="8" r="2.7" stroke="currentColor" strokeWidth="1.3"/>
       <circle cx="12" cy="4" r="0.8" fill="currentColor"/>
@@ -42,14 +42,14 @@ export function Footer() {
 
         {/* Brand */}
         <div>
-          <div className="font-display font-normal text-4xl tracking-[0.03em] uppercase text-offwhite leading-[1.15]">
+          <div className="font-display font-normal text-[26px] tracking-[0.06em] uppercase text-offwhite leading-[1.25]">
             Alison<br />Estevam
           </div>
         </div>
 
         {/* Como chegar + contact */}
         <div>
-          <p className="font-display font-normal text-lg tracking-[0.1em] uppercase text-offwhite mb-5">
+          <p className="font-display font-normal text-base tracking-[0.12em] uppercase text-offwhite mb-5">
             Como Chegar
           </p>
           <p className="font-body font-light text-sm text-offwhite/55 leading-[1.8] mb-5">
@@ -69,7 +69,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 group"
             >
-              <span className="w-8 h-8 rounded-full bg-gold text-charcoal-deep flex items-center justify-center shrink-0">
+              <span className="w-7 h-7 rounded-full bg-gold text-charcoal-deep flex items-center justify-center shrink-0">
                 <PhoneIcon />
               </span>
               <span className="font-body font-light text-sm text-offwhite/70 group-hover:text-offwhite transition-colors">
@@ -82,7 +82,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 group"
             >
-              <span className="w-8 h-8 border border-gold text-gold flex items-center justify-center shrink-0">
+              <span className="w-7 h-7 border border-gold text-gold flex items-center justify-center shrink-0">
                 <InstagramIcon />
               </span>
               <span className="font-body font-light text-sm tracking-[0.1em] text-offwhite/70 group-hover:text-offwhite transition-colors">
@@ -94,7 +94,7 @@ export function Footer() {
 
         {/* Navigation */}
         <nav aria-label="Navegação do rodapé">
-          <p className="font-display font-normal text-lg tracking-[0.1em] uppercase text-offwhite mb-5">
+          <p className="font-display font-normal text-base tracking-[0.12em] uppercase text-offwhite mb-5">
             Navegação
           </p>
           <ul className="flex flex-col gap-4 list-none">
