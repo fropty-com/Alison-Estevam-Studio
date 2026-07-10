@@ -16,8 +16,8 @@ interface Service {
 
 // Decorative pairing only — not stored in the DB, which has no photo column.
 const SERVICE_IMAGES: Record<string, string> = {
-  'cabelo':            '/images/portfolio-5.jpg',
-  'barba':              '/images/portfolio-6.jpg',
+  'cabelo':            '/images/portfolio-9.jpg',
+  'barba':              '/images/portfolio-4.jpg',
   'cabelo-e-barba':     '/images/portfolio-1.jpg',
   'corte-feminino':     '/images/portfolio-3.jpg',
   'horario-exclusivo':  '/images/hero-barbershop.jpg',
