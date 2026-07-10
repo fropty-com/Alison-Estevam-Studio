@@ -101,7 +101,7 @@ export async function sendConfirmationEmail(params: {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     await resend.emails.send({
-      from:    `${BRAND.fullName} <agendamento@alisonestevan.com.br>`,
+      from:    `${BRAND.fullName} <agendamento@alisonestevam.com.br>`,
       to:      clientEmail,
       subject: `Agendamento recebido — ${referenceCode}`,
       html,

@@ -13,7 +13,7 @@ export async function sendPasswordResetEmail(params: {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     await resend.emails.send({
-      from:    `${BRAND.fullName} <noreply@alisonestevan.com.br>`,
+      from:    `${BRAND.fullName} <noreply@alisonestevam.com.br>`,
       to:      clientEmail,
       subject: 'Redefinição de senha',
       html,

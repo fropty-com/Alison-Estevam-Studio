@@ -4,12 +4,12 @@ import { BookingModalContext, useBookingModalState } from '@/hooks/useBookingMod
 import { BookingModal } from './BookingModal'
 
 export function BookingProvider({ children }: { children: React.ReactNode }) {
-  const { isOpen, open, close } = useBookingModalState()
+  const { isOpen, presetServiceSlug, open, close } = useBookingModalState()
 
   return (
-    <BookingModalContext.Provider value={{ isOpen, open, close }}>
+    <BookingModalContext.Provider value={{ isOpen, presetServiceSlug, open, close }}>
       {children}
-      <BookingModal isOpen={isOpen} onClose={close} />
+      <BookingModal isOpen={isOpen} presetServiceSlug={presetServiceSlug} onClose={close} />
     </BookingModalContext.Provider>
   )
 }

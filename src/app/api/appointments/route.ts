@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { name, whatsapp, email, serviceId, slotId } = parsed.data
+    const { name, whatsapp, email, serviceId, slotId, complementIds } = parsed.data
     // Cast to any — Supabase v2.43 generics don't resolve table types reliably
     const db = await createServiceClient() as any
 
@@ -35,13 +35,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // 2. Verify service exists and is active
+    // 2. Verify service exists, is active, and is bookable through this flow
+    // (Horário Exclusivo is WhatsApp-only and must never reach this API)
     const { data: service, error: serviceError } = await db
       .from('services')
-      .select('id, name, price')
+      .select('id, name, price, is_whatsapp_only')
       .eq('id', serviceId)
       .eq('active', true)
-      .single() as { data: { id: string; name: string; price: number } | null; error: unknown }
+      .single() as { data: { id: string; name: string; price: number; is_whatsapp_only: boolean } | null; error: unknown }
 
     if (serviceError || !service) {
       return NextResponse.json(
@@ -49,6 +50,39 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       )
     }
+
+    if (service.is_whatsapp_only) {
+      return NextResponse.json(
+        { error: 'Este serviço é agendado apenas pelo WhatsApp.' },
+        { status: 422 }
+      )
+    }
+
+    // 2b. Validate complements — must be active and actually offered for this service
+    let complements: { id: string; name: string; price: number }[] = []
+    if (complementIds.length > 0) {
+      const { data: validComplements } = await db
+        .from('service_complements')
+        .select('complements(id, name, price, active)')
+        .eq('service_id', serviceId)
+        .in('complement_id', complementIds) as {
+          data: { complements: { id: string; name: string; price: number; active: boolean } | null }[] | null
+        }
+
+      complements = (validComplements ?? [])
+        .map(row => row.complements)
+        .filter((c): c is { id: string; name: string; price: number; active: boolean } => c !== null && c.active)
+
+      if (complements.length !== complementIds.length) {
+        return NextResponse.json(
+          { error: 'Um ou mais complementos selecionados não estão disponíveis para este serviço.' },
+          { status: 422 }
+        )
+      }
+    }
+
+    const complementsPrice = complements.reduce((sum, c) => sum + Number(c.price), 0)
+    const totalPrice = Number(service.price) + complementsPrice
 
     // 3. Find or create client
     const formattedWhatsapp = formatWhatsApp(whatsapp)
@@ -89,25 +123,36 @@ export async function POST(request: NextRequest) {
     const referenceCode = generateReferenceCode((count ?? 0) + 1)
 
     // 5. Create appointment + mark slot as booked
-    const [{ error: apptError }, { error: slotUpdateError }] = await Promise.all([
+    const [{ data: appt, error: apptError }, { error: slotUpdateError }] = await Promise.all([
       db.from('appointments').insert({
-        reference_code: referenceCode,
-        client_id:      clientId,
-        service_id:     serviceId,
-        slot_id:        slotId,
-        status:         'pending',
-      }),
+        reference_code:    referenceCode,
+        client_id:         clientId,
+        service_id:        serviceId,
+        slot_id:           slotId,
+        status:            'pending',
+        service_price:     service.price,
+        complements_price: complementsPrice,
+        total_price:       totalPrice,
+      }).select('id').single(),
       db.from('time_slots')
         .update({ status: 'booked' })
         .eq('id', slotId),
-    ]) as [{ error: unknown }, { error: unknown }]
+    ]) as [{ data: { id: string } | null; error: unknown }, { error: unknown }]
 
-    if (apptError || slotUpdateError) {
+    if (apptError || slotUpdateError || !appt) {
       console.error('Appointment creation error:', apptError, slotUpdateError)
       return NextResponse.json(
         { error: 'Erro ao criar agendamento. Tente novamente.' },
         { status: 500 }
       )
+    }
+
+    // 6. Link chosen complements (price snapshot at booking time)
+    if (complements.length > 0) {
+      const { error: complementsError } = await db.from('appointment_complements').insert(
+        complements.map(c => ({ appointment_id: appt.id, complement_id: c.id, price: c.price }))
+      )
+      if (complementsError) console.error('appointment_complements insert error:', complementsError)
     }
 
     // Send confirmation email (non-blocking — failure doesn't break the booking)
@@ -124,10 +169,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       referenceCode,
-      clientName:  name,
-      serviceName: service.name,
-      date:        slot.date,
-      startTime:   slot.start_time.substring(0, 5),
+      clientName:        name,
+      serviceName:       service.name,
+      complementNames:   complements.map(c => c.name),
+      servicePrice:      Number(service.price),
+      complementsPrice,
+      totalPrice,
+      date:              slot.date,
+      startTime:         slot.start_time.substring(0, 5),
     }, { status: 201 })
 
   } catch (error) {

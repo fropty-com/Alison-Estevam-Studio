@@ -4,12 +4,14 @@ import { useContext, createContext, useState, useCallback } from 'react'
 
 interface BookingModalCtx {
   isOpen: boolean
-  open:   () => void
+  presetServiceSlug: string | null
+  open:   (serviceSlug?: string) => void
   close:  () => void
 }
 
 export const BookingModalContext = createContext<BookingModalCtx>({
   isOpen: false,
+  presetServiceSlug: null,
   open:   () => {},
   close:  () => {},
 })
@@ -20,7 +22,13 @@ export function useBookingModal() {
 
 export function useBookingModalState() {
   const [isOpen, setIsOpen] = useState(false)
-  const open  = useCallback(() => setIsOpen(true),  [])
+  const [presetServiceSlug, setPresetServiceSlug] = useState<string | null>(null)
+
+  const open = useCallback((serviceSlug?: string) => {
+    setPresetServiceSlug(serviceSlug ?? null)
+    setIsOpen(true)
+  }, [])
   const close = useCallback(() => setIsOpen(false), [])
-  return { isOpen, open, close }
+
+  return { isOpen, presetServiceSlug, open, close }
 }

@@ -31,6 +31,12 @@ export const createAppointmentSchema = z.object({
   slotId: z
     .string()
     .uuid('Horário inválido.'),
+
+  complementIds: z
+    .array(z.string().uuid())
+    .max(10)
+    .optional()
+    .default([]),
 })
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>

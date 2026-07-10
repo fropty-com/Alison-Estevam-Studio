@@ -48,6 +48,7 @@ export interface Database {
           description: string | null
           duration: number
           price: number
+          is_whatsapp_only: boolean
           active: boolean
           position: number
           created_at: string
@@ -59,6 +60,7 @@ export interface Database {
           description?: string | null
           duration: number
           price: number
+          is_whatsapp_only?: boolean
           active?: boolean
           position?: number
           created_at?: string
@@ -69,8 +71,68 @@ export interface Database {
           description?: string | null
           duration?: number
           price?: number
+          is_whatsapp_only?: boolean
           active?: boolean
           position?: number
+        }
+      }
+      complements: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          price: number
+          active: boolean
+          position: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          price: number
+          active?: boolean
+          position?: number
+          created_at?: string
+        }
+        Update: {
+          name?: string
+          slug?: string
+          description?: string | null
+          price?: number
+          active?: boolean
+          position?: number
+        }
+      }
+      service_complements: {
+        Row: {
+          service_id: string
+          complement_id: string
+        }
+        Insert: {
+          service_id: string
+          complement_id: string
+        }
+        Update: {
+          service_id?: string
+          complement_id?: string
+        }
+      }
+      appointment_complements: {
+        Row: {
+          appointment_id: string
+          complement_id: string
+          price: number
+        }
+        Insert: {
+          appointment_id: string
+          complement_id: string
+          price: number
+        }
+        Update: {
+          price?: number
         }
       }
       time_slots: {
@@ -107,6 +169,9 @@ export interface Database {
           reminder_sent: boolean
           cancelled_at: string | null
           cancellation_reason: string | null
+          service_price: number
+          complements_price: number
+          total_price: number
           created_at: string
           updated_at: string
         }
@@ -121,6 +186,9 @@ export interface Database {
           reminder_sent?: boolean
           cancelled_at?: string | null
           cancellation_reason?: string | null
+          service_price?: number
+          complements_price?: number
+          total_price?: number
           created_at?: string
           updated_at?: string
         }

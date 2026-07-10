@@ -11,40 +11,55 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const year  = parseInt(searchParams.get('year')  ?? String(new Date().getFullYear()))
   const month = parseInt(searchParams.get('month') ?? String(new Date().getMonth() + 1))
+  // Duration (minutes) of the service being booked — determines which start
+  // times leave enough room before a break or closing time. Defaults to a
+  // single 60-min grid slot when not provided.
+  const duration = Math.max(60, parseInt(searchParams.get('duration') ?? '60'))
+  const slotsNeeded = Math.ceil(duration / BOOKING.slotDurationMinutes)
 
   if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
     return NextResponse.json({ error: 'Parâmetros inválidos.' }, { status: 400 })
   }
 
-  const db = await createServiceClient() as any
-
   const monthStart = format(new Date(year, month - 1, 1), 'yyyy-MM-dd')
   const monthEnd   = format(new Date(year, month, 0),     'yyyy-MM-dd')
 
-  // Fetch blocked periods, existing slots, and rules in parallel
-  const [blockedRes, slotsRes, rulesRes] = await Promise.all([
-    db.from('blocked_periods')
-      .select('date_start, date_end')
-      .lte('date_start', monthEnd)
-      .gte('date_end',   monthStart),
-    db.from('time_slots')
-      .select('id, date, start_time, end_time, status')
-      .gte('date', monthStart)
-      .lte('date', monthEnd)
-      .order('date',       { ascending: true })
-      .order('start_time', { ascending: true }),
-    db.from('availability_rules')
-      .select('weekday, start_time, end_time')
-      .eq('active', true),
-  ]) as [
-    { data: BlockedRow[] | null },
-    { data: SlotRow[]    | null },
-    { data: RuleRow[]    | null },
-  ]
+  // If the DB is unreachable (bad config, outage), degrade to the built-in
+  // demo schedule below instead of 500ing the whole calendar.
+  let blocked: BlockedRow[] = []
+  let existingSlots: SlotRow[] = []
+  let dbRules: RuleRow[] = []
+  let db: any = null
 
-  const blocked       = blockedRes.data ?? []
-  const existingSlots = slotsRes.data   ?? []
-  const dbRules       = rulesRes.data   ?? []
+  try {
+    db = await createServiceClient()
+
+    const [blockedRes, slotsRes, rulesRes] = await Promise.all([
+      db.from('blocked_periods')
+        .select('date_start, date_end')
+        .lte('date_start', monthEnd)
+        .gte('date_end',   monthStart),
+      db.from('time_slots')
+        .select('id, date, start_time, end_time, status')
+        .gte('date', monthStart)
+        .lte('date', monthEnd)
+        .order('date',       { ascending: true })
+        .order('start_time', { ascending: true }),
+      db.from('availability_rules')
+        .select('weekday, start_time, end_time')
+        .eq('active', true),
+    ]) as [
+      { data: BlockedRow[] | null },
+      { data: SlotRow[]    | null },
+      { data: RuleRow[]    | null },
+    ]
+
+    blocked       = blockedRes.data ?? []
+    existingSlots = slotsRes.data   ?? []
+    dbRules       = rulesRes.data   ?? []
+  } catch (error) {
+    console.error('GET /api/availability unexpected error:', error)
+  }
 
   // Fall back to default schedule (10h–19h, Mon–Sat) when DB has no rules configured
   const useDemoMode = dbRules.length === 0
@@ -71,7 +86,7 @@ export async function GET(request: NextRequest) {
   const today          = startOfDay(new Date())
   const maxDate        = addDays(today, BOOKING.maxDaysAhead)
   const daysInMonth    = new Date(year, month, 0).getDate()
-  const duration       = BOOKING.slotDurationMinutes
+  const gridMinutes    = BOOKING.slotDurationMinutes // grid granularity (1h) — not the service duration
 
   const toInsert: { date: string; start_time: string; end_time: string; status: string }[] = []
 
@@ -85,31 +100,37 @@ export async function GET(request: NextRequest) {
     if (BOOKING.blockedWeekdays.includes(dateObj.getDay()))                      continue
     if (blocked.some(b => dateStr >= b.date_start && dateStr <= b.date_end))     continue
 
-    const rule = rules.find(r => r.weekday === dateObj.getDay())
-    if (!rule) continue
+    // A weekday can have more than one window (e.g. 10h-12h and 15h-20h with
+    // a lunch break in between) — generate slots for every matching window,
+    // not just the first one.
+    const windows = rules.filter(r => r.weekday === dateObj.getDay())
+    if (windows.length === 0) continue
 
-    const [sh, sm] = rule.start_time.split(':').map(Number)
-    const [eh, em] = rule.end_time.split(':').map(Number)
-    const endMin   = eh * 60 + em
     const demoBooked = useDemoMode ? getDemoBooked(d) : new Set<string>()
 
-    let cur = sh * 60 + sm
-    while (cur + duration <= endMin) {
-      const h1 = Math.floor(cur / 60), m1 = cur % 60
-      const h2 = Math.floor((cur + duration) / 60), m2 = (cur + duration) % 60
-      const startStr = `${String(h1).padStart(2, '0')}:${String(m1).padStart(2, '0')}`
-      toInsert.push({
-        date:       dateStr,
-        start_time: startStr,
-        end_time:   `${String(h2).padStart(2, '0')}:${String(m2).padStart(2, '0')}`,
-        status:     demoBooked.has(startStr) ? 'booked' : 'available',
-      })
-      cur += duration
+    for (const rule of windows) {
+      const [sh, sm] = rule.start_time.split(':').map(Number)
+      const [eh, em] = rule.end_time.split(':').map(Number)
+      const endMin   = eh * 60 + em
+
+      let cur = sh * 60 + sm
+      while (cur + gridMinutes <= endMin) {
+        const h1 = Math.floor(cur / 60), m1 = cur % 60
+        const h2 = Math.floor((cur + gridMinutes) / 60), m2 = (cur + gridMinutes) % 60
+        const startStr = `${String(h1).padStart(2, '0')}:${String(m1).padStart(2, '0')}`
+        toInsert.push({
+          date:       dateStr,
+          start_time: startStr,
+          end_time:   `${String(h2).padStart(2, '0')}:${String(m2).padStart(2, '0')}`,
+          status:     demoBooked.has(startStr) ? 'booked' : 'available',
+        })
+        cur += gridMinutes
+      }
     }
   }
 
-  // Only persist to DB when using real rules (not demo mode)
-  if (toInsert.length > 0 && !useDemoMode) {
+  // Only persist to DB when using real rules (not demo mode) and the client is up
+  if (toInsert.length > 0 && !useDemoMode && db) {
     await db.from('time_slots').insert(toInsert)
   }
 
@@ -141,13 +162,34 @@ export async function GET(request: NextRequest) {
       continue
     }
 
-    const daySlots = allSlots
+    const rawDaySlots = allSlots
       .filter(s => s.date === dateStr)
       .map(s => ({
         id:        s.id,
         startTime: s.start_time.substring(0, 5),
         available: s.status === 'available',
       }))
+
+    // A start time is only bookable for this service if it and the next
+    // (slotsNeeded - 1) consecutive grid slots are all available. This is
+    // what keeps a 2h service from being offered at a time that would
+    // invade a break or run past closing — those follow-up slots simply
+    // don't exist in the grid, so the check fails naturally.
+    const byStart = new Map(rawDaySlots.map(s => [s.startTime, s]))
+    const daySlots = rawDaySlots.map(s => {
+      if (!s.available) return s
+      let stillFits = true
+      let [h, m] = s.startTime.split(':').map(Number)
+      for (let i = 1; i < slotsNeeded; i++) {
+        m += gridMinutes
+        h += Math.floor(m / 60)
+        m %= 60
+        const nextStart = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+        const next = byStart.get(nextStart)
+        if (!next || !next.available) { stillFits = false; break }
+      }
+      return stillFits ? s : { ...s, available: false }
+    })
 
     availability[dateStr] = {
       available: daySlots.some(s => s.available),

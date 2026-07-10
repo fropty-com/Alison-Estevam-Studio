@@ -13,7 +13,7 @@ export async function sendWelcomeEmail(params: {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     await resend.emails.send({
-      from:    `${BRAND.fullName} <noreply@alisonestevan.com.br>`,
+      from:    `${BRAND.fullName} <noreply@alisonestevam.com.br>`,
       to:      clientEmail,
       subject: `Bem-vindo ao ${BRAND.fullName}`,
       html,
