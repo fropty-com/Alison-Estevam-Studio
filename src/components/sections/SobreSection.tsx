@@ -17,7 +17,7 @@ export function SobreSection() {
           Precisão que vira<br />assinatura
         </h2>
 
-        <div className="reveal reveal-d1 relative w-full max-w-[300px] mx-auto overflow-hidden mb-[38px]" style={{ aspectRatio: '3/4' }}>
+        <div className="reveal reveal-d1 relative w-full max-w-[300px] mx-auto overflow-hidden mb-[38px]" style={{ aspectRatio: '2/3' }}>
           <Image
             src="/images/alison4.png"
             alt="Alison Estevam — barbeiro e fundador"
@@ -44,13 +44,24 @@ export function SobreSection() {
           </p>
         </div>
 
-        <p
-          className="reveal reveal-d4 font-display italic text-3xl text-offwhite/80 mt-[38px]"
-          aria-hidden="true"
-        >
-          Alison
-        </p>
-        <span className="sr-only">Assinado por Alison Estevam</span>
+        <div className="reveal reveal-d4 mt-[38px] flex justify-center">
+          <Image
+            src="/images/assinatura-dark.png"
+            alt="Assinatura de Alison Estevam"
+            width={176}
+            height={117}
+            priority
+            className="theme-swap-dark w-[120px] h-auto"
+          />
+          <Image
+            src="/images/assinatura-light.png"
+            alt="Assinatura de Alison Estevam"
+            width={183}
+            height={115}
+            priority
+            className="theme-swap-light w-[120px] h-auto"
+          />
+        </div>
       </div>
     </section>
   )

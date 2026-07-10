@@ -159,6 +159,12 @@
 
   /* Text balance for headings */
   .text-balance { text-wrap: balance; }
+
+  /* Theme-swapped image pairs (e.g. signature scans) — no JS needed */
+  .theme-swap-dark  { display: block; }
+  .theme-swap-light { display: none; }
+  [data-theme="light"] .theme-swap-dark  { display: none; }
+  [data-theme="light"] .theme-swap-light { display: block; }
 }
 
 /* ══════════════════════════════════════════════
