@@ -29,7 +29,7 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
         </h1>
 
         {/* Vertical image with "ESTEVAM" fully inside it, overlay buttons */}
-        <div className="relative mt-1 overflow-hidden" style={{ aspectRatio: '3/4' }}>
+        <div className="relative mt-1 overflow-hidden" style={{ aspectRatio: '2/3' }}>
           <Image
             src="/images/hero-barbershop.jpg"
             alt="Alison Estevam Studio — barbearia"
