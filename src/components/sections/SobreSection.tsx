@@ -23,7 +23,7 @@ export function SobreSection() {
             alt="Alison Estevam — barbeiro e fundador"
             fill
             sizes="300px"
-            className="object-cover object-top"
+            className="object-cover object-top opacity-90"
             priority
           />
         </div>

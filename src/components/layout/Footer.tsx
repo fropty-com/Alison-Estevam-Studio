@@ -21,10 +21,8 @@ function PhoneIcon() {
 
 function InstagramIcon() {
   return (
-    <svg width="10" height="10" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <rect x="1.5" y="1.5" width="13" height="13" rx="3.5" stroke="currentColor" strokeWidth="1.3"/>
-      <circle cx="8" cy="8" r="2.7" stroke="currentColor" strokeWidth="1.3"/>
-      <circle cx="12" cy="4" r="0.8" fill="currentColor"/>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.16.51.5.9 1.11 1.16 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.11 0 2.72-.01 3.06-.06 4.12-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.16 1.77 4.9 4.9 0 0 1-1.77 1.16c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06-2.72 0-3.06-.01-4.12-.06-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.77-1.16 4.9 4.9 0 0 1-1.16-1.77c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12c0-2.72.01-3.06.06-4.12.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.16-1.77a4.9 4.9 0 0 1 1.77-1.16c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.28 2 12 2Zm0 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.25A3.25 3.25 0 1 1 12 8.75a3.25 3.25 0 0 1 0 6.5ZM17.4 5.15a1.17 1.17 0 1 0 0 2.34 1.17 1.17 0 0 0 0-2.34Z"/>
     </svg>
   )
 }
@@ -82,7 +80,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 group"
             >
-              <span className="w-5 h-5 border border-gold text-gold flex items-center justify-center shrink-0">
+              <span className="w-5 h-5 rounded-full bg-gold text-charcoal-deep flex items-center justify-center shrink-0">
                 <InstagramIcon />
               </span>
               <span className="font-body font-light text-sm tracking-[0.1em] text-offwhite/70 group-hover:text-offwhite transition-colors">
