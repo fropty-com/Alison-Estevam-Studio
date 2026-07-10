@@ -19,11 +19,11 @@ export default function HomePage() {
     <>
       <RevealInit />
       <HomeHero />
-      <SobreSection />
       <GaleriaSection />
       <ServicosSection />
       <CuidadosSection />
       <DepoimentosSection />
+      <SobreSection />
     </>
   )
 }

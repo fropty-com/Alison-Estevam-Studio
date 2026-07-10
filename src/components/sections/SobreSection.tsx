@@ -19,7 +19,7 @@ export function SobreSection() {
 
         <div className="reveal reveal-d1 relative w-full max-w-[300px] mx-auto overflow-hidden mb-[38px]" style={{ aspectRatio: '3/4' }}>
           <Image
-            src="/images/alison2.png"
+            src="/images/alison4.png"
             alt="Alison Estevam — barbeiro e fundador"
             fill
             sizes="300px"
