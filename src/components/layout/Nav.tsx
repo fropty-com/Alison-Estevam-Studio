@@ -140,7 +140,7 @@ export function Nav() {
         role="dialog"
         aria-label="Menu"
         className={cn(
-          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-7',
+          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-4',
           'bg-charcoal/98 backdrop-blur-[20px]',
           'transition-opacity duration-400 ease-brand-out',
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -172,7 +172,7 @@ export function Nav() {
           Entrar
         </button>
 
-        <div className="flex items-center gap-3 mt-2">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
         </div>
       </div>

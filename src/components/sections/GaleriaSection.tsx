@@ -9,7 +9,7 @@ const CORTES = [
   { src: '/images/portfolio-3.jpg',  alt: 'Corte editorial masculino — cacheado' },
   { src: '/images/portfolio-1.jpg',  alt: 'Corte editorial masculino — high top fade' },
   { src: '/images/portfolio-4.jpg',  alt: 'Corte editorial masculino — afro fade' },
-  { src: '/images/portfolio-11.jpg', alt: 'Corte editorial masculino — ondulado de perfil', flip: true },
+  { src: '/images/portfolio-11-flipped.jpg', alt: 'Corte editorial masculino — ondulado de perfil' },
   { src: '/images/portfolio-7.jpg',  alt: 'Corte editorial masculino — textura curta' },
   { src: '/images/portfolio-8.jpg',  alt: 'Corte editorial masculino — fade lateral' },
   { src: '/images/portfolio-9.jpg',  alt: 'Corte editorial masculino — ondulado natural' },
@@ -50,7 +50,7 @@ export function GaleriaSection() {
               alt={c.alt}
               fill
               sizes="(max-width: 1024px) 33vw, 25vw"
-              className={cn('object-cover', i % 2 === 1 && 'grayscale', c.flip && '-scale-x-100')}
+              className={cn('object-cover', i % 2 === 1 && 'grayscale')}
             />
           </div>
         ))}
