@@ -19,8 +19,8 @@ const SERVICE_IMAGES: Record<string, string> = {
   'cabelo':            '/images/servico-cabelo.jpg',
   'barba':              '/images/servico-barba.jpg',
   'cabelo-e-barba':     '/images/portfolio-1.jpg',
-  'corte-feminino':     '/images/portfolio-3.jpg',
-  'horario-exclusivo':  '/images/hero-barbershop.jpg',
+  'corte-feminino':     '/images/servico-corte-feminino.png',
+  'horario-exclusivo':  '/images/servico-horario-exclusivo.jpg',
 }
 
 function openBookingFor(serviceSlug: string) {
@@ -61,7 +61,7 @@ export function ServicosSection() {
                 alt={`Serviço ${s.name} — Alison Estevam Studio`}
                 fill
                 sizes="160px"
-                className="object-cover"
+                className="object-cover grayscale"
               />
             </div>
 
