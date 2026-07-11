@@ -18,7 +18,7 @@ interface Service {
 const SERVICE_IMAGES: Record<string, string> = {
   'cabelo':            '/images/servico-cabelo.jpg',
   'barba':              '/images/servico-barba.jpg',
-  'cabelo-e-barba':     '/images/portfolio-1.jpg',
+  'cabelo-e-barba':     '/images/servico-cabelo-e-barba.png',
   'corte-feminino':     '/images/servico-corte-feminino.png',
   'horario-exclusivo':  '/images/servico-horario-exclusivo.jpg',
 }
