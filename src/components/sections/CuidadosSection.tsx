@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { cn, formatCurrency } from '@/lib/utils'
 
@@ -20,11 +21,8 @@ const CUIDADO_IMAGES: Record<string, string> = {
   'acabamento-cabelo':    '/images/cuidado-acabamento-cabelo.jpg',
 }
 
-function openBooking() {
-  window.dispatchEvent(new Event('open-booking'))
-}
-
 export function CuidadosSection() {
+  const router = useRouter()
   const [complements, setComplements] = useState<Complement[]>([])
 
   useEffect(() => {
@@ -76,7 +74,7 @@ export function CuidadosSection() {
                   {formatCurrency(c.price)}
                 </span>
                 <button
-                  onClick={openBooking}
+                  onClick={() => router.push('/agendar')}
                   className={cn(
                     'font-body font-medium text-2xs tracking-[0.25em] uppercase',
                     'text-charcoal-deep bg-gold px-6 py-[11px]',

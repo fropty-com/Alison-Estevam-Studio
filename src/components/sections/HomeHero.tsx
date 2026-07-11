@@ -1,9 +1,9 @@
 'use client'
 
-import { useBookingModal } from '@/hooks/useBookingModal'
-import { HeroSection }     from './HeroSection'
+import { useRouter } from 'next/navigation'
+import { HeroSection } from './HeroSection'
 
 export function HomeHero() {
-  const { open } = useBookingModal()
-  return <HeroSection onScheduleClick={open} />
+  const router = useRouter()
+  return <HeroSection onScheduleClick={() => router.push('/agendar')} />
 }

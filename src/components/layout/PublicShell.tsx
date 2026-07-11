@@ -3,10 +3,8 @@
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { Nav }           from './Nav'
-import { NavScheduleBtn } from './NavScheduleBtn'
 import { Footer }        from './Footer'
 import { FloatingWhatsapp } from './FloatingWhatsapp'
-import { BookingProvider } from '@/components/booking/BookingProvider'
 
 function ThemeInit() {
   useEffect(() => {
@@ -19,19 +17,31 @@ function ThemeInit() {
 }
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-  const isAdmin  = pathname.startsWith('/admin')
+  const pathname  = usePathname()
+  const isAdmin   = pathname.startsWith('/admin')
+  const isAgendar = pathname.startsWith('/agendar')
 
   if (isAdmin) return <>{children}</>
 
+  // Agendamento is its own focused, full-page flow — no site nav/footer,
+  // matching the reference prototype's dedicated booking screens.
+  if (isAgendar) {
+    return (
+      <>
+        <ThemeInit />
+        <main>{children}</main>
+        <FloatingWhatsapp />
+      </>
+    )
+  }
+
   return (
-    <BookingProvider>
+    <>
       <ThemeInit />
       <Nav />
-      <NavScheduleBtn />
       <main>{children}</main>
       <Footer />
       <FloatingWhatsapp />
-    </BookingProvider>
+    </>
   )
 }

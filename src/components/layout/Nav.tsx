@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
@@ -16,11 +17,9 @@ const NAV_LINKS = [
   { href: '#contato',     label: 'Como Chegar',       section: 'contato' },
 ] as const
 
-function openBooking() {
-  window.dispatchEvent(new Event('open-booking'))
-}
-
 export function Nav() {
+  const router = useRouter()
+  const openBooking = useCallback(() => router.push('/agendar'), [router])
   const [activeSection, setActive]    = useState('')
   const [menuOpen,      setMenuOpen]  = useState(false)
   const [authOpen,      setAuthOpen]  = useState(false)
@@ -83,7 +82,7 @@ export function Nav() {
         role="navigation"
         aria-label="Navegação principal (desktop)"
         className="hidden lg:grid fixed top-0 left-0 right-0 z-[200] grid-cols-[1fr_auto_1fr] gap-6
-                   items-center px-8 xl:px-[60px] py-6 bg-charcoal/92 backdrop-blur-brand
+                   items-center px-8 xl:px-[60px] py-6 bg-charcoal
                    border-b border-offwhite/8"
       >
         <Link

@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { cn, formatCurrency } from '@/lib/utils'
 import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/whatsapp/messages'
-import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, parseISO, isBefore, startOfDay } from 'date-fns'
+import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
 
@@ -68,6 +70,15 @@ interface BookingState {
 // The 4 real screens the user moves through — "success" is a distinct
 // final screen (matching the prototype) and isn't given a dot.
 const STEP_ORDER: Step[] = ['service', 'schedule', 'details', 'summary']
+
+/* ── Back link — matches the prototype's per-step "← ..." pattern ── */
+function BackLink({ children, ...props }: { children: React.ReactNode; href?: string; onClick?: () => void }) {
+  const cls = 'mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors inline-block'
+  if (props.href) {
+    return <Link href={props.href} className={cls}>{children}</Link>
+  }
+  return <button onClick={props.onClick} className={cls}>{children}</button>
+}
 
 /* ── Step indicator — thin gold line segments, no numbers/labels ── */
 function StepDots({ current }: { current: Step }) {
@@ -188,7 +199,7 @@ function ComplementsOverlay({
   onClose: () => void
 }) {
   return (
-    <div className="absolute inset-0 z-20 flex items-center justify-center p-4 bg-charcoal-deep/45" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+    <div className="fixed inset-0 z-20 flex items-center justify-center p-4 bg-charcoal-deep/45" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
       <div className="relative w-full max-w-[440px] max-h-[82vh] overflow-y-auto bg-charcoal border border-offwhite/14 p-[30px]">
         <button
           onClick={onClose}
@@ -651,20 +662,18 @@ function SummaryStep({
 /* ── Success ───────────────────────────────────── */
 function Confirmation({
   result,
-  onRestart,
 }: {
-  result:    NonNullable<BookingState['result']>
-  onRestart: () => void
+  result: NonNullable<BookingState['result']>
 }) {
   return (
-    <div className="animate-fade-up text-center">
-      <div className="w-[64px] h-[64px] rounded-full border-[1.5px] border-gold flex items-center justify-center text-gold text-[22px] mb-[26px] mx-auto">
+    <div className="animate-fade-up min-h-[calc(100vh-theme(spacing.8))] flex flex-col items-center justify-center text-center px-8">
+      <div className="w-[64px] h-[64px] rounded-full border-[1.5px] border-gold flex items-center justify-center text-gold text-[22px] mb-[26px]">
         ✓
       </div>
       <h2 className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[12px]">
         Agendamento confirmado
       </h2>
-      <p className="font-body font-light text-[13px] text-offwhite/45 mb-[30px] leading-[1.7] max-w-[300px] mx-auto">
+      <p className="font-body font-light text-[13px] text-offwhite/45 mb-[30px] leading-[1.7] max-w-[300px]">
         Você vai receber a confirmação pelo WhatsApp informado. Até breve.
       </p>
 
@@ -682,18 +691,21 @@ function Confirmation({
         Confirmar no WhatsApp
         <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </a>
-      <button
-        onClick={onRestart}
+      <Link
+        href="/"
         className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
       >
         Voltar ao início
-      </button>
+      </Link>
     </div>
   )
 }
 
-/* ── Modal ─────────────────────────────────────── */
-export function BookingModal({ isOpen, presetServiceSlug, onClose }: { isOpen: boolean; presetServiceSlug?: string | null; onClose: () => void }) {
+/* ── Page flow ─────────────────────────────────── */
+export function AgendarFlow() {
+  const searchParams = useSearchParams()
+  const presetServiceSlug = searchParams.get('servico')
+
   const [currentMonth,  setCurrentMonth]  = useState(new Date())
   const [availability,  setAvailability]  = useState<AvailabilityMap>({})
   const [loadingAvail,  setLoadingAvail]  = useState(false)
@@ -702,27 +714,18 @@ export function BookingModal({ isOpen, presetServiceSlug, onClose }: { isOpen: b
   const [state,         setState]         = useState<BookingState>({
     step: 'service', selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: null, result: null,
   })
-  const lastFocusRef = useRef<HTMLElement | null>(null)
 
-  const reset = useCallback(() => {
-    setCurrentMonth(new Date())
-    setAvailability({})
-    setComplements([])
-    setState({ step: 'service', selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: null, result: null })
-  }, [])
-
-  // Fetch services once on open
+  // Fetch services once on mount
   useEffect(() => {
-    if (!isOpen || services.length > 0) return
     fetch('/api/services')
       .then(r => r.json())
       .then(d => setServices(d.services ?? []))
       .catch(console.error)
-  }, [isOpen, services.length])
+  }, [])
 
-  // Fetch availability whenever month changes, modal opens, or the chosen service (duration) changes
+  // Fetch availability whenever month changes or the chosen service (duration) changes
   useEffect(() => {
-    if (!isOpen || state.step !== 'schedule' || !state.selectedService) return
+    if (state.step !== 'schedule' || !state.selectedService) return
     const y = currentMonth.getFullYear()
     const m = currentMonth.getMonth() + 1
     setLoadingAvail(true)
@@ -731,27 +734,7 @@ export function BookingModal({ isOpen, presetServiceSlug, onClose }: { isOpen: b
       .then(d => setAvailability(d.availability ?? {}))
       .catch(console.error)
       .finally(() => setLoadingAvail(false))
-  }, [isOpen, currentMonth, state.step, state.selectedService])
-
-  useEffect(() => {
-    if (isOpen) {
-      lastFocusRef.current = document.activeElement as HTMLElement
-      reset()
-    } else {
-      lastFocusRef.current?.focus()
-    }
-  }, [isOpen, reset])
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    if (isOpen) document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [isOpen, onClose])
-
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [isOpen])
+  }, [currentMonth, state.step, state.selectedService])
 
   const handleExclusive = () => {
     window.open(buildExclusiveRequestUrl(), '_blank', 'noopener,noreferrer')
@@ -782,11 +765,11 @@ export function BookingModal({ isOpen, presetServiceSlug, onClose }: { isOpen: b
   // specific service card) once services have loaded, but only while
   // still on the initial step — never hijack a selection already in progress.
   useEffect(() => {
-    if (!isOpen || !presetServiceSlug || services.length === 0 || state.step !== 'service') return
+    if (!presetServiceSlug || services.length === 0 || state.step !== 'service') return
     const match = services.find(s => s.slug === presetServiceSlug)
     if (match) commitService(match)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, presetServiceSlug, services, state.step])
+  }, [presetServiceSlug, services, state.step])
 
   const toggleComplement = (id: string) => {
     setState(s => ({
@@ -883,145 +866,78 @@ export function BookingModal({ isOpen, presetServiceSlug, onClose }: { isOpen: b
     },
   }
 
+  if (state.step === 'success' && state.result) {
+    return <Confirmation result={state.result} />
+  }
+
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
-      onClick={e => { if (e.target === e.currentTarget) onClose() }}
-      className={cn(
-        'fixed inset-0 z-[500] flex items-center justify-center p-4',
-        'bg-charcoal-deep/90 backdrop-blur-[12px]',
-        'transition-opacity duration-420 ease-brand-out',
-        isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+    <div className="px-8 pt-9 pb-16">
+      {(state.step === 'service' || state.step === 'complements') && (
+        <BackLink href="/">← Voltar ao início</BackLink>
       )}
-    >
-      <div
-        className={cn(
-          'relative bg-charcoal w-full max-w-[880px] max-h-[92vh] overflow-y-auto',
-          'border border-offwhite/7',
-          'scrollbar-thin transition-transform duration-460 ease-brand-out',
-          isOpen ? 'translate-y-0 scale-100' : 'translate-y-8 scale-[0.98]'
+      {state.step === 'schedule' && <BackLink onClick={() => backTo('service')}>← Trocar serviço</BackLink>}
+      {state.step === 'details'  && <BackLink onClick={() => backTo('schedule')}>← Ajustar data/horário</BackLink>}
+      {state.step === 'summary'  && <BackLink onClick={() => backTo('details')}>← Ajustar seus dados</BackLink>}
+
+      <StepHeader {...headerFor[state.step as Exclude<Step, 'success'>]} />
+      <StepDots current={state.step} />
+
+      <div className="mt-[26px] relative">
+        {(state.step === 'service' || state.step === 'complements') && (
+          <ServicePicker
+            services={services}
+            highlighted={state.selectedService}
+            onHighlight={highlightService}
+            onContinue={() => state.selectedService && commitService(state.selectedService)}
+          />
         )}
-      >
-        {/* Header */}
-        <div className="sticky top-0 bg-charcoal z-10 px-[22px] py-[26px] md:px-11 md:py-[34px] border-b border-offwhite/6 flex justify-between items-start">
-          <div className="flex-1">
-            <h1 id="modal-title" className="sr-only">Agendamento online</h1>
-            {state.step !== 'success' && (
-              <div className="max-w-[420px]">
-                <StepHeader {...headerFor[state.step]} />
-                <StepDots current={state.step} />
-              </div>
+
+        {state.step === 'complements' && (
+          <ComplementsOverlay
+            complements={complements}
+            selected={state.selectedComplementIds}
+            onToggle={toggleComplement}
+            onContinue={confirmComplements}
+            onClose={() => backTo('service')}
+          />
+        )}
+
+        {state.step === 'schedule' && state.selectedService && (
+          <div>
+            <MiniCalendar
+              current={currentMonth}
+              selected={state.selectedDate}
+              availability={availability}
+              loading={loadingAvail}
+              onSelectDay={selectDay}
+              onChangeMonth={handleChangeMonth}
+            />
+            {state.selectedDate && (
+              <SlotPicker
+                date={state.selectedDate}
+                slots={currentSlots}
+                selected={state.selectedSlot}
+                onSelect={selectSlot}
+              />
             )}
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Fechar"
-            className="w-[34px] h-[34px] border border-offwhite/10 text-offwhite/30 text-[15px] flex items-center justify-center shrink-0 transition-all duration-200 hover:border-offwhite/30 hover:text-offwhite hover:bg-offwhite/4 ml-4"
-          >
-            ✕
-          </button>
-        </div>
+        )}
 
-        {/* Body */}
-        <div className="relative px-[22px] py-[26px] md:px-11 md:py-[34px]">
-          {(state.step === 'service' || state.step === 'complements') && (
-            <div className="max-w-[520px]">
-              <ServicePicker
-                services={services}
-                highlighted={state.selectedService}
-                onHighlight={highlightService}
-                onContinue={() => state.selectedService && commitService(state.selectedService)}
-              />
-            </div>
-          )}
+        {state.step === 'details' && state.selectedService && state.selectedDate && state.selectedSlot && (
+          <DetailsForm initial={state.client} onContinue={handleDetailsContinue} />
+        )}
 
-          {state.step === 'complements' && (
-            <ComplementsOverlay
-              complements={complements}
-              selected={state.selectedComplementIds}
-              onToggle={toggleComplement}
-              onContinue={confirmComplements}
-              onClose={() => backTo('service')}
-            />
-          )}
-
-          {state.step === 'schedule' && state.selectedService && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-[26px] md:gap-[52px]">
-              <div>
-                <button
-                  onClick={() => backTo('service')}
-                  className="mb-[14px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-                >
-                  ← Trocar serviço
-                </button>
-                <MiniCalendar
-                  current={currentMonth}
-                  selected={state.selectedDate}
-                  availability={availability}
-                  loading={loadingAvail}
-                  onSelectDay={selectDay}
-                  onChangeMonth={handleChangeMonth}
-                />
-                {state.selectedDate && (
-                  <SlotPicker
-                    date={state.selectedDate}
-                    slots={currentSlots}
-                    selected={state.selectedSlot}
-                    onSelect={selectSlot}
-                  />
-                )}
-              </div>
-              <div className="pt-5">
-                <p className="font-display font-light text-[19px] text-offwhite/22 leading-[1.65] italic">
-                  Selecione uma data<br />no calendário.
-                </p>
-                <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/15 mt-4">
-                  Escolha o dia → depois o horário
-                </p>
-              </div>
-            </div>
-          )}
-
-          {state.step === 'details' && state.selectedService && state.selectedDate && state.selectedSlot && (
-            <div className="max-w-[420px]">
-              <button
-                onClick={() => backTo('schedule')}
-                className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-              >
-                ← Ajustar data/horário
-              </button>
-              <DetailsForm initial={state.client} onContinue={handleDetailsContinue} />
-            </div>
-          )}
-
-          {state.step === 'summary' && state.selectedService && state.selectedDate && state.selectedSlot && state.client && (
-            <div className="max-w-[420px]">
-              <button
-                onClick={() => backTo('details')}
-                className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-              >
-                ← Ajustar seus dados
-              </button>
-              <SummaryStep
-                selectedDate={state.selectedDate}
-                selectedSlot={state.selectedSlot}
-                service={state.selectedService}
-                complementIds={state.selectedComplementIds}
-                complements={complements}
-                client={state.client}
-                onConfirm={handleConfirm}
-              />
-            </div>
-          )}
-
-          {state.step === 'success' && state.result && (
-            <div className="max-w-[420px] mx-auto py-[10px]">
-              <Confirmation result={state.result} onRestart={reset} />
-            </div>
-          )}
-        </div>
+        {state.step === 'summary' && state.selectedService && state.selectedDate && state.selectedSlot && state.client && (
+          <SummaryStep
+            selectedDate={state.selectedDate}
+            selectedSlot={state.selectedSlot}
+            service={state.selectedService}
+            complementIds={state.selectedComplementIds}
+            complements={complements}
+            client={state.client}
+            onConfirm={handleConfirm}
+          />
+        )}
       </div>
     </div>
   )

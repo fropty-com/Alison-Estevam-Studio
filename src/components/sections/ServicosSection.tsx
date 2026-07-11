@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { cn, formatCurrency } from '@/lib/utils'
 
@@ -23,11 +24,8 @@ const SERVICE_IMAGES: Record<string, string> = {
   'horario-exclusivo':  '/images/servico-horario-exclusivo.jpg',
 }
 
-function openBookingFor(serviceSlug: string) {
-  window.dispatchEvent(new CustomEvent('open-booking', { detail: { serviceSlug } }))
-}
-
 export function ServicosSection() {
+  const router = useRouter()
   const [services, setServices] = useState<Service[]>([])
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export function ServicosSection() {
                   {formatCurrency(s.price)}
                 </span>
                 <button
-                  onClick={() => openBookingFor(s.slug)}
+                  onClick={() => router.push(`/agendar?servico=${s.slug}`)}
                   className={cn(
                     'font-body font-medium text-2xs tracking-[0.25em] uppercase',
                     'text-charcoal-deep bg-gold px-6 py-[11px]',

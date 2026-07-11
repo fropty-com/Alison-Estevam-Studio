@@ -1,3 +1,2 @@
-export { Nav }            from './Nav'
-export { Footer }         from './Footer'
-export { NavScheduleBtn } from './NavScheduleBtn'
+export { Nav }    from './Nav'
+export { Footer } from './Footer'
