@@ -59,7 +59,10 @@ export function ServicosSection() {
                 alt={`Serviço ${s.name} — Alison Estevam Studio`}
                 fill
                 sizes="160px"
-                className="object-cover grayscale"
+                className={cn(
+                  'object-cover grayscale',
+                  (s.slug === 'cabelo-e-barba' || s.slug === 'corte-feminino') && 'opacity-80'
+                )}
               />
             </div>
 
