@@ -16,6 +16,8 @@ const CUIDADO_IMAGES: Record<string, string> = {
   'design-sobrancelha':   '/images/cuidado-sobrancelha.jpg',
   'hidratacao-capilar':   '/images/cuidado-hidratacao.jpg',
   'revitalizacao-facial': '/images/cuidado-revitalizacao.jpg',
+  'contorno-barba':       '/images/cuidado-contorno-barba.jpg',
+  'acabamento-cabelo':    '/images/cuidado-acabamento-cabelo.jpg',
 }
 
 function openBooking() {
