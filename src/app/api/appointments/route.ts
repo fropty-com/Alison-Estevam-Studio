@@ -59,19 +59,19 @@ export async function POST(request: NextRequest) {
     }
 
     // 2b. Validate complements — must be active and actually offered for this service
-    let complements: { id: string; name: string; price: number }[] = []
+    let complements: { id: string; name: string; price: number | null }[] = []
     if (complementIds.length > 0) {
       const { data: validComplements } = await db
         .from('service_complements')
         .select('complements(id, name, price, active)')
         .eq('service_id', serviceId)
         .in('complement_id', complementIds) as {
-          data: { complements: { id: string; name: string; price: number; active: boolean } | null }[] | null
+          data: { complements: { id: string; name: string; price: number | null; active: boolean } | null }[] | null
         }
 
       complements = (validComplements ?? [])
         .map(row => row.complements)
-        .filter((c): c is { id: string; name: string; price: number; active: boolean } => c !== null && c.active)
+        .filter((c): c is { id: string; name: string; price: number | null; active: boolean } => c !== null && c.active)
 
       if (complements.length !== complementIds.length) {
         return NextResponse.json(

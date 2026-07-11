@@ -3,13 +3,15 @@ import { createServiceClient } from '@/lib/supabase/server'
 
 export const revalidate = 300 // cache 5 min
 
-type ComplementRow = { id: string; name: string; slug: string; description: string; price: number; position: number }
+type ComplementRow = { id: string; name: string; slug: string; description: string; price: number | null; position: number }
 
 // Emergency fallback — only used if the DB is unreachable.
 const FALLBACK_COMPLEMENTS: ComplementRow[] = [
-  { id: 'design-sobrancelha',   name: 'Design de Sobrancelha', slug: 'design-sobrancelha',   description: 'Definição precisa com navalha. Resultado limpo e natural.',                    price: 30, position: 1 },
-  { id: 'hidratacao-capilar',   name: 'Hidratação Capilar',    slug: 'hidratacao-capilar',   description: 'Reposição de nutrientes para cabelos ressecados. Resultado visível já na primeira sessão.', price: 30, position: 2 },
-  { id: 'revitalizacao-facial', name: 'Revitalização Facial',  slug: 'revitalizacao-facial', description: 'Cuidado rápido e eficaz para a pele do rosto. Limpeza e aparência renovada.',    price: 30, position: 3 },
+  { id: 'design-sobrancelha',   name: 'Design de Sobrancelha', slug: 'design-sobrancelha',   description: 'Definição precisa com navalha. Resultado limpo e natural.',                    price: 30,   position: 1 },
+  { id: 'hidratacao-capilar',   name: 'Hidratação Capilar',    slug: 'hidratacao-capilar',   description: 'Reposição de nutrientes para cabelos ressecados. Resultado visível já na primeira sessão.', price: 30,   position: 2 },
+  { id: 'revitalizacao-facial', name: 'Revitalização Facial',  slug: 'revitalizacao-facial', description: 'Cuidado rápido e eficaz para a pele do rosto. Limpeza e aparência renovada.',    price: 30,   position: 3 },
+  { id: 'contorno-barba',       name: 'Contorno de Barba',     slug: 'contorno-barba',       description: 'Acabamento com navalha.',                                                       price: 30,   position: 4 },
+  { id: 'acabamento-cabelo',    name: 'Acabamento de Cabelo',  slug: 'acabamento-cabelo',    description: 'Finalização durante a barba.',                                                  price: null, position: 5 },
 ]
 
 /**

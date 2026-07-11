@@ -1,3 +1,17 @@
+import { readFileSync, existsSync } from 'node:fs'
+
+// This machine has machine-wide NEXT_PUBLIC_SUPABASE_* env vars pointing at
+// an unrelated Supabase project. Next.js's default env loading never
+// overrides pre-existing process.env values, so .env.local silently loses —
+// force it to win for this project.
+const envLocalPath = new URL('.env.local', import.meta.url)
+if (existsSync(envLocalPath)) {
+  for (const line of readFileSync(envLocalPath, 'utf8').split('\n')) {
+    const match = /^([^#=\s][^=]*)=(.*)$/.exec(line.trim())
+    if (match) process.env[match[1].trim()] = match[2].trim()
+  }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { Nav }           from './Nav'
 import { NavScheduleBtn } from './NavScheduleBtn'
 import { Footer }        from './Footer'
+import { FloatingWhatsapp } from './FloatingWhatsapp'
 import { BookingProvider } from '@/components/booking/BookingProvider'
 
 function ThemeInit() {
@@ -30,6 +31,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       <NavScheduleBtn />
       <main>{children}</main>
       <Footer />
+      <FloatingWhatsapp />
     </BookingProvider>
   )
 }

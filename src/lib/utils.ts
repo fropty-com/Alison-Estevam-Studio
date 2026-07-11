@@ -34,9 +34,11 @@ export function formatWhatsApp(raw: string): string {
 }
 
 /**
- * Format a price in BRL currency.
+ * Format a price in BRL currency. Complements with no fixed price
+ * (negotiated at time of service) store price as null.
  */
-export function formatCurrency(value: number): string {
+export function formatCurrency(value: number | null): string {
+  if (value === null) return 'A definir'
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
