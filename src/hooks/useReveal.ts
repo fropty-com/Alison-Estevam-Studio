@@ -39,25 +39,55 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
 /**
  * Initialize all .reveal elements on the page.
  * Use in layout or page components to activate all reveals at once.
+ *
+ * Sections like Servicos/Cuidados render their .reveal cards after an
+ * async fetch resolves, so a one-time querySelectorAll at mount misses
+ * them entirely — they'd stay opacity:0 forever, present in the DOM but
+ * invisible. A MutationObserver keeps watching so newly-added .reveal
+ * elements (from any section, now or in the future) get observed too.
  */
 export function useRevealAll() {
   useEffect(() => {
-    const elements = document.querySelectorAll<HTMLElement>('.reveal')
-    if (!elements.length) return
+    const observed = new WeakSet<Element>()
 
-    const observer = new IntersectionObserver(
+    const io = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible')
-            observer.unobserve(entry.target)
+            io.unobserve(entry.target)
           }
         })
       },
       { threshold: 0.1, rootMargin: '0px 0px -36px 0px' }
     )
 
-    elements.forEach(el => observer.observe(el))
-    return () => observer.disconnect()
+    const watch = (el: Element) => {
+      if (observed.has(el)) return
+      observed.add(el)
+      io.observe(el)
+    }
+
+    const scan = (root: ParentNode) => {
+      root.querySelectorAll<HTMLElement>('.reveal').forEach(watch)
+    }
+
+    scan(document)
+
+    const mo = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        mutation.addedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement)) return
+          if (node.classList.contains('reveal')) watch(node)
+          scan(node)
+        })
+      }
+    })
+    mo.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      io.disconnect()
+      mo.disconnect()
+    }
   }, [])
 }
