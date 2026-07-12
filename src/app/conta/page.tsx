@@ -4,8 +4,9 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import type { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getClientSession } from '@/lib/client-auth/session'
+import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency, cn } from '@/lib/utils'
+import { getLoyaltyProgress } from '@/lib/loyalty'
 import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -24,7 +25,7 @@ const STATUS_LABEL: Record<string, string> = {
 const UPCOMING_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
 
 export default async function ContaPage() {
-  const session = await getClientSession()
+  const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
   const db = await createServiceClient() as any
@@ -48,22 +49,26 @@ export default async function ContaPage() {
   const upcoming = appts.filter(a => UPCOMING_STATUSES.includes(a.status)).reverse()
   const history  = appts.filter(a => a.status === 'completed').slice(0, 5)
   const next     = upcoming[0]
+  const loyalty  = await getLoyaltyProgress(db, client.id)
+  const loyaltyPct = Math.min(100, (loyalty.progress / loyalty.visitsRequired) * 100)
 
   return (
     <div className="min-h-screen bg-charcoal">
       {/* Header */}
-      <div className="flex items-center justify-between px-8 py-7 border-b border-offwhite/6">
-        <Link href="/" className="font-display font-light text-lg tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
-          Alison Estevam
-        </Link>
-        <form action={logoutClientAction}>
-          <button
-            type="submit"
-            className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-          >
-            Sair
-          </button>
-        </form>
+      <div className="border-b border-offwhite/6">
+        <div className="max-w-[560px] mx-auto flex items-center justify-between px-8 py-7">
+          <Link href="/" className="font-display font-light text-lg tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
+            Alison Estevam
+          </Link>
+          <form action={logoutClientAction}>
+            <button
+              type="submit"
+              className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+            >
+              Sair
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="max-w-[560px] mx-auto px-8 py-10">
@@ -71,9 +76,39 @@ export default async function ContaPage() {
         <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
           Área do Cliente
         </p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.02em] mb-[34px]">
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.02em] mb-[26px]">
           Olá, {client.name.split(' ')[0]}.
         </h1>
+
+        {/* Loyalty progress */}
+        <div className="mb-[34px] border border-offwhite/10 px-6 py-5">
+          {loyalty.availableRewards > 0 ? (
+            <>
+              <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-gold/70 mb-[6px]">Fidelidade</p>
+              <p className="font-body font-light text-[14px] text-gold">
+                {loyalty.availableRewards > 1 ? `Você tem ${loyalty.availableRewards} recompensas disponíveis!` : 'Você tem uma recompensa disponível!'}
+              </p>
+              <p className="font-body font-light text-[11px] text-offwhite/45 mt-[4px]">
+                {loyalty.rewardDescription} — resgate no seu próximo atendimento.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="flex items-baseline justify-between mb-[10px]">
+                <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40">Fidelidade</p>
+                <span className="font-data text-[13px] text-offwhite/60">
+                  {loyalty.progress} <span className="text-offwhite/25">/ {loyalty.visitsRequired}</span>
+                </span>
+              </div>
+              <div className="w-full h-[4px] bg-offwhite/6 rounded-none mb-[10px]">
+                <div className="h-full bg-gold/50 transition-all duration-500" style={{ width: `${loyaltyPct}%` }} />
+              </div>
+              <p className="font-body font-light text-[11px] text-offwhite/40">
+                Faltam {loyalty.visitsRequired - loyalty.progress} atendimento{loyalty.visitsRequired - loyalty.progress !== 1 ? 's' : ''} para: <span className="text-offwhite/60">{loyalty.rewardDescription}</span>
+              </p>
+            </>
+          )}
+        </div>
 
         {/* Next appointment */}
         <div className="mb-[34px]">
@@ -176,16 +211,16 @@ function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
       </p>
 
       {canModify && !compact && (
-        <div className="flex flex-wrap gap-[8px]">
+        <div className="flex gap-[8px]">
           <Link
             href={`/reagendar/${appt.reference_code}`}
-            className="px-4 py-[9px] font-body font-light text-[8.5px] tracking-[0.25em] uppercase border border-offwhite/15 text-offwhite/55 hover:border-offwhite/35 hover:text-offwhite/80 transition-all duration-200"
+            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 hover:border-offwhite/35 hover:text-offwhite/80 transition-all duration-200"
           >
             Reagendar
           </Link>
           <Link
             href={`/cancelar/${appt.reference_code}`}
-            className="px-4 py-[9px] font-body font-light text-[8.5px] tracking-[0.25em] uppercase border border-error/25 text-error/55 hover:border-error/45 hover:text-error/75 transition-all duration-200"
+            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-error/25 text-error/55 hover:border-error/45 hover:text-error/75 transition-all duration-200"
           >
             Cancelar
           </Link>

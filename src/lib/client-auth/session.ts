@@ -1,5 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
 import { cookies } from 'next/headers'
+import { createServiceClient } from '@/lib/supabase/server'
 
 /**
  * Lightweight signed-cookie session for the client area — deliberately NOT
@@ -45,6 +46,36 @@ export async function destroyClientSession() {
 export async function getClientSession(): Promise<{ clientId: string } | null> {
   const cookieStore = await cookies()
   return readSessionToken(cookieStore.get(COOKIE_NAME)?.value)
+}
+
+/**
+ * Same as getClientSession(), but also confirms the client row still exists.
+ * The signed cookie alone can't detect a client deleted after the session was
+ * issued (e.g. an LGPD deletion request) — without this check, that browser
+ * gets stuck bouncing between /entrar and /conta forever, since the cookie
+ * still verifies but /conta can never find the client. Best-effort clears the
+ * stale cookie so the next request behaves like a normal logged-out visit —
+ * best-effort because this runs from Server Components too, where Next.js
+ * forbids writing cookies; returning null already stops the redirect loop
+ * regardless, so a failed clear here just means the cookie lingers until the
+ * next login (which overwrites it) or its natural 30-day expiry.
+ */
+export async function getVerifiedClientSession(): Promise<{ clientId: string } | null> {
+  const session = await getClientSession()
+  if (!session) return null
+
+  const db = await createServiceClient() as any
+  const { data: client } = await db
+    .from('clients')
+    .select('id')
+    .eq('id', session.clientId)
+    .maybeSingle()
+
+  if (!client) {
+    await destroyClientSession().catch(() => {})
+    return null
+  }
+  return session
 }
 
 /** Same verification, usable from middleware where `cookies()` isn't available. */
