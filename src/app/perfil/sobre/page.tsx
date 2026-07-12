@@ -10,7 +10,7 @@ export default function SobrePage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Sobre" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         <div className="border border-offwhite/7 divide-y divide-offwhite/6">
           <a
             href={BRAND.siteUrl}

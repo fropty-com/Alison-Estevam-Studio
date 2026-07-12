@@ -35,7 +35,7 @@ export default async function AvaliacoesPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Avaliações" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {pending.length > 0 && (
           <div className="mb-[34px]">
             <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40 mb-[12px]">

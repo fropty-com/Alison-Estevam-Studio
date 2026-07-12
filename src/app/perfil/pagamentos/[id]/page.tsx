@@ -55,7 +55,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Detalhes da Transação" backHref="/perfil/pagamentos" />
 
-      <div className="max-w-[480px] mx-auto px-8 py-10">
+      <div className="max-w-[480px] mx-auto px-8 pt-[122px] pb-10">
         <div className="border border-offwhite/10 bg-offwhite/[0.02]">
           <div className="px-7 pt-7 pb-5 border-b border-offwhite/8">
             <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/25 mb-[10px]">

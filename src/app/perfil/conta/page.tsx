@@ -30,7 +30,7 @@ export default async function ContaDetalhesPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Detalhes da conta" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         <AccountForm initialName={client.name} initialEmail={client.email ?? ''} />
 
         <div className="mb-[26px] pt-[6px]">

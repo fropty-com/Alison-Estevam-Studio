@@ -21,7 +21,7 @@ export default async function FidelidadePage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Cartão Fidelidade" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {!hasActivity ? (
           <div className="border border-offwhite/8 px-8 py-16 text-center">
             <p className="font-display font-light text-[20px] text-offwhite/70 mb-[10px]">Ainda não há cartões</p>

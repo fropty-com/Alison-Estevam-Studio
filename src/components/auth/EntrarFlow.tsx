@@ -75,7 +75,7 @@ export function EntrarFlow() {
   }
 
   return (
-    <div className="px-8 pt-9 pb-16">
+    <div className="px-8 pt-[122px] pb-16">
       {step === 'phone' ? (
         <Link href="/" className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors inline-block">
           ← Voltar ao início

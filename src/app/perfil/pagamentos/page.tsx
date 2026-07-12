@@ -36,7 +36,7 @@ export default async function PagamentosPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Pagamentos" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {payments.length === 0 ? (
           <div className="border border-offwhite/8 px-8 py-16 text-center">
             <p className="font-body font-light text-[13px] text-offwhite/40">

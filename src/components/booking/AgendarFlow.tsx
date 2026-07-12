@@ -8,7 +8,7 @@ import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/wha
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { ClientHeader } from '@/components/layout/ClientHeader'
 
 /* ── Types ─────────────────────────────────────── */
 interface Service {
@@ -837,7 +837,7 @@ function Confirmation({
   result: NonNullable<BookingState['result']>
 }) {
   return (
-    <div className="animate-fade-up min-h-[calc(100vh-theme(spacing.8))] flex flex-col items-center justify-center text-center px-8">
+    <div className="animate-fade-up min-h-[calc(100vh-122px)] pt-[122px] flex flex-col items-center justify-center text-center px-8">
       <div className="w-[64px] h-[64px] rounded-full border-[1.5px] border-gold flex items-center justify-center text-gold text-[22px] mb-[26px]">
         ✓
       </div>
@@ -1044,19 +1044,10 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
     },
   }
 
-  const header = (
-    <div className="border-b border-offwhite/6 px-8 py-6 flex items-center justify-between">
-      <Link href="/" className="font-display font-light text-base tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
-        Alison Estevam
-      </Link>
-      <ThemeToggle />
-    </div>
-  )
-
   if (state.step === 'success' && state.result) {
     return (
       <>
-        {header}
+        <ClientHeader />
         <Confirmation result={state.result} />
       </>
     )
@@ -1064,8 +1055,8 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
 
   return (
     <>
-    {header}
-    <div className="px-8 pt-9 pb-16">
+    <ClientHeader />
+    <div className="px-8 pt-[122px] pb-16">
       {(state.step === 'service' || state.step === 'complements') && (
         <BackLink href="/">← Voltar ao início</BackLink>
       )}

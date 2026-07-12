@@ -8,7 +8,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency, cn } from '@/lib/utils'
 import { getLoyaltyProgress } from '@/lib/loyalty'
 import { BRAND } from '@/config/brand'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { ClientHeader, clientHeaderLinkCls } from '@/components/layout/ClientHeader'
 import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -63,33 +63,18 @@ export default async function ContaPage() {
 
   return (
     <div className="min-h-screen bg-charcoal">
-      {/* Header */}
-      <div className="border-b border-offwhite/6">
-        <div className="max-w-[560px] mx-auto flex items-center justify-between px-8 py-7">
-          <Link href="/" className="font-display font-light text-lg tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
-            Alison Estevam
-          </Link>
-          <div className="flex items-center gap-5">
-            <Link
-              href="/perfil"
-              className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-            >
-              Perfil
-            </Link>
-            <ThemeToggle />
+      <ClientHeader
+        right={
+          <>
+            <Link href="/perfil" className={clientHeaderLinkCls}>Perfil</Link>
             <form action={logoutClientAction} className="contents">
-              <button
-                type="submit"
-                className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
-              >
-                Sair
-              </button>
+              <button type="submit" className={clientHeaderLinkCls}>Sair</button>
             </form>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {/* Greeting */}
         <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
           Área do Cliente

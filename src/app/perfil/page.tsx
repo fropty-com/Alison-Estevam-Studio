@@ -30,7 +30,7 @@ export default async function PerfilPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Perfil" backHref="/conta" />
 
-      <div className="max-w-[560px] mx-auto px-8 py-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {/* Header: avatar, name, phone */}
         <div className="flex items-center gap-5 mb-10">
           <div className="w-[64px] h-[64px] rounded-full bg-offwhite/6 border border-offwhite/10 flex items-center justify-center shrink-0 overflow-hidden">
