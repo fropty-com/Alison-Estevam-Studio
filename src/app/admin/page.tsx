@@ -4,6 +4,8 @@ import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   pending:     { label: 'Pendente',       color: 'text-warning border-warning/30 bg-warning/8'  },
   confirmed:   { label: 'Confirmado',     color: 'text-sage-light border-sage/30 bg-sage/8'     },
@@ -23,13 +25,13 @@ export default async function AdminDashboard() {
 
   const [todayRes, weekRes, clientsRes] = await Promise.all([
     db.from('appointments')
-      .select('id, reference_code, status, services(name, price), clients(name, whatsapp), time_slots(date, start_time)')
+      .select('id, reference_code, status, services(name, price), clients(name, whatsapp), time_slots!inner(date, start_time)')
       .eq('time_slots.date', today)
       .not('status', 'in', '("cancelled","no_show")')
       .order('time_slots(start_time)', { ascending: true }),
 
     db.from('appointments')
-      .select('id, status', { count: 'exact' })
+      .select('id, status, time_slots!inner(date)', { count: 'exact' })
       .gte('time_slots.date', weekStart)
       .lte('time_slots.date', weekEnd)
       .not('status', 'in', '("cancelled","no_show")'),

@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientActions } from '@/components/admin/ClientActions'
 
+export const dynamic = 'force-dynamic'
+
 const STATUS_COLOR: Record<string, string> = {
   pending:   'text-warning',
   confirmed: 'text-sage-light',

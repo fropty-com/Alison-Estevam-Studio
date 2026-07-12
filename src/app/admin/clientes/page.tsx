@@ -4,6 +4,8 @@ import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ClientesPage() {
   const db = await createServiceClient() as any
 

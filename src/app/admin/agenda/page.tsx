@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { AppointmentActions } from '@/components/admin/AppointmentActions'
 import { cn } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 const STATUS_LABEL: Record<string, { label: string; color: string; border: string }> = {
   pending:     { label: 'Pendente',    color: 'text-warning',      border: 'border-l-warning'      },
   confirmed:   { label: 'Confirmado',  color: 'text-sage-light',   border: 'border-l-sage'         },
@@ -30,7 +32,7 @@ export default async function AgendaPage({
 
   const { data: raw } = await db
     .from('appointments')
-    .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots(date, start_time, end_time)')
+    .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)')
     .eq('time_slots.date', dateStr)
     .order('time_slots(start_time)', { ascending: true })
 

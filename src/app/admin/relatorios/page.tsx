@@ -3,6 +3,8 @@ import { format, startOfMonth, endOfMonth, subMonths, eachWeekOfInterval, startO
 import { ptBR } from 'date-fns/locale'
 import { ReportCharts } from '@/components/admin/ReportCharts'
 
+export const dynamic = 'force-dynamic'
+
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
@@ -22,28 +24,28 @@ export default async function RelatoriosPage() {
   const [thisMonthRes, lastMonthRes, svcRankRes, weeklyRes, newClientsRes] = await Promise.all([
     // agendamentos concluídos do mês atual com preço
     db.from('appointments')
-      .select('id, status, services(price), time_slots(date)')
+      .select('id, status, services(price), time_slots!inner(date)')
       .gte('time_slots.date', monthStart)
       .lte('time_slots.date', monthEnd)
       .in('status', ['confirmed', 'completed']),
 
     // mês anterior
     db.from('appointments')
-      .select('id, status, services(price), time_slots(date)')
+      .select('id, status, services(price), time_slots!inner(date)')
       .gte('time_slots.date', lastStart)
       .lte('time_slots.date', lastEnd)
       .in('status', ['confirmed', 'completed']),
 
     // ranking de serviços (mês atual)
     db.from('appointments')
-      .select('services(name, price), time_slots(date)')
+      .select('services(name, price), time_slots!inner(date)')
       .gte('time_slots.date', monthStart)
       .lte('time_slots.date', monthEnd)
       .in('status', ['confirmed', 'completed']),
 
     // agendamentos por semana (últimas 6)
     db.from('appointments')
-      .select('id, status, time_slots(date)')
+      .select('id, status, time_slots!inner(date)')
       .gte('time_slots.date', sixWeeksAgo)
       .lte('time_slots.date', monthEnd)
       .in('status', ['confirmed', 'completed']),
@@ -77,13 +79,13 @@ export default async function RelatoriosPage() {
   // Taxa de cancelamento do mês
   const totalMonthRes = await db
     .from('appointments')
-    .select('id', { count: 'exact', head: true })
+    .select('id, time_slots!inner(date)', { count: 'exact', head: true })
     .gte('time_slots.date', monthStart)
     .lte('time_slots.date', monthEnd)
 
   const cancelledRes = await db
     .from('appointments')
-    .select('id', { count: 'exact', head: true })
+    .select('id, time_slots!inner(date)', { count: 'exact', head: true })
     .gte('time_slots.date', monthStart)
     .lte('time_slots.date', monthEnd)
     .eq('status', 'cancelled')

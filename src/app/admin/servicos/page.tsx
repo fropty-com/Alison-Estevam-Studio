@@ -1,6 +1,8 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { ServiceRow } from '@/components/admin/ServiceRow'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ServicosPage() {
   const db = await createServiceClient() as any
   const { data } = await db

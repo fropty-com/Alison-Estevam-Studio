@@ -6,6 +6,8 @@ import { BlockedPeriodForm } from '@/components/admin/BlockedPeriodForm'
 import { removeBlockedPeriod } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 
+export const dynamic = 'force-dynamic'
+
 const WEEKDAY = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
 export default async function ConfiguracoesPage() {
