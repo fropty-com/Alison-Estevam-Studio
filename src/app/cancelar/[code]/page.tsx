@@ -31,7 +31,7 @@ export default async function CancelarPage({ params }: { params: { code: string 
     : '—'
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-6 py-20">
+    <div className="min-h-[70vh] flex items-center justify-center px-6 pt-[110px] pb-20 lg:pt-[152px]">
       <div className="w-full max-w-[480px]">
 
         {/* Header */}
