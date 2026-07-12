@@ -7,6 +7,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency, cn } from '@/lib/utils'
 import { getLoyaltyProgress } from '@/lib/loyalty'
+import { BRAND } from '@/config/brand'
 import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -20,6 +21,13 @@ const STATUS_LABEL: Record<string, string> = {
   completed:   'Concluído',
   cancelled:   'Cancelado',
   no_show:     'Não compareceu',
+}
+
+const STATUS_STYLE: Record<string, string> = {
+  pending:     'border-gold/35 text-gold/80',
+  confirmed:   'border-sage/45 text-sage-light',
+  checked_in:  'border-gold bg-gold/15 text-gold',
+  in_progress: 'border-gold bg-gold/15 text-gold',
 }
 
 const UPCOMING_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
@@ -198,28 +206,43 @@ export default async function ContaPage() {
 function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
   const slot = Array.isArray(appt.time_slots) ? appt.time_slots[0] : appt.time_slots
   const svc  = Array.isArray(appt.services)   ? appt.services[0]   : appt.services
-  const dateLabel = slot?.date ? format(parseISO(slot.date), "EEEE, d 'de' MMMM", { locale: ptBR }) : '—'
-  const timeLabel = slot?.start_time ? (slot.start_time as string).substring(0, 5) : '—'
-  const canModify = appt.status === 'pending' || appt.status === 'confirmed'
+  const date = slot?.date ? parseISO(slot.date) : null
+  const monthLabel = date ? format(date, 'MMM', { locale: ptBR }).replace('.', '') : '—'
+  const dayLabel   = date ? format(date, 'd') : '—'
+  const timeLabel  = slot?.start_time ? (slot.start_time as string).substring(0, 5) : '—'
+  const canModify  = appt.status === 'pending' || appt.status === 'confirmed'
 
   return (
     <div className="border border-offwhite/10 px-6 py-5">
-      <div className="flex items-start justify-between gap-4 mb-[4px]">
-        <p className="font-display font-light text-xl text-offwhite tracking-[0.02em]">{svc?.name ?? '—'}</p>
-        <span className="font-data text-lg text-gold shrink-0">{formatCurrency(Number(appt.total_price))}</span>
+      <div className="flex items-start gap-5">
+        <div className="flex-1 min-w-0">
+          <span className={cn(
+            'inline-block mb-[10px] px-3 py-[4px] border rounded-full font-body font-light text-[7.5px] tracking-[0.2em] uppercase',
+            STATUS_STYLE[appt.status] ?? 'border-offwhite/20 text-offwhite/40'
+          )}>
+            {STATUS_LABEL[appt.status] ?? appt.status}
+          </span>
+          <p className="font-display font-light text-xl text-offwhite tracking-[0.02em] mb-[3px] truncate">{svc?.name ?? '—'}</p>
+          <p className="font-body font-light text-[11.5px] text-offwhite/40 mb-[4px]">com {BRAND.name}</p>
+          <p className="font-data text-[13px] text-gold">{formatCurrency(Number(appt.total_price))}</p>
+        </div>
+
+        <div className="flex items-stretch shrink-0">
+          <div className="w-px bg-offwhite/12 mr-5" />
+          <div className="flex flex-col items-center justify-center text-center min-w-[50px]">
+            <span className="font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 mb-[2px]">
+              {monthLabel}
+            </span>
+            <span className="font-display font-light text-[27px] text-offwhite leading-none mb-[3px]">
+              {dayLabel}
+            </span>
+            <span className="font-data text-[11px] text-offwhite/50">{timeLabel}</span>
+          </div>
+        </div>
       </div>
-      <p className="font-body font-light text-[12px] text-offwhite/45 capitalize mb-[2px]">
-        {dateLabel} às {timeLabel}
-      </p>
-      <p className={cn(
-        'font-body font-light text-[9px] tracking-[0.2em] uppercase mb-[14px]',
-        appt.status === 'checked_in' || appt.status === 'in_progress' ? 'text-gold' : 'text-offwhite/35'
-      )}>
-        {STATUS_LABEL[appt.status] ?? appt.status}
-      </p>
 
       {canModify && !compact && (
-        <div className="flex gap-[8px]">
+        <div className="flex gap-[8px] mt-[16px]">
           <Link
             href={`/reagendar/${appt.reference_code}`}
             className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 hover:border-offwhite/35 hover:text-offwhite/80 transition-all duration-200"
