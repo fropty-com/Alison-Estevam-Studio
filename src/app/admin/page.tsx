@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  pending:   { label: 'Pendente',   color: 'text-warning border-warning/30 bg-warning/8'  },
-  confirmed: { label: 'Confirmado', color: 'text-sage-light border-sage/30 bg-sage/8'     },
-  completed: { label: 'Concluído',  color: 'text-offwhite/40 border-offwhite/12 bg-offwhite/3' },
-  cancelled: { label: 'Cancelado',  color: 'text-error/60 border-error/20 bg-error/5'     },
-  no_show:   { label: 'No-show',    color: 'text-error/45 border-error/15 bg-error/4'     },
+  pending:     { label: 'Pendente',       color: 'text-warning border-warning/30 bg-warning/8'  },
+  confirmed:   { label: 'Confirmado',     color: 'text-sage-light border-sage/30 bg-sage/8'     },
+  checked_in:  { label: 'Chegou',         color: 'text-gold border-gold/30 bg-gold/8'           },
+  in_progress: { label: 'Em atendimento', color: 'text-gold border-gold/30 bg-gold/8'           },
+  completed:   { label: 'Concluído',      color: 'text-offwhite/40 border-offwhite/12 bg-offwhite/3' },
+  cancelled:   { label: 'Cancelado',      color: 'text-error/60 border-error/20 bg-error/5'     },
+  no_show:     { label: 'No-show',        color: 'text-error/45 border-error/15 bg-error/4'     },
 }
 
 export default async function AdminDashboard() {

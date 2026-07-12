@@ -103,6 +103,71 @@ export async function updateAppointmentStatus(id: string, status: string, reason
   return { ok: true }
 }
 
+export async function checkInAppointment(id: string) {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { error } = await db.from('appointments').update({
+    status: 'checked_in',
+    checked_in_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }).eq('id', id)
+  if (error) return { error: 'Erro ao registrar check-in.' }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
+export async function checkOutAppointment(id: string, data: {
+  method: 'cash' | 'pix' | 'debit_card' | 'credit_card' | 'courtesy'
+  grossAmount: number
+  discount: number
+}) {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+
+  const { data: fee } = await db
+    .from('payment_fee_settings')
+    .select('fee_percentage')
+    .eq('method', data.method)
+    .single()
+
+  const feePercentage = fee?.fee_percentage ?? 0
+  const netBeforeFee   = Math.max(0, data.grossAmount - data.discount)
+  const feeAmount      = Math.round(netBeforeFee * (feePercentage / 100) * 100) / 100
+  const netAmount      = Math.round((netBeforeFee - feeAmount) * 100) / 100
+
+  const now = new Date().toISOString()
+
+  const [{ error: apptError }, { error: paymentError }] = await Promise.all([
+    db.from('appointments').update({
+      status: 'completed',
+      checked_out_at: now,
+      discount: data.discount,
+      updated_at: now,
+    }).eq('id', id),
+    db.from('payments').insert({
+      appointment_id: id,
+      method: data.method,
+      gross_amount: data.grossAmount,
+      fee_percentage: feePercentage,
+      fee_amount: feeAmount,
+      net_amount: netAmount,
+      paid_at: now,
+    }),
+  ])
+
+  if (apptError || paymentError) return { error: 'Erro ao registrar pagamento.' }
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
 export async function addAppointmentNote(id: string, notes: string) {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }

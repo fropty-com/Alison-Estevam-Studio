@@ -1,15 +1,26 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateAppointmentStatus, addAppointmentNote } from '@/app/admin/actions'
+import { updateAppointmentStatus, addAppointmentNote, checkInAppointment, checkOutAppointment } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 
-export function AppointmentActions({ id, status, notes }: { id: string; status: string; notes?: string | null }) {
+const PAYMENT_METHODS: { value: 'cash' | 'pix' | 'debit_card' | 'credit_card' | 'courtesy'; label: string }[] = [
+  { value: 'cash',        label: 'Dinheiro' },
+  { value: 'pix',         label: 'Pix' },
+  { value: 'debit_card',  label: 'Débito' },
+  { value: 'credit_card', label: 'Crédito' },
+  { value: 'courtesy',    label: 'Cortesia' },
+]
+
+export function AppointmentActions({ id, status, notes, totalPrice }: { id: string; status: string; notes?: string | null; totalPrice: number }) {
   const [pending, startTransition] = useTransition()
   const [showNote,    setShowNote]    = useState(false)
   const [noteText,    setNoteText]    = useState(notes ?? '')
   const [cancelModal, setCancelModal] = useState(false)
   const [cancelReason, setCancelReason] = useState('')
+  const [checkoutForm, setCheckoutForm] = useState(false)
+  const [method,   setMethod]   = useState<typeof PAYMENT_METHODS[number]['value']>('pix')
+  const [discount, setDiscount] = useState('0')
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const act = (fn: () => Promise<{ ok?: boolean; error?: string } | undefined>) => {
@@ -19,6 +30,9 @@ export function AppointmentActions({ id, status, notes }: { id: string; status: 
       else setFeedback(null)
     })
   }
+
+  const discountValue = Math.max(0, Number(discount.replace(',', '.')) || 0)
+  const finalValue     = Math.max(0, totalPrice - discountValue)
 
   return (
     <div className="mt-3 space-y-2">
@@ -38,32 +52,46 @@ export function AppointmentActions({ id, status, notes }: { id: string; status: 
           </button>
         )}
 
-        {(status === 'pending' || status === 'confirmed') && (
-          <>
-            <button
-              disabled={pending}
-              onClick={() => act(() => updateAppointmentStatus(id, 'completed'))}
-              className={cn(
-                'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-                'bg-offwhite/5 border border-offwhite/12 text-offwhite/55',
-                'hover:bg-offwhite/10 transition-all duration-200 disabled:opacity-40'
-              )}
-            >
-              Concluir
-            </button>
+        {status === 'confirmed' && (
+          <button
+            disabled={pending}
+            onClick={() => act(() => checkInAppointment(id))}
+            className={cn(
+              'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
+              'bg-gold/12 border border-gold/30 text-gold',
+              'hover:bg-gold/22 transition-all duration-200 disabled:opacity-40'
+            )}
+          >
+            Check-in
+          </button>
+        )}
 
-            <button
-              disabled={pending}
-              onClick={() => setCancelModal(true)}
-              className={cn(
-                'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-                'bg-error/5 border border-error/20 text-error/60',
-                'hover:bg-error/10 transition-all duration-200 disabled:opacity-40'
-              )}
-            >
-              Cancelar
-            </button>
-          </>
+        {status === 'checked_in' && (
+          <button
+            disabled={pending}
+            onClick={() => setCheckoutForm(v => !v)}
+            className={cn(
+              'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
+              'bg-gold/12 border border-gold/30 text-gold',
+              'hover:bg-gold/22 transition-all duration-200 disabled:opacity-40'
+            )}
+          >
+            {checkoutForm ? 'Fechar' : 'Check-out'}
+          </button>
+        )}
+
+        {(status === 'pending' || status === 'confirmed') && (
+          <button
+            disabled={pending}
+            onClick={() => setCancelModal(true)}
+            className={cn(
+              'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
+              'bg-error/5 border border-error/20 text-error/60',
+              'hover:bg-error/10 transition-all duration-200 disabled:opacity-40'
+            )}
+          >
+            Cancelar
+          </button>
         )}
 
         <button
@@ -77,6 +105,59 @@ export function AppointmentActions({ id, status, notes }: { id: string; status: 
           {showNote ? 'Fechar nota' : 'Nota'}
         </button>
       </div>
+
+      {/* Checkout / payment form */}
+      {checkoutForm && (
+        <div className="bg-gold/5 border border-gold/20 p-4 space-y-3">
+          <p className="font-body font-light text-[9px] tracking-[0.22em] uppercase text-gold/80">
+            Registrar pagamento
+          </p>
+
+          <div className="flex flex-wrap gap-[6px]">
+            {PAYMENT_METHODS.map(m => (
+              <button
+                key={m.value}
+                type="button"
+                onClick={() => setMethod(m.value)}
+                className={cn(
+                  'px-3 py-[6px] font-body font-light text-[9px] tracking-[0.12em]',
+                  'border transition-all duration-200',
+                  method === m.value
+                    ? 'border-gold bg-gold/15 text-gold'
+                    : 'border-offwhite/12 text-offwhite/45 hover:border-offwhite/25'
+                )}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
+              Desconto R$
+            </label>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={discount}
+              onChange={e => setDiscount(e.target.value)}
+              className="w-24 bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-data text-[13px] px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
+            />
+          </div>
+
+          <p className="font-body font-light text-[11px] text-offwhite/55">
+            Valor final: <span className="font-data text-gold">R$ {finalValue.toFixed(2)}</span>
+          </p>
+
+          <button
+            disabled={pending}
+            onClick={() => act(() => checkOutAppointment(id, { method, grossAmount: totalPrice, discount: discountValue }))}
+            className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-gold/20 border border-gold/40 text-gold hover:bg-gold/30 transition-all duration-200 disabled:opacity-40"
+          >
+            {pending ? 'Registrando…' : 'Confirmar pagamento'}
+          </button>
+        </div>
+      )}
 
       {/* Note editor */}
       {showNote && (

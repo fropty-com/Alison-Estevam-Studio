@@ -6,11 +6,13 @@ import { AppointmentActions } from '@/components/admin/AppointmentActions'
 import { cn } from '@/lib/utils'
 
 const STATUS_LABEL: Record<string, { label: string; color: string; border: string }> = {
-  pending:   { label: 'Pendente',   color: 'text-warning',      border: 'border-l-warning'      },
-  confirmed: { label: 'Confirmado', color: 'text-sage-light',   border: 'border-l-sage'         },
-  completed: { label: 'Concluído',  color: 'text-offwhite/35',  border: 'border-l-offwhite/20'  },
-  cancelled: { label: 'Cancelado',  color: 'text-error/50',     border: 'border-l-error/40'     },
-  no_show:   { label: 'No-show',    color: 'text-error/40',     border: 'border-l-error/25'     },
+  pending:     { label: 'Pendente',    color: 'text-warning',      border: 'border-l-warning'      },
+  confirmed:   { label: 'Confirmado',  color: 'text-sage-light',   border: 'border-l-sage'         },
+  checked_in:  { label: 'Chegou',      color: 'text-gold',         border: 'border-l-gold'         },
+  in_progress: { label: 'Em atendimento', color: 'text-gold',      border: 'border-l-gold'         },
+  completed:   { label: 'Concluído',   color: 'text-offwhite/35',  border: 'border-l-offwhite/20'  },
+  cancelled:   { label: 'Cancelado',   color: 'text-error/50',     border: 'border-l-error/40'     },
+  no_show:     { label: 'No-show',     color: 'text-error/40',     border: 'border-l-error/25'     },
 }
 
 export default async function AgendaPage({
@@ -28,7 +30,7 @@ export default async function AgendaPage({
 
   const { data: raw } = await db
     .from('appointments')
-    .select('id, reference_code, status, notes, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots(date, start_time, end_time)')
+    .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots(date, start_time, end_time)')
     .eq('time_slots.date', dateStr)
     .order('time_slots(start_time)', { ascending: true })
 
@@ -107,6 +109,7 @@ export default async function AgendaPage({
                       </p>
                       <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
                         {cli?.whatsapp} · #{a.reference_code}
+                        {a.checked_in_at && ` · chegou às ${format(new Date(a.checked_in_at), 'HH:mm')}`}
                       </p>
                       {a.notes && (
                         <p className="mt-2 font-body font-light text-[10px] text-offwhite/40 italic border-l border-offwhite/12 pl-2">
@@ -123,7 +126,7 @@ export default async function AgendaPage({
                 </div>
 
                 {/* Actions */}
-                <AppointmentActions id={a.id} status={a.status} notes={a.notes} />
+                <AppointmentActions id={a.id} status={a.status} notes={a.notes} totalPrice={Number(a.total_price)} />
               </div>
             )
           })}

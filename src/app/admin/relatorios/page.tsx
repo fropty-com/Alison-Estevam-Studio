@@ -23,7 +23,6 @@ export default async function RelatoriosPage() {
     // agendamentos concluídos do mês atual com preço
     db.from('appointments')
       .select('id, status, services(price), time_slots(date)')
-      .eq('time_slots.date', null) // contorno: filter abaixo
       .gte('time_slots.date', monthStart)
       .lte('time_slots.date', monthEnd)
       .in('status', ['confirmed', 'completed']),
