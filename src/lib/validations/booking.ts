@@ -15,7 +15,7 @@ export const createAppointmentSchema = z.object({
     .string()
     .transform(v => v.replace(/\D/g, ''))
     .pipe(
-      z.string().min(10, 'WhatsApp inválido.').max(13, 'WhatsApp inválido.')
+      z.string().regex(/^(55)?\d{11}$/, 'WhatsApp inválido. Informe o DDD + 9 dígitos.')
     ),
 
   email: z
@@ -37,6 +37,12 @@ export const createAppointmentSchema = z.object({
     .max(10)
     .optional()
     .default([]),
+
+  couponCode: z
+    .string()
+    .max(30)
+    .optional()
+    .or(z.literal('')),
 })
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>

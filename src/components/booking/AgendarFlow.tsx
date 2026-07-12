@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { cn, formatCurrency } from '@/lib/utils'
+import { cn, formatCurrency, maskPhoneInput } from '@/lib/utils'
 import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/whatsapp/messages'
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -444,7 +444,7 @@ function DetailsForm({
   const handleContinue = () => {
     const e: Record<string, string> = {}
     if (name.trim().length < 2)                  e.name     = 'Por favor, informe seu nome.'
-    if (whatsapp.replace(/\D/g, '').length < 10)  e.whatsapp = 'Por favor, informe seu WhatsApp.'
+    if (whatsapp.replace(/\D/g, '').length !== 11) e.whatsapp = 'Informe o WhatsApp com DDD + 9 dígitos.'
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'E-mail inválido.'
     setErrors(e)
     if (Object.keys(e).length > 0) return
@@ -485,8 +485,9 @@ function DetailsForm({
           inputMode="tel"
           autoComplete="tel"
           placeholder="(00) 00000-0000"
+          maxLength={15}
           value={whatsapp}
-          onChange={e => setWhatsapp(e.target.value)}
+          onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
           className={cn(
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-sm px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
@@ -557,10 +558,40 @@ function SummaryStep({
   const [loading,  setLoading]  = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
+  const [couponInput,   setCouponInput]   = useState('')
+  const [couponPending, setCouponPending] = useState(false)
+  const [couponError,   setCouponError]   = useState<string | null>(null)
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountAmount: number; label: string } | null>(null)
+
   const chosen = complements.filter(c => complementIds.includes(c.id))
   const complementsPrice = chosen.reduce((sum, c) => sum + (c.price ?? 0), 0)
-  const totalPrice = service.price + complementsPrice
+  const subtotal = service.price + complementsPrice
+  const totalPrice = Math.max(0, subtotal - (appliedCoupon?.discountAmount ?? 0))
   const dateLabel = format(selectedDate, "d 'de' MMMM", { locale: ptBR })
+
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) return
+    setCouponPending(true)
+    setCouponError(null)
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponInput.trim(), subtotal }),
+      })
+      const data = await res.json()
+      if (!data.valid) {
+        setCouponError(data.error ?? 'Cupom inválido.')
+        setAppliedCoupon(null)
+        return
+      }
+      setAppliedCoupon({ code: couponInput.trim().toUpperCase(), discountAmount: data.discountAmount, label: data.discountLabel })
+    } catch {
+      setCouponError('Erro de conexão. Tente novamente.')
+    } finally {
+      setCouponPending(false)
+    }
+  }
 
   const handleSubmit = async () => {
     setLoading(true)
@@ -576,6 +607,7 @@ function SummaryStep({
           serviceId: service.id,
           slotId:    selectedSlot.id,
           complementIds,
+          couponCode: appliedCoupon?.code || undefined,
         }),
       })
       const data = await res.json()
@@ -619,11 +651,51 @@ function SummaryStep({
           <span className="font-body font-light text-[12px] text-offwhite/45">Horário</span>
           <span className="font-body font-light text-[12px] text-offwhite">{selectedSlot.startTime}</span>
         </div>
+
+        {appliedCoupon && (
+          <div className="flex justify-between items-center px-[18px] py-[13px] border-b border-offwhite/8">
+            <span className="font-body font-light text-[12px] text-sage-light">
+              Cupom {appliedCoupon.code}
+              <button
+                onClick={() => { setAppliedCoupon(null); setCouponInput(''); setCouponError(null) }}
+                className="ml-2 text-offwhite/30 hover:text-offwhite/60 underline underline-offset-2 text-[10px]"
+              >
+                remover
+              </button>
+            </span>
+            <span className="font-body font-light text-[12px] text-sage-light">−{formatCurrency(appliedCoupon.discountAmount)}</span>
+          </div>
+        )}
+
         <div className="flex justify-between px-[18px] py-[13px]">
           <span className="font-body font-normal text-[12px] text-gold uppercase tracking-[0.1em]">Valor</span>
           <span className="font-data text-lg text-gold">{formatCurrency(totalPrice)}</span>
         </div>
       </div>
+
+      {!appliedCoupon && (
+        <div className="mb-[16px]">
+          <div className="flex gap-[8px]">
+            <input
+              type="text"
+              value={couponInput}
+              onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null) }}
+              placeholder="Cupom de desconto (opcional)"
+              className="flex-1 bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[15px] py-[12px] outline-none rounded-none placeholder:text-offwhite/35 focus:border-gold focus:bg-gold/5 transition-all duration-250"
+            />
+            <button
+              onClick={handleApplyCoupon}
+              disabled={couponPending || !couponInput.trim()}
+              className="px-5 font-body font-medium text-[9.5px] tracking-[0.2em] uppercase border border-offwhite/25 text-offwhite/60 hover:border-gold/50 hover:text-gold transition-all duration-200 disabled:opacity-40"
+            >
+              {couponPending ? '…' : 'Aplicar'}
+            </button>
+          </div>
+          {couponError && (
+            <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-[8px]">{couponError}</p>
+          )}
+        </div>
+      )}
 
       {apiError && (
         <div className="mb-[16px] px-[15px] py-[12px] border border-error/30 bg-error/5">

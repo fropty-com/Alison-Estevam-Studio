@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { createAppointmentSchema } from '@/lib/validations/booking'
 import { generateReferenceCode, formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
+import { validateCoupon } from '@/lib/coupons'
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +17,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { name, whatsapp, email, serviceId, slotId, complementIds } = parsed.data
+    const { name, whatsapp, email, serviceId, slotId, complementIds, couponCode } = parsed.data
     // Cast to any — Supabase v2.43 generics don't resolve table types reliably
     const db = await createServiceClient() as any
 
@@ -82,7 +83,22 @@ export async function POST(request: NextRequest) {
     }
 
     const complementsPrice = complements.reduce((sum, c) => sum + Number(c.price), 0)
-    const totalPrice = Number(service.price) + complementsPrice
+    const subtotal = Number(service.price) + complementsPrice
+
+    // 2c. Validate coupon, if provided — re-checked here even though the
+    // booking UI already validated it live, since this is the authoritative
+    // pass (the live check doesn't consume a use).
+    let discountAmount = 0
+    let appliedCoupon: { id: string } | null = null
+    if (couponCode) {
+      const result = await validateCoupon(db, couponCode, subtotal)
+      if (!result.valid) {
+        return NextResponse.json({ error: result.error }, { status: 422 })
+      }
+      discountAmount = result.discountAmount
+      appliedCoupon = result.coupon
+    }
+    const totalPrice = Math.max(0, subtotal - discountAmount)
 
     // 3. Find or create client
     const formattedWhatsapp = formatWhatsApp(whatsapp)
@@ -155,6 +171,19 @@ export async function POST(request: NextRequest) {
       if (complementsError) console.error('appointment_complements insert error:', complementsError)
     }
 
+    // 6b. Record the coupon redemption and consume a use
+    if (appliedCoupon) {
+      const { data: currentCoupon } = await db.from('coupons').select('uses_count').eq('id', appliedCoupon.id).single()
+      await Promise.all([
+        db.from('coupon_redemptions').insert({
+          coupon_id: appliedCoupon.id,
+          appointment_id: appt.id,
+          discount_amount: discountAmount,
+        }),
+        db.from('coupons').update({ uses_count: (currentCoupon?.uses_count ?? 0) + 1 }).eq('id', appliedCoupon.id),
+      ])
+    }
+
     // Send confirmation email (non-blocking — failure doesn't break the booking)
     if (email) {
       sendConfirmationEmail({
@@ -174,6 +203,7 @@ export async function POST(request: NextRequest) {
       complementNames:   complements.map(c => c.name),
       servicePrice:      Number(service.price),
       complementsPrice,
+      discountAmount,
       totalPrice,
       date:              slot.date,
       startTime:         slot.start_time.substring(0, 5),
