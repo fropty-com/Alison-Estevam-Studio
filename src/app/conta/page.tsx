@@ -8,6 +8,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency, cn } from '@/lib/utils'
 import { getLoyaltyProgress } from '@/lib/loyalty'
 import { BRAND } from '@/config/brand'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -75,6 +76,7 @@ export default async function ContaPage() {
             >
               Perfil
             </Link>
+            <ThemeToggle />
             <form action={logoutClientAction} className="contents">
               <button
                 type="submit"

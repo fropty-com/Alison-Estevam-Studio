@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 export function ProfileHeader({ title, backHref = '/perfil' }: { title: string; backHref?: string }) {
   return (
@@ -11,7 +12,8 @@ export function ProfileHeader({ title, backHref = '/perfil' }: { title: string; 
         >
           ←
         </Link>
-        <h1 className="font-display font-light text-[19px] text-offwhite tracking-[0.02em]">{title}</h1>
+        <h1 className="font-display font-light text-[19px] text-offwhite tracking-[0.02em] flex-1">{title}</h1>
+        <ThemeToggle />
       </div>
     </div>
   )

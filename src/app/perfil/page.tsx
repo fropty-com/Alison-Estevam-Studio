@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { MenuRow } from '@/components/profile/MenuRow'
+import { ProfileHeader } from '@/components/profile/ProfileHeader'
 
 export const metadata: Metadata = { title: 'Perfil — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -27,12 +28,7 @@ export default async function PerfilPage() {
 
   return (
     <div className="min-h-screen bg-charcoal">
-      <div className="border-b border-offwhite/6">
-        <div className="max-w-[560px] mx-auto flex items-center gap-4 px-8 py-7">
-          <a href="/conta" aria-label="Voltar" className="font-body font-light text-lg text-offwhite/40 hover:text-offwhite/70 transition-colors">←</a>
-          <h1 className="font-display font-light text-[19px] text-offwhite tracking-[0.02em]">Perfil</h1>
-        </div>
-      </div>
+      <ProfileHeader title="Perfil" backHref="/conta" />
 
       <div className="max-w-[560px] mx-auto px-8 py-10">
         {/* Header: avatar, name, phone */}

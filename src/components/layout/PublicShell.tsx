@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import { Nav }           from './Nav'
 import { Footer }        from './Footer'
 import { FloatingWhatsapp } from './FloatingWhatsapp'
-import { ThemeToggle }   from '@/components/ui/ThemeToggle'
 
 function ThemeInit() {
   useEffect(() => {
@@ -30,13 +29,6 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return (
       <>
         <ThemeInit />
-        <div className="fixed top-[36px] inset-x-0 z-[400] pointer-events-none">
-          <div className="max-w-[560px] mx-auto px-8 flex justify-end">
-            <div className="pointer-events-auto">
-              <ThemeToggle />
-            </div>
-          </div>
-        </div>
         <main>{children}</main>
         <FloatingWhatsapp />
       </>

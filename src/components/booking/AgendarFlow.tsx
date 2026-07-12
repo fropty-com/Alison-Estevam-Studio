@@ -8,6 +8,7 @@ import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/wha
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 /* ── Types ─────────────────────────────────────── */
 interface Service {
@@ -1043,11 +1044,27 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
     },
   }
 
+  const header = (
+    <div className="border-b border-offwhite/6 px-8 py-6 flex items-center justify-between">
+      <Link href="/" className="font-display font-light text-base tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
+        Alison Estevam
+      </Link>
+      <ThemeToggle />
+    </div>
+  )
+
   if (state.step === 'success' && state.result) {
-    return <Confirmation result={state.result} />
+    return (
+      <>
+        {header}
+        <Confirmation result={state.result} />
+      </>
+    )
   }
 
   return (
+    <>
+    {header}
     <div className="px-8 pt-9 pb-16">
       {(state.step === 'service' || state.step === 'complements') && (
         <BackLink href="/">← Voltar ao início</BackLink>
@@ -1118,5 +1135,6 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
         )}
       </div>
     </div>
+    </>
   )
 }
