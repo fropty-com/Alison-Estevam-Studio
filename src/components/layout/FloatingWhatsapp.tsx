@@ -14,7 +14,7 @@ export function FloatingWhatsapp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Conversar no WhatsApp"
-      className="fixed bottom-6 right-6 z-[400] w-14 h-14 rounded-full bg-[#2E5A3E] text-offwhite flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.25)] transition-transform duration-200 hover:scale-105"
+      className="fixed bottom-6 right-6 z-[400] w-[64px] h-[64px] rounded-full bg-[#2E5A3E] text-offwhite flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.25)] transition-transform duration-200 hover:scale-105"
     >
       <ChatBubbleIcon size={26} />
     </a>

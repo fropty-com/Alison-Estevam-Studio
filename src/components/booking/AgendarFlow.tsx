@@ -862,7 +862,7 @@ function Confirmation({
         <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </a>
       <Link
-        href="/"
+        href="/conta"
         className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
       >
         Voltar ao início
