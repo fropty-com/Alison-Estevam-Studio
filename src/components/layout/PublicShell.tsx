@@ -30,8 +30,12 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return (
       <>
         <ThemeInit />
-        <div className="fixed top-5 right-5 z-[400] w-9 h-9 rounded-full bg-offwhite/6 border border-offwhite/10 flex items-center justify-center">
-          <ThemeToggle />
+        <div className="fixed top-[36px] inset-x-0 z-[400] pointer-events-none">
+          <div className="max-w-[560px] mx-auto px-8 flex justify-end">
+            <div className="pointer-events-auto">
+              <ThemeToggle />
+            </div>
+          </div>
         </div>
         <main>{children}</main>
         <FloatingWhatsapp />
