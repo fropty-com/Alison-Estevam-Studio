@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession, destroyClientSession } from '@/lib/client-auth/session'
 import { sendReceiptEmail } from '@/lib/email/receipt'
+import { isFullName } from '@/lib/utils'
 
 export async function updateAccountDetails(data: { name: string; email: string }): Promise<{ ok?: boolean; error?: string }> {
   const session = await getVerifiedClientSession()
@@ -12,7 +13,7 @@ export async function updateAccountDetails(data: { name: string; email: string }
 
   const name = data.name.trim()
   const email = data.email.trim()
-  if (name.length < 2) return { error: 'Informe seu nome.' }
+  if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
   const db = await createServiceClient() as any

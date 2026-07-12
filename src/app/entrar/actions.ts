@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/server'
-import { formatWhatsApp } from '@/lib/utils'
+import { formatWhatsApp, isFullName } from '@/lib/utils'
 import { requestOtp, verifyOtp } from '@/lib/client-auth/otp'
 import { createClientSession } from '@/lib/client-auth/session'
 
@@ -64,7 +64,7 @@ export async function verifyAndLoginAction(input: {
     clientId = existing.id
     await db.from('clients').update({ last_login_at: new Date().toISOString() }).eq('id', clientId)
   } else {
-    if (!input.name || input.name.trim().length < 2) return { error: 'Informe seu nome.' }
+    if (!input.name || !isFullName(input.name)) return { error: 'Informe nome e sobrenome.' }
     if (!input.consentTerms) return { error: 'É necessário aceitar os termos.' }
 
     const { data: created, error } = await db

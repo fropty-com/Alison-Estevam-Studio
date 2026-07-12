@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { cn, formatCurrency, maskPhoneInput } from '@/lib/utils'
+import { cn, formatCurrency, maskPhoneInput, isFullName } from '@/lib/utils'
 import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/whatsapp/messages'
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -461,7 +461,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
 
   const handleSubmit = async () => {
     setError(null)
-    if (name.trim().length < 2) { setError('Informe seu nome.'); return }
+    if (!isFullName(name)) { setError('Informe nome e sobrenome.'); return }
     if (whatsapp.replace(/\D/g, '').length !== 11) { setError('Informe o WhatsApp com DDD + 9 dígitos.'); return }
 
     setLoading(true)
@@ -497,8 +497,8 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
       <div className="flex flex-col gap-[10px]">
         <input
           type="text"
-          autoComplete="given-name"
-          placeholder="Seu nome"
+          autoComplete="name"
+          placeholder="Nome e sobrenome"
           value={name}
           onChange={e => setName(e.target.value)}
           className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
@@ -541,7 +541,7 @@ function DetailsForm({
 
   const handleContinue = () => {
     const e: Record<string, string> = {}
-    if (name.trim().length < 2)                  e.name     = 'Por favor, informe seu nome.'
+    if (!isFullName(name))                        e.name     = 'Informe nome e sobrenome.'
     if (whatsapp.replace(/\D/g, '').length !== 11) e.whatsapp = 'Informe o WhatsApp com DDD + 9 dígitos.'
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'E-mail inválido.'
     setErrors(e)
@@ -553,14 +553,14 @@ function DetailsForm({
     <div>
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]" htmlFor="f-nome">
-          Seu nome
+          Nome completo
         </label>
         <input
           id="f-nome"
           type="text"
-          autoComplete="given-name"
+          autoComplete="name"
           autoCapitalize="words"
-          placeholder="Como você se chama?"
+          placeholder="Nome e sobrenome"
           value={name}
           onChange={e => setName(e.target.value)}
           className={cn(
@@ -872,7 +872,7 @@ function Confirmation({
 }
 
 /* ── Page flow ─────────────────────────────────── */
-export function AgendarFlow() {
+export function AgendarFlow({ initialClient = null }: { initialClient?: ClientData | null }) {
   const searchParams = useSearchParams()
   const presetServiceSlug = searchParams.get('servico')
 
@@ -882,7 +882,7 @@ export function AgendarFlow() {
   const [services,      setServices]      = useState<Service[]>([])
   const [complements,   setComplements]   = useState<Complement[]>([])
   const [state,         setState]         = useState<BookingState>({
-    step: 'service', selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: null, result: null,
+    step: 'service', selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: initialClient, result: null,
   })
 
   // Fetch services once on mount
@@ -959,7 +959,14 @@ export function AgendarFlow() {
   }
 
   const selectSlot = (slot: Slot) => {
-    setState(s => ({ ...s, selectedSlot: slot, step: 'details' }))
+    // Already logged in as a client — no reason to ask for name/whatsapp/email
+    // again, so skip straight to the summary. Still reachable via "Ajustar
+    // seus dados" on the summary step if they need to correct something.
+    setState(s => ({
+      ...s,
+      selectedSlot: slot,
+      step: initialClient ? 'summary' : 'details',
+    }))
   }
 
   const handleChangeMonth = (dir: 1 | -1) => {

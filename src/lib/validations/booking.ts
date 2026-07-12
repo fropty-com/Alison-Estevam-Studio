@@ -5,11 +5,15 @@ import { z } from 'zod'
  * One source of truth for all form validation rules.
  */
 
+// Requires first + last name — more than one client can share a first name.
+const clientNameSchema = z
+  .string()
+  .min(2, 'Nome precisa ter pelo menos 2 caracteres.')
+  .max(100, 'Nome muito longo.')
+  .refine(v => v.trim().split(/\s+/).filter(Boolean).length >= 2, 'Informe nome e sobrenome.')
+
 export const createAppointmentSchema = z.object({
-  name: z
-    .string()
-    .min(2, 'Nome precisa ter pelo menos 2 caracteres.')
-    .max(100, 'Nome muito longo.'),
+  name: clientNameSchema,
 
   whatsapp: z
     .string()
@@ -53,10 +57,7 @@ export const cancelAppointmentSchema = z.object({
 })
 
 export const joinWaitlistSchema = z.object({
-  name: z
-    .string()
-    .min(2, 'Nome precisa ter pelo menos 2 caracteres.')
-    .max(100, 'Nome muito longo.'),
+  name: clientNameSchema,
 
   whatsapp: z
     .string()

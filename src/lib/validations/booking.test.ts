@@ -25,6 +25,11 @@ describe('createAppointmentSchema', () => {
     expect(result.success).toBe(false)
   })
 
+  it('rejects a single-word name — full name is required to tell clients apart', () => {
+    const result = createAppointmentSchema.safeParse({ ...validAppointment, name: 'Fulano' })
+    expect(result.success).toBe(false)
+  })
+
   it('rejects a non-uuid serviceId', () => {
     const result = createAppointmentSchema.safeParse({ ...validAppointment, serviceId: 'not-a-uuid' })
     expect(result.success).toBe(false)

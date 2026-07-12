@@ -44,6 +44,15 @@ export function formatWhatsApp(raw: string): string {
   return `+55${local}`
 }
 
+/**
+ * Requires at least a first and last name — a lone first name isn't enough
+ * to tell clients apart (more than one "João" can book with the same
+ * barbeiro), so this is enforced everywhere a client's name is collected.
+ */
+export function isFullName(name: string): boolean {
+  return name.trim().split(/\s+/).filter(Boolean).length >= 2
+}
+
 /** True if `raw` normalizes to a valid Brazilian WhatsApp number. */
 export function isValidWhatsApp(raw: string): boolean {
   try {

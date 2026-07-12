@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { cn, maskPhoneInput } from '@/lib/utils'
+import { cn, maskPhoneInput, isFullName } from '@/lib/utils'
 import { checkPhoneAction, sendOtpAction, verifyAndLoginAction } from '@/app/entrar/actions'
 
 type Step = 'phone' | 'code'
@@ -54,7 +54,7 @@ export function EntrarFlow() {
 
   const handleContinueNew = () => {
     setError(null)
-    if (name.trim().length < 2) { setError('Informe seu nome.'); return }
+    if (!isFullName(name)) { setError('Informe nome e sobrenome.'); return }
     if (!consentTerms) { setError('É necessário aceitar os termos para continuar.'); return }
     sendCode()
   }
@@ -125,12 +125,12 @@ export function EntrarFlow() {
             {checked && isNew && (
               <>
                 <div className="mb-[13px]">
-                  <label className={labelCls} htmlFor="ef-name">Seu nome</label>
+                  <label className={labelCls} htmlFor="ef-name">Nome completo</label>
                   <input
                     id="ef-name"
                     type="text"
                     autoComplete="name"
-                    placeholder="Como você se chama?"
+                    placeholder="Nome e sobrenome"
                     value={name}
                     onChange={e => setName(e.target.value)}
                     className={inputCls(false)}

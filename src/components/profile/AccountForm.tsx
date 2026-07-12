@@ -23,8 +23,8 @@ export function AccountForm({ initialName, initialEmail }: { initialName: string
   return (
     <div className="mb-[10px]">
       <div className="mb-[13px]">
-        <label className="block font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/40 mb-[6px]">Nome</label>
-        <input value={name} onChange={e => setName(e.target.value)} className={inputCls} />
+        <label className="block font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/40 mb-[6px]">Nome completo</label>
+        <input value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
       </div>
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/40 mb-[6px]">
