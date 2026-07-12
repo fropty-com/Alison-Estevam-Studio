@@ -373,14 +373,16 @@ function MiniCalendar({
 /* ── Slot picker ───────────────────────────────── */
 function SlotPicker({
   date,
+  serviceId,
   slots,
   selected,
   onSelect,
 }: {
-  date:     Date
-  slots:    Slot[]
-  selected: Slot | null
-  onSelect: (slot: Slot) => void
+  date:      Date
+  serviceId: string
+  slots:     Slot[]
+  selected:  Slot | null
+  onSelect:  (slot: Slot) => void
 }) {
   const available = slots.filter(s => s.available)
 
@@ -390,9 +392,10 @@ function SlotPicker({
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/22 mb-[10px]">
           {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
         </p>
-        <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+        <p className="font-body font-light text-[11px] text-offwhite/30 italic mb-[16px]">
           Nenhum horário disponível para esta data com este serviço.
         </p>
+        <WaitlistForm date={date} serviceId={serviceId} />
       </div>
     )
   }
@@ -423,6 +426,101 @@ function SlotPicker({
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+/* ── Waitlist — shown when there are no slots for the chosen date ── */
+function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
+  const [open,     setOpen]     = useState(false)
+  const [name,     setName]     = useState('')
+  const [whatsapp, setWhatsapp] = useState('')
+  const [loading,  setLoading]  = useState(false)
+  const [error,    setError]    = useState<string | null>(null)
+  const [done,     setDone]     = useState(false)
+
+  if (done) {
+    return (
+      <p className="font-body font-light text-[11px] text-sage-light/80 italic">
+        Você entrou na fila de espera. Avisamos por WhatsApp assim que abrir um horário nesse dia.
+      </p>
+    )
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-gold/70 hover:text-gold transition-colors underline underline-offset-4"
+      >
+        Avisar quando abrir horário
+      </button>
+    )
+  }
+
+  const handleSubmit = async () => {
+    setError(null)
+    if (name.trim().length < 2) { setError('Informe seu nome.'); return }
+    if (whatsapp.replace(/\D/g, '').length !== 11) { setError('Informe o WhatsApp com DDD + 9 dígitos.'); return }
+
+    setLoading(true)
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: name.trim(),
+          whatsapp: whatsapp.trim(),
+          serviceId,
+          preferredDate: format(date, 'yyyy-MM-dd'),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        setError(data?.error ?? 'Erro ao entrar na fila. Tente novamente.')
+        return
+      }
+      setDone(true)
+    } catch {
+      setError('Erro de conexão. Tente novamente.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="border border-offwhite/10 p-4">
+      <p className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/50 mb-3">
+        Entrar na fila de espera
+      </p>
+      <div className="flex flex-col gap-[10px]">
+        <input
+          type="text"
+          autoComplete="given-name"
+          placeholder="Seu nome"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+        />
+        <input
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="(00) 00000-0000"
+          maxLength={15}
+          value={whatsapp}
+          onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+        />
+        {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full py-[12px] font-body font-medium text-[9px] tracking-[0.3em] uppercase bg-gold text-charcoal-deep hover:bg-gold-light transition-all duration-300 disabled:opacity-50"
+        >
+          {loading ? 'Enviando…' : 'Entrar na fila'}
+        </button>
       </div>
     </div>
   )
@@ -987,6 +1085,7 @@ export function AgendarFlow() {
             {state.selectedDate && (
               <SlotPicker
                 date={state.selectedDate}
+                serviceId={state.selectedService.id}
                 slots={currentSlots}
                 selected={state.selectedSlot}
                 onSelect={selectSlot}

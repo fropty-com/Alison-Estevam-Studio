@@ -165,6 +165,23 @@ export async function updateAppointmentStatus(id: string, status: string, reason
   return { ok: true }
 }
 
+/* ── Waitlist ─────────────────────────────────── */
+
+export async function updateWaitlistStatus(id: string, status: 'notified' | 'resolved' | 'cancelled'): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const update: Record<string, unknown> = { status }
+  if (status === 'notified') update.notified_at = new Date().toISOString()
+
+  const { error } = await db.from('waitlist_entries').update(update).eq('id', id)
+  if (error) return { error: 'Erro ao atualizar fila de espera.' }
+
+  revalidatePath('/admin/espera')
+  return { ok: true }
+}
+
 export async function checkInAppointment(id: string) {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }

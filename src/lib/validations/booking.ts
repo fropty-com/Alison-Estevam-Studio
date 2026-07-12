@@ -52,6 +52,34 @@ export const cancelAppointmentSchema = z.object({
   reason: z.string().max(500).optional(),
 })
 
+export const joinWaitlistSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Nome precisa ter pelo menos 2 caracteres.')
+    .max(100, 'Nome muito longo.'),
+
+  whatsapp: z
+    .string()
+    .transform(v => v.replace(/\D/g, ''))
+    .pipe(
+      z.string().regex(/^(55)?\d{11}$/, 'WhatsApp inválido. Informe o DDD + 9 dígitos.')
+    ),
+
+  serviceId: z
+    .string()
+    .uuid('Serviço inválido.'),
+
+  preferredDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Data inválida.'),
+
+  note: z
+    .string()
+    .max(300)
+    .optional()
+    .or(z.literal('')),
+})
+
 export const updateServiceSchema = z.object({
   name:        z.string().min(2).max(100),
   description: z.string().max(500).optional(),

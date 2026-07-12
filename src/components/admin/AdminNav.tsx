@@ -10,6 +10,7 @@ import { PendingBadge } from './PendingBadge'
 const NAV = [
   { href: '/admin',               label: 'Dashboard',     icon: '◈', badge: true,  ownerOnly: false },
   { href: '/admin/agenda',        label: 'Agenda',        icon: '◷', badge: false, ownerOnly: false },
+  { href: '/admin/espera',        label: 'Fila de Espera', icon: '◔', badge: false, ownerOnly: false },
   { href: '/admin/clientes',      label: 'Clientes',      icon: '◻', badge: false, ownerOnly: false },
   { href: '/admin/servicos',      label: 'Serviços',      icon: '◇', badge: false, ownerOnly: false },
   { href: '/admin/relatorios',    label: 'Relatórios',    icon: '◎', badge: false, ownerOnly: true  },
