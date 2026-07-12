@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientActions } from '@/components/admin/ClientActions'
+import { LoyaltyCard } from '@/components/admin/LoyaltyCard'
+import { getLoyaltyProgress } from '@/lib/loyalty'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,6 +40,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
 
   const completed = appts.filter((a: any) => a.status === 'completed').length
   const total     = appts.length
+  const loyalty   = await getLoyaltyProgress(db, params.id)
 
   return (
     <div className="p-8">
@@ -75,6 +78,16 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
 
             {/* Client actions (notes + vip toggle) */}
             <ClientActions id={client.id} vip={client.vip} notes={client.notes ?? ''} />
+          </div>
+
+          <div className="mt-4">
+            <LoyaltyCard
+              clientId={client.id}
+              progress={loyalty.progress}
+              visitsRequired={loyalty.visitsRequired}
+              rewardDescription={loyalty.rewardDescription}
+              availableRewards={loyalty.availableRewards}
+            />
           </div>
         </div>
 
