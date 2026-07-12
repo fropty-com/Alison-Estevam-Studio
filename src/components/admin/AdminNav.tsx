@@ -8,20 +8,23 @@ import { useTransition } from 'react'
 import { PendingBadge } from './PendingBadge'
 
 const NAV = [
-  { href: '/admin',               label: 'Dashboard',     icon: '◈', badge: true },
-  { href: '/admin/agenda',        label: 'Agenda',        icon: '◷', badge: false },
-  { href: '/admin/clientes',      label: 'Clientes',      icon: '◻', badge: false },
-  { href: '/admin/servicos',      label: 'Serviços',      icon: '◇', badge: false },
-  { href: '/admin/relatorios',    label: 'Relatórios',    icon: '◎', badge: false },
-  { href: '/admin/configuracoes', label: 'Configurações', icon: '⊞', badge: false },
+  { href: '/admin',               label: 'Dashboard',     icon: '◈', badge: true,  ownerOnly: false },
+  { href: '/admin/agenda',        label: 'Agenda',        icon: '◷', badge: false, ownerOnly: false },
+  { href: '/admin/clientes',      label: 'Clientes',      icon: '◻', badge: false, ownerOnly: false },
+  { href: '/admin/servicos',      label: 'Serviços',      icon: '◇', badge: false, ownerOnly: false },
+  { href: '/admin/relatorios',    label: 'Relatórios',    icon: '◎', badge: false, ownerOnly: true  },
+  { href: '/admin/auditoria',     label: 'Auditoria',     icon: '☰', badge: false, ownerOnly: true  },
+  { href: '/admin/configuracoes', label: 'Configurações', icon: '⊞', badge: false, ownerOnly: true  },
 ]
 
-export function AdminNav() {
+export function AdminNav({ isOwner }: { isOwner: boolean }) {
   const pathname = usePathname()
   const [pending, startTransition] = useTransition()
 
   const isActive = (href: string) =>
     href === '/admin' ? pathname === '/admin' : pathname.startsWith(href)
+
+  const visibleNav = NAV.filter(item => !item.ownerOnly || isOwner)
 
   return (
     <aside className="w-[220px] shrink-0 bg-charcoal-mid border-r border-offwhite/6 flex flex-col min-h-screen sticky top-0">
@@ -30,14 +33,20 @@ export function AdminNav() {
         <p className="font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1">
           Studio
         </p>
-        <p className="font-display font-light text-[15px] text-offwhite tracking-[0.06em]">
+        <p className="font-display font-light text-[15px] text-offwhite tracking-[0.06em] mb-2">
           Alison Estevam
         </p>
+        <span className={cn(
+          'inline-block font-body font-light text-[7.5px] tracking-[0.2em] uppercase px-2 py-[3px] border',
+          isOwner ? 'border-gold/30 text-gold/80' : 'border-offwhite/15 text-offwhite/40'
+        )}>
+          {isOwner ? 'Dono' : 'Equipe'}
+        </span>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 py-5 px-3">
-        {NAV.map(({ href, label, icon, badge }) => (
+        {visibleNav.map(({ href, label, icon, badge }) => (
           <Link
             key={href}
             href={href}

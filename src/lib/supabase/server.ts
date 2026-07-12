@@ -1,33 +1,5 @@
-import { createServerClient } from '@supabase/ssr'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 import type { Database } from '@/types/database'
-
-/**
- * Server-side Supabase client.
- * Use in Server Components, Route Handlers, and Server Actions.
- */
-export async function createClient() {
-  const cookieStore = await cookies()
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return cookieStore.getAll() },
-        setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options as Parameters<typeof cookieStore.set>[2])
-            )
-          } catch {
-            // Server Component — cookies can't be set; ignore
-          }
-        },
-      },
-    }
-  )
-}
 
 /**
  * Service-role client — bypasses RLS.
@@ -44,6 +16,12 @@ export async function createServiceClient() {
   return createSupabaseClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+      // Next.js patches global fetch and can cache/dedupe GET requests by URL
+      // even on force-dynamic routes; without this, PostgREST responses for a
+      // given query shape can get stuck serving a stale (e.g. empty) result.
+      global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) },
+    }
   )
 }
