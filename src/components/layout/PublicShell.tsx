@@ -19,13 +19,13 @@ function ThemeInit() {
 export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname  = usePathname()
   const isAdmin   = pathname.startsWith('/admin')
-  const isAgendar = pathname.startsWith('/agendar')
+  const isFocused = pathname.startsWith('/agendar') || pathname.startsWith('/entrar') || pathname.startsWith('/conta')
 
   if (isAdmin) return <>{children}</>
 
-  // Agendamento is its own focused, full-page flow — no site nav/footer,
-  // matching the reference prototype's dedicated booking screens.
-  if (isAgendar) {
+  // Agendamento, login e área do cliente são fluxos focados, de tela
+  // cheia — sem nav/footer do site, matching o prototipo de referencia.
+  if (isFocused) {
     return (
       <>
         <ThemeInit />

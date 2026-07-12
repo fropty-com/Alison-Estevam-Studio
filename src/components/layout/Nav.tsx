@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { AuthModal } from '@/components/ui/AuthModal'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre',             section: 'sobre' },
@@ -22,7 +21,6 @@ export function Nav() {
   const openBooking = useCallback(() => router.push('/agendar'), [router])
   const [activeSection, setActive]    = useState('')
   const [menuOpen,      setMenuOpen]  = useState(false)
-  const [authOpen,      setAuthOpen]  = useState(false)
 
   const handleScroll = useCallback(() => {
     let current = ''
@@ -115,13 +113,13 @@ export function Nav() {
 
         <div className="flex items-center gap-4 justify-self-end">
           <ThemeToggle />
-          <button
-            onClick={() => setAuthOpen(true)}
+          <Link
+            href="/entrar"
             aria-label="Entrar na conta"
             className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
           >
             Entrar
-          </button>
+          </Link>
           <button
             onClick={openBooking}
             aria-label="Agendar horário"
@@ -131,8 +129,6 @@ export function Nav() {
           </button>
         </div>
       </nav>
-
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
 
       {/* Mobile drawer */}
       <div
@@ -164,12 +160,13 @@ export function Nav() {
         >
           Agendar
         </button>
-        <button
-          onClick={() => { setMenuOpen(false); setAuthOpen(true) }}
-          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/18 px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300"
+        <Link
+          href="/entrar"
+          onClick={() => setMenuOpen(false)}
+          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/18 px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
         >
           Entrar
-        </button>
+        </Link>
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
