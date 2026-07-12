@@ -1,7 +1,9 @@
 import { createServiceClient } from '@/lib/supabase/server'
-import { format, startOfMonth, endOfMonth, subMonths, eachWeekOfInterval, startOfWeek, endOfWeek } from 'date-fns'
+import { format, startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval, startOfWeek, endOfWeek } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ReportCharts } from '@/components/admin/ReportCharts'
+import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
+import { getAdminRole } from '@/lib/admin-auth'
 
 export const dynamic = 'force-dynamic'
 
@@ -9,34 +11,46 @@ function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
+const METHOD_LABEL: Record<string, string> = {
+  cash: 'Dinheiro',
+  pix: 'Pix',
+  debit_card: 'Cartão de Débito',
+  credit_card: 'Cartão de Crédito',
+  courtesy: 'Cortesia',
+}
+
 export default async function RelatoriosPage() {
+  const role = await getAdminRole()
+  if (role !== 'owner') return <RestrictedAccess />
+
   const db = await createServiceClient() as any
 
   const now        = new Date()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now),   'yyyy-MM-dd')
   const lastStart  = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd')
-  const lastEnd    = format(endOfMonth(subMonths(now, 1)),   'yyyy-MM-dd')
+
+  const monthStartISO = `${monthStart}T00:00:00`
+  const nextMonthISO  = `${format(startOfMonth(addMonths(now, 1)), 'yyyy-MM-dd')}T00:00:00`
+  const lastStartISO  = `${lastStart}T00:00:00`
 
   // 6 semanas para o gráfico de barras
   const sixWeeksAgo = format(startOfWeek(subMonths(now, 1), { weekStartsOn: 1 }), 'yyyy-MM-dd')
 
-  const [thisMonthRes, lastMonthRes, svcRankRes, weeklyRes, newClientsRes] = await Promise.all([
-    // agendamentos concluídos do mês atual com preço
-    db.from('appointments')
-      .select('id, status, services(price), time_slots!inner(date)')
-      .gte('time_slots.date', monthStart)
-      .lte('time_slots.date', monthEnd)
-      .in('status', ['confirmed', 'completed']),
+  const [thisMonthPayRes, lastMonthPayRes, svcRankRes, weeklyRes, newClientsRes] = await Promise.all([
+    // pagamentos recebidos no mês atual
+    db.from('payments')
+      .select('method, gross_amount, fee_amount, net_amount, paid_at')
+      .gte('paid_at', monthStartISO)
+      .lt('paid_at', nextMonthISO),
 
-    // mês anterior
-    db.from('appointments')
-      .select('id, status, services(price), time_slots!inner(date)')
-      .gte('time_slots.date', lastStart)
-      .lte('time_slots.date', lastEnd)
-      .in('status', ['confirmed', 'completed']),
+    // pagamentos recebidos no mês anterior (só o bruto, pra comparação)
+    db.from('payments')
+      .select('gross_amount')
+      .gte('paid_at', lastStartISO)
+      .lt('paid_at', monthStartISO),
 
-    // ranking de serviços (mês atual)
+    // ranking de serviços (mês atual, por data do agendamento)
     db.from('appointments')
       .select('services(name, price), time_slots!inner(date)')
       .gte('time_slots.date', monthStart)
@@ -53,28 +67,37 @@ export default async function RelatoriosPage() {
     // clientes novos este mês
     db.from('clients')
       .select('id', { count: 'exact', head: true })
-      .gte('created_at', monthStart + 'T00:00:00'),
+      .gte('created_at', monthStartISO),
   ])
 
-  const thisMonth  = (thisMonthRes.data  ?? []) as any[]
-  const lastMonth  = (lastMonthRes.data  ?? []) as any[]
-  const allSvcAppt = (svcRankRes.data    ?? []) as any[]
-  const weekly     = (weeklyRes.data     ?? []) as any[]
-  const newClients = newClientsRes.count ?? 0
+  const thisMonthPay = (thisMonthPayRes.data ?? []) as any[]
+  const lastMonthPay = (lastMonthPayRes.data ?? []) as any[]
+  const allSvcAppt    = (svcRankRes.data      ?? []) as any[]
+  const weekly         = (weeklyRes.data      ?? []) as any[]
+  const newClients     = newClientsRes.count  ?? 0
 
-  // Faturamento
-  const revenue = (appts: any[]) =>
-    appts.reduce((sum, a) => {
-      const svc = Array.isArray(a.services) ? a.services[0] : a.services
-      return sum + (svc?.price ?? 0)
-    }, 0)
-
-  const revenueThis = revenue(thisMonth)
-  const revenueLast = revenue(lastMonth)
-  const revDiff     = revenueLast > 0 ? ((revenueThis - revenueLast) / revenueLast) * 100 : null
+  // Faturamento (a partir de pagamentos reais)
+  const grossThis = thisMonthPay.reduce((sum, p) => sum + Number(p.gross_amount ?? 0), 0)
+  const feeThis    = thisMonthPay.reduce((sum, p) => sum + Number(p.fee_amount   ?? 0), 0)
+  const netThis    = thisMonthPay.reduce((sum, p) => sum + Number(p.net_amount   ?? 0), 0)
+  const grossLast  = lastMonthPay.reduce((sum, p) => sum + Number(p.gross_amount ?? 0), 0)
+  const revDiff    = grossLast > 0 ? ((grossThis - grossLast) / grossLast) * 100 : null
 
   // Ticket médio
-  const avgTicket = thisMonth.length > 0 ? revenueThis / thisMonth.length : 0
+  const avgTicket = thisMonthPay.length > 0 ? grossThis / thisMonthPay.length : 0
+
+  // Breakdown por método de pagamento
+  const methodMap: Record<string, { count: number; gross: number; net: number }> = {}
+  for (const p of thisMonthPay) {
+    const m = p.method as string
+    if (!methodMap[m]) methodMap[m] = { count: 0, gross: 0, net: 0 }
+    methodMap[m].count++
+    methodMap[m].gross += Number(p.gross_amount ?? 0)
+    methodMap[m].net   += Number(p.net_amount   ?? 0)
+  }
+  const paymentBreakdown = Object.entries(methodMap)
+    .map(([method, v]) => ({ method, label: METHOD_LABEL[method] ?? method, ...v }))
+    .sort((a, b) => b.gross - a.gross)
 
   // Taxa de cancelamento do mês
   const totalMonthRes = await db
@@ -141,11 +164,11 @@ export default async function RelatoriosPage() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Faturamento */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Faturamento bruto */}
         <div className="bg-offwhite/3 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Faturamento</p>
-          <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(revenueThis)}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Faturamento bruto</p>
+          <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(grossThis)}</p>
           {revDiff !== null && (
             <p className={`font-body font-light text-[9px] tracking-[0.12em] ${revDiff >= 0 ? 'text-sage-light' : 'text-error/60'}`}>
               {revDiff >= 0 ? '↑' : '↓'} {Math.abs(revDiff).toFixed(1)}% vs mês anterior
@@ -153,12 +176,28 @@ export default async function RelatoriosPage() {
           )}
         </div>
 
+        {/* Taxas pagas */}
+        <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Taxas de pagamento</p>
+          <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(feeThis)}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
+            {grossThis > 0 ? ((feeThis / grossThis) * 100).toFixed(1) : '0.0'}% do bruto
+          </p>
+        </div>
+
+        {/* Faturamento líquido */}
+        <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Faturamento líquido</p>
+          <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(netThis)}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">após taxas</p>
+        </div>
+
         {/* Ticket médio */}
         <div className="bg-offwhite/3 border border-offwhite/7 p-6">
           <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Ticket médio</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(avgTicket)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {thisMonth.length} atendimento{thisMonth.length !== 1 ? 's' : ''}
+            {thisMonthPay.length} pagamento{thisMonthPay.length !== 1 ? 's' : ''}
           </p>
         </div>
 
@@ -182,7 +221,7 @@ export default async function RelatoriosPage() {
       </div>
 
       {/* Charts + ranking — client component */}
-      <ReportCharts weeklyData={weeklyData} svcRanking={svcRanking} />
+      <ReportCharts weeklyData={weeklyData} svcRanking={svcRanking} paymentBreakdown={paymentBreakdown} />
     </div>
   )
 }
