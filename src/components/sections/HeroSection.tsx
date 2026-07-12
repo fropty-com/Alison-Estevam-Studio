@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { BRAND } from '@/config/brand'
+import { ChatBubbleIcon } from '@/components/icons/ChatBubbleIcon'
 
 interface HeroSectionProps {
   onScheduleClick: () => void
@@ -104,6 +105,7 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
               'transition-colors duration-200 hover:bg-sage/10'
             )}
           >
+            <ChatBubbleIcon size={14} />
             WhatsApp
           </a>
         </div>
