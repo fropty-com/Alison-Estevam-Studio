@@ -1,6 +1,7 @@
 import { createServiceClient } from '@/lib/supabase/server'
-import { format, startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval, startOfWeek, endOfWeek } from 'date-fns'
+import { format, startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval, startOfWeek, endOfWeek, differenceInDays, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import Link from 'next/link'
 import { ReportCharts } from '@/components/admin/ReportCharts'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
@@ -37,7 +38,7 @@ export default async function RelatoriosPage() {
   // 6 semanas para o gráfico de barras
   const sixWeeksAgo = format(startOfWeek(subMonths(now, 1), { weekStartsOn: 1 }), 'yyyy-MM-dd')
 
-  const [thisMonthPayRes, lastMonthPayRes, svcRankRes, weeklyRes, newClientsRes] = await Promise.all([
+  const [thisMonthPayRes, lastMonthPayRes, svcRankRes, weeklyRes, newClientsRes, retentionRes] = await Promise.all([
     // pagamentos recebidos no mês atual
     db.from('payments')
       .select('method, gross_amount, fee_amount, net_amount, paid_at')
@@ -68,6 +69,11 @@ export default async function RelatoriosPage() {
     db.from('clients')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', monthStartISO),
+
+    // histórico completo de atendimentos concluídos, por cliente — base para retenção
+    db.from('appointments')
+      .select('client_id, clients(id, name), time_slots!inner(date)')
+      .eq('status', 'completed'),
   ])
 
   const thisMonthPay = (thisMonthPayRes.data ?? []) as any[]
@@ -75,6 +81,7 @@ export default async function RelatoriosPage() {
   const allSvcAppt    = (svcRankRes.data      ?? []) as any[]
   const weekly         = (weeklyRes.data      ?? []) as any[]
   const newClients     = newClientsRes.count  ?? 0
+  const completedHistory = (retentionRes.data ?? []) as any[]
 
   // Faturamento (a partir de pagamentos reais)
   const grossThis = thisMonthPay.reduce((sum, p) => sum + Number(p.gross_amount ?? 0), 0)
@@ -130,6 +137,44 @@ export default async function RelatoriosPage() {
     .map(([name, v]) => ({ name, ...v }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 6)
+
+  // Retenção — a partir do histórico completo de atendimentos concluídos.
+  // Cada cliente vira { name, dates[] } ordenado, e disso derivamos taxa de
+  // recorrência, intervalo médio entre visitas, e quem está atrasado em
+  // relação ao próprio padrão de retorno.
+  const clientHistory: Record<string, { id: string; name: string; dates: string[] }> = {}
+  for (const a of completedHistory) {
+    const client = Array.isArray(a.clients) ? a.clients[0] : a.clients
+    const slot   = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
+    if (!client?.id || !slot?.date) continue
+    if (!clientHistory[client.id]) clientHistory[client.id] = { id: client.id, name: client.name, dates: [] }
+    clientHistory[client.id].dates.push(slot.date)
+  }
+
+  const clients = Object.values(clientHistory).map(c => ({ ...c, dates: c.dates.sort() }))
+  const totalReturningClients = clients.length
+  const recurringClients = clients.filter(c => c.dates.length >= 2)
+  const retentionRate = totalReturningClients > 0 ? (recurringClients.length / totalReturningClients) * 100 : 0
+
+  const allGaps: number[] = []
+  const atRisk: { id: string; name: string; daysSinceLast: number; avgGap: number }[] = []
+
+  for (const c of recurringClients) {
+    const gaps: number[] = []
+    for (let i = 1; i < c.dates.length; i++) {
+      gaps.push(differenceInDays(parseISO(c.dates[i]), parseISO(c.dates[i - 1])))
+    }
+    allGaps.push(...gaps)
+
+    const avgGap = gaps.reduce((sum, g) => sum + g, 0) / gaps.length
+    const daysSinceLast = differenceInDays(now, parseISO(c.dates[c.dates.length - 1]))
+    if (daysSinceLast > Math.max(avgGap * 1.5, 30)) {
+      atRisk.push({ id: c.id, name: c.name, daysSinceLast, avgGap: Math.round(avgGap) })
+    }
+  }
+  const avgDaysBetweenVisits = allGaps.length > 0 ? allGaps.reduce((sum, g) => sum + g, 0) / allGaps.length : null
+  atRisk.sort((a, b) => b.daysSinceLast - a.daysSinceLast)
+  const atRiskTop = atRisk.slice(0, 8)
 
   // Dados semanais para o gráfico
   const weeks = eachWeekOfInterval(
@@ -219,6 +264,66 @@ export default async function RelatoriosPage() {
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">este mês</p>
         </div>
       </div>
+
+      {/* Retenção de clientes */}
+      <section>
+        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
+          Retenção de clientes
+        </h2>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Taxa de retenção</p>
+            <p className="font-data text-[26px] text-offwhite leading-none mb-2">{retentionRate.toFixed(1)}%</p>
+            <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
+              {recurringClients.length} de {totalReturningClients} clientes voltaram
+            </p>
+          </div>
+
+          <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Intervalo médio</p>
+            <p className="font-data text-[26px] text-offwhite leading-none mb-2">
+              {avgDaysBetweenVisits !== null ? `${Math.round(avgDaysBetweenVisits)}d` : '—'}
+            </p>
+            <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">entre visitas</p>
+          </div>
+
+          <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Em risco de sumir</p>
+            <p className={`font-data text-[26px] leading-none mb-2 ${atRisk.length > 0 ? 'text-error/70' : 'text-offwhite'}`}>
+              {atRisk.length}
+            </p>
+            <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">clientes atrasados</p>
+          </div>
+        </div>
+
+        <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+            Clientes em risco — atrasados em relação ao próprio padrão
+          </p>
+
+          {atRiskTop.length === 0 ? (
+            <p className="font-body font-light text-[11px] text-offwhite/22 italic">
+              Nenhum cliente recorrente atrasado no momento.
+            </p>
+          ) : (
+            <div className="divide-y divide-offwhite/6 -mx-6">
+              {atRiskTop.map(c => (
+                <Link
+                  key={c.id}
+                  href={`/admin/clientes/${c.id}`}
+                  className="flex items-center justify-between px-6 py-3 hover:bg-offwhite/3 transition-colors"
+                >
+                  <span className="font-body font-light text-[12px] text-offwhite/70">{c.name}</span>
+                  <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+                    {c.daysSinceLast}d sem voltar <span className="text-offwhite/18">· costuma voltar a cada {c.avgGap}d</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Charts + ranking — client component */}
       <ReportCharts weeklyData={weeklyData} svcRanking={svcRanking} paymentBreakdown={paymentBreakdown} />
