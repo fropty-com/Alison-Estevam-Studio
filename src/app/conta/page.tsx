@@ -67,7 +67,7 @@ export default async function ContaPage() {
             >
               Perfil
             </Link>
-            <form action={logoutClientAction}>
+            <form action={logoutClientAction} className="contents">
               <button
                 type="submit"
                 className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
