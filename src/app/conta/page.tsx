@@ -60,14 +60,22 @@ export default async function ContaPage() {
           <Link href="/" className="font-display font-light text-lg tracking-[0.06em] uppercase text-offwhite/70 hover:text-offwhite transition-colors">
             Alison Estevam
           </Link>
-          <form action={logoutClientAction}>
-            <button
-              type="submit"
+          <div className="flex items-center gap-5">
+            <Link
+              href="/perfil"
               className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
             >
-              Sair
-            </button>
-          </form>
+              Perfil
+            </Link>
+            <form action={logoutClientAction}>
+              <button
+                type="submit"
+                className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+              >
+                Sair
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 

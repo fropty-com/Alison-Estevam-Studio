@@ -11,6 +11,13 @@ export const BRAND = {
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5511975369904',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://alisonestevam.com.br',
   instagram: 'https://instagram.com/alisonestevam',
+  address: {
+    street: 'Rua Portugal, 443',
+    neighborhood: 'Jardim Celani',
+    city: 'Salto',
+    state: 'SP',
+    zip: '13326-145',
+  },
 } as const
 
 export const BRAND_COLORS = {
