@@ -24,13 +24,47 @@ export function generateReferenceCode(sequence: number): string {
 }
 
 /**
- * Format a WhatsApp number to E.164 format (+5511...)
+ * Format a Brazilian WhatsApp number to E.164 (+5511987654321).
+ * A valid Brazilian mobile number is always DDD (2 digits) + 9 + 8 digits = 11 local
+ * digits — the "nono dígito" has been mandatory nationwide since 2016. Anything else
+ * (10 digits, a stray extra digit, etc.) is rejected here instead of being silently
+ * accepted, which previously created duplicate client records for the same phone
+ * number typed slightly differently.
  */
 export function formatWhatsApp(raw: string): string {
   const digits = raw.replace(/\D/g, '')
-  if (digits.startsWith('55')) return `+${digits}`
-  if (digits.length === 11) return `+55${digits}`
-  return `+55${digits}`
+  const local =
+    digits.length === 11 ? digits
+    : digits.startsWith('55') && digits.length === 13 ? digits.slice(2)
+    : null
+
+  if (!local) {
+    throw new Error('Número de WhatsApp inválido. Informe o DDD + 9 dígitos (ex: 11987654321).')
+  }
+  return `+55${local}`
+}
+
+/** True if `raw` normalizes to a valid Brazilian WhatsApp number. */
+export function isValidWhatsApp(raw: string): boolean {
+  try {
+    formatWhatsApp(raw)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Live input mask for a Brazilian phone number: "(11) 98765-4321".
+ * The country code is never typed — formatWhatsApp() adds +55 once the
+ * value is submitted. Caps at 11 digits (DDD + 9-digit mobile number).
+ */
+export function maskPhoneInput(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 11)
+  if (digits.length === 0) return ''
+  if (digits.length <= 2) return `(${digits}`
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
 }
 
 /**

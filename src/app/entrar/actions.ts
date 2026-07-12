@@ -7,8 +7,12 @@ import { requestOtp, verifyOtp } from '@/lib/client-auth/otp'
 import { createClientSession } from '@/lib/client-auth/session'
 
 export async function checkPhoneAction(phoneRaw: string): Promise<{ error: string; exists?: undefined; name?: undefined } | { error?: undefined; exists: boolean; name?: string }> {
-  const phone = formatWhatsApp(phoneRaw)
-  if (phoneRaw.replace(/\D/g, '').length < 10) return { error: 'Informe um telefone válido.' }
+  let phone: string
+  try {
+    phone = formatWhatsApp(phoneRaw)
+  } catch {
+    return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+  }
 
   const db = await createServiceClient() as any
   const { data: client } = await db
@@ -21,7 +25,12 @@ export async function checkPhoneAction(phoneRaw: string): Promise<{ error: strin
 }
 
 export async function sendOtpAction(phoneRaw: string) {
-  const phone = formatWhatsApp(phoneRaw)
+  let phone: string
+  try {
+    phone = formatWhatsApp(phoneRaw)
+  } catch {
+    return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+  }
   const { devCode } = await requestOtp(phone)
   return { devCode }
 }
@@ -33,7 +42,12 @@ export async function verifyAndLoginAction(input: {
   consentWhatsapp?: boolean
   consentTerms?: boolean
 }) {
-  const phone = formatWhatsApp(input.phoneRaw)
+  let phone: string
+  try {
+    phone = formatWhatsApp(input.phoneRaw)
+  } catch {
+    return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+  }
   const result = await verifyOtp(phone, input.code.trim())
   if (!result.ok) return { error: result.error }
 

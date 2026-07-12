@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { cn, maskPhoneInput } from '@/lib/utils'
 import { checkPhoneAction, sendOtpAction, verifyAndLoginAction } from '@/app/entrar/actions'
 
 type Step = 'phone' | 'code'
@@ -33,7 +33,7 @@ export function EntrarFlow() {
 
   const handleCheckPhone = () => {
     setError(null)
-    if (phone.replace(/\D/g, '').length < 10) { setError('Informe um telefone válido.'); return }
+    if (phone.replace(/\D/g, '').length !== 11) { setError('Informe um telefone válido (DDD + 9 dígitos).'); return }
     startTransition(async () => {
       const res = await checkPhoneAction(phone)
       if (res.error) { setError(res.error); return }
@@ -46,6 +46,7 @@ export function EntrarFlow() {
   const sendCode = () => {
     startTransition(async () => {
       const res = await sendOtpAction(phone)
+      if (res.error) { setError(res.error); return }
       setDevCode(res.devCode ?? null)
       setStep('code')
     })
@@ -113,8 +114,9 @@ export function EntrarFlow() {
                 inputMode="tel"
                 autoComplete="tel"
                 placeholder="(00) 00000-0000"
+                maxLength={15}
                 value={phone}
-                onChange={e => { setPhone(e.target.value); setChecked(false) }}
+                onChange={e => { setPhone(maskPhoneInput(e.target.value)); setChecked(false) }}
                 disabled={checked}
                 className={inputCls(false)}
               />
@@ -155,7 +157,14 @@ export function EntrarFlow() {
                     className="mt-[3px] accent-gold"
                   />
                   <span className="font-body font-light text-[11px] text-offwhite/50 leading-[1.5]">
-                    Li e aceito os termos de uso e a política de privacidade.
+                    Li e aceito os{' '}
+                    <Link href="/termos" target="_blank" className="text-gold/80 hover:text-gold underline underline-offset-2">
+                      termos de uso
+                    </Link>{' '}
+                    e a{' '}
+                    <Link href="/privacidade" target="_blank" className="text-gold/80 hover:text-gold underline underline-offset-2">
+                      política de privacidade
+                    </Link>.
                   </span>
                 </label>
               </>
