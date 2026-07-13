@@ -95,7 +95,7 @@ export default async function ContaPage() {
         </h1>
 
         {/* Loyalty progress */}
-        <div className="mb-[34px] border border-offwhite/10 px-6 py-5">
+        <div className="mb-[34px] border border-offwhite/14 px-6 py-5">
           {loyalty.availableRewards > 0 ? (
             <>
               <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-gold/70 mb-[6px]">Fidelidade</p>
@@ -133,7 +133,7 @@ export default async function ContaPage() {
           {next ? (
             <AppointmentCard appt={next} />
           ) : (
-            <div className="border border-offwhite/10 px-6 py-8 text-center">
+            <div className="border border-offwhite/14 px-6 py-8 text-center">
               <p className="font-body font-light text-[13px] text-offwhite/40 mb-[16px]">
                 Você não tem agendamentos futuros.
               </p>
@@ -184,7 +184,7 @@ export default async function ContaPage() {
                 const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
                 const dateLabel = slot?.date ? format(parseISO(slot.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'
                 return (
-                  <div key={a.id} className="flex items-center justify-between border border-offwhite/8 px-5 py-4">
+                  <div key={a.id} className="flex items-center justify-between border border-offwhite/14 px-5 py-4">
                     <div>
                       <p className="font-body font-light text-[13px] text-offwhite/70">{svc?.name ?? '—'}</p>
                       <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[2px] capitalize">{dateLabel}</p>
@@ -212,7 +212,7 @@ function AppointmentCard({ appt }: { appt: any }) {
   const mustConfirm = needsConfirmation(appt)
 
   return (
-    <div className="border border-offwhite/10 px-6 py-5">
+    <div className="border border-offwhite/14 px-6 py-5">
       <div className="flex items-start gap-5">
         <div className="flex-1 min-w-0">
           <span className={cn(
@@ -227,7 +227,7 @@ function AppointmentCard({ appt }: { appt: any }) {
         </div>
 
         <div className="flex items-stretch shrink-0">
-          <div className="w-px bg-offwhite/12 mr-5" />
+          <div className="w-px bg-offwhite/20 mr-5" />
           <div className="flex flex-col items-center justify-center text-center min-w-[50px]">
             <span className="font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 mb-[2px]">
               {monthLabel}
