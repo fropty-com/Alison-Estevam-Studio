@@ -5,13 +5,13 @@ import { format, parseISO, addMonths, subMonths, startOfMonth, getDaysInMonth, g
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 
-interface SlotData { id: string; start_time: string }
+interface SlotData { id: string; startTime: string }
 interface AvailMap  { [date: string]: { available: boolean; slots: SlotData[] } }
 
 const MONTH_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 const WEEK_PT  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 
-export function RescheduleFlow({ code, currentDate }: { code: string; currentDate: string }) {
+export function RescheduleFlow({ code, currentDate, duration = 60 }: { code: string; currentDate: string; duration?: number }) {
   const today      = new Date()
   const [viewing,  setViewing]  = useState(() => startOfMonth(today))
   const [avail,    setAvail]    = useState<AvailMap>({})
@@ -25,13 +25,13 @@ export function RescheduleFlow({ code, currentDate }: { code: string; currentDat
   const fetchAvail = useCallback(async (month: Date) => {
     setLoading(true)
     try {
-      const res  = await fetch(`/api/availability?year=${month.getFullYear()}&month=${month.getMonth() + 1}`)
+      const res  = await fetch(`/api/availability?year=${month.getFullYear()}&month=${month.getMonth() + 1}&duration=${duration}`)
       const data = await res.json()
-      setAvail(prev => ({ ...prev, ...data }))
+      setAvail(prev => ({ ...prev, ...(data.availability ?? {}) }))
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [duration])
 
   const changeMonth = (dir: 1 | -1) => {
     const next = dir === 1 ? addMonths(viewing, 1) : subMonths(viewing, 1)
@@ -173,7 +173,7 @@ export function RescheduleFlow({ code, currentDate }: { code: string; currentDat
                       : 'bg-offwhite/3 border-offwhite/10 text-offwhite/60 hover:border-offwhite/25 hover:text-offwhite/85'
                   )}
                 >
-                  {(s.start_time as string).substring(0, 5)}
+                  {s.startTime.substring(0, 5)}
                 </button>
               ))}
             </div>
@@ -197,7 +197,7 @@ export function RescheduleFlow({ code, currentDate }: { code: string; currentDat
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {pending ? 'Reagendando…' : `Confirmar — ${(selSlot.start_time as string).substring(0, 5).replace(':', 'h')}`}
+            {pending ? 'Reagendando…' : `Confirmar — ${selSlot.startTime.substring(0, 5).replace(':', 'h')}`}
           </button>
         </div>
       )}

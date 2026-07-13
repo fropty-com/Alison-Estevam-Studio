@@ -3,9 +3,11 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
 import { CancelForm } from '@/components/booking/CancelForm'
+import { ClientHeader } from '@/components/layout/ClientHeader'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Cancelar Agendamento' }
+export const dynamic = 'force-dynamic'
 
 export default async function CancelarPage({ params }: { params: { code: string } }) {
   const db = await createServiceClient() as any
@@ -31,14 +33,13 @@ export default async function CancelarPage({ params }: { params: { code: string 
     : '—'
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center px-6 pt-[110px] pb-20 lg:pt-[152px]">
+    <div className="min-h-screen bg-charcoal">
+      <ClientHeader />
+      <div className="flex items-start justify-center px-6 pt-[122px] pb-20">
       <div className="w-full max-w-[480px]">
 
         {/* Header */}
         <div className="mb-8">
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-2">
-            Alison Estevam Studio
-          </p>
           <h1 className="font-display font-light text-[32px] text-offwhite tracking-[0.03em] leading-tight">
             Cancelar agendamento
           </h1>
@@ -82,6 +83,7 @@ export default async function CancelarPage({ params }: { params: { code: string 
         ) : (
           <CancelForm code={code} />
         )}
+      </div>
       </div>
     </div>
   )
