@@ -26,7 +26,7 @@ export function CancelForm({ code }: { code: string }) {
 
   if (done) {
     return (
-      <div className="bg-offwhite/3 border border-offwhite/7 p-8 text-center">
+      <div className="bg-offwhite/5 border border-offwhite/10 p-8 text-center">
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-2">
           Agendamento cancelado.
         </p>
@@ -40,17 +40,16 @@ export function CancelForm({ code }: { code: string }) {
   return (
     <div className="space-y-4">
       {!confirm ? (
-        <>
-          <p className="font-body font-light text-[12px] text-offwhite/45 leading-relaxed">
-            Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.
-          </p>
-          <button
-            onClick={() => setConfirm(true)}
-            className="w-full py-[13px] font-body font-light text-[9px] tracking-[0.35em] uppercase border border-error/30 text-error/60 hover:bg-error/5 hover:border-error/50 hover:text-error/80 transition-all duration-200"
-          >
-            Cancelar agendamento
-          </button>
-        </>
+        <button
+          onClick={() => setConfirm(true)}
+          className={cn(
+            'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
+            'border border-error/50 bg-error/10 text-error/90 transition-all duration-300',
+            'hover:bg-error/20 hover:border-error/70 hover:text-error',
+          )}
+        >
+          Cancelar agendamento
+        </button>
       ) : (
         <>
           <div>
@@ -62,7 +61,7 @@ export function CancelForm({ code }: { code: string }) {
               onChange={e => setReason(e.target.value)}
               rows={3}
               placeholder="Ex: Imprevisto, viagem…"
-              className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/22 transition-colors placeholder:text-offwhite/18"
+              className="w-full bg-offwhite/5 border border-offwhite/10 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/25 transition-colors placeholder:text-offwhite/18"
             />
           </div>
 
@@ -75,10 +74,10 @@ export function CancelForm({ code }: { code: string }) {
               onClick={handleCancel}
               disabled={pending}
               className={cn(
-                'flex-1 py-[13px] font-body font-light text-[9px] tracking-[0.35em] uppercase',
-                'border border-error/30 text-error/60',
-                'hover:bg-error/5 hover:border-error/50 hover:text-error/80',
-                'transition-all duration-200 disabled:opacity-40'
+                'flex-1 py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
+                'border border-error/50 bg-error/10 text-error/90 transition-all duration-300',
+                'hover:bg-error/20 hover:border-error/70 hover:text-error',
+                'disabled:opacity-40 disabled:cursor-not-allowed'
               )}
             >
               {pending ? 'Cancelando…' : 'Confirmar cancelamento'}
@@ -86,7 +85,7 @@ export function CancelForm({ code }: { code: string }) {
             <button
               onClick={() => setConfirm(false)}
               disabled={pending}
-              className="px-6 py-[13px] font-body font-light text-[9px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:text-offwhite/55 transition-colors disabled:opacity-40"
+              className="px-6 py-[16px] font-body font-light text-[9px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:text-offwhite/55 transition-colors disabled:opacity-40"
             >
               Voltar
             </button>

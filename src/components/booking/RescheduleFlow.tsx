@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 
-export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento', duration = 60 }: { code: string; currentDate: string; serviceName?: string; duration?: number }) {
+export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 60 }: { code: string; serviceName?: string; duration?: number }) {
   const today      = new Date()
   const [viewing,  setViewing]  = useState(() => startOfMonth(today))
   const [avail,    setAvail]    = useState<AvailabilityMap>({})
@@ -59,7 +59,7 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
   if (done) {
     const dateLabel = format(parseISO(done.date), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
     return (
-      <div className="bg-offwhite/3 border border-offwhite/7 p-8 text-center">
+      <div className="bg-offwhite/5 border border-offwhite/10 p-8 text-center">
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-3">
           Agendamento reagendado.
         </p>
@@ -89,10 +89,6 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
 
   return (
     <div className="space-y-6">
-      <p className="font-body font-light text-[12px] text-offwhite/40 leading-relaxed">
-        Selecione um novo dia e horário. Seu agendamento anterior ({currentDate}) será liberado.
-      </p>
-
       <MiniCalendar
         current={viewing}
         selected={selDate}

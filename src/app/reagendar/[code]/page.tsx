@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
 import { RescheduleFlow } from '@/components/booking/RescheduleFlow'
+import { BackLink, StepHeader, DetailCard } from '@/components/booking/BookingChrome'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import type { Metadata } from 'next'
 
@@ -35,47 +36,35 @@ export default async function ReagendarPage({ params }: { params: { code: string
   return (
     <div className="min-h-screen bg-charcoal">
       <ClientHeader />
-      <div className="flex items-start justify-center px-6 pt-[122px] pb-20">
-      <div className="w-full max-w-[480px]">
+      <div className="max-w-[480px] mx-auto">
+        <div className="px-8 pt-[122px] pb-16">
+          <BackLink href="/conta">← Voltar à conta</BackLink>
 
-        <div className="mb-8">
-          <h1 className="font-display font-light text-[32px] text-offwhite tracking-[0.03em] leading-tight">
-            Reagendar
-          </h1>
-        </div>
+          <StepHeader
+            eyebrow="Reagendamento"
+            title="Escolha nova data e horário"
+            subtitle={`${service?.name ?? 'Agendamento'} — o horário atual será liberado.`}
+          />
 
-        {/* Current info */}
-        <div className="bg-offwhite/3 border border-offwhite/7 p-6 mb-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-4">
-            Agendamento atual
-          </p>
-          <div className="space-y-[10px]">
-            {[
+          <DetailCard
+            rows={[
               { label: 'Código',  value: code },
               { label: 'Cliente', value: client?.name  ?? '—' },
               { label: 'Serviço', value: service?.name ?? '—' },
               { label: 'Atual',   value: currentDateLabel },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex gap-4">
-                <span className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/28 w-16 shrink-0 pt-[2px]">
-                  {label}
-                </span>
-                <span className="font-body font-light text-[13px] text-offwhite/70">{value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+            ]}
+          />
 
-        {cannotReschedule ? (
-          <div className="bg-offwhite/3 border border-offwhite/7 p-6 text-center">
-            <p className="font-display font-light text-[18px] text-offwhite/45 italic">
-              Este agendamento não pode ser reagendado.
-            </p>
-          </div>
-        ) : (
-          <RescheduleFlow code={code} currentDate={currentDateLabel} serviceName={service?.name} duration={service?.duration ?? 60} />
-        )}
-      </div>
+          {cannotReschedule ? (
+            <div className="border border-offwhite/10 p-6 text-center">
+              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+                Este agendamento não pode ser reagendado.
+              </p>
+            </div>
+          ) : (
+            <RescheduleFlow code={code} serviceName={service?.name} duration={service?.duration ?? 60} />
+          )}
+        </div>
       </div>
     </div>
   )

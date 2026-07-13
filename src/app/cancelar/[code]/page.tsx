@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
 import { CancelForm } from '@/components/booking/CancelForm'
+import { BackLink, StepHeader, DetailCard } from '@/components/booking/BookingChrome'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import type { Metadata } from 'next'
 
@@ -35,55 +36,42 @@ export default async function CancelarPage({ params }: { params: { code: string 
   return (
     <div className="min-h-screen bg-charcoal">
       <ClientHeader />
-      <div className="flex items-start justify-center px-6 pt-[122px] pb-20">
-      <div className="w-full max-w-[480px]">
+      <div className="max-w-[480px] mx-auto">
+        <div className="px-8 pt-[122px] pb-16">
+          <BackLink href="/conta">← Voltar à conta</BackLink>
 
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="font-display font-light text-[32px] text-offwhite tracking-[0.03em] leading-tight">
-            Cancelar agendamento
-          </h1>
+          <StepHeader
+            eyebrow="Cancelamento"
+            title="Cancelar agendamento"
+            subtitle="Esta ação libera o horário e não pode ser desfeita."
+          />
+
+          <DetailCard
+            rows={[
+              { label: 'Código',  value: code },
+              { label: 'Cliente', value: client?.name  ?? '—' },
+              { label: 'Serviço', value: service?.name ?? '—' },
+              { label: 'Data',    value: dateLabel },
+              { label: 'Horário', value: slot?.start_time ? (slot.start_time as string).substring(0, 5).replace(':', 'h') : '—' },
+            ]}
+          />
+
+          {alreadyCancelled ? (
+            <div className="border border-offwhite/10 p-6 text-center">
+              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+                Este agendamento já foi cancelado.
+              </p>
+            </div>
+          ) : cannotCancel ? (
+            <div className="border border-offwhite/10 p-6 text-center">
+              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+                Este agendamento não pode mais ser cancelado.
+              </p>
+            </div>
+          ) : (
+            <CancelForm code={code} />
+          )}
         </div>
-
-        {/* Appointment details */}
-        <div className="bg-offwhite/3 border border-offwhite/7 p-6 mb-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-4">
-            Detalhes
-          </p>
-          <div className="space-y-[10px]">
-            {[
-              { label: 'Código',   value: code },
-              { label: 'Cliente',  value: client?.name  ?? '—' },
-              { label: 'Serviço',  value: service?.name ?? '—' },
-              { label: 'Data',     value: dateLabel },
-              { label: 'Horário',  value: slot?.start_time ? (slot.start_time as string).substring(0, 5).replace(':', 'h') : '—' },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex gap-4">
-                <span className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/28 w-16 shrink-0 pt-[2px]">
-                  {label}
-                </span>
-                <span className="font-body font-light text-[13px] text-offwhite/70">{value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {alreadyCancelled ? (
-          <div className="bg-offwhite/3 border border-offwhite/7 p-6 text-center">
-            <p className="font-display font-light text-[18px] text-offwhite/45 italic">
-              Este agendamento já foi cancelado.
-            </p>
-          </div>
-        ) : cannotCancel ? (
-          <div className="bg-offwhite/3 border border-offwhite/7 p-6 text-center">
-            <p className="font-display font-light text-[18px] text-offwhite/45 italic">
-              Este agendamento não pode mais ser cancelado.
-            </p>
-          </div>
-        ) : (
-          <CancelForm code={code} />
-        )}
-      </div>
       </div>
     </div>
   )

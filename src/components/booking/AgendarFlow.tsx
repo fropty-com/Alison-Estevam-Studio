@@ -12,6 +12,7 @@ import { BRAND } from '@/config/brand'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
+import { BackLink, StepHeader } from '@/components/booking/BookingChrome'
 
 /* ── Types ─────────────────────────────────────── */
 interface Service {
@@ -65,15 +66,6 @@ interface BookingState {
 // final screen (matching the prototype) and isn't given a dot.
 const STEP_ORDER: Step[] = ['service', 'schedule', 'details', 'summary']
 
-/* ── Back link — matches the prototype's per-step "← ..." pattern ── */
-function BackLink({ children, ...props }: { children: React.ReactNode; href?: string; onClick?: () => void }) {
-  const cls = 'mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors inline-block'
-  if (props.href) {
-    return <Link href={props.href} className={cls}>{children}</Link>
-  }
-  return <button onClick={props.onClick} className={cls}>{children}</button>
-}
-
 /* ── Step indicator — thin gold line segments, no numbers/labels ── */
 function StepDots({ current }: { current: Step }) {
   const displayStep = current === 'complements' ? 'service' : current
@@ -87,23 +79,6 @@ function StepDots({ current }: { current: Step }) {
           aria-hidden="true"
         />
       ))}
-    </div>
-  )
-}
-
-/* ── Step header — eyebrow + title + subtitle, changes per step ── */
-function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
-  return (
-    <div className="mb-[22px]">
-      <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
-        {eyebrow}
-      </p>
-      <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
-        {title}
-      </h2>
-      <p className="font-body font-light text-[12px] text-offwhite/40">
-        {subtitle}
-      </p>
     </div>
   )
 }
