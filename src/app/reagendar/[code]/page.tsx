@@ -73,7 +73,7 @@ export default async function ReagendarPage({ params }: { params: { code: string
             </p>
           </div>
         ) : (
-          <RescheduleFlow code={code} currentDate={currentDateLabel} duration={service?.duration ?? 60} />
+          <RescheduleFlow code={code} currentDate={currentDateLabel} serviceName={service?.name} duration={service?.duration ?? 60} />
         )}
       </div>
       </div>

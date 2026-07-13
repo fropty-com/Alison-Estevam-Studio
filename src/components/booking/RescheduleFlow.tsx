@@ -4,14 +4,15 @@ import { useState, useEffect, useTransition, useCallback } from 'react'
 import { format, parseISO, addMonths, subMonths, startOfMonth, getDaysInMonth, getDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
+import { buildIcsDataUrl } from '@/lib/calendar/ics'
 
-interface SlotData { id: string; startTime: string }
+interface SlotData { id: string; startTime: string; available: boolean }
 interface AvailMap  { [date: string]: { available: boolean; slots: SlotData[] } }
 
 const MONTH_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 const WEEK_PT  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
 
-export function RescheduleFlow({ code, currentDate, duration = 60 }: { code: string; currentDate: string; duration?: number }) {
+export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento', duration = 60 }: { code: string; currentDate: string; serviceName?: string; duration?: number }) {
   const today      = new Date()
   const [viewing,  setViewing]  = useState(() => startOfMonth(today))
   const [avail,    setAvail]    = useState<AvailMap>({})
@@ -72,6 +73,18 @@ export function RescheduleFlow({ code, currentDate, duration = 60 }: { code: str
         </p>
         <p className="font-body font-light text-[11px] text-offwhite/40 tracking-[0.12em] capitalize mb-1">{dateLabel}</p>
         <p className="font-data text-[22px] text-offwhite/55">{done.startTime.replace(':', 'h')}</p>
+        <a
+          href={buildIcsDataUrl({
+            title:           serviceName,
+            date:            done.date,
+            startTime:       done.startTime,
+            durationMinutes: duration,
+          })}
+          download="agendamento-alison-estevam.ics"
+          className="inline-block mt-4 font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/35 hover:text-offwhite/65 transition-colors underline underline-offset-4 decoration-offwhite/15"
+        >
+          Adicionar ao calendário
+        </a>
         <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.15em] mt-4">
           Confirme pelo WhatsApp se necessário.
         </p>
@@ -79,7 +92,7 @@ export function RescheduleFlow({ code, currentDate, duration = 60 }: { code: str
     )
   }
 
-  const slots = selDate ? (avail[selDate]?.slots ?? []) : []
+  const slots = selDate ? (avail[selDate]?.slots ?? []).filter(s => s.available) : []
 
   return (
     <div className="space-y-6">

@@ -8,7 +8,9 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency, cn } from '@/lib/utils'
 import { getLoyaltyProgress } from '@/lib/loyalty'
 import { BRAND } from '@/config/brand'
+import { BOOKING } from '@/config/booking'
 import { ClientHeader, clientHeaderLinkCls } from '@/components/layout/ClientHeader'
+import { ConfirmAttendanceButton } from '@/components/booking/ConfirmAttendanceButton'
 import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -32,6 +34,15 @@ const STATUS_STYLE: Record<string, string> = {
 }
 
 const UPCOMING_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
+
+function needsConfirmation(appt: any): boolean {
+  if (appt.status !== 'pending') return false
+  const slot = Array.isArray(appt.time_slots) ? appt.time_slots[0] : appt.time_slots
+  if (!slot?.date || !slot?.start_time) return false
+  const apptDate = parseISO(`${slot.date}T${slot.start_time}`)
+  const hoursUntil = (apptDate.getTime() - Date.now()) / (1000 * 60 * 60)
+  return hoursUntil > 0 && hoursUntil <= BOOKING.reminderHoursBefore
+}
 
 export default async function ContaPage() {
   const session = await getVerifiedClientSession()
@@ -152,7 +163,7 @@ export default async function ContaPage() {
               Outros agendamentos
             </p>
             <div className="flex flex-col gap-[10px]">
-              {upcoming.slice(1).map(a => <AppointmentCard key={a.id} appt={a} compact />)}
+              {upcoming.slice(1).map(a => <AppointmentCard key={a.id} appt={a} />)}
             </div>
           </div>
         )}
@@ -190,7 +201,7 @@ export default async function ContaPage() {
   )
 }
 
-function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
+function AppointmentCard({ appt }: { appt: any }) {
   const slot = Array.isArray(appt.time_slots) ? appt.time_slots[0] : appt.time_slots
   const svc  = Array.isArray(appt.services)   ? appt.services[0]   : appt.services
   const date = slot?.date ? parseISO(slot.date) : null
@@ -198,6 +209,7 @@ function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
   const dayLabel   = date ? format(date, 'd') : '—'
   const timeLabel  = slot?.start_time ? (slot.start_time as string).substring(0, 5) : '—'
   const canModify  = appt.status === 'pending' || appt.status === 'confirmed'
+  const mustConfirm = needsConfirmation(appt)
 
   return (
     <div className="border border-offwhite/10 px-6 py-5">
@@ -228,8 +240,10 @@ function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
         </div>
       </div>
 
-      {canModify && !compact && (
-        <div className="flex gap-[8px] mt-[16px]">
+      {mustConfirm && <ConfirmAttendanceButton appointmentId={appt.id} />}
+
+      {canModify && (
+        <div className={cn('flex gap-[8px]', mustConfirm ? 'mt-[10px]' : 'mt-[16px]')}>
           <Link
             href={`/reagendar/${appt.reference_code}`}
             className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 hover:border-offwhite/35 hover:text-offwhite/80 transition-all duration-200"
@@ -238,7 +252,7 @@ function AppointmentCard({ appt, compact }: { appt: any; compact?: boolean }) {
           </Link>
           <Link
             href={`/cancelar/${appt.reference_code}`}
-            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-error/25 text-error/55 hover:border-error/45 hover:text-error/75 transition-all duration-200"
+            className="flex-1 text-center px-3 py-[9px] font-body font-medium text-[8.5px] tracking-[0.2em] uppercase border border-error/50 bg-error/10 text-error/90 hover:bg-error/20 hover:border-error/70 hover:text-error transition-all duration-200"
           >
             Cancelar
           </Link>

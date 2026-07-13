@@ -8,6 +8,8 @@ import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/wha
 import { format, addMonths, subMonths, getDaysInMonth, startOfMonth, getDay, isBefore, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
+import { BRAND } from '@/config/brand'
+import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 
 /* ── Types ─────────────────────────────────────── */
@@ -64,6 +66,7 @@ interface BookingState {
     totalPrice:      number
     date:            string
     startTime:       string
+    duration:        number
     wppUrl:          string
   } | null
 }
@@ -862,6 +865,20 @@ function Confirmation({
         Confirmar no WhatsApp
         <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
       </a>
+
+      <a
+        href={buildIcsDataUrl({
+          title:           `${result.serviceName} — ${BRAND.name}`,
+          date:            result.date,
+          startTime:       result.startTime,
+          durationMinutes: result.duration,
+        })}
+        download="agendamento-alison-estevam.ics"
+        className="mt-[14px] font-body font-light text-[9px] tracking-[0.25em] uppercase text-offwhite/40 hover:text-offwhite/70 transition-colors underline underline-offset-4 decoration-offwhite/15"
+      >
+        Adicionar ao calendário
+      </a>
+
       <Link
         href="/conta"
         className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
@@ -1006,6 +1023,7 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
         totalPrice:       data.totalPrice,
         date:             data.date,
         startTime:        data.startTime,
+        duration:         state.selectedService!.duration,
         wppUrl,
       },
     }))
