@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { createAppointmentSchema } from '@/lib/validations/booking'
-import { generateReferenceCode, formatWhatsApp } from '@/lib/utils'
+import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { validateCoupon } from '@/lib/coupons'
 
@@ -132,11 +132,13 @@ export async function POST(request: NextRequest) {
       clientId = newClient.id
     }
 
-    // 4. Generate reference code
-    const { count } = await db
-      .from('appointments')
-      .select('*', { count: 'exact', head: true }) as { count: number | null }
-    const referenceCode = generateReferenceCode((count ?? 0) + 1)
+    // 4. Generate reference code — a real Postgres sequence, not count(*),
+    // so it stays monotonic (and collision-free) regardless of deletions.
+    const { data: referenceCode, error: refError } = await db.rpc('next_appointment_reference')
+    if (refError || !referenceCode) {
+      console.error('Reference code generation error:', refError)
+      return NextResponse.json({ error: 'Erro ao gerar código do agendamento.' }, { status: 500 })
+    }
 
     // 5. Create appointment + mark slot as booked
     const [{ data: appt, error: apptError }, { error: slotUpdateError }] = await Promise.all([

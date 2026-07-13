@@ -4,7 +4,6 @@ import {
   isValidWhatsApp,
   maskPhoneInput,
   formatCurrency,
-  generateReferenceCode,
   formatTimeDisplay,
   isPastDate,
   canCancelAppointment,
@@ -62,14 +61,6 @@ describe('formatCurrency', () => {
 
   it('renders null as "A definir" (negotiated complements)', () => {
     expect(formatCurrency(null)).toBe('A definir')
-  })
-})
-
-describe('generateReferenceCode', () => {
-  it('pads the sequence to 4 digits with the AE-<year> prefix', () => {
-    const year = new Date().getFullYear()
-    expect(generateReferenceCode(42)).toBe(`AE-${year}-0042`)
-    expect(generateReferenceCode(1)).toBe(`AE-${year}-0001`)
   })
 })
 

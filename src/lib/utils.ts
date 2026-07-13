@@ -14,16 +14,6 @@ export function cn(...inputs: ClassValue[]): string {
 }
 
 /**
- * Generate a human-readable reference code.
- * Format: AE-2026-0042
- */
-export function generateReferenceCode(sequence: number): string {
-  const year = new Date().getFullYear()
-  const padded = String(sequence).padStart(4, '0')
-  return `${BOOKING.referencePrefix}-${year}-${padded}`
-}
-
-/**
  * Format a Brazilian WhatsApp number to E.164 (+5511987654321).
  * A valid Brazilian mobile number is always DDD (2 digits) + 9 + 8 digits = 11 local
  * digits — the "nono dígito" has been mandatory nationwide since 2016. Anything else
