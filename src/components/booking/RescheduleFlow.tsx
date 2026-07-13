@@ -1,24 +1,19 @@
 'use client'
 
 import { useState, useEffect, useTransition, useCallback } from 'react'
-import { format, parseISO, addMonths, subMonths, startOfMonth, getDaysInMonth, getDay } from 'date-fns'
+import { format, parseISO, addMonths, subMonths, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
-
-interface SlotData { id: string; startTime: string; available: boolean }
-interface AvailMap  { [date: string]: { available: boolean; slots: SlotData[] } }
-
-const MONTH_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
-const WEEK_PT  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
+import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 
 export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento', duration = 60 }: { code: string; currentDate: string; serviceName?: string; duration?: number }) {
   const today      = new Date()
   const [viewing,  setViewing]  = useState(() => startOfMonth(today))
-  const [avail,    setAvail]    = useState<AvailMap>({})
+  const [avail,    setAvail]    = useState<AvailabilityMap>({})
   const [loading,  setLoading]  = useState(false)
-  const [selDate,  setSelDate]  = useState<string | null>(null)
-  const [selSlot,  setSelSlot]  = useState<SlotData | null>(null)
+  const [selDate,  setSelDate]  = useState<Date | null>(null)
+  const [selSlot,  setSelSlot]  = useState<CalendarSlot | null>(null)
   const [pending,  startTransition] = useTransition()
   const [done,     setDone]     = useState<{ date: string; startTime: string } | null>(null)
   const [error,    setError]    = useState<string | null>(null)
@@ -45,9 +40,6 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
 
   // Load current month on first render
   useEffect(() => { fetchAvail(viewing) }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const daysInMonth = getDaysInMonth(viewing)
-  const firstDay    = getDay(viewing) // 0=Sun
 
   const handleConfirm = () => {
     if (!selSlot) return
@@ -92,7 +84,8 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
     )
   }
 
-  const slots = selDate ? (avail[selDate]?.slots ?? []).filter(s => s.available) : []
+  const dateStr = selDate ? format(selDate, 'yyyy-MM-dd') : null
+  const slots   = dateStr ? (avail[dateStr]?.slots ?? []) : []
 
   return (
     <div className="space-y-6">
@@ -100,98 +93,28 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
         Selecione um novo dia e horário. Seu agendamento anterior ({currentDate}) será liberado.
       </p>
 
-      {/* Month nav */}
-      <div className="bg-offwhite/3 border border-offwhite/7">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-offwhite/6">
-          <button
-            onClick={() => changeMonth(-1)}
-            disabled={viewing <= startOfMonth(today)}
-            className="font-body font-light text-[10px] text-offwhite/30 hover:text-offwhite/65 disabled:opacity-20 transition-colors px-1"
-          >
-            ‹
-          </button>
-          <span className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/50">
-            {MONTH_PT[viewing.getMonth()]} {viewing.getFullYear()}
-          </span>
-          <button
-            onClick={() => changeMonth(1)}
-            className="font-body font-light text-[10px] text-offwhite/30 hover:text-offwhite/65 transition-colors px-1"
-          >
-            ›
-          </button>
-        </div>
+      <MiniCalendar
+        current={viewing}
+        selected={selDate}
+        availability={avail}
+        loading={loading}
+        onSelectDay={date => { setSelDate(date); setSelSlot(null) }}
+        onChangeMonth={changeMonth}
+      />
 
-        <div className="p-4">
-          {/* Weekday headers */}
-          <div className="grid grid-cols-7 mb-2">
-            {WEEK_PT.map(d => (
-              <div key={d} className="text-center font-body font-light text-[7.5px] tracking-[0.22em] uppercase text-offwhite/38 py-1">
-                {d}
-              </div>
-            ))}
-          </div>
-
-          {/* Days grid */}
-          <div className="grid grid-cols-7 gap-[2px]">
-            {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} />)}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day       = i + 1
-              const dateStr   = `${format(viewing, 'yyyy-MM')}-${String(day).padStart(2, '0')}`
-              const isPast    = parseISO(dateStr) < today
-              const info      = avail[dateStr]
-              const isAvail   = !isPast && info?.available
-              const isSel     = selDate === dateStr
-
-              return (
-                <button
-                  key={day}
-                  disabled={!isAvail || loading}
-                  onClick={() => { setSelDate(dateStr); setSelSlot(null) }}
-                  className={cn(
-                    'aspect-square flex items-center justify-center',
-                    'font-body font-light text-[11px] transition-all duration-150',
-                    isSel
-                      ? 'bg-sage/25 text-sage-light border border-sage/40'
-                      : isAvail
-                        ? 'text-offwhite/75 hover:bg-sage/12 border border-transparent hover:border-sage/25 hover:text-sage-light'
-                        : 'text-offwhite/25 cursor-not-allowed'
-                  )}
-                >
-                  {day}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Slots */}
       {selDate && (
-        <div>
-          <p className="font-body font-light text-[8px] tracking-[0.35em] uppercase text-offwhite/28 mb-3">
-            Horários disponíveis — {format(parseISO(selDate), "d 'de' MMMM", { locale: ptBR })}
-          </p>
-          {slots.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/25 italic">Nenhum horário disponível.</p>
-          ) : (
-            <div className="flex flex-wrap gap-[6px]">
-              {slots.map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => setSelSlot(s)}
-                  className={cn(
-                    'px-4 py-[9px] font-data text-[13px] border transition-all duration-150',
-                    selSlot?.id === s.id
-                      ? 'bg-sage/20 border-sage/45 text-sage-light'
-                      : 'bg-offwhite/3 border-offwhite/10 text-offwhite/60 hover:border-offwhite/25 hover:text-offwhite/85'
-                  )}
-                >
-                  {s.startTime.substring(0, 5)}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        slots.some(s => s.available) ? (
+          <SlotGrid date={selDate} slots={slots} selected={selSlot} onSelect={setSelSlot} />
+        ) : (
+          <div className="mt-[18px]">
+            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/22 mb-[10px]">
+              {format(selDate, "d 'de' MMMM", { locale: ptBR })} — sem horários
+            </p>
+            <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+              Nenhum horário disponível para esta data.
+            </p>
+          </div>
+        )
       )}
 
       {/* Confirm */}
@@ -204,10 +127,9 @@ export function RescheduleFlow({ code, currentDate, serviceName = 'Agendamento',
             onClick={handleConfirm}
             disabled={pending}
             className={cn(
-              'w-full py-[13px] font-body font-light text-[9px] tracking-[0.35em] uppercase',
-              'bg-sage/15 border border-sage/30 text-sage-light',
-              'hover:bg-sage/25 hover:border-sage/50',
-              'transition-all duration-200 disabled:opacity-40'
+              'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
+              'bg-gold text-charcoal-deep transition-all duration-300',
+              'hover:bg-gold-light disabled:opacity-40 disabled:cursor-not-allowed',
             )}
           >
             {pending ? 'Reagendando…' : `Confirmar — ${selSlot.startTime.substring(0, 5).replace(':', 'h')}`}
