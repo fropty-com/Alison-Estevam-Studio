@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useTransition, useCallback } from 'react'
+import Link from 'next/link'
 import { format, parseISO, addMonths, subMonths, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
@@ -80,6 +81,12 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
         <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.15em] mt-4">
           Confirme pelo WhatsApp se necessário.
         </p>
+        <Link
+          href="/conta"
+          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+        >
+          Voltar ao início
+        </Link>
       </div>
     )
   }

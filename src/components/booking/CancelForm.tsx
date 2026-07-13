@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 export function CancelForm({ code }: { code: string }) {
@@ -33,6 +34,12 @@ export function CancelForm({ code }: { code: string }) {
         <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.15em]">
           O horário foi liberado. Esperamos vê-lo em breve.
         </p>
+        <Link
+          href="/conta"
+          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+        >
+          Voltar ao início
+        </Link>
       </div>
     )
   }
