@@ -130,7 +130,7 @@ export async function sendReceiptEmail(params: {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const { error } = await resend.emails.send({
-      from: `${BRAND.fullName} <agendamento@alisonestevam.com.br>`,
+      from: `${BRAND.fullName} <${BRAND.emailFrom}>`,
       to: toEmail,
       subject: `Recibo Nº ${receiptNumber} — ${BRAND.fullName}`,
       html,

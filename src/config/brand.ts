@@ -10,6 +10,13 @@ export const BRAND = {
   foundedYear: 2018,
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '5511975369904',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://alisonestevam.com.br',
+  // TEMPORARY: alisonestevam.com.br has no verified domain in Resend yet
+  // (no DKIM/SPF), so mail sent "from" it is silently dropped by strict
+  // inboxes like Hotmail. onboarding@resend.dev is Resend's own
+  // pre-verified sending domain — free, no DNS needed, works immediately.
+  // Swap back to `agendamento@alisonestevam.com.br` / `noreply@...` once
+  // the real domain is verified in the Resend dashboard.
+  emailFrom: 'onboarding@resend.dev',
   instagram: 'https://instagram.com/alisonestevam',
   address: {
     street: 'Rua Portugal, 443',
