@@ -6,8 +6,10 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
-import { DayGrid, type GridAppointment } from '@/components/admin/DayGrid'
+import { DayGrid, type GridAppointment, type BlockedRange } from '@/components/admin/DayGrid'
 import { NewAppointmentButton } from '@/components/admin/NewAppointmentButton'
+import { DayOffToggleButton } from '@/components/admin/DayOffToggleButton'
+import { BlockTimeButton } from '@/components/admin/BlockTimeButton'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { cn } from '@/lib/utils'
 
@@ -85,18 +87,21 @@ export default async function AgendaPage({
     const label = format(dateObj, "EEEE, d 'de' MMMM", { locale: ptBR })
     const weekday = dateObj.getDay()
 
-    const [apptsRes, rulesRes, blockedRes] = await Promise.all([
+    const [apptsRes, rulesRes, blockedRes, blockedSlotsRes] = await Promise.all([
       db.from('appointments')
         .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)')
         .eq('time_slots.date', dateStr)
         .order('time_slots(start_time)', { ascending: true }),
       db.from('availability_rules').select('start_time, end_time').eq('weekday', weekday).eq('active', true),
       db.from('blocked_periods').select('id').lte('date_start', dateStr).gte('date_end', dateStr),
+      db.from('time_slots').select('start_time, end_time').eq('date', dateStr).eq('status', 'blocked').order('start_time', { ascending: true }),
     ])
 
     const appts  = (apptsRes.data  ?? []) as any[]
     const rules  = (rulesRes.data  ?? []) as { start_time: string; end_time: string }[]
     const blockedAllDay = ((blockedRes.data ?? []) as any[]).length > 0
+    const blockedPeriodId = ((blockedRes.data ?? []) as { id: string }[])[0]?.id ?? null
+    const blockedSlots = (blockedSlotsRes.data ?? []) as { start_time: string; end_time: string }[]
 
     // Grid spans the earliest rule start to the latest rule end for the day,
     // falling back to a sensible default when there's no rule (e.g. a
@@ -105,6 +110,17 @@ export default async function AgendaPage({
     const ruleEnds   = rules.map(r => timeToMinutes(r.end_time))
     const gridStartMin = ruleStarts.length ? Math.min(...ruleStarts) : timeToMinutes('07:00')
     const gridEndMin   = ruleEnds.length   ? Math.max(...ruleEnds)   : timeToMinutes('20:00')
+
+    // Merge contiguous blocked slots (e.g. 12:00-13:00 + 13:00-14:00) into a
+    // single visual range instead of drawing a seam between adjacent hours.
+    const blockedRanges: BlockedRange[] = []
+    for (const s of blockedSlots) {
+      const startMin = timeToMinutes(s.start_time.substring(0, 5))
+      const endMin   = timeToMinutes(s.end_time.substring(0, 5))
+      const last = blockedRanges[blockedRanges.length - 1]
+      if (last && last.endMin === startMin) last.endMin = endMin
+      else blockedRanges.push({ startMin, endMin })
+    }
 
     const gridAppointments: GridAppointment[] = appts.map((a: any) => {
       const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
@@ -142,6 +158,18 @@ export default async function AgendaPage({
           </div>
           <div className="flex items-center gap-3">
             <NewAppointmentButton />
+            <DayOffToggleButton
+              date={dateStr}
+              blocked={blockedAllDay}
+              blockedPeriodId={blockedPeriodId}
+              appointmentCount={gridAppointments.length}
+            />
+            <BlockTimeButton
+              date={dateStr}
+              gridStartMin={gridStartMin}
+              gridEndMin={gridEndMin}
+              hasRule={rules.length > 0}
+            />
             <ViewSwitcher view={view} dateStr={dateStr} />
             <NavArrows
               prevHref={`/admin/agenda?view=day&date=${prev}`}
@@ -152,9 +180,11 @@ export default async function AgendaPage({
         </div>
 
         <DayGrid
+          date={dateStr}
           gridStartMin={gridStartMin}
           gridEndMin={gridEndMin}
           blockedAllDay={blockedAllDay}
+          blockedRanges={blockedRanges}
           appointments={gridAppointments}
           prevHref={`/admin/agenda?view=day&date=${prev}`}
           nextHref={`/admin/agenda?view=day&date=${next}`}

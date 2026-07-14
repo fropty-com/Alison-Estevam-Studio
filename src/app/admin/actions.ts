@@ -7,6 +7,8 @@ import { createServerClient } from '@supabase/ssr'
 import { createManualAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
+import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
+import { SLOT_STATUS } from '@/config/booking'
 
 async function adminDb() {
   // Service-role client — bypasses RLS, server-only
@@ -530,6 +532,94 @@ export async function updateAvailabilityRule(id: string, data: { start_time?: st
   )
 
   revalidatePath('/admin/configuracoes')
+  return { ok: true }
+}
+
+/* ── Time range blocking (agenda shortcut) ────── */
+
+export async function blockTimeRange(
+  date: string,
+  startTime: string,
+  endTime: string,
+  reason?: string,
+  confirmed?: boolean
+): Promise<{ ok?: boolean; error?: string; needsConfirm?: boolean; count?: number }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  if (!date || !startTime || !endTime || startTime >= endTime) {
+    return { error: 'Faixa de horário inválida.' }
+  }
+
+  const db = await adminDb()
+  await ensureSlotsForDate(db, date)
+
+  const { data: existing } = await db
+    .from('time_slots')
+    .select('id')
+    .eq('date', date)
+    .gte('start_time', startTime)
+    .lt('start_time', endTime)
+
+  if ((existing ?? []).length === 0) {
+    return { error: 'Não há horário de expediente nessa faixa (pode cair num intervalo entre janelas do dia).' }
+  }
+
+  const { data: conflicting } = await db
+    .from('appointments')
+    .select('id, time_slots!inner(date, start_time)')
+    .in('status', ['pending', 'confirmed'])
+    .eq('time_slots.date', date)
+    .gte('time_slots.start_time', startTime)
+    .lt('time_slots.start_time', endTime)
+
+  const count = (conflicting ?? []).length
+  if (count > 0 && !confirmed) {
+    return { needsConfirm: true, count }
+  }
+
+  const { error } = await db
+    .from('time_slots')
+    .update({ status: SLOT_STATUS.BLOCKED })
+    .eq('date', date)
+    .eq('status', SLOT_STATUS.AVAILABLE)
+    .gte('start_time', startTime)
+    .lt('start_time', endTime)
+
+  if (error) return { error: 'Erro ao bloquear horário.' }
+
+  await logAction(
+    'time_range.block', 'time_slot', null,
+    `Bloqueou o horário de ${startTime} a ${endTime} em ${date}${reason ? ` (${reason})` : ''}`,
+    { date, startTime, endTime, reason }
+  )
+
+  revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
+export async function unblockTimeRange(date: string, startTime: string, endTime: string): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { error } = await db
+    .from('time_slots')
+    .update({ status: SLOT_STATUS.AVAILABLE })
+    .eq('date', date)
+    .eq('status', SLOT_STATUS.BLOCKED)
+    .gte('start_time', startTime)
+    .lt('start_time', endTime)
+
+  if (error) return { error: 'Erro ao desbloquear horário.' }
+
+  await logAction(
+    'time_range.unblock', 'time_slot', null,
+    `Desbloqueou o horário de ${startTime} a ${endTime} em ${date}`,
+    { date, startTime, endTime }
+  )
+
+  revalidatePath('/admin/agenda')
   return { ok: true }
 }
 

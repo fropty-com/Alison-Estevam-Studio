@@ -1,14 +1,24 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { HOUR_HEIGHT, minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { AppointmentDetailSheet, type DetailAppointment } from './AppointmentDetailSheet'
+import { unblockTimeRange } from '@/app/admin/actions'
 
 export interface GridAppointment extends DetailAppointment {
   startMin: number
   endMin: number
+}
+
+export interface BlockedRange {
+  startMin: number
+  endMin: number
+}
+
+function minutesToHHMM(minutes: number): string {
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
 const STATUS_BLOCK: Record<string, string> = {
@@ -24,23 +34,37 @@ const STATUS_BLOCK: Record<string, string> = {
 const SWIPE_THRESHOLD_PX = 60
 
 export function DayGrid({
+  date,
   gridStartMin,
   gridEndMin,
   blockedAllDay,
+  blockedRanges,
   appointments,
   prevHref,
   nextHref,
 }: {
+  date: string
   gridStartMin: number
   gridEndMin:   number
   blockedAllDay: boolean
+  blockedRanges: BlockedRange[]
   appointments: GridAppointment[]
   prevHref: string
   nextHref: string
 }) {
   const router = useRouter()
   const [selected, setSelected] = useState<GridAppointment | null>(null)
+  const [, startTransition] = useTransition()
   const touchStartX = useRef<number | null>(null)
+
+  const handleUnblock = (range: BlockedRange) => {
+    const ok = window.confirm(`Desbloquear o horário de ${minutesToHHMM(range.startMin)} a ${minutesToHHMM(range.endMin)}?`)
+    if (!ok) return
+    startTransition(async () => {
+      await unblockTimeRange(date, minutesToHHMM(range.startMin), minutesToHHMM(range.endMin))
+      router.refresh()
+    })
+  }
 
   const layout = useMemo(
     () => layoutColumns(appointments.map(a => ({ id: a.id, startMin: a.startMin, endMin: a.endMin }))),
@@ -98,36 +122,53 @@ export function DayGrid({
               <p className="font-display font-light text-[16px] text-offwhite/25 italic">Folga / fechado</p>
             </div>
           ) : (
-            appointments.map(a => {
-              const pos = layout.get(a.id) ?? { col: 0, cols: 1 }
-              const top = minutesToPx(a.startMin - gridStartMin)
-              const height = Math.max(minutesToPx(a.endMin - a.startMin), 22)
-              const widthPct = 100 / pos.cols
-              const showDetails = height >= 40
-              return (
-                <button
-                  key={a.id}
-                  onClick={() => setSelected(a)}
-                  className={cn(
-                    'absolute px-2 py-[3px] border text-left overflow-hidden transition-all duration-150',
-                    'hover:brightness-125',
-                    STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
-                  )}
-                  style={{
-                    top,
-                    height,
-                    left: `${pos.col * widthPct}%`,
-                    width: `calc(${widthPct}% - 2px)`,
-                  }}
-                >
-                  <p className="font-data text-[10px] leading-tight truncate">{a.timeLabel}</p>
-                  <p className="font-body font-light text-[10px] leading-tight truncate">{a.clientName}</p>
-                  {showDetails && (
-                    <p className="font-body font-light text-[8.5px] leading-tight truncate opacity-70">{a.serviceName}</p>
-                  )}
-                </button>
-              )
-            })
+            <>
+              {blockedRanges.map((r, i) => {
+                const top = minutesToPx(r.startMin - gridStartMin)
+                const height = minutesToPx(r.endMin - r.startMin)
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleUnblock(r)}
+                    title="Clique para desbloquear"
+                    className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.04),rgba(241,241,241,0.04)_8px,transparent_8px,transparent_16px)] border-y border-offwhite/10 flex items-center justify-center hover:bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.07),rgba(241,241,241,0.07)_8px,transparent_8px,transparent_16px)] transition-all duration-150"
+                    style={{ top, height }}
+                  >
+                    <p className="font-body font-light text-[9px] text-offwhite/30 uppercase tracking-[0.15em]">Bloqueado</p>
+                  </button>
+                )
+              })}
+              {appointments.map(a => {
+                const pos = layout.get(a.id) ?? { col: 0, cols: 1 }
+                const top = minutesToPx(a.startMin - gridStartMin)
+                const height = Math.max(minutesToPx(a.endMin - a.startMin), 22)
+                const widthPct = 100 / pos.cols
+                const showDetails = height >= 40
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => setSelected(a)}
+                    className={cn(
+                      'absolute px-2 py-[3px] border text-left overflow-hidden transition-all duration-150',
+                      'hover:brightness-125',
+                      STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
+                    )}
+                    style={{
+                      top,
+                      height,
+                      left: `${pos.col * widthPct}%`,
+                      width: `calc(${widthPct}% - 2px)`,
+                    }}
+                  >
+                    <p className="font-data text-[10px] leading-tight truncate">{a.timeLabel}</p>
+                    <p className="font-body font-light text-[10px] leading-tight truncate">{a.clientName}</p>
+                    {showDetails && (
+                      <p className="font-body font-light text-[8.5px] leading-tight truncate opacity-70">{a.serviceName}</p>
+                    )}
+                  </button>
+                )
+              })}
+            </>
           )}
         </div>
       </div>
