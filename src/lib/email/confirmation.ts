@@ -111,12 +111,16 @@ export async function sendConfirmationEmail(params: {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from:    `${BRAND.fullName} <agendamento@alisonestevam.com.br>`,
       to:      clientEmail,
       subject: `Agendamento recebido — ${referenceCode}`,
       html,
     })
+    // The Resend SDK returns { error } instead of throwing for API-level
+    // failures (unverified domain, bad key, invalid recipient) — without
+    // this check those failures were silently swallowed as "sent".
+    if (error) console.error('Failed to send confirmation email:', error)
   } catch (err) {
     // Email is non-critical — log and continue
     console.error('Failed to send confirmation email:', err)

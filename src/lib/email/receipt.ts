@@ -129,12 +129,15 @@ export async function sendReceiptEmail(params: {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: `${BRAND.fullName} <agendamento@alisonestevam.com.br>`,
       to: toEmail,
       subject: `Recibo Nº ${receiptNumber} — ${BRAND.fullName}`,
       html,
     })
+    // The Resend SDK returns { error } instead of throwing for API-level
+    // failures — without this check those failures were silently swallowed.
+    if (error) console.error('Failed to send receipt email:', error)
   } catch (err) {
     console.error('Failed to send receipt email:', err)
   }

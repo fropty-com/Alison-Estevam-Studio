@@ -12,12 +12,15 @@ export async function sendWelcomeEmail(params: {
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from:    `${BRAND.fullName} <noreply@alisonestevam.com.br>`,
       to:      clientEmail,
       subject: `Bem-vindo ao ${BRAND.fullName}`,
       html,
     })
+    // The Resend SDK returns { error } instead of throwing for API-level
+    // failures — without this check those failures were silently swallowed.
+    if (error) console.error('Failed to send welcome email:', error)
   } catch (err) {
     console.error('Failed to send welcome email:', err)
   }
