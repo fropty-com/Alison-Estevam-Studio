@@ -7,6 +7,7 @@ import {
 import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
 import { DayGrid, type GridAppointment } from '@/components/admin/DayGrid'
+import { NewAppointmentButton } from '@/components/admin/NewAppointmentButton'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { cn } from '@/lib/utils'
 
@@ -140,6 +141,7 @@ export default async function AgendaPage({
             </h1>
           </div>
           <div className="flex items-center gap-3">
+            <NewAppointmentButton />
             <ViewSwitcher view={view} dateStr={dateStr} />
             <NavArrows
               prevHref={`/admin/agenda?view=day&date=${prev}`}

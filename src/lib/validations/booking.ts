@@ -51,6 +51,47 @@ export const createAppointmentSchema = z.object({
 
 export type CreateAppointmentInput = z.infer<typeof createAppointmentSchema>
 
+// Same shape as createAppointmentSchema minus the coupon (doesn't apply to
+// a manually-registered appointment) plus an optional internal note.
+export const createManualAppointmentSchema = z.object({
+  name: clientNameSchema,
+
+  whatsapp: z
+    .string()
+    .transform(v => v.replace(/\D/g, ''))
+    .pipe(
+      z.string().regex(/^(55)?\d{11}$/, 'WhatsApp inválido. Informe o DDD + 9 dígitos.')
+    ),
+
+  email: z
+    .string()
+    .email('E-mail inválido.')
+    .optional()
+    .or(z.literal('')),
+
+  serviceId: z
+    .string()
+    .uuid('Serviço inválido.'),
+
+  slotId: z
+    .string()
+    .uuid('Horário inválido.'),
+
+  complementIds: z
+    .array(z.string().uuid())
+    .max(10)
+    .optional()
+    .default([]),
+
+  notes: z
+    .string()
+    .max(500)
+    .optional()
+    .or(z.literal('')),
+})
+
+export type CreateManualAppointmentInput = z.infer<typeof createManualAppointmentSchema>
+
 export const cancelAppointmentSchema = z.object({
   appointmentId: z.string().uuid(),
   reason: z.string().max(500).optional(),

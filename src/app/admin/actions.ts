@@ -4,6 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
+import { createManualAppointmentSchema } from '@/lib/validations/booking'
+import { formatWhatsApp } from '@/lib/utils'
+import { sendConfirmationEmail } from '@/lib/email/confirmation'
 
 async function adminDb() {
   // Service-role client — bypasses RLS, server-only
@@ -261,6 +264,132 @@ export async function addAppointmentNote(id: string, notes: string) {
   const { error } = await db.from('appointments').update({ notes }).eq('id', id)
   if (error) return { error: 'Erro ao salvar nota.' }
 
+  revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
+/**
+ * Registers a walk-in / phone booking directly from the admin agenda.
+ * Mirrors POST /api/appointments (slot/service/complement validation,
+ * find-or-create client by WhatsApp, reference code via sequence, slot
+ * booking, complement linking, confirmation email) but — unlike the public
+ * route — allows the WhatsApp-only service (the admin is documenting a
+ * time already arranged off-platform, not letting a client self-book it)
+ * and accepts an internal note at creation time. No coupon: doesn't apply
+ * to a manually-registered appointment.
+ */
+export async function createManualAppointment(input: unknown): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const parsed = createManualAppointmentSchema.safeParse(input)
+  if (!parsed.success) return { error: 'Dados inválidos.' }
+  const { name, whatsapp, email, serviceId, slotId, complementIds, notes } = parsed.data
+
+  const db = await adminDb()
+
+  const { data: slot, error: slotError } = await db
+    .from('time_slots')
+    .select('id, status, date, start_time')
+    .eq('id', slotId)
+    .eq('status', 'available')
+    .single()
+  if (slotError || !slot) return { error: 'Este horário não está mais disponível.' }
+
+  const { data: service, error: serviceError } = await db
+    .from('services')
+    .select('id, name, price')
+    .eq('id', serviceId)
+    .eq('active', true)
+    .single()
+  if (serviceError || !service) return { error: 'Serviço não encontrado.' }
+
+  let complements: { id: string; name: string; price: number | null }[] = []
+  if (complementIds.length > 0) {
+    const { data: validComplements } = await db
+      .from('service_complements')
+      .select('complements(id, name, price, active)')
+      .eq('service_id', serviceId)
+      .in('complement_id', complementIds)
+
+    complements = ((validComplements ?? []) as { complements: { id: string; name: string; price: number | null; active: boolean } | null }[])
+      .map(row => row.complements)
+      .filter((c): c is { id: string; name: string; price: number | null; active: boolean } => c !== null && c.active)
+
+    if (complements.length !== complementIds.length) {
+      return { error: 'Um ou mais complementos selecionados não estão disponíveis para este serviço.' }
+    }
+  }
+
+  const complementsPrice = complements.reduce((sum, c) => sum + Number(c.price), 0)
+  const totalPrice = Number(service.price) + complementsPrice
+
+  const formattedWhatsapp = formatWhatsApp(whatsapp)
+  let clientId: string
+
+  const { data: existingClient } = await db
+    .from('clients')
+    .select('id')
+    .eq('whatsapp', formattedWhatsapp)
+    .maybeSingle()
+
+  if (existingClient) {
+    clientId = existingClient.id
+    await db.from('clients').update({ name, ...(email && { email }) }).eq('id', clientId)
+  } else {
+    const { data: newClient, error: clientError } = await db
+      .from('clients')
+      .insert({ name, whatsapp: formattedWhatsapp, email: email || null })
+      .select('id')
+      .single()
+    if (clientError || !newClient) return { error: 'Erro ao registrar cliente.' }
+    clientId = newClient.id
+  }
+
+  const { data: referenceCode, error: refError } = await db.rpc('next_appointment_reference')
+  if (refError || !referenceCode) return { error: 'Erro ao gerar código do agendamento.' }
+
+  const [{ data: appt, error: apptError }, { error: slotUpdateError }] = await Promise.all([
+    db.from('appointments').insert({
+      reference_code:    referenceCode,
+      client_id:         clientId,
+      service_id:        serviceId,
+      slot_id:           slotId,
+      status:            'pending',
+      service_price:     service.price,
+      complements_price: complementsPrice,
+      total_price:       totalPrice,
+      notes:             notes || null,
+    }).select('id').single(),
+    db.from('time_slots').update({ status: 'booked' }).eq('id', slotId),
+  ])
+
+  if (apptError || slotUpdateError || !appt) return { error: 'Erro ao criar agendamento. Tente novamente.' }
+
+  if (complements.length > 0) {
+    await db.from('appointment_complements').insert(
+      complements.map(c => ({ appointment_id: appt.id, complement_id: c.id, price: c.price }))
+    )
+  }
+
+  if (email) {
+    sendConfirmationEmail({
+      clientName:    name,
+      clientEmail:   email,
+      serviceName:   service.name,
+      date:          slot.date,
+      startTime:     (slot.start_time as string).substring(0, 5),
+      referenceCode,
+    })
+  }
+
+  await logAction(
+    'appointment.manual_create', 'appointment', appt.id,
+    `Criou agendamento manual #${referenceCode} para ${name} (${service.name})`,
+    { serviceId, slotId, complementIds }
+  )
+
+  revalidatePath('/admin')
   revalidatePath('/admin/agenda')
   return { ok: true }
 }
