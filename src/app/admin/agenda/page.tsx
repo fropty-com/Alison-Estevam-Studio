@@ -6,20 +6,11 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
-import { AppointmentActions } from '@/components/admin/AppointmentActions'
+import { DayGrid, type GridAppointment } from '@/components/admin/DayGrid'
+import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { cn } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
-
-const STATUS_LABEL: Record<string, { label: string; color: string; border: string }> = {
-  pending:     { label: 'Pendente',    color: 'text-warning',      border: 'border-l-warning'      },
-  confirmed:   { label: 'Confirmado',  color: 'text-sage-light',   border: 'border-l-sage'         },
-  checked_in:  { label: 'Chegou',      color: 'text-gold',         border: 'border-l-gold'         },
-  in_progress: { label: 'Em atendimento', color: 'text-gold',      border: 'border-l-gold'         },
-  completed:   { label: 'Concluído',   color: 'text-offwhite/35',  border: 'border-l-offwhite/20'  },
-  cancelled:   { label: 'Cancelado',   color: 'text-error/50',     border: 'border-l-error/40'     },
-  no_show:     { label: 'No-show',     color: 'text-error/40',     border: 'border-l-error/25'     },
-}
 
 const STATUS_DOT: Record<string, string> = {
   pending:     'bg-warning/70',
@@ -85,20 +76,59 @@ export default async function AgendaPage({
   const dateObj = parseISO(dateStr)
   const db = await createServiceClient() as any
 
-  // ── Day view — unchanged, full detail with check-in/checkout actions ──
+  // ── Day view — hour-ruler grid with proportional blocks ──
   if (view === 'day') {
     const prev  = format(subDays(dateObj, 1), 'yyyy-MM-dd')
     const next  = format(addDays(dateObj, 1), 'yyyy-MM-dd')
     const today = format(new Date(), 'yyyy-MM-dd')
     const label = format(dateObj, "EEEE, d 'de' MMMM", { locale: ptBR })
+    const weekday = dateObj.getDay()
 
-    const { data: raw } = await db
-      .from('appointments')
-      .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)')
-      .eq('time_slots.date', dateStr)
-      .order('time_slots(start_time)', { ascending: true })
+    const [apptsRes, rulesRes, blockedRes] = await Promise.all([
+      db.from('appointments')
+        .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)')
+        .eq('time_slots.date', dateStr)
+        .order('time_slots(start_time)', { ascending: true }),
+      db.from('availability_rules').select('start_time, end_time').eq('weekday', weekday).eq('active', true),
+      db.from('blocked_periods').select('id').lte('date_start', dateStr).gte('date_end', dateStr),
+    ])
 
-    const appts = (raw ?? []) as any[]
+    const appts  = (apptsRes.data  ?? []) as any[]
+    const rules  = (rulesRes.data  ?? []) as { start_time: string; end_time: string }[]
+    const blockedAllDay = ((blockedRes.data ?? []) as any[]).length > 0
+
+    // Grid spans the earliest rule start to the latest rule end for the day,
+    // falling back to a sensible default when there's no rule (e.g. a
+    // day normally closed, but with a one-off appointment on it anyway).
+    const ruleStarts = rules.map(r => timeToMinutes(r.start_time))
+    const ruleEnds   = rules.map(r => timeToMinutes(r.end_time))
+    const gridStartMin = ruleStarts.length ? Math.min(...ruleStarts) : timeToMinutes('07:00')
+    const gridEndMin   = ruleEnds.length   ? Math.max(...ruleEnds)   : timeToMinutes('20:00')
+
+    const gridAppointments: GridAppointment[] = appts.map((a: any) => {
+      const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
+      const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
+      const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
+      const startMin = timeToMinutes((slot?.start_time as string)?.substring(0, 5) ?? '00:00')
+      const endMin   = timeToMinutes((slot?.end_time   as string)?.substring(0, 5) ?? '00:00')
+      return {
+        id: a.id,
+        referenceCode: a.reference_code,
+        status: a.status,
+        notes: a.notes,
+        totalPrice: Number(a.total_price),
+        startMin,
+        endMin,
+        timeLabel: (slot?.start_time as string)?.substring(0, 5) ?? '--',
+        durationLabel: svc?.duration ? `${svc.duration}min` : '',
+        clientName: cli?.name ?? '—',
+        clientWhatsapp: cli?.whatsapp ?? '',
+        clientVip: !!cli?.vip,
+        serviceName: svc?.name ?? '—',
+        servicePrice: svc?.price ?? null,
+        checkedInAt: a.checked_in_at ? format(new Date(a.checked_in_at), 'HH:mm') : null,
+      }
+    })
 
     return (
       <div className="p-8">
@@ -119,65 +149,14 @@ export default async function AgendaPage({
           </div>
         </div>
 
-        {appts.length === 0 ? (
-          <div className="bg-offwhite/3 border border-offwhite/7 p-10 text-center">
-            <p className="font-display font-light text-[20px] text-offwhite/18 italic">
-              Nenhum agendamento para este dia.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-[8px]">
-            {appts.map((a: any) => {
-              const st   = STATUS_LABEL[a.status] ?? STATUS_LABEL.pending
-              const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
-              const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
-              const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
-              const time = slot?.start_time?.substring(0, 5) ?? '--'
-
-              return (
-                <div key={a.id} className={cn('bg-offwhite/3 border border-offwhite/7 border-l-[3px] p-5', st.border)}>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
-                      <div className="shrink-0 text-center">
-                        <p className="font-data text-[22px] text-offwhite/70 leading-none">{time}</p>
-                        <p className="font-body font-light text-[8px] text-offwhite/25 mt-[3px] tracking-[0.15em]">
-                          {svc?.duration ? `${svc.duration}min` : ''}
-                        </p>
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-[3px]">
-                          <p className="font-body font-light text-[14px] text-offwhite">{cli?.name ?? '—'}</p>
-                          {cli?.vip && (
-                            <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70">VIP</span>
-                          )}
-                        </div>
-                        <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.15em] mb-[2px]">
-                          {svc?.name ?? '—'} · {svc?.price ? `R$ ${svc.price}` : ''}
-                        </p>
-                        <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
-                          {cli?.whatsapp} · #{a.reference_code}
-                          {a.checked_in_at && ` · chegou às ${format(new Date(a.checked_in_at), 'HH:mm')}`}
-                        </p>
-                        {a.notes && (
-                          <p className="mt-2 font-body font-light text-[10px] text-offwhite/40 italic border-l border-offwhite/12 pl-2">
-                            {a.notes}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <span className={cn('font-body font-light text-[8px] tracking-[0.22em] uppercase shrink-0', st.color)}>
-                      {st.label}
-                    </span>
-                  </div>
-
-                  <AppointmentActions id={a.id} status={a.status} notes={a.notes} totalPrice={Number(a.total_price)} />
-                </div>
-              )
-            })}
-          </div>
-        )}
+        <DayGrid
+          gridStartMin={gridStartMin}
+          gridEndMin={gridEndMin}
+          blockedAllDay={blockedAllDay}
+          appointments={gridAppointments}
+          prevHref={`/admin/agenda?view=day&date=${prev}`}
+          nextHref={`/admin/agenda?view=day&date=${next}`}
+        />
       </div>
     )
   }
