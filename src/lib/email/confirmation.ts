@@ -44,7 +44,7 @@ export async function sendConfirmationEmail(params: {
           <tr>
             <td style="padding:32px 40px;">
               <p style="margin:0 0 28px;font-size:13px;font-weight:300;color:rgba(245,240,232,0.55);line-height:1.85;">
-                Olá, ${clientName}. Seu agendamento foi recebido e está pendente de confirmação via WhatsApp.
+                Olá, ${clientName}. Seu agendamento foi recebido. Toque no botão abaixo para confirmar sua presença.
               </p>
 
               <!-- Details block -->
@@ -59,21 +59,32 @@ export async function sendConfirmationEmail(params: {
                 <tr><td style="padding:8px 24px 24px;"></td></tr>
               </table>
 
-              <!-- CTAs -->
+              <!-- Primary CTA — confirms attendance directly, no WhatsApp round-trip needed -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+                <tr>
+                  <td align="center" style="background:#CBA339;">
+                    <a href="${BRAND.siteUrl}/confirmar/${referenceCode}" style="display:block;padding:16px 28px;font-size:9.5px;letter-spacing:0.38em;text-transform:uppercase;color:#1E1E1C;text-decoration:none;font-weight:500;">
+                      Confirmar presença
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Secondary CTAs -->
               <table cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:8px 0;">
                 <tr>
                   <td style="background:#7A9182;">
-                    <a href="https://wa.me/${BRAND.whatsapp}" style="display:inline-block;padding:14px 28px;font-size:9px;letter-spacing:0.38em;text-transform:uppercase;color:#141412;text-decoration:none;font-weight:300;">
-                      Confirmar no WhatsApp →
+                    <a href="https://wa.me/${BRAND.whatsapp}" style="display:inline-block;padding:12px 20px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:#141412;text-decoration:none;font-weight:300;">
+                      Falar no WhatsApp
                     </a>
                   </td>
                   <td style="background:rgba(245,240,232,0.05);border:1px solid rgba(245,240,232,0.10);">
-                    <a href="${BRAND.siteUrl}/reagendar/${referenceCode}" style="display:inline-block;padding:14px 20px;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.45);text-decoration:none;font-weight:300;">
+                    <a href="${BRAND.siteUrl}/reagendar/${referenceCode}" style="display:inline-block;padding:12px 20px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.45);text-decoration:none;font-weight:300;">
                       Reagendar
                     </a>
                   </td>
                   <td style="background:rgba(245,240,232,0.03);border:1px solid rgba(245,240,232,0.07);">
-                    <a href="${BRAND.siteUrl}/cancelar/${referenceCode}" style="display:inline-block;padding:14px 20px;font-size:9px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.28);text-decoration:none;font-weight:300;">
+                    <a href="${BRAND.siteUrl}/cancelar/${referenceCode}" style="display:inline-block;padding:12px 20px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:rgba(245,240,232,0.28);text-decoration:none;font-weight:300;">
                       Cancelar
                     </a>
                   </td>

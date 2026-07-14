@@ -19,7 +19,7 @@ function ThemeInit() {
 export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname  = usePathname()
   const isAdmin   = pathname.startsWith('/admin')
-  const isFocused = ['/agendar', '/entrar', '/conta', '/perfil', '/reagendar', '/cancelar'].some(p => pathname.startsWith(p))
+  const isFocused = ['/agendar', '/entrar', '/conta', '/perfil', '/reagendar', '/cancelar', '/confirmar'].some(p => pathname.startsWith(p))
 
   if (isAdmin) return <>{children}</>
 
