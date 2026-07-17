@@ -34,7 +34,13 @@ async function sendOtpViaSms(phone: string, code: string): Promise<void> {
 // leaking the verification code in the response is a full auth bypass
 // (staff_members.phone numbers are not secret — e.g. the business's own
 // public WhatsApp contact number is also a staff phone).
-const DEV_MODE = process.env.NODE_ENV === 'development'
+//
+// OTP_DEBUG_LEAK is a deliberate, manually-toggled escape hatch for the
+// owner to validate the phone-login flow in production before a real
+// provider is wired up. It must be unset (or "false") the rest of the
+// time — while set, ANY phone number's code is exposed in the response,
+// including staff phones that grant admin access.
+const DEV_MODE = process.env.NODE_ENV === 'development' || process.env.OTP_DEBUG_LEAK === 'true'
 
 export async function requestOtp(phone: string): Promise<{ devCode?: string }> {
   const db = await createServiceClient() as any
