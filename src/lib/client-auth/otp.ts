@@ -25,7 +25,16 @@ async function sendOtpViaSms(phone: string, code: string): Promise<void> {
   console.log(`[OTP dev] SMS ${phone}: código ${code}`)
 }
 
-const DEV_MODE = !process.env.WHATSAPP_OTP_PROVIDER
+// Strictly NODE_ENV === 'development' (never just "no provider configured"):
+// Vercel sets NODE_ENV='production' for BOTH preview and production
+// deployments, so this only ever leaks the code on a developer's own
+// machine running `npm run dev`. Until a real WhatsApp/SMS provider is
+// wired into sendOtpViaWhatsApp/sendOtpViaSms above, phone login simply
+// doesn't work on any deployed environment — that's the correct trade-off:
+// leaking the verification code in the response is a full auth bypass
+// (staff_members.phone numbers are not secret — e.g. the business's own
+// public WhatsApp contact number is also a staff phone).
+const DEV_MODE = process.env.NODE_ENV === 'development'
 
 export async function requestOtp(phone: string): Promise<{ devCode?: string }> {
   const db = await createServiceClient() as any
