@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isStaffMember } from '@/lib/admin-auth'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -27,7 +28,11 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
+  // Being authenticated is not enough — only staff_members rows may reach
+  // /admin. Otherwise any Supabase Auth account (even one never intended
+  // for admin, or one deliberately removed from staff_members) could still
+  // log in at /admin/login and use the panel.
+  if (!user || !(await isStaffMember(user.id))) {
     return NextResponse.redirect(new URL('/admin/login', request.url))
   }
 

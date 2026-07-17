@@ -9,6 +9,7 @@ import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
 import { SLOT_STATUS } from '@/config/booking'
+import { isStaffMember } from '@/lib/admin-auth'
 
 async function adminDb() {
   // Service-role client — bypasses RLS, server-only
@@ -36,6 +37,11 @@ async function getSessionUser() {
     }
   )
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return null
+  // Being authenticated alone is not enough — only staff_members rows may
+  // call admin Server Actions (see src/lib/admin-auth.ts for the same gate
+  // applied at the middleware level).
+  if (!(await isStaffMember(user.id))) return null
   return user
 }
 
