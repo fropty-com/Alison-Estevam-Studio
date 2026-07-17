@@ -36,10 +36,19 @@ Cada célula lista os agendamentos do dia em linha compacta (`10:00 Marcos Silva
 ### Clique em agendamento
 Sem mudança — mesmo `AppointmentDetailSheet` já existente da Fase B.
 
+## Responsividade
+
+O visual de referência é puramente desktop (sidebar fixa, várias colunas lado a lado) e não cabe direto numa tela estreita. A página já tem precedente móvel desta sessão (grid de Dia com swipe entre dias, painel de detalhes que vira folha inferior no mobile em vez de painel lateral) — a mesma filosofia se aplica aqui: **mesma estética em qualquer largura, layout que se adapta**, não uma versão "simplificada" à parte.
+
+- **Mini-calendário**: no desktop fica fixo como sidebar; abaixo do breakpoint mobile vira um botão compacto (mês/ano + ícone) que abre o mini-calendário num popover/drawer por cima do conteúdo, fechando ao selecionar um dia.
+- **Semana Útil / Semana**: no desktop mostra todas as colunas lado a lado; no mobile, colunas com scroll horizontal (mantendo a régua de horas fixa à esquerda, como um "freeze pane"), permitindo ver uma ou duas colunas por vez e arrastar para o lado — sem esconder nenhuma view do seletor.
+- **Dia e Mês**: já funcionam bem em largura estreita hoje (grid de Dia já é mobile-first desde a Fase B; Mês já é uma grade 7 colunas compacta) — só recebem os ajustes visuais das seções acima (régua de meia hora, blocos com borda/hachura, linha de "agora", linha compacta nas células do Mês).
+- **Dropdown de view e barra superior**: já compactos por natureza, sem tratamento especial além de quebra de linha/espaçamento em telas estreitas.
+
 ## Temas
 
 `<ThemeToggle />` já aplica `data-theme="light"` no `<html>` via localStorage, e as variáveis de cor (`--c-charcoal`, `--c-offwhite`, `--c-gold` etc.) já têm contraparte clara definida globalmente em `globals.css`. Como os componentes do admin já usam essas mesmas classes utilitárias, a expectativa é que a maior parte responda automaticamente ao toggle — qualquer ajuste fino de contraste específico da agenda (ex.: o hachurado de fundo dos blocos, a cor da linha de "agora") é feito durante a implementação, comparando lado a lado com as capturas de referência nos dois temas.
 
 ## Testes
 
-Sem testes automatizados novos além dos já existentes (`dayGridLayout.test.ts` continua cobrindo o algoritmo de sobreposição, que não muda). Validação manual no browser, seguindo o padrão das fases anteriores: visão Dia/Semana Útil/Semana/Mês nos dois temas, clique em dias do mini-calendário, dropdown de view, clique em agendamento abrindo o painel de detalhes, e confirmação de que Novo agendamento/Marcar folga/Bloquear horário continuam funcionando sem alteração de comportamento.
+Sem testes automatizados novos além dos já existentes (`dayGridLayout.test.ts` continua cobrindo o algoritmo de sobreposição, que não muda). Validação manual no browser, seguindo o padrão das fases anteriores: visão Dia/Semana Útil/Semana/Mês nos dois temas, clique em dias do mini-calendário, dropdown de view, clique em agendamento abrindo o painel de detalhes, confirmação de que Novo agendamento/Marcar folga/Bloquear horário continuam funcionando sem alteração de comportamento, e teste em viewport mobile (popover do mini-calendário, scroll horizontal das views de semana, grid de Dia e Mês) nos dois temas.
