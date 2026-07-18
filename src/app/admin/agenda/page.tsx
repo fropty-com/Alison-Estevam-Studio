@@ -6,52 +6,19 @@ import {
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
-import { DayGrid, type GridAppointment, type BlockedRange } from '@/components/admin/DayGrid'
+import { DayGrid, type GridAppointment, type BlockedRange, STATUS_BLOCK } from '@/components/admin/DayGrid'
+import { WeekGrid, type WeekDay } from '@/components/admin/WeekGrid'
 import { NewAppointmentButton } from '@/components/admin/NewAppointmentButton'
 import { DayOffToggleButton } from '@/components/admin/DayOffToggleButton'
 import { BlockTimeButton } from '@/components/admin/BlockTimeButton'
+import { AgendaMiniCalendar } from '@/components/admin/AgendaMiniCalendar'
+import { AgendaViewDropdown, type AgendaView } from '@/components/admin/AgendaViewDropdown'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
+import { BOOKING } from '@/config/booking'
 import { cn } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
-
-const STATUS_DOT: Record<string, string> = {
-  pending:     'bg-warning/70',
-  confirmed:   'bg-sage/70',
-  checked_in:  'bg-gold/80',
-  in_progress: 'bg-gold/80',
-  completed:   'bg-offwhite/25',
-  cancelled:   'bg-error/40',
-  no_show:     'bg-error/30',
-}
-
-type View = 'day' | 'week' | 'month'
-
-function ViewSwitcher({ view, dateStr }: { view: View; dateStr: string }) {
-  const tabs: { key: View; label: string }[] = [
-    { key: 'day',   label: 'Dia' },
-    { key: 'week',  label: 'Semana' },
-    { key: 'month', label: 'Mês' },
-  ]
-  return (
-    <div className="flex border border-offwhite/10">
-      {tabs.map(t => (
-        <Link
-          key={t.key}
-          href={`/admin/agenda?view=${t.key}&date=${dateStr}`}
-          className={cn(
-            'px-4 h-9 flex items-center font-body font-light text-[8px] tracking-[0.28em] uppercase transition-all duration-200',
-            view === t.key
-              ? 'bg-sage/12 text-sage-light'
-              : 'text-offwhite/35 hover:text-offwhite/60'
-          )}
-        >
-          {t.label}
-        </Link>
-      ))}
-    </div>
-  )
-}
 
 function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
   return (
@@ -69,12 +36,42 @@ function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayH
   )
 }
 
+function mapAppointmentRow(a: any): GridAppointment {
+  const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
+  const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
+  const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
+  const startMin = timeToMinutes((slot?.start_time as string)?.substring(0, 5) ?? '00:00')
+  const endMin   = timeToMinutes((slot?.end_time   as string)?.substring(0, 5) ?? '00:00')
+  return {
+    id: a.id,
+    referenceCode: a.reference_code,
+    status: a.status,
+    notes: a.notes,
+    totalPrice: Number(a.total_price),
+    startMin,
+    endMin,
+    timeLabel: (slot?.start_time as string)?.substring(0, 5) ?? '--',
+    durationLabel: svc?.duration ? `${svc.duration}min` : '',
+    clientName: cli?.name ?? '—',
+    clientWhatsapp: cli?.whatsapp ?? '',
+    clientVip: !!cli?.vip,
+    serviceName: svc?.name ?? '—',
+    servicePrice: svc?.price ?? null,
+    checkedInAt: a.checked_in_at ? format(new Date(a.checked_in_at), 'HH:mm') : null,
+  }
+}
+
+const APPOINTMENT_SELECT = 'id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)'
+
 export default async function AgendaPage({
   searchParams,
 }: {
   searchParams: { view?: string; date?: string }
 }) {
-  const view: View = searchParams.view === 'week' || searchParams.view === 'month' ? searchParams.view : 'day'
+  const view: AgendaView =
+    searchParams.view === 'workweek' || searchParams.view === 'week' || searchParams.view === 'month'
+      ? searchParams.view
+      : 'day'
   const dateStr = searchParams.date ?? format(new Date(), 'yyyy-MM-dd')
   const dateObj = parseISO(dateStr)
   const db = await createServiceClient() as any
@@ -89,7 +86,7 @@ export default async function AgendaPage({
 
     const [apptsRes, rulesRes, blockedRes, blockedSlotsRes] = await Promise.all([
       db.from('appointments')
-        .select('id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)')
+        .select(APPOINTMENT_SELECT)
         .eq('time_slots.date', dateStr)
         .order('time_slots(start_time)', { ascending: true }),
       db.from('availability_rules').select('start_time, end_time').eq('weekday', weekday).eq('active', true),
@@ -122,33 +119,10 @@ export default async function AgendaPage({
       else blockedRanges.push({ startMin, endMin })
     }
 
-    const gridAppointments: GridAppointment[] = appts.map((a: any) => {
-      const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
-      const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
-      const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
-      const startMin = timeToMinutes((slot?.start_time as string)?.substring(0, 5) ?? '00:00')
-      const endMin   = timeToMinutes((slot?.end_time   as string)?.substring(0, 5) ?? '00:00')
-      return {
-        id: a.id,
-        referenceCode: a.reference_code,
-        status: a.status,
-        notes: a.notes,
-        totalPrice: Number(a.total_price),
-        startMin,
-        endMin,
-        timeLabel: (slot?.start_time as string)?.substring(0, 5) ?? '--',
-        durationLabel: svc?.duration ? `${svc.duration}min` : '',
-        clientName: cli?.name ?? '—',
-        clientWhatsapp: cli?.whatsapp ?? '',
-        clientVip: !!cli?.vip,
-        serviceName: svc?.name ?? '—',
-        servicePrice: svc?.price ?? null,
-        checkedInAt: a.checked_in_at ? format(new Date(a.checked_in_at), 'HH:mm') : null,
-      }
-    })
+    const gridAppointments: GridAppointment[] = appts.map(mapAppointmentRow)
 
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
             <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
@@ -156,7 +130,7 @@ export default async function AgendaPage({
               {label}
             </h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <NewAppointmentButton />
             <DayOffToggleButton
               date={dateStr}
@@ -170,58 +144,95 @@ export default async function AgendaPage({
               gridEndMin={gridEndMin}
               hasRule={rules.length > 0}
             />
-            <ViewSwitcher view={view} dateStr={dateStr} />
+            <AgendaViewDropdown view={view} dateStr={dateStr} />
             <NavArrows
               prevHref={`/admin/agenda?view=day&date=${prev}`}
               todayHref={`/admin/agenda?view=day&date=${today}`}
               nextHref={`/admin/agenda?view=day&date=${next}`}
             />
+            <ThemeToggle />
           </div>
         </div>
 
-        <DayGrid
-          date={dateStr}
-          gridStartMin={gridStartMin}
-          gridEndMin={gridEndMin}
-          blockedAllDay={blockedAllDay}
-          blockedRanges={blockedRanges}
-          appointments={gridAppointments}
-          prevHref={`/admin/agenda?view=day&date=${prev}`}
-          nextHref={`/admin/agenda?view=day&date=${next}`}
-        />
+        <div className="flex items-start gap-6">
+          <AgendaMiniCalendar selectedDate={dateStr} view={view} />
+          <div className="flex-1 min-w-0">
+            <DayGrid
+              date={dateStr}
+              gridStartMin={gridStartMin}
+              gridEndMin={gridEndMin}
+              blockedAllDay={blockedAllDay}
+              blockedRanges={blockedRanges}
+              appointments={gridAppointments}
+              prevHref={`/admin/agenda?view=day&date=${prev}`}
+              nextHref={`/admin/agenda?view=day&date=${next}`}
+            />
+          </div>
+        </div>
       </div>
     )
   }
 
-  // ── Week view — 7-day overview, chips link into the day view ──
-  if (view === 'week') {
+  // ── Week / Semana Útil views — multi-column hour-ruler grid ──
+  if (view === 'week' || view === 'workweek') {
     const weekStart = startOfWeek(dateObj, { weekStartsOn: 1 })
     const weekEnd   = endOfWeek(dateObj,   { weekStartsOn: 1 })
-    const days      = eachDayOfInterval({ start: weekStart, end: weekEnd })
+    const allDays   = eachDayOfInterval({ start: weekStart, end: weekEnd })
+    const days      = view === 'workweek'
+      ? allDays.filter(d => !BOOKING.blockedWeekdays.includes(d.getDay()))
+      : allDays
     const today     = format(new Date(), 'yyyy-MM-dd')
     const prev      = format(subWeeks(dateObj, 1), 'yyyy-MM-dd')
     const next      = format(addWeeks(dateObj, 1), 'yyyy-MM-dd')
     const label     = `${format(weekStart, "d 'de' MMM", { locale: ptBR })} — ${format(weekEnd, "d 'de' MMM", { locale: ptBR })}`
+    const dateStrs  = days.map(d => format(d, 'yyyy-MM-dd'))
+    const weekdays  = Array.from(new Set(days.map(d => d.getDay())))
 
-    const { data: raw } = await db
-      .from('appointments')
-      .select('id, status, total_price, services(name), clients(name), time_slots!inner(date, start_time)')
-      .gte('time_slots.date', format(weekStart, 'yyyy-MM-dd'))
-      .lte('time_slots.date', format(weekEnd, 'yyyy-MM-dd'))
-      .order('time_slots(start_time)', { ascending: true })
+    const [apptsRes, rulesRes, blockedRes] = await Promise.all([
+      db.from('appointments')
+        .select(APPOINTMENT_SELECT)
+        .gte('time_slots.date', format(weekStart, 'yyyy-MM-dd'))
+        .lte('time_slots.date', format(weekEnd, 'yyyy-MM-dd'))
+        .order('time_slots(start_time)', { ascending: true }),
+      db.from('availability_rules').select('weekday, start_time, end_time').in('weekday', weekdays).eq('active', true),
+      db.from('blocked_periods').select('date_start, date_end').lte('date_start', dateStrs[dateStrs.length - 1]).gte('date_end', dateStrs[0]),
+    ])
 
-    const appts = (raw ?? []) as any[]
-    const byDate: Record<string, any[]> = {}
-    for (const a of appts) {
-      const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
+    const rules = (rulesRes.data ?? []) as { weekday: number; start_time: string; end_time: string }[]
+    const blockedPeriods = (blockedRes.data ?? []) as { date_start: string; date_end: string }[]
+
+    // Bucket appointments by date (mapAppointmentRow doesn't carry the date,
+    // so read it off the raw row's time_slots join before mapping).
+    const byDate: Record<string, GridAppointment[]> = {}
+    for (const raw of (apptsRes.data ?? []) as any[]) {
+      const slot = Array.isArray(raw.time_slots) ? raw.time_slots[0] : raw.time_slots
       const d = slot?.date
       if (!d) continue
       if (!byDate[d]) byDate[d] = []
-      byDate[d].push(a)
+      byDate[d].push(mapAppointmentRow(raw))
     }
 
+    const ruleStarts = rules.map(r => timeToMinutes(r.start_time))
+    const ruleEnds   = rules.map(r => timeToMinutes(r.end_time))
+    const gridStartMin = ruleStarts.length ? Math.min(...ruleStarts) : timeToMinutes('07:00')
+    const gridEndMin   = ruleEnds.length   ? Math.max(...ruleEnds)   : timeToMinutes('20:00')
+
+    const weekDays: WeekDay[] = days.map(d => {
+      const ds = format(d, 'yyyy-MM-dd')
+      const blockedAllDay = blockedPeriods.some(b => ds >= b.date_start && ds <= b.date_end)
+      return {
+        date: ds,
+        label: format(d, 'EEEE', { locale: ptBR }),
+        dayNumber: d.getDate(),
+        isToday: isToday(d),
+        isWeekendClosed: BOOKING.blockedWeekdays.includes(d.getDay()),
+        blockedAllDay,
+        appointments: byDate[ds] ?? [],
+      }
+    })
+
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
             <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
@@ -229,70 +240,22 @@ export default async function AgendaPage({
               {label}
             </h1>
           </div>
-          <div className="flex items-center gap-3">
-            <ViewSwitcher view={view} dateStr={dateStr} />
+          <div className="flex items-center gap-3 flex-wrap">
+            <NewAppointmentButton />
+            <AgendaViewDropdown view={view} dateStr={dateStr} />
             <NavArrows
-              prevHref={`/admin/agenda?view=week&date=${prev}`}
-              todayHref={`/admin/agenda?view=week&date=${today}`}
-              nextHref={`/admin/agenda?view=week&date=${next}`}
+              prevHref={`/admin/agenda?view=${view}&date=${prev}`}
+              todayHref={`/admin/agenda?view=${view}&date=${today}`}
+              nextHref={`/admin/agenda?view=${view}&date=${next}`}
             />
+            <ThemeToggle />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/7 border border-offwhite/7 min-w-[900px]">
-            {days.map(d => {
-              const ds = format(d, 'yyyy-MM-dd')
-              const dayAppts = byDate[ds] ?? []
-              const todayCell = isToday(d)
-              return (
-                <div key={ds} className="bg-charcoal min-h-[420px] flex flex-col">
-                  <Link
-                    href={`/admin/agenda?view=day&date=${ds}`}
-                    className={cn(
-                      'px-3 py-3 border-b border-offwhite/7 hover:bg-offwhite/3 transition-colors',
-                      todayCell && 'bg-sage/8'
-                    )}
-                  >
-                    <p className="font-body font-light text-[7.5px] tracking-[0.25em] uppercase text-offwhite/30 capitalize">
-                      {format(d, 'EEE', { locale: ptBR })}
-                    </p>
-                    <p className={cn(
-                      'font-data text-[18px] leading-none mt-1',
-                      todayCell ? 'text-sage-light' : 'text-offwhite/70'
-                    )}>
-                      {format(d, 'd')}
-                    </p>
-                  </Link>
-                  <div className="flex-1 p-2 space-y-[6px]">
-                    {dayAppts.length === 0 ? (
-                      <p className="font-body font-light text-[9px] text-offwhite/12 italic px-1 pt-2">—</p>
-                    ) : (
-                      dayAppts.map(a => {
-                        const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
-                        const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
-                        const time = slot?.start_time?.substring(0, 5) ?? '--'
-                        return (
-                          <Link
-                            key={a.id}
-                            href={`/admin/agenda?view=day&date=${ds}`}
-                            className="block px-[8px] py-[6px] bg-offwhite/3 border border-offwhite/7 hover:border-sage/30 hover:bg-sage/6 transition-all duration-150"
-                          >
-                            <div className="flex items-center gap-[6px] mb-[2px]">
-                              <span className={cn('w-[6px] h-[6px] rounded-full shrink-0', STATUS_DOT[a.status] ?? STATUS_DOT.pending)} />
-                              <span className="font-data text-[10.5px] text-offwhite/60">{time}</span>
-                            </div>
-                            <p className="font-body font-light text-[10px] text-offwhite/75 truncate">
-                              {cli?.name ?? '—'}
-                            </p>
-                          </Link>
-                        )
-                      })
-                    )}
-                  </div>
-                </div>
-              )
-            })}
+        <div className="flex items-start gap-6">
+          <AgendaMiniCalendar selectedDate={dateStr} view={view} />
+          <div className="flex-1 min-w-0">
+            <WeekGrid days={weekDays} gridStartMin={gridStartMin} gridEndMin={gridEndMin} />
           </div>
         </div>
       </div>
@@ -331,7 +294,7 @@ export default async function AgendaPage({
   const MAX_VISIBLE = 3
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div>
           <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
@@ -339,13 +302,15 @@ export default async function AgendaPage({
             {label}
           </h1>
         </div>
-        <div className="flex items-center gap-3">
-          <ViewSwitcher view={view} dateStr={dateStr} />
+        <div className="flex items-center gap-3 flex-wrap">
+          <NewAppointmentButton />
+          <AgendaViewDropdown view={view} dateStr={dateStr} />
           <NavArrows
             prevHref={`/admin/agenda?view=month&date=${prev}`}
             todayHref={`/admin/agenda?view=month&date=${today}`}
             nextHref={`/admin/agenda?view=month&date=${next}`}
           />
+          <ThemeToggle />
         </div>
       </div>
 
@@ -374,12 +339,12 @@ export default async function AgendaPage({
                   className={cn(
                     'bg-charcoal min-h-[110px] p-2 flex flex-col hover:bg-offwhite/3 transition-colors',
                     !inMonth && 'opacity-30',
-                    todayCell && 'bg-sage/8'
+                    todayCell && 'bg-gold/8'
                   )}
                 >
                   <p className={cn(
                     'font-data text-[13px] leading-none mb-[6px]',
-                    todayCell ? 'text-sage-light' : 'text-offwhite/60'
+                    todayCell ? 'text-gold' : 'text-offwhite/60'
                   )}>
                     {format(d, 'd')}
                   </p>
@@ -389,16 +354,19 @@ export default async function AgendaPage({
                       const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
                       const time = slot?.start_time?.substring(0, 5) ?? ''
                       return (
-                        <div key={a.id} className="flex items-center gap-[5px]">
-                          <span className={cn('w-[5px] h-[5px] rounded-full shrink-0', STATUS_DOT[a.status] ?? STATUS_DOT.pending)} />
-                          <span className="font-body font-light text-[8.5px] text-offwhite/55 truncate">
-                            {time} {cli?.name ?? ''}
-                          </span>
-                        </div>
+                        <p
+                          key={a.id}
+                          className={cn(
+                            'px-[5px] py-[1px] border-l-2 text-[8.5px] font-body font-light truncate',
+                            STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
+                          )}
+                        >
+                          {time} {cli?.name ?? ''}
+                        </p>
                       )
                     })}
                     {overflow > 0 && (
-                      <p className="font-body font-light text-[8px] text-offwhite/25 pl-[10px]">+{overflow} mais</p>
+                      <p className="font-body font-light text-[8px] text-offwhite/25 pl-[6px]">+{overflow} mais</p>
                     )}
                   </div>
                 </Link>

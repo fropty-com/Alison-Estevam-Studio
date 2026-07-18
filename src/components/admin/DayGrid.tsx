@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useRef, useState, useTransition } from 'react'
+import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { HOUR_HEIGHT, minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
+import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { AppointmentDetailSheet, type DetailAppointment } from './AppointmentDetailSheet'
 import { unblockTimeRange } from '@/app/admin/actions'
 
@@ -21,17 +22,44 @@ function minutesToHHMM(minutes: number): string {
   return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
-const STATUS_BLOCK: Record<string, string> = {
-  pending:     'bg-gold/15 border-gold/45 text-gold-light',
-  confirmed:   'bg-sage/15 border-sage/45 text-sage-light',
-  checked_in:  'bg-gold/28 border-gold/60 text-gold',
-  in_progress: 'bg-gold/28 border-gold/60 text-gold',
-  completed:   'bg-offwhite/8 border-offwhite/22 text-offwhite/50',
-  cancelled:   'bg-error/10 border-error/30 text-error/55',
-  no_show:     'bg-error/8 border-error/25 text-error/45',
+export const STATUS_BLOCK: Record<string, string> = {
+  pending:     'border-gold/60 text-gold-light bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.16),rgba(201,164,76,0.16)_6px,rgba(201,164,76,0.08)_6px,rgba(201,164,76,0.08)_12px)]',
+  confirmed:   'border-sage/60 text-sage-light bg-[repeating-linear-gradient(135deg,rgba(122,158,122,0.16),rgba(122,158,122,0.16)_6px,rgba(122,158,122,0.08)_6px,rgba(122,158,122,0.08)_12px)]',
+  checked_in:  'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.3),rgba(201,164,76,0.3)_6px,rgba(201,164,76,0.18)_6px,rgba(201,164,76,0.18)_12px)]',
+  in_progress: 'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.3),rgba(201,164,76,0.3)_6px,rgba(201,164,76,0.18)_6px,rgba(201,164,76,0.18)_12px)]',
+  completed:   'border-offwhite/30 text-offwhite/50 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.07),rgba(241,241,241,0.07)_6px,rgba(241,241,241,0.03)_6px,rgba(241,241,241,0.03)_12px)]',
+  cancelled:   'border-error/50 text-error/70 bg-[repeating-linear-gradient(135deg,rgba(214,90,90,0.14),rgba(214,90,90,0.14)_6px,rgba(214,90,90,0.06)_6px,rgba(214,90,90,0.06)_12px)]',
+  no_show:     'border-error/40 text-error/55 bg-[repeating-linear-gradient(135deg,rgba(214,90,90,0.1),rgba(214,90,90,0.1)_6px,rgba(214,90,90,0.04)_6px,rgba(214,90,90,0.04)_12px)]',
 }
 
 const SWIPE_THRESHOLD_PX = 60
+
+/** Half-hour hour ruler + gridlines shared by DayGrid and WeekGrid. */
+export function useHalfHourMarks(gridStartMin: number, gridEndMin: number) {
+  return useMemo(() => {
+    const list: { min: number; isHour: boolean }[] = []
+    for (let m = Math.ceil(gridStartMin / 30) * 30; m <= gridEndMin; m += 30) {
+      list.push({ min: m, isHour: m % 60 === 0 })
+    }
+    return list
+  }, [gridStartMin, gridEndMin])
+}
+
+/** Current-time indicator line — only meaningful when the rendered date is today. */
+export function useNowMinutes(isToday: boolean): number | null {
+  const [now, setNow] = useState<number | null>(null)
+  useEffect(() => {
+    if (!isToday) { setNow(null); return }
+    const update = () => {
+      const d = new Date()
+      setNow(d.getHours() * 60 + d.getMinutes())
+    }
+    update()
+    const id = setInterval(update, 60_000)
+    return () => clearInterval(id)
+  }, [isToday])
+  return now
+}
 
 export function DayGrid({
   date,
@@ -57,6 +85,9 @@ export function DayGrid({
   const [, startTransition] = useTransition()
   const touchStartX = useRef<number | null>(null)
 
+  const isToday = date === format(new Date(), 'yyyy-MM-dd')
+  const nowMin = useNowMinutes(isToday)
+
   const handleUnblock = (range: BlockedRange) => {
     const ok = window.confirm(`Desbloquear o horário de ${minutesToHHMM(range.startMin)} a ${minutesToHHMM(range.endMin)}?`)
     if (!ok) return
@@ -72,11 +103,7 @@ export function DayGrid({
   )
 
   const totalHeight = minutesToPx(gridEndMin - gridStartMin)
-  const hours = useMemo(() => {
-    const list: number[] = []
-    for (let m = Math.ceil(gridStartMin / 60) * 60; m <= gridEndMin; m += 60) list.push(m)
-    return list
-  }, [gridStartMin, gridEndMin])
+  const marks = useHalfHourMarks(gridStartMin, gridEndMin)
 
   const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX }
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -96,26 +123,39 @@ export function DayGrid({
       <div className="flex min-w-[320px]" style={{ height: totalHeight }}>
         {/* Hour ruler */}
         <div className="relative w-[52px] shrink-0 border-r border-offwhite/8">
-          {hours.map(m => (
+          {marks.map(({ min, isHour }) => (
             <span
-              key={m}
-              className="absolute right-2 -translate-y-1/2 font-body font-light text-[8px] text-offwhite/30 tracking-[0.05em]"
-              style={{ top: minutesToPx(m - gridStartMin) }}
+              key={min}
+              className={cn(
+                'absolute right-2 -translate-y-1/2 font-body font-light tracking-[0.05em]',
+                isHour ? 'text-[8px] text-offwhite/32' : 'text-[7px] text-offwhite/16'
+              )}
+              style={{ top: minutesToPx(min - gridStartMin) }}
             >
-              {String(Math.floor(m / 60)).padStart(2, '0')}:00
+              {String(Math.floor(min / 60)).padStart(2, '0')}:{min % 60 === 0 ? '00' : '30'}
             </span>
           ))}
         </div>
 
         {/* Content area */}
         <div className="relative flex-1">
-          {hours.map(m => (
+          {marks.map(({ min, isHour }) => (
             <div
-              key={m}
-              className="absolute inset-x-0 border-t border-offwhite/6"
-              style={{ top: minutesToPx(m - gridStartMin) }}
+              key={min}
+              className={cn('absolute inset-x-0', isHour ? 'border-t border-offwhite/8' : 'border-t border-dotted border-offwhite/6')}
+              style={{ top: minutesToPx(min - gridStartMin) }}
             />
           ))}
+
+          {nowMin !== null && nowMin >= gridStartMin && nowMin <= gridEndMin && (
+            <div
+              className="absolute inset-x-0 z-10 flex items-center pointer-events-none"
+              style={{ top: minutesToPx(nowMin - gridStartMin) }}
+            >
+              <span className="w-[7px] h-[7px] rounded-full bg-gold -ml-[3.5px] shrink-0" />
+              <span className="flex-1 h-px bg-gold/70" />
+            </div>
+          )}
 
           {blockedAllDay ? (
             <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.03),rgba(241,241,241,0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
@@ -149,7 +189,7 @@ export function DayGrid({
                     key={a.id}
                     onClick={() => setSelected(a)}
                     className={cn(
-                      'absolute px-2 py-[3px] border text-left overflow-hidden transition-all duration-150',
+                      'absolute px-2 py-[3px] border-l-[3px] border-y border-r text-left overflow-hidden transition-all duration-150',
                       'hover:brightness-125',
                       STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
                     )}
