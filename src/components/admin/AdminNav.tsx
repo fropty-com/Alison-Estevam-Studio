@@ -29,7 +29,17 @@ function AuditIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="2.5" y="1.5" width="10" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.1" /><line x1="4.5" y1="5" x2="10.5" y2="5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="7.7" x2="10.5" y2="7.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="10.4" x2="8.5" y2="10.4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /></svg>
 }
 function SettingsIcon() {
-  return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="2.3" stroke="currentColor" strokeWidth="1.1" /><path d="M7.5 1.5v1.6M7.5 12v1.6M13.5 7.5h-1.6M3.2 7.5H1.5M11.6 3.4l-1.1 1.1M4.6 10.6l-1.1 1.1M11.6 11.7l-1.1-1.1M4.6 4.5 3.5 3.4" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /></svg>
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
 }
 function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
   return (
@@ -105,28 +115,27 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           'shrink-0 bg-charcoal-mid border-r border-offwhite/6 flex flex-col min-h-screen',
           'fixed lg:sticky top-0 z-50 lg:z-auto',
           mounted ? 'transition-[width,transform] duration-200' : '',
-          collapsed ? 'lg:w-[64px]' : 'lg:w-[220px]',
-          'w-[220px]',
+          collapsed ? 'w-[64px]' : 'w-[220px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
         {/* Brand */}
-        <div className={cn('border-b border-offwhite/6', collapsed ? 'lg:px-3 lg:py-5 px-6 py-7' : 'px-6 py-7')}>
-          <p className={cn('font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1', collapsed && 'lg:hidden')}>
+        <div className={cn('border-b border-offwhite/6', collapsed ? 'px-3 py-5' : 'px-6 py-7')}>
+          <p className={cn('font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1', collapsed && 'hidden')}>
             Studio
           </p>
-          <p className={cn('font-display font-light text-[15px] text-offwhite tracking-[0.06em] mb-2', collapsed && 'lg:hidden')}>
+          <p className={cn('font-display font-light text-[15px] text-offwhite tracking-[0.06em] mb-2', collapsed && 'hidden')}>
             Alison Estevam
           </p>
           <span className={cn(
             'inline-block font-body font-light text-[7.5px] tracking-[0.2em] uppercase px-2 py-[3px] border',
-            collapsed && 'lg:hidden',
+            collapsed && 'hidden',
             isOwner ? 'border-gold/30 text-gold/80' : 'border-offwhite/15 text-offwhite/40'
           )}>
             {isOwner ? 'Dono' : 'Equipe'}
           </span>
           {collapsed && (
-            <p className="hidden lg:block font-display font-light text-[18px] text-gold text-center">A</p>
+            <p className="font-display font-light text-[18px] text-gold text-center">A</p>
           )}
         </div>
 
@@ -141,25 +150,25 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
                 'flex items-center gap-3 px-3 py-[10px] mb-[2px] rounded-none',
                 'font-body font-light text-[10px] tracking-[0.28em] uppercase',
                 'transition-all duration-200',
-                collapsed && 'lg:justify-center lg:px-0',
+                collapsed && 'justify-center px-0',
                 isActive(href)
                   ? 'bg-sage/12 text-sage-light border-l-[2px] border-sage pl-[10px]'
                   : 'text-offwhite/35 hover:text-offwhite/70 hover:bg-offwhite/4 border-l-[2px] border-transparent pl-[10px]',
-                collapsed && 'lg:border-l-0 lg:pl-0'
+                collapsed && 'border-l-0 pl-0'
               )}
             >
               <span className="shrink-0"><Icon /></span>
-              <span className={cn('flex-1', collapsed && 'lg:hidden')}>{label}</span>
-              {badge && <span className={cn(collapsed && 'lg:hidden')}><PendingBadge /></span>}
+              <span className={cn('flex-1', collapsed && 'hidden')}>{label}</span>
+              {badge && <span className={cn(collapsed && 'hidden')}><PendingBadge /></span>}
             </Link>
           ))}
         </nav>
 
-        {/* Collapse toggle (desktop only) */}
+        {/* Collapse toggle — visible on every admin page and viewport */}
         <button
           onClick={toggleCollapsed}
           aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
-          className="hidden lg:flex items-center justify-center gap-2 mx-3 mb-3 h-8 border border-offwhite/8 text-offwhite/30 hover:text-gold hover:border-gold/30 transition-colors duration-200"
+          className="flex items-center justify-center gap-2 mx-3 mb-3 h-[36px] border border-offwhite/8 text-offwhite/30 hover:text-gold hover:border-gold/30 transition-colors duration-200"
         >
           <ChevronIcon dir={collapsed ? 'right' : 'left'} />
           {!collapsed && <span className="font-body font-light text-[8px] tracking-[0.2em] uppercase">Encolher</span>}
@@ -173,11 +182,10 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
             title="Sair"
             className={cn(
               'w-full text-left px-3 py-[10px] font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/22 hover:text-offwhite/55 transition-colors duration-200 disabled:opacity-40',
-              collapsed && 'lg:text-center lg:px-0'
+              collapsed && 'text-center px-0'
             )}
           >
-            {collapsed ? <span className="hidden lg:inline">→</span> : null}
-            <span className={collapsed ? 'lg:hidden' : ''}>{pending ? 'Saindo…' : '→ Sair'}</span>
+            {collapsed ? <span>→</span> : <span>{pending ? 'Saindo…' : '→ Sair'}</span>}
           </button>
         </div>
       </aside>
