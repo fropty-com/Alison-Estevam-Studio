@@ -22,14 +22,14 @@ export const dynamic = 'force-dynamic'
 
 function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <Link href={prevHref} className="w-9 h-9 border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+    <div className="flex items-center gap-2 shrink-0">
+      <Link href={prevHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ‹
       </Link>
-      <Link href={todayHref} className="px-4 h-9 border border-offwhite/14 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+      <Link href={todayHref} className="shrink-0 whitespace-nowrap px-4 h-[36px] border border-offwhite/14 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         Hoje
       </Link>
-      <Link href={nextHref} className="w-9 h-9 border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+      <Link href={nextHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ›
       </Link>
     </div>
@@ -130,7 +130,7 @@ export default async function AgendaPage({
               {label}
             </h1>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 overflow-x-auto flex-nowrap pb-1 -mb-1 md:flex-wrap md:overflow-visible md:pb-0 md:mb-0">
             <NewAppointmentButton />
             <DayOffToggleButton
               date={dateStr}
@@ -154,7 +154,7 @@ export default async function AgendaPage({
           </div>
         </div>
 
-        <div className="flex items-start gap-6">
+        <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4 md:gap-6">
           <AgendaMiniCalendar selectedDate={dateStr} view={view} />
           <div className="flex-1 min-w-0">
             <DayGrid
@@ -240,7 +240,7 @@ export default async function AgendaPage({
               {label}
             </h1>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 overflow-x-auto flex-nowrap pb-1 -mb-1 md:flex-wrap md:overflow-visible md:pb-0 md:mb-0">
             <NewAppointmentButton />
             <AgendaViewDropdown view={view} dateStr={dateStr} />
             <NavArrows
@@ -252,7 +252,7 @@ export default async function AgendaPage({
           </div>
         </div>
 
-        <div className="flex items-start gap-6">
+        <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4 md:gap-6">
           <AgendaMiniCalendar selectedDate={dateStr} view={view} />
           <div className="flex-1 min-w-0">
             <WeekGrid days={weekDays} gridStartMin={gridStartMin} gridEndMin={gridEndMin} />

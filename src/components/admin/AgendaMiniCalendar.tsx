@@ -112,7 +112,7 @@ export function AgendaMiniCalendar({ selectedDate, view }: { selectedDate: strin
       <div className="md:hidden">
         <button
           onClick={() => setOpen(true)}
-          className="px-3 h-9 border border-offwhite/14 font-body font-light text-[10px] text-offwhite/60 flex items-center gap-2 hover:border-gold/40 transition-colors"
+          className="px-3 h-[36px] border border-offwhite/14 font-body font-light text-[10px] text-offwhite/60 flex items-center gap-2 hover:border-gold/40 transition-colors"
         >
           <span className="capitalize">{format(dateObj, "d 'de' MMM", { locale: ptBR })}</span>
           <span aria-hidden="true">📅</span>

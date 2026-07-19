@@ -27,10 +27,10 @@ export function AgendaViewDropdown({ view, dateStr }: { view: AgendaView; dateSt
   }, [])
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative shrink-0" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        className="px-4 h-9 border border-offwhite/10 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/60 flex items-center gap-2 hover:border-gold/40 transition-all duration-200"
+        className="shrink-0 whitespace-nowrap px-4 h-[36px] border border-offwhite/10 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/60 flex items-center gap-2 hover:border-gold/40 transition-all duration-200"
       >
         <span aria-hidden="true">🗓</span>
         {current.label}

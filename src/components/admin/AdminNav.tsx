@@ -87,7 +87,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Abrir menu"
-        className="lg:hidden fixed top-4 left-4 z-40 w-9 h-9 flex items-center justify-center bg-charcoal-mid border border-offwhite/12 text-offwhite/70"
+        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/12 text-offwhite/70"
       >
         <MenuIcon />
       </button>
