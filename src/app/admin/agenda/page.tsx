@@ -23,13 +23,13 @@ export const dynamic = 'force-dynamic'
 function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
   return (
     <div className="flex items-center gap-2">
-      <Link href={prevHref} className="w-9 h-9 border border-offwhite/10 text-offwhite/30 text-[13px] flex items-center justify-center hover:border-sage/40 hover:text-sage-light transition-all duration-200">
+      <Link href={prevHref} className="w-9 h-9 border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ‹
       </Link>
-      <Link href={todayHref} className="px-4 h-9 border border-offwhite/10 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/35 flex items-center hover:border-sage/40 hover:text-sage-light transition-all duration-200">
+      <Link href={todayHref} className="px-4 h-9 border border-offwhite/14 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         Hoje
       </Link>
-      <Link href={nextHref} className="w-9 h-9 border border-offwhite/10 text-offwhite/30 text-[13px] flex items-center justify-center hover:border-sage/40 hover:text-sage-light transition-all duration-200">
+      <Link href={nextHref} className="w-9 h-9 border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ›
       </Link>
     </div>

@@ -13,7 +13,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="min-h-screen bg-charcoal text-offwhite flex">
       <AdminNav isOwner={role === 'owner'} />
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 pt-8 lg:pt-0">
         {children}
       </main>
     </div>
