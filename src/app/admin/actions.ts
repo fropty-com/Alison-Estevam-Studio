@@ -509,12 +509,18 @@ export async function addBlockedPeriod(formData: FormData) {
   if (date_start > date_end)    return { error: 'Data de início deve ser antes do fim.' }
 
   const db = await adminDb()
-  const { error } = await db.from('blocked_periods').insert({ date_start, date_end, reason: reason || null })
-  if (error) return { error: 'Erro ao bloquear período.' }
+  const { data: newPeriod, error } = await db
+    .from('blocked_periods')
+    .insert({ date_start, date_end, reason: reason || null })
+    .select('id')
+    .single()
+  if (error || !newPeriod) return { error: 'Erro ao bloquear período.' }
 
-  // Also mark existing available slots as blocked
+  // Also mark existing available slots as blocked, tagged with this period
+  // so removeBlockedPeriod later restores only the slots it itself blocked
+  // (not ones a manual time-range block put there for an unrelated reason).
   await db.from('time_slots')
-    .update({ status: 'blocked' })
+    .update({ status: 'blocked', blocked_period_id: newPeriod.id })
     .gte('date', date_start)
     .lte('date', date_end)
     .eq('status', 'available')
@@ -538,15 +544,26 @@ export async function removeBlockedPeriod(id: string) {
   // Get the period first to restore slots
   const { data: period } = await db.from('blocked_periods').select('date_start, date_end').eq('id', id).single()
 
+  // Capture exactly which slots THIS period blocked before deleting it —
+  // once deleted, the FK (on delete set null) clears blocked_period_id on
+  // them, so this has to happen first. Restoring by this id instead of by
+  // date range + status='blocked' is what keeps a manual block (blocked_
+  // period_id null) in that same range from being reopened by accident.
+  const { data: blockedSlots } = await db
+    .from('time_slots')
+    .select('id')
+    .eq('blocked_period_id', id)
+
   await db.from('blocked_periods').delete().eq('id', id)
 
-  if (period) {
+  const slotIds = (blockedSlots ?? []).map((s: { id: string }) => s.id)
+  if (slotIds.length > 0) {
     await db.from('time_slots')
-      .update({ status: 'available' })
-      .gte('date', period.date_start)
-      .lte('date', period.date_end)
-      .eq('status', 'blocked')
+      .update({ status: 'available', blocked_period_id: null })
+      .in('id', slotIds)
+  }
 
+  if (period) {
     await logAction(
       'blocked_period.remove', 'blocked_period', id,
       `Removeu o bloqueio do período de ${period.date_start} a ${period.date_end}`,
@@ -654,6 +671,10 @@ export async function unblockTimeRange(date: string, startTime: string, endTime:
     .update({ status: SLOT_STATUS.AVAILABLE })
     .eq('date', date)
     .eq('status', SLOT_STATUS.BLOCKED)
+    // Only touch manual blocks (blocked_period_id null) — a slot blocked as
+    // part of a whole-day-off must only ever be reopened by removing that
+    // day-off, or the two would drift out of sync with each other.
+    .is('blocked_period_id', null)
     .gte('start_time', startTime)
     .lt('start_time', endTime)
 
