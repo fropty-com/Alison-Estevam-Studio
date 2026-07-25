@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { createAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
-import { validateCoupon } from '@/lib/coupons'
+import { validateCoupon, redeemCoupon } from '@/lib/coupons'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
@@ -95,20 +95,18 @@ export async function POST(request: NextRequest) {
     const complementsPrice = complements.reduce((sum, c) => sum + Number(c.price), 0)
     const subtotal = Number(service.price) + complementsPrice
 
-    // 2c. Validate coupon, if provided — re-checked here even though the
-    // booking UI already validated it live, since this is the authoritative
-    // pass (the live check doesn't consume a use).
-    let discountAmount = 0
-    let appliedCoupon: { id: string } | null = null
+    // 2c. Validate coupon, if provided — this is only an optimistic
+    // pre-check (fails fast with a clear message before any writes happen).
+    // It does NOT consume a use; the actual atomic redemption happens in
+    // step 5b, right before the appointment is created.
+    let appliedCouponId: string | null = null
     if (couponCode) {
       const result = await validateCoupon(db, couponCode, subtotal)
       if (!result.valid) {
         return NextResponse.json({ error: result.error }, { status: 422 })
       }
-      discountAmount = result.discountAmount
-      appliedCoupon = result.coupon
+      appliedCouponId = result.coupon.id
     }
-    const totalPrice = Math.max(0, subtotal - discountAmount)
 
     // 3. Find or create client
     const formattedWhatsapp = formatWhatsApp(whatsapp)
@@ -170,6 +168,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // 5b. Atomically redeem the coupon now that the slot is secured — this
+    // is the authoritative check that actually consumes a use (step 2c was
+    // only an optimistic pre-check). { ok: false } means the coupon was
+    // exhausted/deactivated in the gap between the two, which is rare but
+    // must not silently apply a discount that's no longer valid.
+    let discountAmount = 0
+    if (appliedCouponId) {
+      const redemption = await redeemCoupon(db, appliedCouponId, subtotal)
+      if (!redemption.ok) {
+        await db.from('time_slots').update({ status: 'available' }).eq('id', slotId)
+        return NextResponse.json(
+          { error: 'Este cupom não está mais disponível. Tente novamente sem o cupom.' },
+          { status: 409 }
+        )
+      }
+      discountAmount = redemption.discountAmount
+    }
+    const totalPrice = Math.max(0, subtotal - discountAmount)
+
     const { data: appt, error: apptError } = await db.from('appointments').insert({
       reference_code:    referenceCode,
       client_id:         clientId,
@@ -183,9 +200,12 @@ export async function POST(request: NextRequest) {
 
     if (apptError || !appt) {
       console.error('Appointment creation error:', apptError)
-      // Slot was already claimed above — release it back so it isn't
-      // stranded as permanently 'booked' with no appointment behind it.
+      // Slot and coupon use were already claimed above — release both so
+      // they aren't stranded consumed with no appointment behind them.
       await db.from('time_slots').update({ status: 'available' }).eq('id', slotId)
+      if (appliedCouponId) {
+        await db.rpc('release_coupon', { p_coupon_id: appliedCouponId })
+      }
       return NextResponse.json(
         { error: 'Erro ao criar agendamento. Tente novamente.' },
         { status: 500 }
@@ -200,17 +220,15 @@ export async function POST(request: NextRequest) {
       if (complementsError) console.error('appointment_complements insert error:', complementsError)
     }
 
-    // 6b. Record the coupon redemption and consume a use
-    if (appliedCoupon) {
-      const { data: currentCoupon } = await db.from('coupons').select('uses_count').eq('id', appliedCoupon.id).single()
-      await Promise.all([
-        db.from('coupon_redemptions').insert({
-          coupon_id: appliedCoupon.id,
-          appointment_id: appt.id,
-          discount_amount: discountAmount,
-        }),
-        db.from('coupons').update({ uses_count: (currentCoupon?.uses_count ?? 0) + 1 }).eq('id', appliedCoupon.id),
-      ])
+    // 6b. Log the redemption for the bookkeeping/audit trail — the use
+    // itself was already atomically consumed in step 5b.
+    if (appliedCouponId) {
+      const { error: redemptionLogError } = await db.from('coupon_redemptions').insert({
+        coupon_id: appliedCouponId,
+        appointment_id: appt.id,
+        discount_amount: discountAmount,
+      })
+      if (redemptionLogError) console.error('coupon_redemptions insert error:', redemptionLogError)
     }
 
     // Send confirmation email (non-blocking — failure doesn't break the booking)
