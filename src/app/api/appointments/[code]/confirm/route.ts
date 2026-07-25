@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  const allowed = await checkRateLimit(`confirm:${getClientIp(request)}`, 600, 15)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Muitas tentativas. Aguarde alguns minutos.' }, { status: 429 })
+  }
+
   const db = await createServiceClient() as any
 
   const { data: appt, error } = await db
@@ -17,12 +23,15 @@ export async function POST(
     return NextResponse.json({ error: 'Agendamento não encontrado.' }, { status: 404 })
   }
 
-  if (['cancelled', 'completed', 'no_show'].includes(appt.status)) {
-    return NextResponse.json({ error: 'Este agendamento não pode ser confirmado.' }, { status: 409 })
-  }
-
   if (appt.status === 'confirmed') {
     return NextResponse.json({ ok: true, alreadyConfirmed: true })
+  }
+
+  // Only a still-pending appointment can be confirmed through this public
+  // link — confirming a checked-in/in-progress one would downgrade its
+  // status backwards, and completed/cancelled/no_show obviously don't apply.
+  if (appt.status !== 'pending') {
+    return NextResponse.json({ error: 'Este agendamento não pode ser confirmado.' }, { status: 409 })
   }
 
   const { error: updateError } = await db

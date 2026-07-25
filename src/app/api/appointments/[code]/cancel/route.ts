@@ -2,11 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 import { canCancelAppointment } from '@/lib/utils'
 import { BOOKING } from '@/config/booking'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  const allowed = await checkRateLimit(`cancel:${getClientIp(request)}`, 600, 15)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Muitas tentativas. Aguarde alguns minutos.' }, { status: 429 })
+  }
+
   const db = await createServiceClient() as any
 
   const body = await request.json().catch(() => ({}))
@@ -26,7 +32,11 @@ export async function POST(
     return NextResponse.json({ error: 'Este agendamento já está cancelado.' }, { status: 409 })
   }
 
-  if (appt.status === 'completed' || appt.status === 'no_show') {
+  // Allowlist, not a blocklist: only appointments that haven't started yet
+  // can be cancelled through the public link. Once the client has checked
+  // in (or is already being attended, or it's done/no-show), cancelling
+  // makes no sense and must go through the admin panel instead.
+  if (!['pending', 'confirmed'].includes(appt.status)) {
     return NextResponse.json({ error: 'Este agendamento não pode ser cancelado.' }, { status: 409 })
   }
 

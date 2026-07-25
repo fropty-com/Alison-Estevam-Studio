@@ -4,9 +4,19 @@ import { createAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { validateCoupon } from '@/lib/coupons'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request)
+    const allowed = await checkRateLimit(`booking:${ip}`, 600, 8)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Muitas tentativas de agendamento. Aguarde alguns minutos e tente novamente.' },
+        { status: 429 }
+      )
+    }
+
     const body = await request.json()
     const parsed = createAppointmentSchema.safeParse(body)
 

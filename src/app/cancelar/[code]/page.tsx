@@ -29,7 +29,7 @@ export default async function CancelarPage({ params }: { params: { code: string 
   const client  = Array.isArray(appt.clients)    ? appt.clients[0]    : appt.clients
 
   const alreadyCancelled  = appt.status === 'cancelled'
-  const cannotCancel      = appt.status === 'completed' || appt.status === 'no_show'
+  const cannotCancel      = !alreadyCancelled && !['pending', 'confirmed'].includes(appt.status)
   const outsideCancelWindow = !cannotCancel && !alreadyCancelled && slot
     ? !canCancelAppointment(slot.date, (slot.start_time as string).substring(0, 5))
     : false

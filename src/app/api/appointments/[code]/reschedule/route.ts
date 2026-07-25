@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
+  const allowed = await checkRateLimit(`reschedule:${getClientIp(request)}`, 600, 15)
+  if (!allowed) {
+    return NextResponse.json({ error: 'Muitas tentativas. Aguarde alguns minutos.' }, { status: 429 })
+  }
+
   const db = await createServiceClient() as any
 
   const body = await request.json().catch(() => ({}))
@@ -24,7 +30,9 @@ export async function POST(
     return NextResponse.json({ error: 'Agendamento não encontrado.' }, { status: 404 })
   }
 
-  if (['cancelled', 'completed', 'no_show'].includes(appt.status)) {
+  // Allowlist, not a blocklist — see cancel/route.ts for why. A checked-in
+  // or in-progress appointment can't be moved to a different slot either.
+  if (!['pending', 'confirmed'].includes(appt.status)) {
     return NextResponse.json({ error: 'Este agendamento não pode ser reagendado.' }, { status: 409 })
   }
 

@@ -26,7 +26,7 @@ export default async function ReagendarPage({ params }: { params: { code: string
   const service = Array.isArray(appt.services)   ? appt.services[0]   : appt.services
   const client  = Array.isArray(appt.clients)    ? appt.clients[0]    : appt.clients
 
-  const cannotReschedule = ['cancelled', 'completed', 'no_show'].includes(appt.status)
+  const cannotReschedule = !['pending', 'confirmed'].includes(appt.status)
 
   const currentDateLabel = slot?.date
     ? format(parseISO(slot.date), "d 'de' MMMM", { locale: ptBR }) +

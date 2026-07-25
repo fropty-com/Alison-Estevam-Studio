@@ -27,7 +27,7 @@ export default async function ConfirmarPage({ params }: { params: { code: string
   const client  = Array.isArray(appt.clients)    ? appt.clients[0]    : appt.clients
 
   const alreadyConfirmed = appt.status === 'confirmed'
-  const cannotConfirm     = ['cancelled', 'completed', 'no_show'].includes(appt.status)
+  const cannotConfirm     = !alreadyConfirmed && appt.status !== 'pending'
 
   const dateLabel = slot?.date
     ? format(parseISO(slot.date), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
