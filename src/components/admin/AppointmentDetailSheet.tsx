@@ -65,7 +65,7 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
           <button
             onClick={onClose}
             aria-label="Fechar"
-            className="w-8 h-8 border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+            className="w-[36px] h-[36px] border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
           >
             ✕
           </button>

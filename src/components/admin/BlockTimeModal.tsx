@@ -66,7 +66,7 @@ export function BlockTimeModal({
         <button
           onClick={onClose}
           aria-label="Fechar"
-          className="absolute top-5 right-5 w-8 h-8 border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
