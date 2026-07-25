@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { ClientActions } from '@/components/admin/ClientActions'
+import { EditClientButton } from '@/components/admin/EditClientButton'
 import { LoyaltyCard } from '@/components/admin/LoyaltyCard'
 import { getLoyaltyProgress } from '@/lib/loyalty'
 
@@ -53,13 +54,16 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
         {/* Client card */}
         <div className="lg:col-span-1">
           <div className="bg-offwhite/3 border border-offwhite/7 p-6">
-            <div className="flex items-center gap-2 mb-5">
-              <h1 className="font-display font-light text-[24px] text-offwhite tracking-[0.03em]">
-                {client.name}
-              </h1>
-              {client.vip && (
-                <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70">VIP</span>
-              )}
+            <div className="flex items-center justify-between gap-2 mb-5">
+              <div className="flex items-center gap-2 min-w-0">
+                <h1 className="font-display font-light text-[24px] text-offwhite tracking-[0.03em] truncate">
+                  {client.name}
+                </h1>
+                {client.vip && (
+                  <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">VIP</span>
+                )}
+              </div>
+              <EditClientButton id={client.id} name={client.name} whatsapp={client.whatsapp} email={client.email} />
             </div>
 
             <div className="space-y-[10px] mb-6">

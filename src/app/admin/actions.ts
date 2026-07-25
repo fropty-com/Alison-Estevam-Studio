@@ -429,6 +429,46 @@ export async function toggleClientVip(id: string, vip: boolean) {
   return { ok: true }
 }
 
+export async function updateClientProfile(
+  id: string,
+  data: { name: string; whatsapp: string; email: string }
+) {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const name = data.name.trim()
+  if (!name) return { error: 'Informe o nome do cliente.' }
+
+  let whatsapp: string
+  try {
+    whatsapp = formatWhatsApp(data.whatsapp)
+  } catch {
+    return { error: 'WhatsApp inválido. Informe o DDD + 9 dígitos.' }
+  }
+
+  const email = data.email.trim() || null
+
+  const db = await adminDb()
+
+  const { data: conflict } = await db
+    .from('clients')
+    .select('id')
+    .eq('whatsapp', whatsapp)
+    .neq('id', id)
+    .maybeSingle()
+  if (conflict) return { error: 'Já existe outro cliente com esse WhatsApp.' }
+
+  const { error } = await db
+    .from('clients')
+    .update({ name, whatsapp, email, updated_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) return { error: 'Erro ao salvar dados do cliente.' }
+
+  revalidatePath('/admin/clientes')
+  revalidatePath(`/admin/clientes/${id}`)
+  return { ok: true }
+}
+
 /* ── Services ─────────────────────────────────── */
 
 export async function updateService(id: string, data: { name?: string; price?: number; duration?: number; active?: boolean }) {
