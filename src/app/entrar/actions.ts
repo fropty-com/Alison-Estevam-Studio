@@ -76,7 +76,8 @@ export async function sendOtpAction(phoneRaw: string) {
   } catch {
     return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
   }
-  const { devCode } = await requestOtp(phone)
+  const { devCode, error } = await requestOtp(phone)
+  if (error) return { error }
   return { devCode }
 }
 

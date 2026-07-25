@@ -28,16 +28,21 @@ export async function POST(
     return NextResponse.json({ error: 'Este agendamento não pode ser reagendado.' }, { status: 409 })
   }
 
-  const { data: newSlot } = await db
+  // Atomically claim the new slot — condition the UPDATE on it still being
+  // 'available' so two concurrent reschedules can't both land on it (a plain
+  // SELECT-then-UPDATE has a window where both requests pass the check).
+  const { data: claimedSlot } = await db
     .from('time_slots')
-    .select('id, date, start_time, status')
+    .update({ status: 'booked' })
     .eq('id', newSlotId)
     .eq('status', 'available')
-    .single()
+    .select('id, date, start_time')
+    .maybeSingle()
 
-  if (!newSlot) {
+  if (!claimedSlot) {
     return NextResponse.json({ error: 'Este horário não está mais disponível.' }, { status: 409 })
   }
+  const newSlot = claimedSlot
 
   await Promise.all([
     db.from('appointments').update({
@@ -46,7 +51,6 @@ export async function POST(
       updated_at: new Date().toISOString(),
     }).eq('id', appt.id),
     db.from('time_slots').update({ status: 'available' }).eq('id', appt.slot_id),
-    db.from('time_slots').update({ status: 'booked'    }).eq('id', newSlotId),
   ])
 
   return NextResponse.json({

@@ -8,8 +8,15 @@ export async function GET(request: NextRequest) {
   const user = await getAdminUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
 
-  const q = request.nextUrl.searchParams.get('q')?.trim()
-  if (!q || q.length < 2) return NextResponse.json({ clients: [] })
+  const qRaw = request.nextUrl.searchParams.get('q')?.trim()
+  if (!qRaw || qRaw.length < 2) return NextResponse.json({ clients: [] })
+
+  // ',', '(', ')' are syntax in PostgREST's .or() mini-language (condition
+  // separator / grouping) — interpolating user input unescaped lets it
+  // inject extra filter conditions. Strip them; none are legitimate in a
+  // name or phone number search anyway.
+  const q = qRaw.replace(/[,()]/g, '')
+  if (q.length < 2) return NextResponse.json({ clients: [] })
 
   const db = await createServiceClient() as any
   const { data } = await db

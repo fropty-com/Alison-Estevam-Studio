@@ -140,25 +140,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Erro ao gerar código do agendamento.' }, { status: 500 })
     }
 
-    // 5. Create appointment + mark slot as booked
-    const [{ data: appt, error: apptError }, { error: slotUpdateError }] = await Promise.all([
-      db.from('appointments').insert({
-        reference_code:    referenceCode,
-        client_id:         clientId,
-        service_id:        serviceId,
-        slot_id:           slotId,
-        status:            'pending',
-        service_price:     service.price,
-        complements_price: complementsPrice,
-        total_price:       totalPrice,
-      }).select('id').single(),
-      db.from('time_slots')
-        .update({ status: 'booked' })
-        .eq('id', slotId),
-    ]) as [{ data: { id: string } | null; error: unknown }, { error: unknown }]
+    // 5. Atomically claim the slot — condition the UPDATE on it still being
+    // 'available' so two concurrent requests for the same slot can't both
+    // succeed (the step-1 SELECT above is only a fast-fail pre-check; two
+    // requests can both pass it before either writes). Whichever request's
+    // UPDATE affects zero rows lost the race.
+    const { data: claimedSlot, error: slotUpdateError } = await db
+      .from('time_slots')
+      .update({ status: 'booked' })
+      .eq('id', slotId)
+      .eq('status', 'available')
+      .select('id')
+      .maybeSingle() as { data: { id: string } | null; error: unknown }
 
-    if (apptError || slotUpdateError || !appt) {
-      console.error('Appointment creation error:', apptError, slotUpdateError)
+    if (slotUpdateError || !claimedSlot) {
+      return NextResponse.json(
+        { error: 'Este horário não está mais disponível.' },
+        { status: 409 }
+      )
+    }
+
+    const { data: appt, error: apptError } = await db.from('appointments').insert({
+      reference_code:    referenceCode,
+      client_id:         clientId,
+      service_id:        serviceId,
+      slot_id:           slotId,
+      status:            'pending',
+      service_price:     service.price,
+      complements_price: complementsPrice,
+      total_price:       totalPrice,
+    }).select('id').single() as { data: { id: string } | null; error: unknown }
+
+    if (apptError || !appt) {
+      console.error('Appointment creation error:', apptError)
+      // Slot was already claimed above — release it back so it isn't
+      // stranded as permanently 'booked' with no appointment behind it.
+      await db.from('time_slots').update({ status: 'available' }).eq('id', slotId)
       return NextResponse.json(
         { error: 'Erro ao criar agendamento. Tente novamente.' },
         { status: 500 }

@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation'
 import { CancelForm } from '@/components/booking/CancelForm'
 import { BackLink, StepHeader, DetailCard } from '@/components/booking/BookingChrome'
 import { ClientHeader } from '@/components/layout/ClientHeader'
+import { canCancelAppointment } from '@/lib/utils'
+import { BOOKING } from '@/config/booking'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Cancelar Agendamento' }
@@ -26,8 +28,11 @@ export default async function CancelarPage({ params }: { params: { code: string 
   const service = Array.isArray(appt.services)   ? appt.services[0]   : appt.services
   const client  = Array.isArray(appt.clients)    ? appt.clients[0]    : appt.clients
 
-  const alreadyCancelled = appt.status === 'cancelled'
-  const cannotCancel     = appt.status === 'completed' || appt.status === 'no_show'
+  const alreadyCancelled  = appt.status === 'cancelled'
+  const cannotCancel      = appt.status === 'completed' || appt.status === 'no_show'
+  const outsideCancelWindow = !cannotCancel && !alreadyCancelled && slot
+    ? !canCancelAppointment(slot.date, (slot.start_time as string).substring(0, 5))
+    : false
 
   const dateLabel = slot?.date
     ? format(parseISO(slot.date), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
@@ -66,6 +71,15 @@ export default async function CancelarPage({ params }: { params: { code: string 
             <div className="border border-offwhite/10 p-6 text-center">
               <p className="font-display font-light text-[18px] text-offwhite/45 italic">
                 Este agendamento não pode mais ser cancelado.
+              </p>
+            </div>
+          ) : outsideCancelWindow ? (
+            <div className="border border-offwhite/10 p-6 text-center">
+              <p className="font-display font-light text-[18px] text-offwhite/45 italic mb-2">
+                Prazo de cancelamento encerrado.
+              </p>
+              <p className="font-body font-light text-[12px] text-offwhite/40">
+                Cancelamentos só podem ser feitos com pelo menos {BOOKING.cancellationWindowHours}h de antecedência. Entre em contato pelo WhatsApp.
               </p>
             </div>
           ) : (

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
+import { canCancelAppointment } from '@/lib/utils'
+import { BOOKING } from '@/config/booking'
 
 export async function POST(
   request: NextRequest,
@@ -12,7 +14,7 @@ export async function POST(
 
   const { data: appt, error } = await db
     .from('appointments')
-    .select('id, status, slot_id')
+    .select('id, status, slot_id, time_slots(date, start_time)')
     .eq('reference_code', params.code.toUpperCase())
     .single()
 
@@ -26,6 +28,18 @@ export async function POST(
 
   if (appt.status === 'completed' || appt.status === 'no_show') {
     return NextResponse.json({ error: 'Este agendamento não pode ser cancelado.' }, { status: 409 })
+  }
+
+  // This route is the public, client-facing cancel flow only — the admin
+  // panel cancels through its own Server Action, unaffected by this window.
+  // The UI already computed this client-side to hide/show the button, but
+  // that's advisory only; the authoritative check has to happen here too.
+  const slot = Array.isArray(appt.time_slots) ? appt.time_slots[0] : appt.time_slots
+  if (slot && !canCancelAppointment(slot.date, slot.start_time.substring(0, 5))) {
+    return NextResponse.json(
+      { error: `Cancelamentos só podem ser feitos com pelo menos ${BOOKING.cancellationWindowHours}h de antecedência. Entre em contato pelo WhatsApp.` },
+      { status: 409 }
+    )
   }
 
   await Promise.all([

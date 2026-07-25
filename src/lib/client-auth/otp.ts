@@ -1,9 +1,11 @@
 import { createHash, randomInt } from 'node:crypto'
 import { createServiceClient } from '@/lib/supabase/server'
 
-const CODE_LENGTH   = 6
-const EXPIRY_MIN    = 5
-const MAX_ATTEMPTS  = 5
+const CODE_LENGTH        = 6
+const EXPIRY_MIN         = 5
+const MAX_ATTEMPTS       = 5
+const MIN_INTERVAL_SEC   = 45  // minimum gap between two requests for the same phone
+const MAX_PER_HOUR       = 5   // hourly cap per phone
 
 function hashCode(code: string, phone: string): string {
   return createHash('sha256').update(`${phone}:${code}`).digest('hex')
@@ -42,8 +44,33 @@ async function sendOtpViaSms(phone: string, code: string): Promise<void> {
 // including staff phones that grant admin access.
 const DEV_MODE = process.env.NODE_ENV === 'development' || process.env.OTP_DEBUG_LEAK === 'true'
 
-export async function requestOtp(phone: string): Promise<{ devCode?: string }> {
+export async function requestOtp(phone: string): Promise<{ devCode?: string; error?: string }> {
   const db = await createServiceClient() as any
+
+  // Rate limit per phone, enforced against otp_codes itself — no new infra.
+  // Without this, MAX_ATTEMPTS above is meaningless: an attacker just calls
+  // requestOtp again for a fresh row (attempts reset to 0) and keeps
+  // guessing indefinitely. This also caps how often a real WhatsApp/SMS
+  // provider would be billed to spam a single phone once one is wired up.
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+  const { data: recent } = await db
+    .from('otp_codes')
+    .select('created_at')
+    .eq('phone', phone)
+    .gte('created_at', oneHourAgo)
+    .order('created_at', { ascending: false })
+
+  const recentRows = (recent ?? []) as { created_at: string }[]
+  if (recentRows.length > 0) {
+    const secondsSinceLast = (Date.now() - new Date(recentRows[0].created_at).getTime()) / 1000
+    if (secondsSinceLast < MIN_INTERVAL_SEC) {
+      return { error: `Aguarde ${Math.ceil(MIN_INTERVAL_SEC - secondsSinceLast)}s antes de pedir um novo código.` }
+    }
+  }
+  if (recentRows.length >= MAX_PER_HOUR) {
+    return { error: 'Muitos pedidos de código. Tente novamente em 1 hora.' }
+  }
+
   const code = generateCode()
 
   await db.from('otp_codes').insert({
