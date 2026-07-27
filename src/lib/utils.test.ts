@@ -59,8 +59,8 @@ describe('formatCurrency', () => {
     expect(formatCurrency(70)).toBe('R$ 70')
   })
 
-  it('renders null as "A definir" (negotiated complements)', () => {
-    expect(formatCurrency(null)).toBe('A definir')
+  it('renders null as "A combinar" (negotiated complements)', () => {
+    expect(formatCurrency(null)).toBe('A combinar')
   })
 })
 

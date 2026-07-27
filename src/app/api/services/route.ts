@@ -6,14 +6,14 @@ export const revalidate = 300 // cache 5 min
 // Emergency fallback — only used if the DB is unreachable. Kept in sync
 // with the real catalog so a transient outage doesn't show wrong prices.
 const FALLBACK_SERVICES = [
-  { id: 'cabelo',            name: 'Cabelo',            slug: 'cabelo',            description: 'Corte com técnica precisa, respeitando o rosto e o estilo. Inclui lavagem e finalização.', duration: 60,  price: 70,  is_whatsapp_only: false, position: 1 },
-  { id: 'barba',             name: 'Barba',             slug: 'barba',             description: 'Modelagem e acabamento com navalha, com barboterapia a vapor para preparar a pele.',        duration: 60,  price: 70,  is_whatsapp_only: false, position: 2 },
-  { id: 'cabelo-e-barba',    name: 'Cabelo e Barba',    slug: 'cabelo-e-barba',    description: 'A experiência completa: corte e barba em um único atendimento.',                            duration: 120, price: 110, is_whatsapp_only: false, position: 3 },
-  { id: 'corte-feminino',    name: 'Corte Feminino',    slug: 'corte-feminino',    description: 'Corte personalizado, com lavagem e finalização.',                                           duration: 60,  price: 100, is_whatsapp_only: false, position: 4 },
-  { id: 'horario-exclusivo', name: 'Horário Exclusivo', slug: 'horario-exclusivo', description: 'Atendimento fora do expediente para quem busca flexibilidade.',                             duration: 60,  price: 110, is_whatsapp_only: true,  position: 5 },
+  { id: 'cabelo',            name: 'Cabelo',            slug: 'cabelo',            description: 'Corte com técnica precisa, respeitando o rosto e o estilo. Inclui lavagem e finalização.', duration: 60,  price: 70,  is_whatsapp_only: false, position: 1, price_negotiable: false },
+  { id: 'barba',             name: 'Barba',             slug: 'barba',             description: 'Modelagem e acabamento com navalha, com barboterapia a vapor para preparar a pele.',        duration: 60,  price: 70,  is_whatsapp_only: false, position: 2, price_negotiable: false },
+  { id: 'cabelo-e-barba',    name: 'Cabelo e Barba',    slug: 'cabelo-e-barba',    description: 'A experiência completa: corte e barba em um único atendimento.',                            duration: 120, price: 110, is_whatsapp_only: false, position: 3, price_negotiable: false },
+  { id: 'corte-feminino',    name: 'Corte Feminino',    slug: 'corte-feminino',    description: 'Corte personalizado, com lavagem e finalização.',                                           duration: 60,  price: 100, is_whatsapp_only: false, position: 4, price_negotiable: false },
+  { id: 'horario-exclusivo', name: 'Horário Exclusivo', slug: 'horario-exclusivo', description: 'Atendimento fora do expediente para quem busca flexibilidade.',                             duration: 60,  price: 110, is_whatsapp_only: true,  position: 5, price_negotiable: false },
 ]
 
-type ServiceRow = { id: string; name: string; slug: string; description: string; duration: number; price: number; is_whatsapp_only: boolean; position: number }
+type ServiceRow = { id: string; name: string; slug: string; description: string; duration: number; price: number; is_whatsapp_only: boolean; position: number; price_negotiable: boolean }
 
 /**
  * GET /api/services                — the public catalog (landing page, "Escolha o serviço" step).
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     if (slug) {
       const { data, error } = await db
         .from('services')
-        .select('id, name, slug, description, duration, price, is_whatsapp_only, position')
+        .select('id, name, slug, description, duration, price, is_whatsapp_only, position, price_negotiable')
         .eq('active', true)
         .eq('slug', slug)
         .maybeSingle()
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     const result = await db
       .from('services')
-      .select('id, name, slug, description, duration, price, is_whatsapp_only, position')
+      .select('id, name, slug, description, duration, price, is_whatsapp_only, position, price_negotiable')
       .eq('active', true)
       .eq('hidden_from_list', scope === 'cuidados')
       .order('position', { ascending: true })

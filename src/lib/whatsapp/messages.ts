@@ -33,11 +33,13 @@ export function buildBookingConfirmationUrl(params: {
 }
 
 /**
- * Horário Exclusivo doesn't use the calendar — it always redirects
- * straight to WhatsApp with this fixed message.
+ * Any service marked is_whatsapp_only (Horário Exclusivo, Acabamento de
+ * Cabelo — anything with no fixed slot/price to book against) skips the
+ * calendar entirely and redirects straight to WhatsApp with this message,
+ * naming whichever service was picked.
  */
-export function buildExclusiveRequestUrl(): string {
-  const message = 'Olá, Alison. Gostaria de solicitar um horário exclusivo.'
+export function buildExclusiveRequestUrl(serviceName: string): string {
+  const message = `Olá, Alison. Gostaria de solicitar: ${serviceName}.`
   return `https://wa.me/${BRAND.whatsapp}?text=${encodeURIComponent(message)}`
 }
 

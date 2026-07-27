@@ -22,6 +22,7 @@ interface Service {
   price: number
   duration: number
   is_whatsapp_only: boolean
+  price_negotiable?: boolean
 }
 
 interface Complement {
@@ -125,7 +126,7 @@ function ServicePicker({
             >
               <div>
                 <p className="font-display font-light text-lg text-offwhite tracking-[0.03em]">
-                  {s.is_whatsapp_only
+                  {s.slug === 'horario-exclusivo'
                     ? <>Atendimento <span className="text-gold">Exclusivo</span></>
                     : s.name}
                 </p>
@@ -133,7 +134,9 @@ function ServicePicker({
                   {s.is_whatsapp_only ? 'Combinado via WhatsApp' : `${s.duration >= 60 ? `${Math.floor(s.duration / 60)}h${s.duration % 60 ? s.duration % 60 : ''}` : `${s.duration} min`}`}
                 </p>
               </div>
-              <span className="font-data text-lg text-gold shrink-0">{formatCurrency(s.price)}</span>
+              <span className="font-data text-lg text-gold shrink-0">
+                {s.price_negotiable ? 'A combinar' : formatCurrency(s.price)}
+              </span>
             </div>
           )
         })}
@@ -757,8 +760,8 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
       .finally(() => setLoadingAvail(false))
   }, [currentMonth, state.step, state.selectedService])
 
-  const handleExclusive = () => {
-    window.open(buildExclusiveRequestUrl(), '_blank', 'noopener,noreferrer')
+  const handleExclusive = (serviceName: string) => {
+    window.open(buildExclusiveRequestUrl(serviceName), '_blank', 'noopener,noreferrer')
   }
 
   // Highlight only — the service isn't "committed" until Continue is clicked
@@ -766,10 +769,11 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
     setState(s => ({ ...s, selectedService: service }))
   }
 
-  // Commit the highlighted service: whatsapp-only goes straight to WhatsApp,
-  // everything else fetches its complements and opens that overlay.
+  // Commit the highlighted service: whatsapp-only (Horário Exclusivo,
+  // Acabamento de Cabelo — anything with no fixed slot/price) goes straight
+  // to WhatsApp, everything else fetches its complements.
   const commitService = useCallback((service: Service) => {
-    if (service.is_whatsapp_only) { handleExclusive(); return }
+    if (service.is_whatsapp_only) { handleExclusive(service.name); return }
     setState(s => ({ ...s, selectedService: service, selectedComplementIds: [], step: 'complements' }))
     setComplements([])
     fetch(`/api/complements?serviceId=${service.id}`)

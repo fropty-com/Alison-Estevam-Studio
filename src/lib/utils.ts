@@ -71,7 +71,7 @@ export function maskPhoneInput(raw: string): string {
  * (negotiated at time of service) store price as null.
  */
 export function formatCurrency(value: number | null): string {
-  if (value === null) return 'A definir'
+  if (value === null) return 'A combinar'
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',

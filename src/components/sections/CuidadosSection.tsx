@@ -10,7 +10,7 @@ interface Complement {
   slug: string
   name: string
   description: string
-  price: number
+  price: number | null
 }
 
 const CUIDADO_IMAGES: Record<string, string> = {
