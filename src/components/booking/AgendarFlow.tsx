@@ -19,6 +19,7 @@ interface Service {
   id: string
   slug: string
   name: string
+  description: string
   price: number
   duration: number
   is_whatsapp_only: boolean
@@ -156,6 +157,50 @@ function ServicePicker({
   )
 }
 
+/* ── Shared visual for a single cuidado — identical card whether it's
+   offered as an add-on checkbox (ComplementsStep) or as the exclusive
+   choice for a standalone booking (CarePicker), so the same 5 cuidados
+   look and read the same in both places. ── */
+function CuidadoCard({
+  name,
+  description,
+  price,
+  selected,
+  onClick,
+  role,
+}: {
+  name: string
+  description: string
+  price: number | null
+  selected: boolean
+  onClick: () => void
+  role: 'checkbox' | 'button'
+}) {
+  return (
+    <div
+      role={role}
+      aria-checked={role === 'checkbox' ? selected : undefined}
+      aria-pressed={role === 'button' ? selected : undefined}
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() } }}
+      className={cn(
+        'border px-[16px] py-[14px] cursor-pointer',
+        'flex items-center justify-between gap-4 transition-all duration-200',
+        selected ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-offwhite/30',
+      )}
+    >
+      <div>
+        <p className="font-body font-normal text-sm text-offwhite">{name}</p>
+        <p className="font-body font-light text-2xs text-offwhite/35 mt-[2px]">{description}</p>
+      </div>
+      <span className="font-data text-sm text-gold shrink-0 whitespace-nowrap">
+        {price === null ? 'A combinar' : formatCurrency(price)}
+      </span>
+    </div>
+  )
+}
+
 /* ── Complements — a real step in the flow, not a popup ── */
 function ComplementsStep({
   complements,
@@ -176,30 +221,17 @@ function ComplementsStep({
         </p>
       ) : (
         <div className="flex flex-col gap-[10px] mb-[22px]">
-          {complements.map(c => {
-            const isSel = selected.includes(c.id)
-            return (
-              <div
-                key={c.id}
-                role="checkbox"
-                aria-checked={isSel}
-                tabIndex={0}
-                onClick={() => onToggle(c.id)}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(c.id) } }}
-                className={cn(
-                  'border px-[16px] py-[14px] cursor-pointer',
-                  'flex items-center justify-between gap-4 transition-all duration-200',
-                  isSel ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-offwhite/30',
-                )}
-              >
-                <div>
-                  <p className="font-body font-normal text-sm text-offwhite">{c.name}</p>
-                  <p className="font-body font-light text-2xs text-offwhite/35 mt-[2px]">{c.description}</p>
-                </div>
-                <span className="font-data text-sm text-gold shrink-0 whitespace-nowrap">{formatCurrency(c.price)}</span>
-              </div>
-            )
-          })}
+          {complements.map(c => (
+            <CuidadoCard
+              key={c.id}
+              name={c.name}
+              description={c.description}
+              price={c.price}
+              selected={selected.includes(c.id)}
+              onClick={() => onToggle(c.id)}
+              role="checkbox"
+            />
+          ))}
         </div>
       )}
 
@@ -208,6 +240,57 @@ function ComplementsStep({
         className="w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light"
       >
         {selected.length > 0 ? 'Continuar' : 'Continuar sem complementos'}
+      </button>
+    </div>
+  )
+}
+
+/* ── Cuidado picker — the exclusive choice for a standalone booking,
+   same CuidadoCard as the add-on step, single-select instead of multi ── */
+function CarePicker({
+  items,
+  highlighted,
+  onHighlight,
+  onContinue,
+}: {
+  items: Service[]
+  highlighted: Service | null
+  onHighlight: (item: Service) => void
+  onContinue: () => void
+}) {
+  if (items.length === 0) {
+    return (
+      <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+        Carregando cuidados…
+      </p>
+    )
+  }
+
+  return (
+    <div>
+      <div className="flex flex-col gap-[10px] mb-[22px]">
+        {items.map(s => (
+          <CuidadoCard
+            key={s.id}
+            name={s.name}
+            description={s.description}
+            price={s.price_negotiable ? null : s.price}
+            selected={highlighted?.id === s.id}
+            onClick={() => onHighlight(s)}
+            role="button"
+          />
+        ))}
+      </div>
+      <button
+        onClick={onContinue}
+        disabled={!highlighted}
+        className={cn(
+          'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
+          'bg-gold text-charcoal-deep transition-all duration-300',
+          'hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-gold',
+        )}
+      >
+        {highlighted?.is_whatsapp_only ? 'Chamar no WhatsApp' : 'Continuar'}
       </button>
     </div>
   )
@@ -962,8 +1045,8 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
         )}
 
         {state.step === 'care' && (
-          <ServicePicker
-            services={careServices}
+          <CarePicker
+            items={careServices}
             highlighted={state.selectedService}
             onHighlight={highlightService}
             onContinue={() => state.selectedService && commitService(state.selectedService)}
