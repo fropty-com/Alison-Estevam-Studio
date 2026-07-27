@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 export function ServiceRow({ service }: { service: {
   id: string; name: string; description: string | null
   duration: number; price: number; active: boolean; position: number
+  hidden_from_list?: boolean
 }}) {
   const [pending,   startTransition] = useTransition()
   const [editing,   setEditing]  = useState(false)
@@ -42,7 +43,17 @@ export function ServiceRow({ service }: { service: {
         </button>
 
         <div className="flex-1 min-w-0">
-          <p className="font-body font-light text-[13px] text-offwhite">{service.name}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-body font-light text-[13px] text-offwhite">{service.name}</p>
+            {service.hidden_from_list && (
+              <span
+                title="Não aparece na lista pública de Serviços — reservado só via botão próprio na seção Cuidados"
+                className="font-body font-light text-[7px] tracking-[0.25em] uppercase px-[6px] py-[2px] border border-offwhite/15 text-offwhite/35 shrink-0"
+              >
+                Cuidado
+              </span>
+            )}
+          </div>
           {service.description && (
             <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[2px]">
               {service.description}

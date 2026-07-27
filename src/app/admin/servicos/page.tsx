@@ -7,7 +7,7 @@ export default async function ServicosPage() {
   const db = await createServiceClient() as any
   const { data } = await db
     .from('services')
-    .select('id, name, slug, description, duration, price, active, position')
+    .select('id, name, slug, description, duration, price, active, position, hidden_from_list')
     .order('position', { ascending: true })
 
   const services = (data ?? []) as any[]

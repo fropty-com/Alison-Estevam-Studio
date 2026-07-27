@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
 
 export const revalidate = 300 // cache 5 min
@@ -13,17 +13,41 @@ const FALLBACK_SERVICES = [
   { id: 'horario-exclusivo', name: 'Horário Exclusivo', slug: 'horario-exclusivo', description: 'Atendimento fora do expediente para quem busca flexibilidade.',                             duration: 60,  price: 110, is_whatsapp_only: true,  position: 5 },
 ]
 
-export async function GET() {
+type ServiceRow = { id: string; name: string; slug: string; description: string; duration: number; price: number; is_whatsapp_only: boolean; position: number }
+
+/**
+ * GET /api/services            — the public catalog (landing page, "Escolha o serviço" step).
+ * GET /api/services?slug=<x>   — a single service by slug, regardless of hidden_from_list.
+ *   Used only by the Cuidados section's own "Agendar" button, so a cuidado
+ *   booked standalone (no main service) can be found without ever showing
+ *   up mixed into the general list above.
+ */
+export async function GET(request: NextRequest) {
+  const slug = request.nextUrl.searchParams.get('slug')
+
   try {
     const db = await createServiceClient() as any
+
+    if (slug) {
+      const { data, error } = await db
+        .from('services')
+        .select('id, name, slug, description, duration, price, is_whatsapp_only, position')
+        .eq('active', true)
+        .eq('slug', slug)
+        .maybeSingle()
+
+      if (error) console.error('GET /api/services?slug error:', error)
+      return NextResponse.json({ service: (data as ServiceRow | null) ?? null })
+    }
 
     const result = await db
       .from('services')
       .select('id, name, slug, description, duration, price, is_whatsapp_only, position')
       .eq('active', true)
+      .eq('hidden_from_list', false)
       .order('position', { ascending: true })
 
-    const data  = result.data  as { id: string; name: string; slug: string; description: string; duration: number; price: number; is_whatsapp_only: boolean; position: number }[] | null
+    const data  = result.data  as ServiceRow[] | null
     const error = result.error as unknown
 
     if (error) console.error('GET /api/services error:', error)

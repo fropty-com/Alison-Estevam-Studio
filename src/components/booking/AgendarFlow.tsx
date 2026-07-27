@@ -778,14 +778,19 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
   }, [])
 
   // Auto-select the preset service (e.g. from a "Agendar" button on a
-  // specific service card) once services have loaded, but only while
-  // still on the initial step — never hijack a selection already in progress.
+  // specific service card, or a Cuidados item booked standalone) — looked
+  // up by its own slug-specific fetch rather than found in `services`
+  // (the general list), since a cuidado's service row is deliberately
+  // excluded from that list. Only while still on the initial step — never
+  // hijack a selection already in progress.
   useEffect(() => {
-    if (!presetServiceSlug || services.length === 0 || state.step !== 'service') return
-    const match = services.find(s => s.slug === presetServiceSlug)
-    if (match) commitService(match)
+    if (!presetServiceSlug || state.step !== 'service') return
+    fetch(`/api/services?slug=${encodeURIComponent(presetServiceSlug)}`)
+      .then(r => r.json())
+      .then(d => { if (d.service) commitService(d.service) })
+      .catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presetServiceSlug, services, state.step])
+  }, [presetServiceSlug, state.step])
 
   const toggleComplement = (id: string) => {
     setState(s => ({
