@@ -6,9 +6,9 @@ export const revalidate = 300 // cache 5 min
 // Emergency fallback — only used if the DB is unreachable. Kept in sync
 // with the real catalog so a transient outage doesn't show wrong prices.
 const FALLBACK_SERVICES = [
-  { id: 'corte-cabelo',      name: 'Corte de Cabelo',   slug: 'corte-cabelo',      description: 'Corte personalizado no seu estilo. Cada detalhe executado com precisão, do início à finalização.', duration: 60,  price: 60,  is_whatsapp_only: false, position: 1 },
-  { id: 'barba-completa',    name: 'Barba Completa',    slug: 'barba-completa',    description: 'Modelagem completa com vaporizador de ozônio e produtos selecionados. Um ritual que cuida da pele e valoriza o visual.', duration: 60,  price: 60,  is_whatsapp_only: false, position: 2 },
-  { id: 'cabelo-barba',      name: 'Cabelo e Barba',    slug: 'cabelo-barba',      description: 'A experiência completa em um único atendimento. Corte e barba com toda a atenção que você merece.', duration: 90,  price: 100, is_whatsapp_only: false, position: 3 },
+  { id: 'cabelo',            name: 'Cabelo',            slug: 'cabelo',            description: 'Corte com técnica precisa, respeitando o rosto e o estilo. Inclui lavagem e finalização.', duration: 60,  price: 70,  is_whatsapp_only: false, position: 1 },
+  { id: 'barba',             name: 'Barba',             slug: 'barba',             description: 'Modelagem e acabamento com navalha, com barboterapia a vapor para preparar a pele.',        duration: 60,  price: 70,  is_whatsapp_only: false, position: 2 },
+  { id: 'cabelo-e-barba',    name: 'Cabelo e Barba',    slug: 'cabelo-e-barba',    description: 'A experiência completa: corte e barba em um único atendimento.',                            duration: 120, price: 110, is_whatsapp_only: false, position: 3 },
   { id: 'corte-feminino',    name: 'Corte Feminino',    slug: 'corte-feminino',    description: 'Corte personalizado, com lavagem e finalização.',                                           duration: 60,  price: 100, is_whatsapp_only: false, position: 4 },
   { id: 'horario-exclusivo', name: 'Horário Exclusivo', slug: 'horario-exclusivo', description: 'Atendimento fora do expediente para quem busca flexibilidade.',                             duration: 60,  price: 110, is_whatsapp_only: true,  position: 5 },
 ]
