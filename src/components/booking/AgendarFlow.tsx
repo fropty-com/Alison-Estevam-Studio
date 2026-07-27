@@ -309,6 +309,42 @@ function CareLink({ onClick }: { onClick: () => void }) {
   )
 }
 
+/* ── Running summary — keeps the chosen service, complements and total
+   visible from the moment a service is committed through checkout, instead
+   of only revealing the price on the final "Confirme seu horário" step. ── */
+function RunningSummary({
+  service,
+  complements,
+  selectedComplementIds,
+}: {
+  service: Service
+  complements: Complement[]
+  selectedComplementIds: string[]
+}) {
+  const chosen = complements.filter(c => selectedComplementIds.includes(c.id))
+  const complementsPrice = chosen.reduce((sum, c) => sum + (c.price ?? 0), 0)
+  const total = service.price_negotiable ? null : service.price + complementsPrice
+
+  return (
+    <div className="flex items-center justify-between gap-4 border border-offwhite/10 bg-offwhite/[0.03] px-[16px] py-[12px] mb-[22px]">
+      <div className="min-w-0">
+        <p className="font-body font-normal text-[12px] text-offwhite truncate">
+          {service.name}
+          {chosen.length > 0 && (
+            <span className="text-offwhite/40"> + {chosen.length} {chosen.length === 1 ? 'complemento' : 'complementos'}</span>
+          )}
+        </p>
+        <p className="font-body font-light text-2xs tracking-[0.12em] uppercase text-offwhite/30 mt-[2px]">
+          {service.is_whatsapp_only ? 'Combinado via WhatsApp' : `${service.duration} min`}
+        </p>
+      </div>
+      <span className="font-data text-[15px] text-gold shrink-0 whitespace-nowrap">
+        {total === null ? 'A combinar' : formatCurrency(total)}
+      </span>
+    </div>
+  )
+}
+
 /* ── Slot picker ───────────────────────────────── */
 function SlotPicker({
   date,
@@ -410,7 +446,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           placeholder="Nome e sobrenome"
           value={name}
           onChange={e => setName(e.target.value)}
-          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
         />
         <input
           type="tel"
@@ -420,7 +456,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           maxLength={15}
           value={whatsapp}
           onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
-          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
         />
         {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
         <button
@@ -473,7 +509,7 @@ function DetailsForm({
           value={name}
           onChange={e => setName(e.target.value)}
           className={cn(
-            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-sm px-[15px] py-[12px]',
+            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
             errors.name ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
@@ -496,7 +532,7 @@ function DetailsForm({
           value={whatsapp}
           onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
           className={cn(
-            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-sm px-[15px] py-[12px]',
+            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
             errors.whatsapp ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
@@ -518,7 +554,7 @@ function DetailsForm({
           value={email}
           onChange={e => setEmail(e.target.value)}
           className={cn(
-            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-sm px-[15px] py-[12px]',
+            'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
             errors.email ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
@@ -688,7 +724,7 @@ function SummaryStep({
               value={couponInput}
               onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null) }}
               placeholder="Cupom de desconto (opcional)"
-              className="flex-1 bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[15px] py-[12px] outline-none rounded-none placeholder:text-offwhite/35 focus:border-gold focus:bg-gold/5 transition-all duration-250"
+              className="flex-1 bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[15px] py-[12px] outline-none rounded-none placeholder:text-offwhite/35 focus:border-gold focus:bg-gold/5 transition-all duration-250"
             />
             <button
               onClick={handleApplyCoupon}
@@ -1030,6 +1066,16 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
 
       <StepHeader {...headerFor[state.step as Exclude<Step, 'success'>]} />
       <StepDots current={state.step} />
+
+      {state.selectedService && (state.step === 'complements' || state.step === 'schedule' || state.step === 'details') && (
+        <div className="mt-[18px]">
+          <RunningSummary
+            service={state.selectedService}
+            complements={complements}
+            selectedComplementIds={state.selectedComplementIds}
+          />
+        </div>
+      )}
 
       <div className="mt-[26px] relative">
         {state.step === 'service' && (

@@ -18,7 +18,7 @@ export function AccountForm({ initialName, initialEmail }: { initialName: string
     })
   }
 
-  const inputCls = 'w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-sm px-[15px] py-[12px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35'
+  const inputCls = 'w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[15px] py-[12px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35'
 
   return (
     <div className="mb-[10px]">

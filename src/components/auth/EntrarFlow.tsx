@@ -8,7 +8,7 @@ import { checkPhoneAction, sendOtpAction, verifyAndLoginAction } from '@/app/ent
 type Step = 'phone' | 'code'
 
 const inputCls = (hasError: boolean) => cn(
-  'w-full bg-charcoal-mid border text-offwhite font-body font-light text-sm px-[15px] py-[12px]',
+  'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
   'outline-none transition-all duration-250 rounded-none',
   'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
   hasError ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5',

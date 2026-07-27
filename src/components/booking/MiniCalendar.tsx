@@ -100,11 +100,15 @@ export function MiniCalendar({
               role="gridcell"
               aria-label={`${day} de ${format(current, 'MMMM', { locale: ptBR })}${past ? ' — passado' : unavailable ? ' — indisponível' : ''}`}
               aria-disabled={disabled}
+              aria-selected={isSelected || undefined}
+              tabIndex={disabled ? -1 : 0}
               onClick={() => !disabled && onSelectDay(date)}
+              onKeyDown={e => { if (!disabled && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onSelectDay(date) } }}
               className={cn(
                 'aspect-square flex items-center justify-center relative rounded-full',
                 'font-body font-light text-[11.5px]',
                 'border border-transparent transition-all duration-200',
+                'outline-none focus-visible:border-gold/60 focus-visible:bg-gold/8',
                 past        && 'opacity-[0.18] pointer-events-none select-none',
                 unavailable && 'opacity-[0.28] cursor-default select-none',
                 !disabled   && 'text-offwhite/75 cursor-pointer hover:bg-gold/12 hover:text-gold hover:border-gold/30',
@@ -153,13 +157,17 @@ export function SlotGrid({
           return (
             <div
               key={slot.id}
-              role="listitem"
+              role="option"
               aria-label={slot.startTime}
+              aria-selected={isSel}
+              tabIndex={0}
               onClick={() => onSelect(slot)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(slot) } }}
               className={cn(
                 'py-[13px] px-[6px] text-center',
                 'font-data text-[15px]',
                 'border rounded-none transition-all duration-200 select-none cursor-pointer',
+                'outline-none focus-visible:border-gold focus-visible:bg-gold/8',
                 !isSel && 'text-offwhite/65 border-offwhite/14 hover:border-gold hover:text-gold hover:bg-gold/8',
                 isSel && 'bg-gold border-gold text-charcoal-deep',
               )}
