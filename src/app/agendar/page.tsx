@@ -28,7 +28,7 @@ export default async function AgendarPage() {
   }
 
   return (
-    <div className="max-w-[480px] mx-auto min-h-screen">
+    <div className="max-w-[480px] lg:max-w-[900px] mx-auto min-h-screen">
       <Suspense fallback={null}>
         <AgendarFlow initialClient={initialClient} />
       </Suspense>

@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { cn, formatCurrency, maskPhoneInput, isFullName } from '@/lib/utils'
 import { buildBookingConfirmationUrl, buildExclusiveRequestUrl } from '@/lib/whatsapp/messages'
-import { format, addMonths, subMonths } from 'date-fns'
+import { format, addMonths, subMonths, startOfDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BOOKING } from '@/config/booking'
 import { BRAND } from '@/config/brand'
@@ -68,19 +69,52 @@ interface BookingState {
 // final screen (matching the prototype) and isn't given a dot.
 const STEP_ORDER: Step[] = ['service', 'schedule', 'details', 'summary']
 
-/* ── Step indicator — thin gold line segments, no numbers/labels ── */
-function StepDots({ current }: { current: Step }) {
+/** "10:00" + 90 → "11:30" — used to show the appointment's end time, not just its start. */
+function addMinutesToTime(time: string, minutes: number): string {
+  const [h, m] = time.split(':').map(Number)
+  const total = (h * 60 + m + minutes) % (24 * 60)
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+}
+
+/* ── Step indicator — thin gold line segments. Completed segments (before
+   the current step) are clickable and jump straight back to that step,
+   same as the "← Voltar" links but from any earlier point at once. ── */
+function StepDots({
+  current,
+  isCareSelected,
+  onNavigate,
+}: {
+  current: Step
+  isCareSelected: boolean
+  onNavigate: (step: Step) => void
+}) {
   const displayStep = (current === 'complements' || current === 'care') ? 'service' : current
   const idx = STEP_ORDER.indexOf(displayStep)
+
   return (
     <div className="flex gap-[6px]" aria-label="Etapas do agendamento">
-      {STEP_ORDER.map((s, i) => (
-        <div
-          key={s}
-          className={cn('h-[2px] flex-1 transition-colors duration-300', i <= idx ? 'bg-gold' : 'bg-offwhite/15')}
-          aria-hidden="true"
-        />
-      ))}
+      {STEP_ORDER.map((s, i) => {
+        const clickable = i < idx
+        const target: Step = i === 0 && isCareSelected ? 'care' : s
+        return (
+          <button
+            key={s}
+            type="button"
+            disabled={!clickable}
+            onClick={() => onNavigate(target)}
+            aria-label={clickable ? 'Voltar para uma etapa anterior' : undefined}
+            className={cn('group flex-1 py-[8px] bg-transparent border-0 outline-none', clickable ? 'cursor-pointer' : 'cursor-default')}
+          >
+            <span
+              className={cn(
+                'block h-[2px] w-full transition-colors duration-300',
+                i <= idx ? 'bg-gold' : 'bg-offwhite/15',
+                clickable && 'group-hover:bg-gold-light',
+              )}
+            />
+          </button>
+        )
+      })}
     </div>
   )
 }
@@ -341,6 +375,47 @@ function RunningSummary({
       <span className="font-data text-[15px] text-gold shrink-0 whitespace-nowrap">
         {total === null ? 'A combinar' : formatCurrency(total)}
       </span>
+    </div>
+  )
+}
+
+/* ── Desktop/tablet sidebar (lg+ only) — the mobile column stays exactly
+   as it was (RunningSummary inline in the flow); wide screens get a
+   persistent side panel instead of a narrow phone-width flow floating in
+   empty space, with Alison's own portrait reinforcing that this is a
+   single-barber studio, not a generic scheduling system. ── */
+function BookingSidebar({
+  service,
+  complements,
+  selectedComplementIds,
+}: {
+  service: Service | null
+  complements: Complement[]
+  selectedComplementIds: string[]
+}) {
+  return (
+    <div className="hidden lg:flex lg:flex-col lg:gap-[20px] lg:sticky lg:top-[150px] lg:border lg:border-offwhite/10 lg:p-[26px]">
+      <div className="relative w-[64px] h-[64px] rounded-full overflow-hidden shrink-0">
+        <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="64px" className="object-cover object-top" />
+      </div>
+      <div>
+        <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/30 mb-[4px]">
+          Alison Estevam Studio
+        </p>
+        <p className="font-display font-light text-lg text-offwhite leading-[1.2]">
+          Atendimento pessoal, sem sistema genérico de agenda.
+        </p>
+      </div>
+
+      <div className="border-t border-offwhite/10 pt-[18px]">
+        {service ? (
+          <RunningSummary service={service} complements={complements} selectedComplementIds={selectedComplementIds} />
+        ) : (
+          <p className="font-body font-light text-[12px] text-offwhite/35 italic">
+            Escolha um serviço para ver o resumo aqui.
+          </p>
+        )}
+      </div>
     </div>
   )
 }
@@ -692,7 +767,9 @@ function SummaryStep({
         </div>
         <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
           <span className="font-body font-light text-[12px] text-offwhite/45">Horário</span>
-          <span className="font-body font-light text-[12px] text-offwhite">{selectedSlot.startTime}</span>
+          <span className="font-body font-light text-[12px] text-offwhite">
+            {selectedSlot.startTime} – {addMinutesToTime(selectedSlot.startTime, service.duration)}
+          </span>
         </div>
 
         {appliedCoupon && (
@@ -782,8 +859,13 @@ function Confirmation({
 }) {
   return (
     <div className="animate-fade-up min-h-[calc(100vh-122px)] pt-[122px] flex flex-col items-center justify-center text-center px-8">
-      <div className="w-[64px] h-[64px] rounded-full border-[1.5px] border-gold flex items-center justify-center text-gold text-[22px] mb-[26px]">
-        ✓
+      <div className="relative w-[72px] h-[72px] mb-[26px]">
+        <div className="relative w-full h-full rounded-full overflow-hidden border-[1.5px] border-gold">
+          <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="72px" priority className="object-cover object-top" />
+        </div>
+        <div className="absolute -bottom-[3px] -right-[3px] w-[24px] h-[24px] rounded-full border-[1.5px] border-gold bg-charcoal flex items-center justify-center text-gold text-[11px]">
+          ✓
+        </div>
       </div>
       <h2 className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[12px]">
         Agendamento confirmado
@@ -1001,6 +1083,21 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
 
   const selectedDateStr = state.selectedDate ? format(state.selectedDate, 'yyyy-MM-dd') : null
   const currentSlots = selectedDateStr ? (availability[selectedDateStr]?.slots ?? []) : []
+
+  // Earliest open slot within the currently-loaded month — lets a client
+  // with no date preference skip straight past the calendar in one click,
+  // instead of hunting month-by-month for an open day.
+  const findNextAvailable = (): { date: Date; slot: Slot } | null => {
+    const startOfToday = startOfDay(new Date())
+    const candidates = Object.entries(availability)
+      .filter(([, info]) => info.available && info.slots.some(s => s.available))
+      .map(([dateStr, info]) => ({ date: new Date(`${dateStr}T00:00:00`), info }))
+      .filter(c => c.date >= startOfToday)
+      .sort((a, b) => a.date.getTime() - b.date.getTime())
+    if (candidates.length === 0) return null
+    const slot = [...candidates[0].info.slots].filter(s => s.available).sort((a, b) => a.startTime.localeCompare(b.startTime))[0]
+    return { date: candidates[0].date, slot }
+  }
   const isCareSelected = !!state.selectedService && careServices.some(c => c.id === state.selectedService!.id)
 
   const backTo = (step: Step) => setState(s => ({ ...s, step }))
@@ -1054,7 +1151,14 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
   return (
     <>
     <ClientHeader />
-    <div className="px-8 pt-[122px] pb-16">
+    <div className="px-8 lg:px-[60px] pt-[122px] pb-16 lg:grid lg:grid-cols-[260px_1fr] lg:gap-[48px] lg:items-start">
+      <BookingSidebar
+        service={state.selectedService}
+        complements={complements}
+        selectedComplementIds={state.selectedComplementIds}
+      />
+
+      <div>
       {state.step === 'service'     && <BackLink href="/">← Voltar ao início</BackLink>}
       {state.step === 'complements' && <BackLink onClick={() => backTo('service')}>← Trocar serviço</BackLink>}
       {state.step === 'care'        && <BackLink onClick={() => backTo('service')}>← Ver serviços</BackLink>}
@@ -1065,10 +1169,10 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
       {state.step === 'summary'     && <BackLink onClick={() => backTo('details')}>← Ajustar seus dados</BackLink>}
 
       <StepHeader {...headerFor[state.step as Exclude<Step, 'success'>]} />
-      <StepDots current={state.step} />
+      <StepDots current={state.step} isCareSelected={isCareSelected} onNavigate={backTo} />
 
       {state.selectedService && (state.step === 'complements' || state.step === 'schedule' || state.step === 'details') && (
-        <div className="mt-[18px]">
+        <div className="mt-[18px] lg:hidden">
           <RunningSummary
             service={state.selectedService}
             complements={complements}
@@ -1113,6 +1217,18 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
 
         {state.step === 'schedule' && state.selectedService && (
           <div>
+            {!state.selectedDate && (() => {
+              const next = findNextAvailable()
+              if (!next) return null
+              return (
+                <button
+                  onClick={() => { selectDay(next.date); selectSlot(next.slot) }}
+                  className="mb-[16px] inline-flex items-center gap-2 font-body font-light text-[10.5px] tracking-[0.12em] uppercase text-gold/80 hover:text-gold border border-gold/25 hover:border-gold/50 px-[14px] py-[9px] transition-all duration-200"
+                >
+                  Horário mais próximo: {format(next.date, "d 'de' MMM", { locale: ptBR })} às {next.slot.startTime} →
+                </button>
+              )
+            })()}
             <MiniCalendar
               current={currentMonth}
               selected={state.selectedDate}
@@ -1148,6 +1264,7 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
             onConfirm={handleConfirm}
           />
         )}
+      </div>
       </div>
     </div>
     </>
