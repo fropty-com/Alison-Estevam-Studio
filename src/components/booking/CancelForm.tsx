@@ -51,8 +51,8 @@ export function CancelForm({ code }: { code: string }) {
           onClick={() => setConfirm(true)}
           className={cn(
             'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-            'border border-error/50 bg-error/10 text-error/90 transition-all duration-300',
-            'hover:bg-error/20 hover:border-error/70 hover:text-error',
+            'bg-error text-offwhite transition-all duration-300',
+            'hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]',
           )}
         >
           Cancelar agendamento
@@ -82,8 +82,8 @@ export function CancelForm({ code }: { code: string }) {
               disabled={pending}
               className={cn(
                 'flex-1 py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-                'border border-error/50 bg-error/10 text-error/90 transition-all duration-300',
-                'hover:bg-error/20 hover:border-error/70 hover:text-error',
+                'bg-error text-offwhite transition-all duration-300',
+                'hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]',
                 'disabled:opacity-40 disabled:cursor-not-allowed'
               )}
             >

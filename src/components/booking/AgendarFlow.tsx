@@ -338,7 +338,7 @@ function CareLink({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className="mt-[18px] block font-body font-light text-[10.5px] tracking-[0.1em] text-offwhite/40 hover:text-gold transition-colors duration-200 underline underline-offset-4 decoration-offwhite/15"
     >
-      Prefere reservar só um cuidado avulso (sobrancelha, hidratação…), sem serviço principal? →
+      Quer reservar só um cuidado avulso? →
     </button>
   )
 }
