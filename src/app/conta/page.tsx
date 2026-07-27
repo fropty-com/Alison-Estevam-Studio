@@ -150,7 +150,7 @@ export default async function ContaPage() {
         {next && (
           <Link
             href="/agendar"
-            className="block w-full text-center mb-[34px] font-body font-medium text-[9.5px] tracking-[0.35em] uppercase border border-gold/40 text-gold px-7 py-[14px] transition-all duration-300 hover:bg-gold/8"
+            className="block w-full text-center mb-[34px] font-body font-medium text-[9.5px] tracking-[0.35em] uppercase bg-gold text-charcoal-deep px-7 py-[14px] transition-all duration-300 hover:bg-gold-light hover:-translate-y-px"
           >
             Novo agendamento
           </Link>
@@ -246,13 +246,13 @@ function AppointmentCard({ appt }: { appt: any }) {
         <div className={cn('flex gap-[8px]', mustConfirm ? 'mt-[10px]' : 'mt-[16px]')}>
           <Link
             href={`/reagendar/${appt.reference_code}`}
-            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 hover:border-offwhite/35 hover:text-offwhite/80 transition-all duration-200"
+            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 transition-all duration-200 hover:bg-offwhite/90 hover:border-offwhite/90 hover:text-charcoal-deep active:bg-offwhite/90 active:border-offwhite/90 active:text-charcoal-deep"
           >
             Reagendar
           </Link>
           <Link
             href={`/cancelar/${appt.reference_code}`}
-            className="flex-1 text-center px-3 py-[9px] font-body font-medium text-[8.5px] tracking-[0.2em] uppercase border border-error/50 bg-error/10 text-error/90 hover:bg-error/20 hover:border-error/70 hover:text-error transition-all duration-200"
+            className="flex-1 text-center px-3 py-[9px] font-body font-medium text-[8.5px] tracking-[0.2em] uppercase bg-error text-offwhite transition-all duration-200 hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]"
           >
             Cancelar
           </Link>
