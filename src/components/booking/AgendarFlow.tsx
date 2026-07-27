@@ -33,7 +33,7 @@ interface Complement {
 
 type Slot = CalendarSlot
 
-type Step = 'service' | 'complements' | 'schedule' | 'details' | 'summary' | 'success'
+type Step = 'service' | 'complements' | 'care' | 'schedule' | 'details' | 'summary' | 'success'
 
 interface ClientData {
   name: string
@@ -68,7 +68,7 @@ const STEP_ORDER: Step[] = ['service', 'schedule', 'details', 'summary']
 
 /* ── Step indicator — thin gold line segments, no numbers/labels ── */
 function StepDots({ current }: { current: Step }) {
-  const displayStep = current === 'complements' ? 'service' : current
+  const displayStep = (current === 'complements' || current === 'care') ? 'service' : current
   const idx = STEP_ORDER.indexOf(displayStep)
   return (
     <div className="flex gap-[6px]" aria-label="Etapas do agendamento">
@@ -153,82 +153,73 @@ function ServicePicker({
   )
 }
 
-/* ── Complements — rendered as a modal overlaying the (blurred) service list ── */
-function ComplementsOverlay({
+/* ── Complements — a real step in the flow, not a popup ── */
+function ComplementsStep({
   complements,
   selected,
   onToggle,
   onContinue,
-  onClose,
 }: {
   complements: Complement[]
   selected: string[]
   onToggle: (id: string) => void
   onContinue: () => void
-  onClose: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-20 flex items-center justify-center p-4 bg-charcoal-deep/45" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="relative w-full max-w-[440px] max-h-[82vh] overflow-y-auto bg-charcoal border border-offwhite/14 p-[30px]">
-        <button
-          onClick={onClose}
-          aria-label="Fechar"
-          className="absolute top-[22px] right-[22px] w-8 h-8 border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
-        >
-          ✕
-        </button>
-
-        <span className="inline-block font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/40 border border-offwhite/20 px-[10px] py-[3px] mb-[14px]">
-          Opcional
-        </span>
-        <h2 className="font-display font-light text-2xl text-offwhite tracking-[0.02em] mb-[6px]">
-          Complementos
-        </h2>
-        <p className="font-body font-light text-[12px] text-offwhite/45 mb-[18px] leading-[1.7]">
-          Adicione um cuidado extra ao seu horário, se quiser — não é obrigatório.
+    <div>
+      {complements.length === 0 ? (
+        <p className="font-body font-light text-[12px] text-offwhite/35 italic mb-[22px]">
+          Nenhum complemento disponível para este serviço.
         </p>
-
-        {complements.length === 0 ? (
-          <p className="font-body font-light text-[12px] text-offwhite/35 italic mb-[22px]">
-            Nenhum complemento disponível para este serviço.
-          </p>
-        ) : (
-          <div className="flex flex-col gap-[10px] mb-[22px]">
-            {complements.map(c => {
-              const isSel = selected.includes(c.id)
-              return (
-                <div
-                  key={c.id}
-                  role="checkbox"
-                  aria-checked={isSel}
-                  tabIndex={0}
-                  onClick={() => onToggle(c.id)}
-                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(c.id) } }}
-                  className={cn(
-                    'border px-[16px] py-[14px] cursor-pointer',
-                    'flex items-center justify-between gap-4 transition-all duration-200',
-                    isSel ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-offwhite/30',
-                  )}
-                >
-                  <div>
-                    <p className="font-body font-normal text-sm text-offwhite">{c.name}</p>
-                    <p className="font-body font-light text-2xs text-offwhite/35 mt-[2px]">{c.description}</p>
-                  </div>
-                  <span className="font-data text-sm text-gold shrink-0 whitespace-nowrap">{formatCurrency(c.price)}</span>
+      ) : (
+        <div className="flex flex-col gap-[10px] mb-[22px]">
+          {complements.map(c => {
+            const isSel = selected.includes(c.id)
+            return (
+              <div
+                key={c.id}
+                role="checkbox"
+                aria-checked={isSel}
+                tabIndex={0}
+                onClick={() => onToggle(c.id)}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(c.id) } }}
+                className={cn(
+                  'border px-[16px] py-[14px] cursor-pointer',
+                  'flex items-center justify-between gap-4 transition-all duration-200',
+                  isSel ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-offwhite/30',
+                )}
+              >
+                <div>
+                  <p className="font-body font-normal text-sm text-offwhite">{c.name}</p>
+                  <p className="font-body font-light text-2xs text-offwhite/35 mt-[2px]">{c.description}</p>
                 </div>
-              )
-            })}
-          </div>
-        )}
+                <span className="font-data text-sm text-gold shrink-0 whitespace-nowrap">{formatCurrency(c.price)}</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
 
-        <button
-          onClick={onContinue}
-          className="w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light"
-        >
-          {selected.length > 0 ? 'Continuar' : 'Continuar sem complementos'}
-        </button>
-      </div>
+      <button
+        onClick={onContinue}
+        className="w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light"
+      >
+        {selected.length > 0 ? 'Continuar' : 'Continuar sem complementos'}
+      </button>
     </div>
+  )
+}
+
+/* ── A quiet pivot to the standalone-cuidado picker, offered inline —
+   part of the same process, no route change, no modal ── */
+function CareLink({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="mt-[18px] block font-body font-light text-[10.5px] tracking-[0.1em] text-offwhite/40 hover:text-gold transition-colors duration-200 underline underline-offset-4 decoration-offwhite/15"
+    >
+      Prefere reservar só um cuidado avulso (sobrancelha, hidratação…), sem serviço principal? →
+    </button>
   )
 }
 
@@ -722,14 +713,18 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
   const searchParams = useSearchParams()
   const presetServiceSlug = searchParams.get('servico')
 
+  const presetScreen = searchParams.get('tela') // 'cuidados' — arrives directly on the standalone-cuidado picker
+
   const [currentMonth,  setCurrentMonth]  = useState(new Date())
   const [availability,  setAvailability]  = useState<AvailabilityMap>({})
   const [loadingAvail,  setLoadingAvail]  = useState(false)
   const [services,      setServices]      = useState<Service[]>([])
+  const [careServices,  setCareServices]  = useState<Service[]>([])
   const [complements,   setComplements]   = useState<Complement[]>([])
-  const [state,         setState]         = useState<BookingState>({
-    step: 'service', selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: initialClient, result: null,
-  })
+  const [state,         setState]         = useState<BookingState>(() => ({
+    step: presetScreen === 'cuidados' ? 'care' : 'service',
+    selectedService: null, selectedComplementIds: [], selectedDate: null, selectedSlot: null, client: initialClient, result: null,
+  }))
 
   // Fetch services once on mount
   useEffect(() => {
@@ -738,6 +733,16 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
       .then(d => setServices(d.services ?? []))
       .catch(console.error)
   }, [])
+
+  // Fetch the standalone-cuidado catalog only once we actually reach that step
+  useEffect(() => {
+    if (state.step !== 'care' || careServices.length > 0) return
+    fetch('/api/services?scope=cuidados')
+      .then(r => r.json())
+      .then(d => setCareServices(d.services ?? []))
+      .catch(console.error)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.step])
 
   // Fetch availability whenever month changes or the chosen service (duration) changes
   useEffect(() => {
@@ -778,19 +783,28 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
   }, [])
 
   // Auto-select the preset service (e.g. from a "Agendar" button on a
-  // specific service card, or a Cuidados item booked standalone) — looked
-  // up by its own slug-specific fetch rather than found in `services`
-  // (the general list), since a cuidado's service row is deliberately
-  // excluded from that list. Only while still on the initial step — never
-  // hijack a selection already in progress.
+  // specific service card) — never runs for a Cuidados deep link
+  // (presetScreen === 'cuidados'), since that one lands on 'care' and is
+  // only ever pre-highlighted, not auto-committed (see below) — the user
+  // still sees and confirms the dedicated cuidado screen themselves.
   useEffect(() => {
-    if (!presetServiceSlug || state.step !== 'service') return
+    if (!presetServiceSlug || presetScreen === 'cuidados' || state.step !== 'service') return
     fetch(`/api/services?slug=${encodeURIComponent(presetServiceSlug)}`)
       .then(r => r.json())
       .then(d => { if (d.service) commitService(d.service) })
       .catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [presetServiceSlug, state.step])
+  }, [presetServiceSlug, presetScreen, state.step])
+
+  // Pre-highlight (never auto-commit) the cuidado the user clicked "Agendar"
+  // on, so the dedicated "Escolha o cuidado" screen shows it already
+  // selected — a real screen they confirm, not an instant skip past it.
+  useEffect(() => {
+    if (state.step !== 'care' || careServices.length === 0 || !presetServiceSlug) return
+    const match = careServices.find(s => s.slug === presetServiceSlug)
+    if (match) highlightService(match)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.step, careServices, presetServiceSlug])
 
   const toggleComplement = (id: string) => {
     setState(s => ({
@@ -864,8 +878,11 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
 
   const selectedDateStr = state.selectedDate ? format(state.selectedDate, 'yyyy-MM-dd') : null
   const currentSlots = selectedDateStr ? (availability[selectedDateStr]?.slots ?? []) : []
+  const isCareSelected = !!state.selectedService && careServices.some(c => c.id === state.selectedService!.id)
 
   const backTo = (step: Step) => setState(s => ({ ...s, step }))
+
+  const goToCare = () => setState(s => ({ ...s, step: 'care', selectedService: null, selectedComplementIds: [] }))
 
   const headerFor: Record<Exclude<Step, 'success'>, { eyebrow: string; title: string; subtitle: string }> = {
     service: {
@@ -875,8 +892,15 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
     },
     complements: {
       eyebrow: 'Agendamento',
-      title: 'Escolha o serviço',
-      subtitle: 'Selecione o que você deseja agendar hoje.',
+      title: 'Complementos',
+      subtitle: state.selectedService
+        ? `Adicione um cuidado extra ao ${state.selectedService.name}, se quiser — não é obrigatório.`
+        : 'Adicione um cuidado extra, se quiser — não é obrigatório.',
+    },
+    care: {
+      eyebrow: 'Agendamento',
+      title: 'Escolha o cuidado',
+      subtitle: 'Reserve um cuidado avulso, sem precisar de corte ou barba junto.',
     },
     schedule: {
       eyebrow: 'Agendamento',
@@ -908,20 +932,34 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
     <>
     <ClientHeader />
     <div className="px-8 pt-[122px] pb-16">
-      {(state.step === 'service' || state.step === 'complements') && (
-        <BackLink href="/">← Voltar ao início</BackLink>
+      {state.step === 'service'     && <BackLink href="/">← Voltar ao início</BackLink>}
+      {state.step === 'complements' && <BackLink onClick={() => backTo('service')}>← Trocar serviço</BackLink>}
+      {state.step === 'care'        && <BackLink onClick={() => backTo('service')}>← Ver serviços</BackLink>}
+      {state.step === 'schedule'    && (
+        <BackLink onClick={() => backTo(isCareSelected ? 'care' : 'service')}>← Trocar serviço</BackLink>
       )}
-      {state.step === 'schedule' && <BackLink onClick={() => backTo('service')}>← Trocar serviço</BackLink>}
-      {state.step === 'details'  && <BackLink onClick={() => backTo('schedule')}>← Ajustar data/horário</BackLink>}
-      {state.step === 'summary'  && <BackLink onClick={() => backTo('details')}>← Ajustar seus dados</BackLink>}
+      {state.step === 'details'     && <BackLink onClick={() => backTo('schedule')}>← Ajustar data/horário</BackLink>}
+      {state.step === 'summary'     && <BackLink onClick={() => backTo('details')}>← Ajustar seus dados</BackLink>}
 
       <StepHeader {...headerFor[state.step as Exclude<Step, 'success'>]} />
       <StepDots current={state.step} />
 
       <div className="mt-[26px] relative">
-        {(state.step === 'service' || state.step === 'complements') && (
+        {state.step === 'service' && (
+          <>
+            <ServicePicker
+              services={services}
+              highlighted={state.selectedService}
+              onHighlight={highlightService}
+              onContinue={() => state.selectedService && commitService(state.selectedService)}
+            />
+            <CareLink onClick={goToCare} />
+          </>
+        )}
+
+        {state.step === 'care' && (
           <ServicePicker
-            services={services}
+            services={careServices}
             highlighted={state.selectedService}
             onHighlight={highlightService}
             onContinue={() => state.selectedService && commitService(state.selectedService)}
@@ -929,13 +967,15 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
         )}
 
         {state.step === 'complements' && (
-          <ComplementsOverlay
-            complements={complements}
-            selected={state.selectedComplementIds}
-            onToggle={toggleComplement}
-            onContinue={confirmComplements}
-            onClose={() => backTo('service')}
-          />
+          <>
+            <ComplementsStep
+              complements={complements}
+              selected={state.selectedComplementIds}
+              onToggle={toggleComplement}
+              onContinue={confirmComplements}
+            />
+            <CareLink onClick={goToCare} />
+          </>
         )}
 
         {state.step === 'schedule' && state.selectedService && (

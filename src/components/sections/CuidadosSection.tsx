@@ -74,7 +74,7 @@ export function CuidadosSection() {
                   {formatCurrency(c.price)}
                 </span>
                 <button
-                  onClick={() => router.push(`/agendar?servico=${c.slug}`)}
+                  onClick={() => router.push(`/agendar?tela=cuidados&servico=${c.slug}`)}
                   className={cn(
                     'font-body font-medium text-2xs tracking-[0.25em] uppercase',
                     'text-charcoal-deep bg-gold px-6 py-[11px]',

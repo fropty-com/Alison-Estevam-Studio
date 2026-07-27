@@ -16,14 +16,18 @@ const FALLBACK_SERVICES = [
 type ServiceRow = { id: string; name: string; slug: string; description: string; duration: number; price: number; is_whatsapp_only: boolean; position: number }
 
 /**
- * GET /api/services            — the public catalog (landing page, "Escolha o serviço" step).
- * GET /api/services?slug=<x>   — a single service by slug, regardless of hidden_from_list.
+ * GET /api/services                — the public catalog (landing page, "Escolha o serviço" step).
+ * GET /api/services?slug=<x>       — a single service by slug, regardless of hidden_from_list.
  *   Used only by the Cuidados section's own "Agendar" button, so a cuidado
  *   booked standalone (no main service) can be found without ever showing
  *   up mixed into the general list above.
+ * GET /api/services?scope=cuidados — only the hidden_from_list services (the
+ *   standalone-bookable cuidados). Powers the dedicated "Escolha o cuidado"
+ *   step in the booking flow — a real step, not the general list filtered.
  */
 export async function GET(request: NextRequest) {
-  const slug = request.nextUrl.searchParams.get('slug')
+  const slug  = request.nextUrl.searchParams.get('slug')
+  const scope = request.nextUrl.searchParams.get('scope')
 
   try {
     const db = await createServiceClient() as any
@@ -44,7 +48,7 @@ export async function GET(request: NextRequest) {
       .from('services')
       .select('id, name, slug, description, duration, price, is_whatsapp_only, position')
       .eq('active', true)
-      .eq('hidden_from_list', false)
+      .eq('hidden_from_list', scope === 'cuidados')
       .order('position', { ascending: true })
 
     const data  = result.data  as ServiceRow[] | null
@@ -52,11 +56,16 @@ export async function GET(request: NextRequest) {
 
     if (error) console.error('GET /api/services error:', error)
 
-    const services = (data && data.length > 0) ? data : FALLBACK_SERVICES
+    // The fallback catalog only makes sense for the general (non-cuidados)
+    // list — falling back to haircut/beard packages when a cuidados-only
+    // query comes up empty would show the wrong domain entirely.
+    const services = scope === 'cuidados'
+      ? (data ?? [])
+      : (data && data.length > 0) ? data : FALLBACK_SERVICES
 
     return NextResponse.json({ services })
   } catch (error) {
     console.error('GET /api/services unexpected error:', error)
-    return NextResponse.json({ services: FALLBACK_SERVICES })
+    return NextResponse.json({ services: scope === 'cuidados' ? [] : FALLBACK_SERVICES })
   }
 }
