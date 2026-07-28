@@ -111,7 +111,7 @@ export function MiniCalendar({
                 'outline-none focus-visible:border-gold/60 focus-visible:bg-gold/8',
                 past        && 'opacity-[0.18] pointer-events-none select-none',
                 unavailable && 'opacity-[0.28] cursor-default select-none',
-                !disabled   && 'text-offwhite/75 cursor-pointer hover:bg-gold/12 hover:text-gold hover:border-gold/30',
+                !disabled   && 'text-offwhite/75 cursor-pointer hover:bg-gold/15 hover:text-gold hover:border-gold/30',
                 todayDay    && !disabled && !isSelected && 'text-offwhite border-offwhite/30 font-normal',
                 isSelected  && 'bg-gold text-charcoal-deep border-gold font-normal',
               )}

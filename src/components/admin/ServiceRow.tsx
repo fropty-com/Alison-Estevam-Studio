@@ -82,7 +82,7 @@ export function ServiceRow({ service }: { service: {
                 type="number"
                 value={price}
                 onChange={e => setPrice(e.target.value)}
-                className="w-16 bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-[13px] px-2 py-1 outline-none rounded-none focus:border-sage/50 transition-colors"
+                className="w-16 bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
               />
             </div>
             <div className="flex items-center gap-1">
@@ -90,14 +90,14 @@ export function ServiceRow({ service }: { service: {
                 type="number"
                 value={duration}
                 onChange={e => setDuration(e.target.value)}
-                className="w-14 bg-offwhite/5 border border-offwhite/12 text-offwhite font-body font-light text-[11px] px-2 py-1 outline-none rounded-none focus:border-sage/50 transition-colors"
+                className="w-14 bg-offwhite/5 border border-offwhite/12 text-offwhite font-body font-light text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
               />
               <span className="font-body font-light text-[8px] text-offwhite/30">min</span>
             </div>
             <button
               disabled={pending}
               onClick={() => act(() => updateService(service.id, { price: parseFloat(price), duration: parseInt(duration) }))}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-sage/12 border border-sage/25 text-sage-light hover:bg-sage/22 transition-all disabled:opacity-40"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-sage/15 border border-sage/25 text-sage-light hover:bg-sage/25 transition-all disabled:opacity-40"
             >
               {pending ? '…' : 'Ok'}
             </button>

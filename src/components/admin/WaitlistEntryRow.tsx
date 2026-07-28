@@ -49,8 +49,8 @@ export function WaitlistEntryRow({
           onClick={() => status === 'waiting' && act('notified')}
           className={cn(
             'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-            'bg-sage/12 border border-sage/30 text-sage-light',
-            'hover:bg-sage/22 transition-all duration-200'
+            'bg-sage/15 border border-sage/30 text-sage-light',
+            'hover:bg-sage/25 transition-all duration-200'
           )}
         >
           {status === 'notified' ? 'Notificar de novo' : 'Notificar'}

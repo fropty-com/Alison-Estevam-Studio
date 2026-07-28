@@ -44,8 +44,8 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           placeholder="Preferências, observações, histórico relevante…"
           className={cn(
             'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/70',
-            'font-body font-light text-[11px] px-3 py-2 outline-none rounded-none resize-none',
-            'focus:border-sage/50 transition-colors placeholder:text-offwhite/18'
+            'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
+            'focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
           )}
         />
         <button

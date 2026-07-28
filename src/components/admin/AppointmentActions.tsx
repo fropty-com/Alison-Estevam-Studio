@@ -44,8 +44,8 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             onClick={() => act(() => updateAppointmentStatus(id, 'confirmed'))}
             className={cn(
               'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-              'bg-sage/12 border border-sage/30 text-sage-light',
-              'hover:bg-sage/22 transition-all duration-200 disabled:opacity-40'
+              'bg-sage/15 border border-sage/30 text-sage-light',
+              'hover:bg-sage/25 transition-all duration-200 disabled:opacity-40'
             )}
           >
             Confirmar
@@ -58,8 +58,8 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             onClick={() => act(() => checkInAppointment(id))}
             className={cn(
               'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-              'bg-gold/12 border border-gold/30 text-gold',
-              'hover:bg-gold/22 transition-all duration-200 disabled:opacity-40'
+              'bg-gold/15 border border-gold/30 text-gold',
+              'hover:bg-gold/25 transition-all duration-200 disabled:opacity-40'
             )}
           >
             Check-in
@@ -72,8 +72,8 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             onClick={() => setCheckoutForm(v => !v)}
             className={cn(
               'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-              'bg-gold/12 border border-gold/30 text-gold',
-              'hover:bg-gold/22 transition-all duration-200 disabled:opacity-40'
+              'bg-gold/15 border border-gold/30 text-gold',
+              'hover:bg-gold/25 transition-all duration-200 disabled:opacity-40'
             )}
           >
             {checkoutForm ? 'Fechar' : 'Check-out'}
@@ -141,7 +141,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               inputMode="decimal"
               value={discount}
               onChange={e => setDiscount(e.target.value)}
-              className="w-24 bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-data text-[13px] px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
+              className="w-24 bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
             />
           </div>
 
@@ -169,14 +169,14 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             placeholder="Anotações sobre este agendamento…"
             className={cn(
               'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/80',
-              'font-body font-light text-[11px] px-3 py-2 outline-none rounded-none resize-none',
-              'focus:border-sage/50 transition-colors placeholder:text-offwhite/20'
+              'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
+              'focus:border-gold/50 transition-colors placeholder:text-offwhite/20'
             )}
           />
           <button
             disabled={pending}
             onClick={() => act(() => addAppointmentNote(id, noteText))}
-            className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/12 border border-sage/25 text-sage-light hover:bg-sage/22 transition-all duration-200 disabled:opacity-40"
+            className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/15 border border-sage/25 text-sage-light hover:bg-sage/25 transition-all duration-200 disabled:opacity-40"
           >
             {pending ? 'Salvando…' : 'Salvar nota'}
           </button>
@@ -194,7 +194,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
             placeholder="Ex: solicitado pelo cliente"
-            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-body font-light text-[11px] px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
+            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
           />
           <div className="flex gap-2">
             <button
@@ -203,7 +203,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
                 setCancelModal(false)
                 act(() => updateAppointmentStatus(id, 'cancelled', cancelReason || undefined))
               }}
-              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/12 border border-error/25 text-error/70 hover:bg-error/20 transition-all duration-200 disabled:opacity-40"
+              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/20 transition-all duration-200 disabled:opacity-40"
             >
               Confirmar cancelamento
             </button>

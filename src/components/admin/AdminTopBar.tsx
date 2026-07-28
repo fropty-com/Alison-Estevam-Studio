@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { logoutAction } from '@/app/admin/actions'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 export interface PendingItem {
   id: string
@@ -55,9 +57,9 @@ export function AdminTopBar({
     <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/6 bg-charcoal-mid shrink-0">
       {/* Brand */}
       <div className="flex items-center gap-3 min-w-0">
-        <span className="shrink-0 w-[28px] h-[28px] flex items-center justify-center border border-gold/30 font-display font-light text-[13px] text-gold">
-          A
-        </span>
+        <div className="relative shrink-0 w-[28px] h-[28px] rounded-full overflow-hidden border border-gold/30">
+          <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="28px" className="object-cover object-top" />
+        </div>
         <p className="font-display font-light text-[14px] text-offwhite/85 tracking-[0.04em] truncate">
           Alison Estevam Studio
         </p>
@@ -65,6 +67,8 @@ export function AdminTopBar({
 
       {/* Right cluster */}
       <div className="flex items-center gap-3 shrink-0">
+        <ThemeToggle />
+
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button
@@ -123,7 +127,7 @@ export function AdminTopBar({
             onClick={() => { setProfileOpen(o => !o); setNotifOpen(false) }}
             className="flex items-center gap-2 pl-[3px] pr-2 h-[36px] border border-offwhite/10 hover:border-gold/25 transition-all duration-200"
           >
-            <span className="w-[28px] h-[28px] flex items-center justify-center bg-sage/15 border border-sage/25 text-sage-light font-body font-light text-[11px]">
+            <span className="w-[28px] h-[28px] flex items-center justify-center bg-gold/15 border border-gold/30 text-gold font-body font-light text-[11px]">
               {initial}
             </span>
             <span className="font-body font-light text-[10px] text-offwhite/60 max-w-[110px] truncate">{staffName}</span>

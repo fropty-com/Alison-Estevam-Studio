@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState, useTransition } from 'react'
 import { cn } from '@/lib/utils'
@@ -121,12 +122,25 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       >
         {/* Brand */}
         <div className={cn('border-b border-offwhite/6', collapsed ? 'px-3 py-5' : 'px-6 py-7')}>
-          <p className={cn('font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1', collapsed && 'hidden')}>
-            Studio
-          </p>
-          <p className={cn('font-display font-light text-[15px] text-offwhite tracking-[0.06em] mb-2', collapsed && 'hidden')}>
-            Alison Estevam
-          </p>
+          {collapsed ? (
+            <div className="relative w-[32px] h-[32px] rounded-full overflow-hidden mx-auto border border-gold/30">
+              <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="32px" className="object-cover object-top" />
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 mb-2">
+              <div className="relative w-[38px] h-[38px] shrink-0 rounded-full overflow-hidden border border-gold/30">
+                <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="38px" className="object-cover object-top" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1">
+                  Studio
+                </p>
+                <p className="font-display font-light text-[15px] text-offwhite tracking-[0.06em] truncate">
+                  Alison Estevam
+                </p>
+              </div>
+            </div>
+          )}
           <span className={cn(
             'inline-block font-body font-light text-[7.5px] tracking-[0.2em] uppercase px-2 py-[3px] border',
             collapsed && 'hidden',
@@ -134,9 +148,6 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           )}>
             {isOwner ? 'Dono' : 'Equipe'}
           </span>
-          {collapsed && (
-            <p className="font-display font-light text-[18px] text-gold text-center">A</p>
-          )}
         </div>
 
         {/* Nav */}
@@ -152,7 +163,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
                 'transition-all duration-200',
                 collapsed && 'justify-center px-0',
                 isActive(href)
-                  ? 'bg-sage/12 text-sage-light border-l-[2px] border-sage pl-[10px]'
+                  ? 'bg-gold/15 text-gold-light border-l-[2px] border-gold pl-[10px]'
                   : 'text-offwhite/35 hover:text-offwhite/70 hover:bg-offwhite/4 border-l-[2px] border-transparent pl-[10px]',
                 collapsed && 'border-l-0 pl-0'
               )}

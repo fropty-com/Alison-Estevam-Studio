@@ -10,6 +10,17 @@ import { cn } from '@/lib/utils'
 
 const WEEKDAY = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 
+function CalendarIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <rect x="1.5" y="2.5" width="12" height="11" stroke="currentColor" strokeWidth="1.1" />
+      <line x1="1.5" y1="5.5" x2="13.5" y2="5.5" stroke="currentColor" strokeWidth="1.1" />
+      <line x1="4" y1="1" x2="4" y2="4" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+      <line x1="11" y1="1" x2="11" y2="4" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function MonthGrid({
   monthDate,
   selected,
@@ -115,7 +126,7 @@ export function AgendaMiniCalendar({ selectedDate, view }: { selectedDate: strin
           className="px-3 h-[36px] border border-offwhite/14 font-body font-light text-[10px] text-offwhite/60 flex items-center gap-2 hover:border-gold/40 transition-colors"
         >
           <span className="capitalize">{format(dateObj, "d 'de' MMM", { locale: ptBR })}</span>
-          <span aria-hidden="true">📅</span>
+          <CalendarIcon />
         </button>
         {open && (
           <div className="fixed inset-0 z-40 flex items-start justify-center pt-[80px] bg-charcoal-deep/70" onClick={e => { if (e.target === e.currentTarget) setOpen(false) }}>

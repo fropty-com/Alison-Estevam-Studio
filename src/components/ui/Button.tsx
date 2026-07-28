@@ -35,7 +35,7 @@ const variants: Record<ButtonVariant, string> = {
   ),
   destructive: cn(
     'bg-error/8 border border-error/25 text-[#C97070]',
-    'hover:bg-error/12'
+    'hover:bg-error/15'
   ),
 }
 

@@ -12,7 +12,7 @@ import { getLoyaltyProgress } from '@/lib/loyalty'
 export const dynamic = 'force-dynamic'
 
 const STATUS_COLOR: Record<string, string> = {
-  pending:   'text-warning',
+  pending:   'text-gold',
   confirmed: 'text-sage-light',
   completed: 'text-offwhite/40',
   cancelled: 'text-error/50',

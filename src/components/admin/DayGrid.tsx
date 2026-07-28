@@ -23,13 +23,13 @@ function minutesToHHMM(minutes: number): string {
 }
 
 export const STATUS_BLOCK: Record<string, string> = {
-  pending:     'border-gold/60 text-gold-light bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.16),rgba(201,164,76,0.16)_6px,rgba(201,164,76,0.08)_6px,rgba(201,164,76,0.08)_12px)]',
-  confirmed:   'border-sage/60 text-sage-light bg-[repeating-linear-gradient(135deg,rgba(122,158,122,0.16),rgba(122,158,122,0.16)_6px,rgba(122,158,122,0.08)_6px,rgba(122,158,122,0.08)_12px)]',
-  checked_in:  'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.3),rgba(201,164,76,0.3)_6px,rgba(201,164,76,0.18)_6px,rgba(201,164,76,0.18)_12px)]',
-  in_progress: 'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgba(201,164,76,0.3),rgba(201,164,76,0.3)_6px,rgba(201,164,76,0.18)_6px,rgba(201,164,76,0.18)_12px)]',
-  completed:   'border-offwhite/30 text-offwhite/50 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.07),rgba(241,241,241,0.07)_6px,rgba(241,241,241,0.03)_6px,rgba(241,241,241,0.03)_12px)]',
-  cancelled:   'border-error/50 text-error/70 bg-[repeating-linear-gradient(135deg,rgba(214,90,90,0.14),rgba(214,90,90,0.14)_6px,rgba(214,90,90,0.06)_6px,rgba(214,90,90,0.06)_12px)]',
-  no_show:     'border-error/40 text-error/55 bg-[repeating-linear-gradient(135deg,rgba(214,90,90,0.1),rgba(214,90,90,0.1)_6px,rgba(214,90,90,0.04)_6px,rgba(214,90,90,0.04)_12px)]',
+  pending:     'border-gold/60 text-gold-light bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.16),rgb(var(--c-gold)/0.16)_6px,rgb(var(--c-gold)/0.08)_6px,rgb(var(--c-gold)/0.08)_12px)]',
+  confirmed:   'border-sage/60 text-sage-light bg-[repeating-linear-gradient(135deg,rgb(var(--c-sage)/0.2),rgb(var(--c-sage)/0.2)_6px,rgb(var(--c-sage)/0.1)_6px,rgb(var(--c-sage)/0.1)_12px)]',
+  checked_in:  'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.3),rgb(var(--c-gold)/0.3)_6px,rgb(var(--c-gold)/0.18)_6px,rgb(var(--c-gold)/0.18)_12px)]',
+  in_progress: 'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.3),rgb(var(--c-gold)/0.3)_6px,rgb(var(--c-gold)/0.18)_6px,rgb(var(--c-gold)/0.18)_12px)]',
+  completed:   'border-offwhite/30 text-offwhite/50 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.07),rgb(var(--c-offwhite)/0.07)_6px,rgb(var(--c-offwhite)/0.03)_6px,rgb(var(--c-offwhite)/0.03)_12px)]',
+  cancelled:   'border-error/50 text-error/70 bg-[repeating-linear-gradient(135deg,rgba(139,58,58,0.14),rgba(139,58,58,0.14)_6px,rgba(139,58,58,0.06)_6px,rgba(139,58,58,0.06)_12px)]',
+  no_show:     'border-error/40 text-error/55 bg-[repeating-linear-gradient(135deg,rgba(139,58,58,0.1),rgba(139,58,58,0.1)_6px,rgba(139,58,58,0.04)_6px,rgba(139,58,58,0.04)_12px)]',
 }
 
 const SWIPE_THRESHOLD_PX = 60
@@ -158,7 +158,7 @@ export function DayGrid({
           )}
 
           {blockedAllDay ? (
-            <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.03),rgba(241,241,241,0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.03),rgb(var(--c-offwhite)/0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
               <p className="font-display font-light text-[16px] text-offwhite/25 italic">Folga / fechado</p>
             </div>
           ) : (
@@ -171,7 +171,7 @@ export function DayGrid({
                     key={i}
                     onClick={() => handleUnblock(r)}
                     title="Clique para desbloquear"
-                    className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.04),rgba(241,241,241,0.04)_8px,transparent_8px,transparent_16px)] border-y border-offwhite/10 flex items-center justify-center hover:bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.07),rgba(241,241,241,0.07)_8px,transparent_8px,transparent_16px)] transition-all duration-150"
+                    className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.04),rgb(var(--c-offwhite)/0.04)_8px,transparent_8px,transparent_16px)] border-y border-offwhite/10 flex items-center justify-center hover:bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.07),rgb(var(--c-offwhite)/0.07)_8px,transparent_8px,transparent_16px)] transition-all duration-150"
                     style={{ top, height }}
                   >
                     <p className="font-body font-light text-[9px] text-offwhite/30 uppercase tracking-[0.15em]">Bloqueado</p>

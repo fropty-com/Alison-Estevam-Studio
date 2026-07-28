@@ -38,7 +38,7 @@ export function BlockedPeriodForm() {
             name="date_start"
             required
             min={today}
-            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[9px] outline-none rounded-none focus:border-sage/50 transition-colors"
+            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors"
           />
         </div>
         <div>
@@ -50,7 +50,7 @@ export function BlockedPeriodForm() {
             name="date_end"
             required
             min={today}
-            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[9px] outline-none rounded-none focus:border-sage/50 transition-colors"
+            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors"
           />
         </div>
         <div>
@@ -61,7 +61,7 @@ export function BlockedPeriodForm() {
             type="text"
             name="reason"
             placeholder="Ex: Férias"
-            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[9px] outline-none rounded-none focus:border-sage/50 transition-colors placeholder:text-offwhite/18"
+            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18"
           />
         </div>
         <div className="sm:col-span-3 flex items-center gap-3">
@@ -71,7 +71,7 @@ export function BlockedPeriodForm() {
             className={cn(
               'px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase',
               'bg-offwhite/8 border border-offwhite/14 text-offwhite/60',
-              'hover:bg-sage/12 hover:border-sage/30 hover:text-sage-light',
+              'hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light',
               'transition-all duration-200 disabled:opacity-40'
             )}
           >

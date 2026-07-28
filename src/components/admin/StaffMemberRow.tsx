@@ -36,7 +36,7 @@ export function StaffMemberRow({ member, isSelf }: {
           className={cn(
             'px-3 py-[6px] font-body font-light text-[8px] tracking-[0.22em] uppercase border transition-all duration-200 disabled:opacity-40',
             isOwner
-              ? 'bg-gold/12 border-gold/30 text-gold hover:bg-gold/20'
+              ? 'bg-gold/15 border-gold/30 text-gold hover:bg-gold/20'
               : 'border-offwhite/12 text-offwhite/45 hover:border-offwhite/25'
           )}
         >
@@ -55,7 +55,7 @@ export function StaffMemberRow({ member, isSelf }: {
             <button
               disabled={pending}
               onClick={() => act(() => removeStaffMember(member.id))}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/12 border border-error/25 text-error/70 hover:bg-error/20 transition-all disabled:opacity-40"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/20 transition-all disabled:opacity-40"
             >
               {pending ? '…' : 'Confirmar'}
             </button>

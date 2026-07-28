@@ -11,7 +11,7 @@ interface Service { id: string; name: string; price: number; duration: number; i
 interface Complement { id: string; name: string; description: string; price: number | null }
 interface ClientHit { id: string; name: string; whatsapp: string; email: string | null }
 
-const inputCls = 'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[9px] outline-none rounded-none focus:border-sage/50 transition-colors placeholder:text-offwhite/18'
+const inputCls = 'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]'
 
 export function NewAppointmentModal({ onClose }: { onClose: () => void }) {

@@ -13,7 +13,6 @@ import { DayOffToggleButton } from '@/components/admin/DayOffToggleButton'
 import { BlockTimeButton } from '@/components/admin/BlockTimeButton'
 import { AgendaMiniCalendar } from '@/components/admin/AgendaMiniCalendar'
 import { AgendaViewDropdown, type AgendaView } from '@/components/admin/AgendaViewDropdown'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { BOOKING } from '@/config/booking'
 import { cn } from '@/lib/utils'
@@ -150,7 +149,6 @@ export default async function AgendaPage({
               todayHref={`/admin/agenda?view=day&date=${today}`}
               nextHref={`/admin/agenda?view=day&date=${next}`}
             />
-            <ThemeToggle />
           </div>
         </div>
 
@@ -248,7 +246,6 @@ export default async function AgendaPage({
               todayHref={`/admin/agenda?view=${view}&date=${today}`}
               nextHref={`/admin/agenda?view=${view}&date=${next}`}
             />
-            <ThemeToggle />
           </div>
         </div>
 
@@ -310,7 +307,6 @@ export default async function AgendaPage({
             todayHref={`/admin/agenda?view=month&date=${today}`}
             nextHref={`/admin/agenda?view=month&date=${next}`}
           />
-          <ThemeToggle />
         </div>
       </div>
 

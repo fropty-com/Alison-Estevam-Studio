@@ -23,7 +23,7 @@ export function AddCouponForm() {
     })
   }
 
-  const inputCls = 'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-[12px] px-3 py-[9px] outline-none rounded-none focus:border-sage/50 transition-colors placeholder:text-offwhite/18'
+  const inputCls = 'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
   const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]'
 
   return (
@@ -80,7 +80,7 @@ export function AddCouponForm() {
             className={cn(
               'px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase',
               'bg-offwhite/8 border border-offwhite/14 text-offwhite/60',
-              'hover:bg-sage/12 hover:border-sage/30 hover:text-sage-light',
+              'hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light',
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
