@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { logoutAction } from '@/app/admin/actions'
 import { PendingBadge } from './PendingBadge'
 
 function DashboardIcon() {
@@ -66,7 +64,6 @@ const NAV = [
 
 export function AdminNav({ isOwner }: { isOwner: boolean }) {
   const pathname = usePathname()
-  const [pending, startTransition] = useTransition()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -120,34 +117,15 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
-        {/* Brand */}
-        <div className={cn('border-b border-offwhite/6', collapsed ? 'px-3 py-5' : 'px-6 py-7')}>
-          {collapsed ? (
-            <div className="relative w-[32px] h-[32px] rounded-full overflow-hidden mx-auto border border-gold/30">
-              <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="32px" className="object-cover object-top" />
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 mb-2">
-              <div className="relative w-[38px] h-[38px] shrink-0 rounded-full overflow-hidden border border-gold/30">
-                <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="38px" className="object-cover object-top" />
-              </div>
-              <div className="min-w-0">
-                <p className="font-body font-light text-[8px] tracking-[0.48em] uppercase text-offwhite/28 mb-1">
-                  Studio
-                </p>
-                <p className="font-display font-light text-[15px] text-offwhite tracking-[0.06em] truncate">
-                  Alison Estevam
-                </p>
-              </div>
-            </div>
-          )}
-          <span className={cn(
-            'inline-block font-body font-light text-[7.5px] tracking-[0.2em] uppercase px-2 py-[3px] border',
-            collapsed && 'hidden',
-            isOwner ? 'border-gold/30 text-gold/80' : 'border-offwhite/15 text-offwhite/40'
-          )}>
-            {isOwner ? 'Dono' : 'Equipe'}
-          </span>
+        {/* Collapse toggle */}
+        <div className={cn('flex items-center h-[48px] border-b border-offwhite/6 shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
+          <button
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
+            className="w-[28px] h-[28px] flex items-center justify-center text-offwhite/30 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200"
+          >
+            <ChevronIcon dir={collapsed ? 'right' : 'left'} />
+          </button>
         </div>
 
         {/* Nav */}
@@ -174,31 +152,6 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
             </Link>
           ))}
         </nav>
-
-        {/* Collapse toggle — visible on every admin page and viewport */}
-        <button
-          onClick={toggleCollapsed}
-          aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
-          className="flex items-center justify-center gap-2 mx-3 mb-3 h-[36px] border border-offwhite/8 text-offwhite/30 hover:text-gold hover:border-gold/30 transition-colors duration-200"
-        >
-          <ChevronIcon dir={collapsed ? 'right' : 'left'} />
-          {!collapsed && <span className="font-body font-light text-[8px] tracking-[0.2em] uppercase">Encolher</span>}
-        </button>
-
-        {/* Logout */}
-        <div className="p-4 border-t border-offwhite/6">
-          <button
-            onClick={() => startTransition(() => logoutAction())}
-            disabled={pending}
-            title="Sair"
-            className={cn(
-              'w-full text-left px-3 py-[10px] font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/22 hover:text-offwhite/55 transition-colors duration-200 disabled:opacity-40',
-              collapsed && 'text-center px-0'
-            )}
-          >
-            {collapsed ? <span>→</span> : <span>{pending ? 'Saindo…' : '→ Sair'}</span>}
-          </button>
-        </div>
       </aside>
     </>
   )

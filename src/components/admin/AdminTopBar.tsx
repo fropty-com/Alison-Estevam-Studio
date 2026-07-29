@@ -61,7 +61,7 @@ export function AdminTopBar({
           <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="28px" className="object-cover object-top" />
         </div>
         <p className="font-display font-light text-[14px] text-offwhite/85 tracking-[0.04em] truncate">
-          Alison Estevam Studio
+          Alison Estevam
         </p>
       </div>
 
