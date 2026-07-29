@@ -21,6 +21,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
   const [checkoutForm, setCheckoutForm] = useState(false)
   const [method,   setMethod]   = useState<typeof PAYMENT_METHODS[number]['value']>('pix')
   const [discount, setDiscount] = useState('0')
+  const [tip,      setTip]      = useState('0')
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const act = (fn: () => Promise<{ ok?: boolean; error?: string } | undefined>) => {
@@ -32,7 +33,8 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
   }
 
   const discountValue = Math.max(0, Number(discount.replace(',', '.')) || 0)
-  const finalValue     = Math.max(0, totalPrice - discountValue)
+  const tipValue       = Math.max(0, Number(tip.replace(',', '.')) || 0)
+  const finalValue     = Math.max(0, totalPrice - discountValue) + tipValue
 
   return (
     <div className="mt-3 space-y-2">
@@ -145,13 +147,26 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             />
           </div>
 
+          <div className="flex items-center gap-3">
+            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
+              Gorjeta R$
+            </label>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={tip}
+              onChange={e => setTip(e.target.value)}
+              className="w-24 bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
+            />
+          </div>
+
           <p className="font-body font-light text-[11px] text-offwhite/55">
             Valor final: <span className="font-data text-gold">R$ {finalValue.toFixed(2)}</span>
           </p>
 
           <button
             disabled={pending}
-            onClick={() => act(() => checkOutAppointment(id, { method, grossAmount: totalPrice, discount: discountValue }))}
+            onClick={() => act(() => checkOutAppointment(id, { method, grossAmount: totalPrice, discount: discountValue, tipAmount: tipValue }))}
             className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-gold/20 border border-gold/40 text-gold hover:bg-gold/30 transition-all duration-200 disabled:opacity-40"
           >
             {pending ? 'Registrando…' : 'Confirmar pagamento'}

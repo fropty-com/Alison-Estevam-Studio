@@ -214,6 +214,7 @@ export async function checkOutAppointment(id: string, data: {
   method: 'cash' | 'pix' | 'debit_card' | 'credit_card' | 'courtesy'
   grossAmount: number
   discount: number
+  tipAmount?: number
 }) {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }
@@ -227,9 +228,10 @@ export async function checkOutAppointment(id: string, data: {
     .single()
 
   const feePercentage = fee?.fee_percentage ?? 0
+  const tipAmount      = Math.max(0, data.tipAmount ?? 0)
   const netBeforeFee   = Math.max(0, data.grossAmount - data.discount)
   const feeAmount      = Math.round(netBeforeFee * (feePercentage / 100) * 100) / 100
-  const netAmount      = Math.round((netBeforeFee - feeAmount) * 100) / 100
+  const netAmount      = Math.round((netBeforeFee - feeAmount) * 100) / 100 + tipAmount
 
   const now = new Date().toISOString()
 
@@ -246,6 +248,7 @@ export async function checkOutAppointment(id: string, data: {
       gross_amount: data.grossAmount,
       fee_percentage: feePercentage,
       fee_amount: feeAmount,
+      tip_amount: tipAmount,
       net_amount: netAmount,
       paid_at: now,
     }),
@@ -256,7 +259,7 @@ export async function checkOutAppointment(id: string, data: {
   await logAction(
     'appointment.checkout', 'appointment', id,
     `Registrou pagamento de R$ ${netAmount.toFixed(2)} (líquido) via ${data.method} no agendamento #${apptUpdated?.reference_code ?? id}`,
-    { method: data.method, grossAmount: data.grossAmount, discount: data.discount, feeAmount, netAmount }
+    { method: data.method, grossAmount: data.grossAmount, discount: data.discount, tipAmount, feeAmount, netAmount }
   )
 
   revalidatePath('/admin')
