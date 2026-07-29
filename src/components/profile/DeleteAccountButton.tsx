@@ -43,7 +43,7 @@ export function DeleteAccountButton() {
         </button>
         <button
           onClick={() => setOpen(false)}
-          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase border border-offwhite/12 text-offwhite/40 hover:text-offwhite/65 transition-all duration-200"
+          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase border border-offwhite/[0.12] text-offwhite/40 hover:text-offwhite/65 transition-all duration-200"
         >
           Cancelar
         </button>

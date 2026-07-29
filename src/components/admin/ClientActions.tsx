@@ -43,15 +43,15 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           rows={3}
           placeholder="Preferências, observações, histórico relevante…"
           className={cn(
-            'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/70',
+            'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/70',
             'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
-            'focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
+            'focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
           )}
         />
         <button
           disabled={pending}
           onClick={() => act(() => updateClientNotes(id, noteText))}
-          className="mt-2 px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/10 border border-sage/22 text-sage-light hover:bg-sage/20 transition-all duration-200 disabled:opacity-40"
+          className="mt-2 px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/10 border border-sage/[0.22] text-sage-light hover:bg-sage/20 transition-all duration-200 disabled:opacity-40"
         >
           {pending ? 'Salvando…' : 'Salvar notas'}
         </button>

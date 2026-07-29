@@ -21,7 +21,7 @@ export function ConfirmForm({ code }: { code: string }) {
 
   if (done) {
     return (
-      <div className="bg-offwhite/5 border border-offwhite/14 p-8 text-center">
+      <div className="bg-offwhite/5 border border-offwhite/[0.14] p-8 text-center">
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-2">
           Presença confirmada.
         </p>

@@ -41,7 +41,7 @@ export default async function ContaDetalhesPage() {
           </p>
         </div>
 
-        <div className="mb-[26px] flex items-center justify-between border border-offwhite/8 px-5 py-4">
+        <div className="mb-[26px] flex items-center justify-between border border-offwhite/[0.08] px-5 py-4">
           <div>
             <p className="font-body font-light text-[12px] text-offwhite/65">Avisos por WhatsApp</p>
             <p className="font-body font-light text-[9.5px] text-offwhite/30 mt-[2px]">
@@ -55,7 +55,7 @@ export default async function ContaDetalhesPage() {
           Cliente desde {memberSince}.
         </p>
 
-        <div className="pt-[26px] border-t border-offwhite/8">
+        <div className="pt-[26px] border-t border-offwhite/[0.08]">
           <DeleteAccountButton />
         </div>
       </div>

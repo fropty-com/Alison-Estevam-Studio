@@ -87,7 +87,7 @@ export default async function ContaPage() {
 
       <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {/* Greeting */}
-        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
+        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
           Área do Cliente
         </p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.02em] mb-[26px]">
@@ -95,7 +95,7 @@ export default async function ContaPage() {
         </h1>
 
         {/* Loyalty progress */}
-        <div className="mb-[34px] border border-offwhite/14 px-6 py-5">
+        <div className="mb-[34px] border border-offwhite/[0.14] px-6 py-5">
           {loyalty.availableRewards > 0 ? (
             <>
               <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-gold/70 mb-[6px]">Fidelidade</p>
@@ -133,7 +133,7 @@ export default async function ContaPage() {
           {next ? (
             <AppointmentCard appt={next} />
           ) : (
-            <div className="border border-offwhite/14 px-6 py-8 text-center">
+            <div className="border border-offwhite/[0.14] px-6 py-8 text-center">
               <p className="font-body font-light text-[13px] text-offwhite/40 mb-[16px]">
                 Você não tem agendamentos futuros.
               </p>
@@ -184,7 +184,7 @@ export default async function ContaPage() {
                 const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
                 const dateLabel = slot?.date ? format(parseISO(slot.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'
                 return (
-                  <div key={a.id} className="flex items-center justify-between border border-offwhite/14 px-5 py-4">
+                  <div key={a.id} className="flex items-center justify-between border border-offwhite/[0.14] px-5 py-4">
                     <div>
                       <p className="font-body font-light text-[13px] text-offwhite/70">{svc?.name ?? '—'}</p>
                       <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[2px] capitalize">{dateLabel}</p>
@@ -212,7 +212,7 @@ function AppointmentCard({ appt }: { appt: any }) {
   const mustConfirm = needsConfirmation(appt)
 
   return (
-    <div className="border border-offwhite/14 px-6 py-5">
+    <div className="border border-offwhite/[0.14] px-6 py-5">
       <div className="flex items-start gap-5">
         <div className="flex-1 min-w-0">
           <span className={cn(

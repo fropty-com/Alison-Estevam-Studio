@@ -37,7 +37,7 @@ export function AgendaViewDropdown({ view, dateStr }: { view: AgendaView; dateSt
         <span className={cn('transition-transform duration-150', open && 'rotate-180')}>▾</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-[calc(100%+4px)] z-30 w-[160px] bg-charcoal border border-offwhite/14 py-1">
+        <div className="absolute right-0 top-[calc(100%+4px)] z-30 w-[160px] bg-charcoal border border-offwhite/[0.14] py-1">
           {VIEWS.map(v => (
             <Link
               key={v.key}

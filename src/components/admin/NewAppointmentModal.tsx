@@ -11,8 +11,8 @@ interface Service { id: string; name: string; price: number; duration: number; i
 interface Complement { id: string; name: string; description: string; price: number | null }
 interface ClientHit { id: string; name: string; whatsapp: string; email: string | null }
 
-const inputCls = 'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
-const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
+const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
 
 export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
@@ -120,11 +120,11 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-start sm:items-center justify-center p-4 bg-charcoal-deep/60 overflow-y-auto" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="relative w-full max-w-[560px] my-8 bg-charcoal border border-offwhite/14 p-6">
+      <div className="relative w-full max-w-[560px] my-8 bg-charcoal border border-offwhite/[0.14] p-6">
         <button
           onClick={onClose}
           aria-label="Fechar"
-          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
@@ -259,7 +259,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
           <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70 mb-3">{error}</p>
         )}
 
-        <div className="flex items-center justify-between gap-4 pt-2 border-t border-offwhite/8">
+        <div className="flex items-center justify-between gap-4 pt-2 border-t border-offwhite/[0.08]">
           <p className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/35">
             Total <span className="font-data text-gold ml-1">{formatCurrency(totalPrice)}</span>
           </p>

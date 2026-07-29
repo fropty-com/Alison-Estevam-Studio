@@ -60,7 +60,7 @@ export function CancelForm({ code }: { code: string }) {
       ) : (
         <>
           <div>
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[6px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[6px]">
               Motivo (opcional)
             </label>
             <textarea
@@ -68,7 +68,7 @@ export function CancelForm({ code }: { code: string }) {
               onChange={e => setReason(e.target.value)}
               rows={3}
               placeholder="Ex: Imprevisto, viagem…"
-              className="w-full bg-offwhite/5 border border-offwhite/10 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/25 transition-colors placeholder:text-offwhite/18"
+              className="w-full bg-offwhite/5 border border-offwhite/10 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/25 transition-colors placeholder:text-offwhite/[0.18]"
             />
           </div>
 

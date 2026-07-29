@@ -49,18 +49,18 @@ export default async function AuditoriaPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="px-6 py-8">
       <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Admin</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Auditoria</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/28 tracking-[0.1em] mt-1">
+        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
           Últimas {entries.length} ações registradas no painel.
         </p>
       </div>
 
       {groups.length === 0 ? (
-        <div className="bg-offwhite/5 border border-offwhite/7 p-10 text-center">
-          <p className="font-display font-light text-[20px] text-offwhite/18 italic">
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
+          <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
             Nenhuma ação registrada ainda.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default async function AuditoriaPage() {
               <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
                 {dayLabel(day)}
               </p>
-              <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
+              <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
                 {items.map((entry: any) => {
                   const category = entry.action.split('.')[0]
                   return (

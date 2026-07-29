@@ -124,7 +124,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
                   'border transition-all duration-200',
                   method === m.value
                     ? 'border-gold bg-gold/15 text-gold'
-                    : 'border-offwhite/12 text-offwhite/45 hover:border-offwhite/25'
+                    : 'border-offwhite/[0.12] text-offwhite/45 hover:border-offwhite/25'
                 )}
               >
                 {m.label}
@@ -141,7 +141,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               inputMode="decimal"
               value={discount}
               onChange={e => setDiscount(e.target.value)}
-              className="w-24 bg-offwhite/5 border border-offwhite/9 text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
+              className="w-24 bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
             />
           </div>
 
@@ -168,7 +168,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             rows={2}
             placeholder="Anotações sobre este agendamento…"
             className={cn(
-              'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/80',
+              'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80',
               'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
               'focus:border-gold/50 transition-colors placeholder:text-offwhite/20'
             )}
@@ -194,7 +194,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
             placeholder="Ex: solicitado pelo cliente"
-            className="w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
+            className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
           />
           <div className="flex gap-2">
             <button

@@ -57,7 +57,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
 
       <div className="max-w-[480px] mx-auto px-8 pt-[122px] pb-10">
         <div className="border border-offwhite/10 bg-offwhite/[0.02]">
-          <div className="px-7 pt-7 pb-5 border-b border-offwhite/8">
+          <div className="px-7 pt-7 pb-5 border-b border-offwhite/[0.08]">
             <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/25 mb-[10px]">
               ID {payment.id.slice(0, 8).toUpperCase()} · Recibo Nº {payment.receipt_number}
             </p>
@@ -67,7 +67,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
             </p>
           </div>
 
-          <div className="px-7 py-5 border-b border-offwhite/8 flex items-center justify-between">
+          <div className="px-7 py-5 border-b border-offwhite/[0.08] flex items-center justify-between">
             <div>
               <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-sage-light mb-[3px]">Pago</p>
               <p className="font-body font-light text-[12px] text-offwhite/50">
@@ -80,7 +80,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
             </div>
           </div>
 
-          <div className="px-7 py-5 border-b border-offwhite/8">
+          <div className="px-7 py-5 border-b border-offwhite/[0.08]">
             <p className="font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/25 mb-[10px]">Item</p>
             <div className="flex items-start justify-between">
               <div>
@@ -93,7 +93,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
             </div>
           </div>
 
-          <div className="px-7 py-5 border-b border-offwhite/8 space-y-[6px]">
+          <div className="px-7 py-5 border-b border-offwhite/[0.08] space-y-[6px]">
             <Row label="Subtotal" value={formatCurrency(subtotal)} />
             <Row label="Desconto" value={`- ${formatCurrency(discount)}`} />
             {fee > 0 && <Row label="Taxa" value={formatCurrency(fee)} />}

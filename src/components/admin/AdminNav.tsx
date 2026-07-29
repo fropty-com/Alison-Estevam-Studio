@@ -95,7 +95,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Abrir menu"
-        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/12 text-offwhite/70"
+        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70"
       >
         <MenuIcon />
       </button>
@@ -110,7 +110,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
 
       <aside
         className={cn(
-          'shrink-0 bg-charcoal-mid border-r border-offwhite/6 flex flex-col min-h-screen',
+          'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen',
           'fixed lg:sticky top-0 z-50 lg:z-auto',
           mounted ? 'transition-[width,transform] duration-200' : '',
           collapsed ? 'w-[64px]' : 'w-[220px]',
@@ -118,7 +118,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
         )}
       >
         {/* Collapse toggle */}
-        <div className={cn('flex items-center h-[48px] border-b border-offwhite/6 shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
+        <div className={cn('flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
           <button
             onClick={toggleCollapsed}
             aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}

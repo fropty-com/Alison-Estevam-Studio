@@ -50,7 +50,7 @@ export function AvailabilityRuleRow({ rule, weekdayLabel }: {
             </span>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/12"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               Editar
             </button>
@@ -58,10 +58,10 @@ export function AvailabilityRuleRow({ rule, weekdayLabel }: {
         ) : (
           <div className="flex items-center gap-2 flex-1">
             <input type="time" value={start} onChange={e => setStart(e.target.value)}
-              className="bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors" />
+              className="bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors" />
             <span className="text-offwhite/25 font-body font-light text-[10px]">→</span>
             <input type="time" value={end} onChange={e => setEnd(e.target.value)}
-              className="bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors" />
+              className="bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors" />
             <button
               disabled={pending}
               onClick={() => act(() => updateAvailabilityRule(rule.id, { start_time: start, end_time: end }))}

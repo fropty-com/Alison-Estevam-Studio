@@ -38,13 +38,13 @@ export default async function PagamentosPage() {
 
       <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {payments.length === 0 ? (
-          <div className="border border-offwhite/8 px-8 py-16 text-center">
+          <div className="border border-offwhite/[0.08] px-8 py-16 text-center">
             <p className="font-body font-light text-[13px] text-offwhite/40">
               Você ainda não possui pagamentos registrados.
             </p>
           </div>
         ) : (
-          <div className="border border-offwhite/7 divide-y divide-offwhite/6">
+          <div className="border border-offwhite/[0.07] divide-y divide-offwhite/6">
             {payments.map(p => (
               <Link
                 key={p.id}

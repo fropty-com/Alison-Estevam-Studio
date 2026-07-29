@@ -156,7 +156,7 @@ function ServicePicker({
                 'border px-[18px] py-[16px] cursor-pointer',
                 'flex items-center justify-between gap-4',
                 'transition-all duration-200',
-                isSel ? 'border-gold bg-gold/10' : 'border-offwhite/14 hover:border-gold hover:bg-gold/5',
+                isSel ? 'border-gold bg-gold/10' : 'border-offwhite/[0.14] hover:border-gold hover:bg-gold/5',
               )}
             >
               <div>
@@ -221,7 +221,7 @@ function CuidadoCard({
       className={cn(
         'border px-[16px] py-[14px] cursor-pointer',
         'flex items-center justify-between gap-4 transition-all duration-200',
-        selected ? 'border-gold bg-gold/10' : 'border-offwhite/14 hover:border-offwhite/30',
+        selected ? 'border-gold bg-gold/10' : 'border-offwhite/[0.14] hover:border-offwhite/30',
       )}
     >
       <div>
@@ -437,7 +437,7 @@ function SlotPicker({
   if (!slots.some(s => s.available)) {
     return (
       <div className="mt-[18px]">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/22 mb-[10px]">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.22] mb-[10px]">
           {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
         </p>
         <p className="font-body font-light text-[11px] text-offwhite/30 italic mb-[16px]">
@@ -751,21 +751,21 @@ function SummaryStep({
   return (
     <div>
       <div className="border border-offwhite/10 mb-[26px]">
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
+        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/45">Serviço</span>
           <span className="font-body font-light text-[12px] text-offwhite">{service.name}</span>
         </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
+        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/45">Complementos</span>
           <span className="font-body font-light text-[12px] text-offwhite text-right">
             {chosen.length > 0 ? chosen.map(c => c.name).join(', ') : 'Nenhum'}
           </span>
         </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
+        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/45">Data</span>
           <span className="font-body font-light text-[12px] text-offwhite">{dateLabel}</span>
         </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
+        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/45">Horário</span>
           <span className="font-body font-light text-[12px] text-offwhite">
             {selectedSlot.startTime} – {addMinutesToTime(selectedSlot.startTime, service.duration)}
@@ -773,7 +773,7 @@ function SummaryStep({
         </div>
 
         {appliedCoupon && (
-          <div className="flex justify-between items-center px-[18px] py-[13px] border-b border-offwhite/8">
+          <div className="flex justify-between items-center px-[18px] py-[13px] border-b border-offwhite/[0.08]">
             <span className="font-body font-light text-[12px] text-sage-light">
               Cupom {appliedCoupon.code}
               <button

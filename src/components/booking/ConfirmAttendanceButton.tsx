@@ -23,7 +23,7 @@ export function ConfirmAttendanceButton({ appointmentId }: { appointmentId: stri
       <button
         onClick={handleClick}
         disabled={pending}
-        className="w-full text-center px-3 py-[10px] font-body font-medium text-[8.5px] tracking-[0.25em] uppercase bg-gold/15 border border-gold/45 text-gold hover:bg-gold/20 hover:border-gold/65 transition-all duration-200 disabled:opacity-50"
+        className="w-full text-center px-3 py-[10px] font-body font-medium text-[8.5px] tracking-[0.25em] uppercase bg-gold/15 border border-gold/45 text-gold hover:bg-gold/20 hover:border-gold/[0.65] transition-all duration-200 disabled:opacity-50"
       >
         {pending ? 'Confirmando…' : 'Confirmar presença'}
       </button>

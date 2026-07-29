@@ -22,7 +22,7 @@ export function ClientHeader({
     <nav
       role="navigation"
       aria-label="Navegação da área do cliente"
-      className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-8 xl:px-[60px] py-6 bg-charcoal border-b border-offwhite/8"
+      className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-8 xl:px-[60px] py-6 bg-charcoal border-b border-offwhite/[0.08]"
     >
       {backHref ? (
         <div className="flex items-center gap-4 min-w-0">

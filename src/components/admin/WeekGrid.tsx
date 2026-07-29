@@ -40,12 +40,12 @@ export function WeekGrid({
     <div className="border border-offwhite/10 overflow-x-auto">
       {/* Day headers */}
       <div className="flex sticky top-0 z-20 bg-charcoal border-b border-offwhite/10 min-w-[640px]">
-        <div className="w-[52px] shrink-0 border-r border-offwhite/8" />
+        <div className="w-[52px] shrink-0 border-r border-offwhite/[0.08]" />
         {days.map(d => (
           <div
             key={d.date}
             className={cn(
-              'flex-1 min-w-[110px] px-2 py-2 border-r border-offwhite/6 last:border-r-0',
+              'flex-1 min-w-[110px] px-2 py-2 border-r border-offwhite/[0.06] last:border-r-0',
               d.isToday && 'bg-gold/10',
               !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
             )}
@@ -61,13 +61,13 @@ export function WeekGrid({
       {/* Grid body */}
       <div className="flex min-w-[640px]" style={{ height: totalHeight }}>
         {/* Hour ruler */}
-        <div className="relative w-[52px] shrink-0 border-r border-offwhite/8">
+        <div className="relative w-[52px] shrink-0 border-r border-offwhite/[0.08]">
           {marks.map(({ min, isHour }) => (
             <span
               key={min}
               className={cn(
                 'absolute right-2 -translate-y-1/2 font-body font-light tracking-[0.05em]',
-                isHour ? 'text-[8px] text-offwhite/32' : 'text-[7px] text-offwhite/16'
+                isHour ? 'text-[8px] text-offwhite/[0.32]' : 'text-[7px] text-offwhite/[0.16]'
               )}
               style={{ top: minutesToPx(min - gridStartMin) }}
             >
@@ -82,7 +82,7 @@ export function WeekGrid({
             <div
               key={d.date}
               className={cn(
-                'relative flex-1 min-w-[110px] border-r border-offwhite/6 last:border-r-0',
+                'relative flex-1 min-w-[110px] border-r border-offwhite/[0.06] last:border-r-0',
                 d.isToday && 'bg-gold/5',
                 !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
               )}
@@ -90,7 +90,7 @@ export function WeekGrid({
               {marks.map(({ min, isHour }) => (
                 <div
                   key={min}
-                  className={cn('absolute inset-x-0', isHour ? 'border-t border-offwhite/8' : 'border-t border-dotted border-offwhite/6')}
+                  className={cn('absolute inset-x-0', isHour ? 'border-t border-offwhite/[0.08]' : 'border-t border-dotted border-offwhite/[0.06]')}
                   style={{ top: minutesToPx(min - gridStartMin) }}
                 />
               ))}

@@ -54,7 +54,7 @@ export function Nav() {
         role="navigation"
         aria-label="Navegação principal"
         className="lg:hidden sticky top-0 z-[200] mx-3 mt-3 flex items-center justify-between
-                   border border-offwhite/18 bg-charcoal/95 backdrop-blur-brand px-4 py-[8px]"
+                   border border-offwhite/[0.18] bg-charcoal/95 backdrop-blur-brand px-4 py-[8px]"
       >
         <button
           className="flex flex-col gap-[6px] bg-transparent border-none p-1 w-6"
@@ -81,7 +81,7 @@ export function Nav() {
         aria-label="Navegação principal (desktop)"
         className="hidden lg:grid fixed top-0 left-0 right-0 z-[200] grid-cols-[1fr_auto_1fr] gap-6
                    items-center px-8 xl:px-[60px] py-6 bg-charcoal
-                   border-b border-offwhite/8"
+                   border-b border-offwhite/[0.08]"
       >
         <Link
           href="/"
@@ -102,7 +102,7 @@ export function Nav() {
                   'after:transition-[width] after:duration-300 after:ease-brand-out',
                   activeSection === section
                     ? 'text-offwhite after:w-full'
-                    : 'text-offwhite/52 after:w-0 hover:text-offwhite hover:after:w-full'
+                    : 'text-offwhite/[0.52] after:w-0 hover:text-offwhite hover:after:w-full'
                 )}
               >
                 {label}
@@ -163,7 +163,7 @@ export function Nav() {
         <Link
           href="/entrar"
           onClick={() => setMenuOpen(false)}
-          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/18 px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
+          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/[0.18] px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
         >
           Entrar
         </Link>

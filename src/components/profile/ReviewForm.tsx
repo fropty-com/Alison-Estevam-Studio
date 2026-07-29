@@ -30,7 +30,7 @@ export function ReviewForm({ appointmentId, serviceName }: { appointmentId: stri
   }
 
   return (
-    <div className="border border-offwhite/8 px-5 py-4">
+    <div className="border border-offwhite/[0.08] px-5 py-4">
       <p className="font-body font-light text-[12px] text-offwhite/65 mb-[10px]">{serviceName}</p>
       <div className="flex gap-[6px] mb-[12px]">
         {[1, 2, 3, 4, 5].map(n => (

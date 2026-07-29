@@ -22,13 +22,13 @@ export const dynamic = 'force-dynamic'
 function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
   return (
     <div className="flex items-center gap-2 shrink-0">
-      <Link href={prevHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+      <Link href={prevHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ‹
       </Link>
-      <Link href={todayHref} className="shrink-0 whitespace-nowrap px-4 h-[36px] border border-offwhite/14 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+      <Link href={todayHref} className="shrink-0 whitespace-nowrap px-4 h-[36px] border border-offwhite/[0.14] font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         Hoje
       </Link>
-      <Link href={nextHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/14 text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
+      <Link href={nextHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ›
       </Link>
     </div>
@@ -121,10 +121,10 @@ export default async function AgendaPage({
     const gridAppointments: GridAppointment[] = appts.map(mapAppointmentRow)
 
     return (
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:px-6 md:py-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
+            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
             <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
               {label}
             </h1>
@@ -230,10 +230,10 @@ export default async function AgendaPage({
     })
 
     return (
-      <div className="p-4 md:p-8">
+      <div className="p-4 md:px-6 md:py-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
+            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
             <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
               {label}
             </h1>
@@ -291,10 +291,10 @@ export default async function AgendaPage({
   const MAX_VISIBLE = 3
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:px-6 md:py-8">
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Agenda</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
           <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
             {label}
           </h1>
@@ -312,14 +312,14 @@ export default async function AgendaPage({
 
       <div className="overflow-x-auto">
         <div className="min-w-[900px]">
-          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/7 border-b-0">
+          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/[0.07] border-b-0">
             {WEEKDAY.map(w => (
               <div key={w} className="bg-charcoal-mid px-3 py-2">
                 <p className="font-body font-light text-[7.5px] tracking-[0.25em] uppercase text-offwhite/30">{w}</p>
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/7">
+          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/[0.07]">
             {days.map(d => {
               const ds = format(d, 'yyyy-MM-dd')
               const dayAppts = byDate[ds] ?? []

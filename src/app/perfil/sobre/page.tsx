@@ -11,7 +11,7 @@ export default function SobrePage() {
       <ProfileHeader title="Sobre" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
-        <div className="border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="border border-offwhite/[0.07] divide-y divide-offwhite/6">
           <a
             href={BRAND.siteUrl}
             target="_blank"

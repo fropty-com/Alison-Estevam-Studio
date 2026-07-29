@@ -54,7 +54,7 @@ export function AdminTopBar({
   const initial = staffName.trim().charAt(0).toUpperCase() || 'A'
 
   return (
-    <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/6 bg-charcoal-mid shrink-0">
+    <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0">
       {/* Brand */}
       <div className="flex items-center gap-3 min-w-0">
         <div className="relative shrink-0 w-[28px] h-[28px] rounded-full overflow-hidden border border-gold/30">
@@ -74,7 +74,7 @@ export function AdminTopBar({
           <button
             onClick={() => { setNotifOpen(o => !o); setProfileOpen(false) }}
             aria-label="Notificações"
-            className="relative w-[36px] h-[36px] flex items-center justify-center border border-offwhite/10 text-offwhite/50 hover:border-gold/30 hover:text-gold/80 transition-all duration-200"
+            className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
           >
             <BellIcon />
             {pending.length > 0 && (
@@ -84,8 +84,8 @@ export function AdminTopBar({
             )}
           </button>
           {notifOpen && (
-            <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[280px] bg-charcoal border border-offwhite/14 py-2">
-              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/6">
+            <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[280px] bg-charcoal border border-offwhite/[0.14] py-2">
+              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/[0.06]">
                 Agendamentos pendentes
               </p>
               {pending.length === 0 ? (
@@ -113,7 +113,7 @@ export function AdminTopBar({
               <Link
                 href="/admin/agenda"
                 onClick={() => setNotifOpen(false)}
-                className="block px-4 pt-2 mt-1 border-t border-offwhite/6 font-body font-light text-[8.5px] tracking-[0.25em] uppercase text-gold/70 hover:text-gold transition-colors"
+                className="block px-4 pt-2 mt-1 border-t border-offwhite/[0.06] font-body font-light text-[8.5px] tracking-[0.25em] uppercase text-gold/70 hover:text-gold transition-colors"
               >
                 Ver agenda →
               </Link>
@@ -125,16 +125,16 @@ export function AdminTopBar({
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => { setProfileOpen(o => !o); setNotifOpen(false) }}
-            className="flex items-center gap-2 pl-[3px] pr-2 h-[36px] border border-offwhite/10 hover:border-gold/25 transition-all duration-200"
+            className="flex items-center gap-2 pl-[3px] pr-2 h-[36px] hover:bg-offwhite/5 transition-all duration-200"
           >
-            <span className="w-[28px] h-[28px] flex items-center justify-center bg-gold/15 border border-gold/30 text-gold font-body font-light text-[11px]">
+            <span className="w-[28px] h-[28px] flex items-center justify-center bg-gold/15 text-gold font-body font-light text-[11px]">
               {initial}
             </span>
             <span className="font-body font-light text-[10px] text-offwhite/60 max-w-[110px] truncate">{staffName}</span>
           </button>
           {profileOpen && (
-            <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[200px] bg-charcoal border border-offwhite/14 py-1">
-              <div className="px-4 py-3 border-b border-offwhite/6">
+            <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[200px] bg-charcoal border border-offwhite/[0.14] py-1">
+              <div className="px-4 py-3 border-b border-offwhite/[0.06]">
                 <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{staffName}</p>
                 <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 mt-[2px]">
                   {isOwner ? 'Dono' : 'Equipe'}

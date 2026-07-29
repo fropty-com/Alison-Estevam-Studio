@@ -90,7 +90,7 @@ export function EntrarFlow() {
       )}
 
       <div className="mb-[22px]">
-        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
+        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
           Área do Cliente
         </p>
         <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">

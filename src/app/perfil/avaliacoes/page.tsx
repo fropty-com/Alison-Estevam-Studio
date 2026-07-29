@@ -56,7 +56,7 @@ export default async function AvaliacoesPage() {
           </p>
 
           {reviews.length === 0 ? (
-            <div className="border border-offwhite/8 px-8 py-14 text-center">
+            <div className="border border-offwhite/[0.08] px-8 py-14 text-center">
               <p className="font-body font-light text-[13px] text-offwhite/40 mb-[6px]">
                 Você ainda não fez avaliações.
               </p>
@@ -65,7 +65,7 @@ export default async function AvaliacoesPage() {
               </p>
             </div>
           ) : (
-            <div className="border border-offwhite/7 divide-y divide-offwhite/6">
+            <div className="border border-offwhite/[0.07] divide-y divide-offwhite/6">
               {reviews.map(r => {
                 const svc = Array.isArray(r.services) ? r.services[0] : r.services
                 return (

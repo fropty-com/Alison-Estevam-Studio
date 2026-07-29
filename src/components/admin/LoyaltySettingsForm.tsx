@@ -27,10 +27,10 @@ export function LoyaltySettingsForm({ settings }: {
     })
   }
 
-  const inputCls = 'bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
+  const inputCls = 'bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
 
   return (
-    <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+    <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       {!editing ? (
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -41,7 +41,7 @@ export function LoyaltySettingsForm({ settings }: {
           </div>
           <button
             onClick={() => setEditing(true)}
-            className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/12 shrink-0"
+            className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
           >
             Editar
           </button>
@@ -49,7 +49,7 @@ export function LoyaltySettingsForm({ settings }: {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
               Visitas necessárias
             </label>
             <input
@@ -61,7 +61,7 @@ export function LoyaltySettingsForm({ settings }: {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
               Recompensa
             </label>
             <input
@@ -76,7 +76,7 @@ export function LoyaltySettingsForm({ settings }: {
             <button
               disabled={pending}
               onClick={handleSave}
-              className="px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase bg-offwhite/5 border border-offwhite/14 text-offwhite/60 hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light transition-all duration-200 disabled:opacity-40"
+              className="px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase bg-offwhite/5 border border-offwhite/[0.14] text-offwhite/60 hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light transition-all duration-200 disabled:opacity-40"
             >
               {pending ? 'Salvando…' : 'Salvar'}
             </button>

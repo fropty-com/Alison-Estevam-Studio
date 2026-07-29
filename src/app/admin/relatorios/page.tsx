@@ -200,19 +200,19 @@ export default async function RelatoriosPage() {
   const monthLabel = format(now, "MMMM 'de' yyyy", { locale: ptBR })
 
   return (
-    <div className="p-8 space-y-10">
+    <div className="px-6 py-8 space-y-10">
       {/* Header */}
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-1">Admin</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Relatórios</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/28 tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
+        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Faturamento bruto */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Faturamento bruto</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Faturamento bruto</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(grossThis)}</p>
           {revDiff !== null && (
             <p className={`font-body font-light text-[9px] tracking-[0.12em] ${revDiff >= 0 ? 'text-sage-light' : 'text-error/60'}`}>
@@ -222,8 +222,8 @@ export default async function RelatoriosPage() {
         </div>
 
         {/* Taxas pagas */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Taxas de pagamento</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Taxas de pagamento</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(feeThis)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
             {grossThis > 0 ? ((feeThis / grossThis) * 100).toFixed(1) : '0.0'}% do bruto
@@ -231,15 +231,15 @@ export default async function RelatoriosPage() {
         </div>
 
         {/* Faturamento líquido */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Faturamento líquido</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Faturamento líquido</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(netThis)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">após taxas</p>
         </div>
 
         {/* Ticket médio */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Ticket médio</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Ticket médio</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(avgTicket)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
             {thisMonthPay.length} pagamento{thisMonthPay.length !== 1 ? 's' : ''}
@@ -247,8 +247,8 @@ export default async function RelatoriosPage() {
         </div>
 
         {/* Taxa de cancelamento */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Cancelamentos</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Cancelamentos</p>
           <p className={`font-data text-[26px] leading-none mb-2 ${cancelRate > 20 ? 'text-error/70' : 'text-offwhite'}`}>
             {cancelRate.toFixed(1)}%
           </p>
@@ -258,8 +258,8 @@ export default async function RelatoriosPage() {
         </div>
 
         {/* Clientes novos */}
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Clientes novos</p>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Clientes novos</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{newClients}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">este mês</p>
         </div>
@@ -272,24 +272,24 @@ export default async function RelatoriosPage() {
         </h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Taxa de retenção</p>
+          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Taxa de retenção</p>
             <p className="font-data text-[26px] text-offwhite leading-none mb-2">{retentionRate.toFixed(1)}%</p>
             <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
               {recurringClients.length} de {totalReturningClients} clientes voltaram
             </p>
           </div>
 
-          <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Intervalo médio</p>
+          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Intervalo médio</p>
             <p className="font-data text-[26px] text-offwhite leading-none mb-2">
               {avgDaysBetweenVisits !== null ? `${Math.round(avgDaysBetweenVisits)}d` : '—'}
             </p>
             <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">entre visitas</p>
           </div>
 
-          <div className="bg-offwhite/5 border border-offwhite/7 p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-3">Em risco de sumir</p>
+          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Em risco de sumir</p>
             <p className={`font-data text-[26px] leading-none mb-2 ${atRisk.length > 0 ? 'text-error/70' : 'text-offwhite'}`}>
               {atRisk.length}
             </p>
@@ -297,13 +297,13 @@ export default async function RelatoriosPage() {
           </div>
         </div>
 
-        <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
             Clientes em risco — atrasados em relação ao próprio padrão
           </p>
 
           {atRiskTop.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/22 italic">
+            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
               Nenhum cliente recorrente atrasado no momento.
             </p>
           ) : (
@@ -316,7 +316,7 @@ export default async function RelatoriosPage() {
                 >
                   <span className="font-body font-light text-[12px] text-offwhite/70">{c.name}</span>
                   <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-                    {c.daysSinceLast}d sem voltar <span className="text-offwhite/18">· costuma voltar a cada {c.avgGap}d</span>
+                    {c.daysSinceLast}d sem voltar <span className="text-offwhite/[0.18]">· costuma voltar a cada {c.avgGap}d</span>
                   </span>
                 </Link>
               ))}

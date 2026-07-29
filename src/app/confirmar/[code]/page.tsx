@@ -57,13 +57,13 @@ export default async function ConfirmarPage({ params }: { params: { code: string
           />
 
           {alreadyConfirmed ? (
-            <div className="border border-offwhite/14 p-6 text-center">
+            <div className="border border-offwhite/[0.14] p-6 text-center">
               <p className="font-display font-light text-[18px] text-offwhite/45 italic">
                 Este agendamento já está confirmado.
               </p>
             </div>
           ) : cannotConfirm ? (
-            <div className="border border-offwhite/14 p-6 text-center">
+            <div className="border border-offwhite/[0.14] p-6 text-center">
               <p className="font-display font-light text-[18px] text-offwhite/45 italic">
                 Este agendamento não pode ser confirmado.
               </p>

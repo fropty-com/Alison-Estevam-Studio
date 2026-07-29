@@ -54,9 +54,9 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
           'md:inset-x-auto md:right-0 md:top-0 md:bottom-0 md:h-full md:max-h-none md:w-[420px] md:border-t-0 md:border-l',
         )}
       >
-        <div className="flex items-start justify-between px-6 py-5 border-b border-offwhite/8">
+        <div className="flex items-start justify-between px-6 py-5 border-b border-offwhite/[0.08]">
           <div>
-            <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/28 mb-1">
+            <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/[0.28] mb-1">
               {STATUS_LABEL[appt.status] ?? appt.status}
             </p>
             <p className="font-data text-[22px] text-offwhite/80 leading-none">{appt.timeLabel}</p>
@@ -65,7 +65,7 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
           <button
             onClick={onClose}
             aria-label="Fechar"
-            className="w-[36px] h-[36px] border border-offwhite/18 text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+            className="w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
           >
             ✕
           </button>

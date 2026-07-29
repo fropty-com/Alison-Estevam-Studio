@@ -13,7 +13,7 @@ export function BackLink({ children, ...props }: { children: React.ReactNode; hr
 export function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
   return (
     <div className="mb-[22px]">
-      <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/28 mb-[6px]">
+      <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
         {eyebrow}
       </p>
       <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
@@ -31,7 +31,7 @@ export function DetailCard({ rows, footer }: { rows: { label: string; value: str
   return (
     <div className="border border-offwhite/10 mb-[26px]">
       {rows.map(({ label, value }) => (
-        <div key={label} className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/8">
+        <div key={label} className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/45">{label}</span>
           <span className="font-body font-light text-[12px] text-offwhite text-right">{value}</span>
         </div>

@@ -35,7 +35,7 @@ export function Footer() {
     <footer
       id="contato"
       role="contentinfo"
-      className="bg-charcoal border-t border-offwhite/8 px-6 pt-[64px] pb-[36px] md:px-[60px] md:pt-[88px]"
+      className="bg-charcoal border-t border-offwhite/[0.08] px-6 pt-[64px] pb-[36px] md:px-[60px] md:pt-[88px]"
     >
       <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-[52px] md:gap-9">
 
@@ -115,7 +115,7 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="max-w-[1100px] mx-auto mt-[52px] pt-6 border-t border-offwhite/8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <div className="max-w-[1100px] mx-auto mt-[52px] pt-6 border-t border-offwhite/[0.08] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
         <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30">
           © {year} {BRAND.name}. Todos os direitos reservados.
         </p>

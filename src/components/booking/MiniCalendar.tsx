@@ -63,7 +63,7 @@ export function MiniCalendar({
             disabled={isCurrentM}
             aria-label="Mês anterior"
             className={cn(
-              'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
+              'w-7 h-7 border border-offwhite/10 text-offwhite/[0.32] text-[13px]',
               'flex items-center justify-center transition-all duration-200',
               'hover:border-gold hover:text-gold hover:bg-gold/5',
               'disabled:opacity-20 disabled:pointer-events-none'
@@ -73,7 +73,7 @@ export function MiniCalendar({
             onClick={() => onChangeMonth(1)}
             aria-label="Próximo mês"
             className={cn(
-              'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
+              'w-7 h-7 border border-offwhite/10 text-offwhite/[0.32] text-[13px]',
               'flex items-center justify-center transition-all duration-200',
               'hover:border-gold hover:text-gold hover:bg-gold/5'
             )}
@@ -83,7 +83,7 @@ export function MiniCalendar({
 
       <div className="grid grid-cols-7 gap-[3px] mb-[5px]" aria-hidden="true">
         {['D','S','T','Q','Q','S','S'].map((d, i) => (
-          <span key={i} className="text-center font-body font-light text-[8.5px] tracking-[0.15em] uppercase text-offwhite/38 py-[5px]">
+          <span key={i} className="text-center font-body font-light text-[8.5px] tracking-[0.15em] uppercase text-offwhite/[0.38] py-[5px]">
             {d}
           </span>
         ))}
@@ -123,7 +123,7 @@ export function MiniCalendar({
       </div>
 
       {loading && (
-        <p className="text-center font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/22 mt-3">
+        <p className="text-center font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/[0.22] mt-3">
           Verificando disponibilidade…
         </p>
       )}
@@ -168,7 +168,7 @@ export function SlotGrid({
                 'font-data text-[15px]',
                 'border rounded-none transition-all duration-200 select-none cursor-pointer',
                 'outline-none focus-visible:border-gold focus-visible:bg-gold/10',
-                !isSel && 'text-offwhite/65 border-offwhite/14 hover:border-gold hover:text-gold hover:bg-gold/10',
+                !isSel && 'text-offwhite/65 border-offwhite/[0.14] hover:border-gold hover:text-gold hover:bg-gold/10',
                 isSel && 'bg-gold border-gold text-charcoal-deep',
               )}
             >

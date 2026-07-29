@@ -25,7 +25,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
   }
 
   return (
-    <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+    <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-3">
         Fidelidade
       </p>

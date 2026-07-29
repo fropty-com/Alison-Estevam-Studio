@@ -21,7 +21,7 @@ export default function LicencasPage() {
   return (
     <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
       <div className="max-w-[680px] mx-auto">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/28 mb-2">
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-2">
           {BRAND.fullName}
         </p>
         <h1 className="font-display font-light text-[34px] text-offwhite tracking-[0.02em] leading-tight mb-2">
@@ -50,7 +50,7 @@ export default function LicencasPage() {
           derivados de conjuntos de licença aberta.
         </p>
 
-        <p className="font-body font-light text-[10.5px] text-offwhite/25 tracking-[0.05em] mt-12 pt-6 border-t border-offwhite/8">
+        <p className="font-body font-light text-[10.5px] text-offwhite/25 tracking-[0.05em] mt-12 pt-6 border-t border-offwhite/[0.08]">
           Imagens temporárias ou de referência usadas durante o desenvolvimento devem ser
           substituídas por material autorizado antes da divulgação oficial do site.
         </p>

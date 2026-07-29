@@ -69,7 +69,7 @@ export function ServiceRow({ service }: { service: {
             </div>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/12"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               Editar
             </button>
@@ -82,7 +82,7 @@ export function ServiceRow({ service }: { service: {
                 type="number"
                 value={price}
                 onChange={e => setPrice(e.target.value)}
-                className="w-16 bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
+                className="w-16 bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
               />
             </div>
             <div className="flex items-center gap-1">
@@ -90,7 +90,7 @@ export function ServiceRow({ service }: { service: {
                 type="number"
                 value={duration}
                 onChange={e => setDuration(e.target.value)}
-                className="w-14 bg-offwhite/5 border border-offwhite/12 text-offwhite font-body font-light text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
+                className="w-14 bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
               />
               <span className="font-body font-light text-[8px] text-offwhite/30">min</span>
             </div>

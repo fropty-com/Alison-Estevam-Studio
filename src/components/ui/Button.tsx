@@ -22,7 +22,7 @@ const variants: Record<ButtonVariant, string> = {
   ),
   secondary: cn(
     'bg-transparent border border-offwhite/20 text-offwhite/60',
-    'hover:border-offwhite/60 hover:text-offwhite'
+    'hover:border-offwhite/[0.6] hover:text-offwhite'
   ),
   ghost: cn(
     'bg-transparent text-offwhite/40',

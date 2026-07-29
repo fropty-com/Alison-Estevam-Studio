@@ -46,7 +46,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
             <span className="font-data text-[14px] text-offwhite/60">{setting.fee_percentage.toFixed(2)}%</span>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/12"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               Editar
             </button>
@@ -60,7 +60,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
               max="100"
               value={fee}
               onChange={e => setFee(e.target.value)}
-              className="w-[70px] bg-offwhite/5 border border-offwhite/12 text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors text-right"
+              className="w-[70px] bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors text-right"
             />
             <span className="text-offwhite/25 font-body font-light text-[10px]">%</span>
             <button

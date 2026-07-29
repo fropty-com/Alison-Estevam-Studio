@@ -57,18 +57,18 @@ export function ClientListFilter({ clients }: { clients: ClientListItem[] }) {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Buscar por nome, WhatsApp ou e-mail…"
-          className="w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
+          className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
         />
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-offwhite/5 border border-offwhite/7 p-10 text-center">
-          <p className="font-display font-light text-[20px] text-offwhite/18 italic">
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
+          <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
             {query ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.'}
           </p>
         </div>
       ) : (
-        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
           {filtered.map(c => (
             <Link
               key={c.id}
@@ -92,11 +92,11 @@ export function ClientListFilter({ clients }: { clients: ClientListItem[] }) {
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-body font-light text-[8.5px] text-offwhite/22 tracking-[0.12em]">
+                <p className="font-body font-light text-[8.5px] text-offwhite/[0.22] tracking-[0.12em]">
                   desde {format(new Date(c.created_at), 'MMM yyyy', { locale: ptBR })}
                 </p>
               </div>
-              <span className="text-offwhite/18 group-hover:text-offwhite/45 transition-colors text-[12px]">›</span>
+              <span className="text-offwhite/[0.18] group-hover:text-offwhite/45 transition-colors text-[12px]">›</span>
             </Link>
           ))}
         </div>

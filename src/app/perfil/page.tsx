@@ -48,7 +48,7 @@ export default async function PerfilPage() {
         </div>
 
         {/* Menu */}
-        <div className="border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="border border-offwhite/[0.07] divide-y divide-offwhite/6">
           <MenuRow href="/perfil/fidelidade" icon="◆" label="Cartão Fidelidade" />
           <MenuRow href="/perfil/conta" icon="◻" label="Detalhes da conta" />
           <MenuRow href="/perfil/avaliacoes" icon="★" label="Avaliações" />

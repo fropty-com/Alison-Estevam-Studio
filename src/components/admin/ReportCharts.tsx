@@ -28,7 +28,7 @@ export function ReportCharts({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
       {/* Agendamentos por semana */}
-      <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+      <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Agendamentos — últimas 6 semanas
         </p>
@@ -58,13 +58,13 @@ export function ReportCharts({
       </div>
 
       {/* Ranking de serviços */}
-      <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+      <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Serviços mais realizados — este mês
         </p>
 
         {svcRanking.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/22 italic">
+          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
             Nenhum dado disponível.
           </p>
         ) : (
@@ -100,13 +100,13 @@ export function ReportCharts({
       </div>
 
       {/* Faturamento por forma de pagamento */}
-      <div className="bg-offwhite/5 border border-offwhite/7 p-6 lg:col-span-2">
+      <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Faturamento por forma de pagamento — este mês
         </p>
 
         {paymentBreakdown.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/22 italic">
+          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
             Nenhum pagamento registrado.
           </p>
         ) : (

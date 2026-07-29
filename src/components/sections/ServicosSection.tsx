@@ -44,13 +44,13 @@ export function ServicosSection() {
       <div className="section-tag" aria-hidden="true">Serviços</div>
       <h2 id="servicos-titulo" className="sr-only">Serviços</h2>
 
-      <div className="max-w-[720px] mx-auto border-t border-offwhite/8">
+      <div className="max-w-[720px] mx-auto border-t border-offwhite/[0.08]">
         {services.map((s, i) => (
           <div
             key={s.id}
             className={cn(
               'reveal', i > 0 && `reveal-d${Math.min(i, 4)}`,
-              'flex gap-5 md:gap-8 py-[30px] border-b border-offwhite/8 items-center'
+              'flex gap-5 md:gap-8 py-[30px] border-b border-offwhite/[0.08] items-center'
             )}
           >
             <div className="relative w-[110px] md:w-[160px] shrink-0 overflow-hidden" style={{ aspectRatio: '3/4' }}>

@@ -23,7 +23,7 @@ export default function LoginPage() {
       <div className="w-full max-w-[380px]">
         {/* Brand */}
         <div className="mb-10 text-center">
-          <p className="font-body font-light text-[8.5px] tracking-[0.5em] uppercase text-offwhite/28 mb-2">
+          <p className="font-body font-light text-[8.5px] tracking-[0.5em] uppercase text-offwhite/[0.28] mb-2">
             Alison Estevam Studio
           </p>
           <h1 className="font-display font-light text-[32px] text-offwhite tracking-[0.05em]">
@@ -33,7 +33,7 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-[13px]">
           <div>
-            <label className="block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="email">
+            <label className="block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.32] mb-[6px]" htmlFor="email">
               E-mail
             </label>
             <input
@@ -43,16 +43,16 @@ export default function LoginPage() {
               required
               autoComplete="email"
               className={cn(
-                'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-display text-lg',
+                'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-display text-lg',
                 'px-[15px] py-[13px] outline-none rounded-none',
                 'focus:border-sage focus:bg-sage/10 transition-all duration-250',
-                'placeholder:text-offwhite/18 placeholder:text-sm placeholder:font-body placeholder:font-light'
+                'placeholder:text-offwhite/[0.18] placeholder:text-sm placeholder:font-body placeholder:font-light'
               )}
             />
           </div>
 
           <div>
-            <label className="block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/32 mb-[6px]" htmlFor="password">
+            <label className="block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.32] mb-[6px]" htmlFor="password">
               Senha
             </label>
             <input
@@ -62,7 +62,7 @@ export default function LoginPage() {
               required
               autoComplete="current-password"
               className={cn(
-                'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-display text-lg',
+                'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-display text-lg',
                 'px-[15px] py-[13px] outline-none rounded-none',
                 'focus:border-sage focus:bg-sage/10 transition-all duration-250'
               )}

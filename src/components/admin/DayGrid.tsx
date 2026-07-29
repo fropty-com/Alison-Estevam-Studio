@@ -124,13 +124,13 @@ export function DayGrid({
     >
       <div className="flex min-w-[320px]" style={{ height: totalHeight }}>
         {/* Hour ruler */}
-        <div className="relative w-[52px] shrink-0 border-r border-offwhite/8">
+        <div className="relative w-[52px] shrink-0 border-r border-offwhite/[0.08]">
           {marks.map(({ min, isHour }) => (
             <span
               key={min}
               className={cn(
                 'absolute right-2 -translate-y-1/2 font-body font-light tracking-[0.05em]',
-                isHour ? 'text-[8px] text-offwhite/32' : 'text-[7px] text-offwhite/16'
+                isHour ? 'text-[8px] text-offwhite/[0.32]' : 'text-[7px] text-offwhite/[0.16]'
               )}
               style={{ top: minutesToPx(min - gridStartMin) }}
             >
@@ -144,7 +144,7 @@ export function DayGrid({
           {marks.map(({ min, isHour }) => (
             <div
               key={min}
-              className={cn('absolute inset-x-0', isHour ? 'border-t border-offwhite/8' : 'border-t border-dotted border-offwhite/6')}
+              className={cn('absolute inset-x-0', isHour ? 'border-t border-offwhite/[0.08]' : 'border-t border-dotted border-offwhite/[0.06]')}
               style={{ top: minutesToPx(min - gridStartMin) }}
             />
           ))}

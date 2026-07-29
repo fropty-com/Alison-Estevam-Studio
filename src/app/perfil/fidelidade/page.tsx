@@ -23,7 +23,7 @@ export default async function FidelidadePage() {
 
       <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {!hasActivity ? (
-          <div className="border border-offwhite/8 px-8 py-16 text-center">
+          <div className="border border-offwhite/[0.08] px-8 py-16 text-center">
             <p className="font-display font-light text-[20px] text-offwhite/70 mb-[10px]">Ainda não há cartões</p>
             <p className="font-body font-light text-[12px] text-offwhite/35 leading-[1.7] max-w-[320px] mx-auto">
               Quando você concluir seu primeiro atendimento, seu cartão de fidelidade aparece aqui.

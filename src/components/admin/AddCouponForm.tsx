@@ -23,11 +23,11 @@ export function AddCouponForm() {
     })
   }
 
-  const inputCls = 'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
-  const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]'
+  const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
+  const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
 
   return (
-    <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+    <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
         Criar cupom
       </p>
@@ -44,7 +44,7 @@ export function AddCouponForm() {
               onClick={() => setType('percentage')}
               className={cn(
                 'flex-1 px-2 py-[9px] font-body font-light text-[10px] border transition-all duration-200',
-                type === 'percentage' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/12 text-offwhite/40 hover:border-offwhite/25'
+                type === 'percentage' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/[0.12] text-offwhite/40 hover:border-offwhite/25'
               )}
             >
               %
@@ -54,7 +54,7 @@ export function AddCouponForm() {
               onClick={() => setType('fixed')}
               className={cn(
                 'flex-1 px-2 py-[9px] font-body font-light text-[10px] border transition-all duration-200',
-                type === 'fixed' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/12 text-offwhite/40 hover:border-offwhite/25'
+                type === 'fixed' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/[0.12] text-offwhite/40 hover:border-offwhite/25'
               )}
             >
               R$
@@ -79,7 +79,7 @@ export function AddCouponForm() {
             disabled={pending}
             className={cn(
               'px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase',
-              'bg-offwhite/5 border border-offwhite/14 text-offwhite/60',
+              'bg-offwhite/5 border border-offwhite/[0.14] text-offwhite/60',
               'hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light',
               'transition-all duration-200 disabled:opacity-40'
             )}

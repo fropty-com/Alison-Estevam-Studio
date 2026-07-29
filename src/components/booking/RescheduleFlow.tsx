@@ -110,7 +110,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
           <SlotGrid date={selDate} slots={slots} selected={selSlot} onSelect={setSelSlot} />
         ) : (
           <div className="mt-[18px]">
-            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/22 mb-[10px]">
+            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.22] mb-[10px]">
               {format(selDate, "d 'de' MMMM", { locale: ptBR })} — sem horários
             </p>
             <p className="font-body font-light text-[11px] text-offwhite/30 italic">

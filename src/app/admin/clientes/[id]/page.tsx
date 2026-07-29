@@ -44,16 +44,16 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
   const loyalty   = await getLoyaltyProgress(db, params.id)
 
   return (
-    <div className="p-8">
+    <div className="px-6 py-8">
       {/* Back */}
-      <Link href="/admin/clientes" className="inline-flex items-center gap-2 font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/28 hover:text-offwhite/55 transition-colors mb-6">
+      <Link href="/admin/clientes" className="inline-flex items-center gap-2 font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/[0.28] hover:text-offwhite/55 transition-colors mb-6">
         ← Clientes
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Client card */}
         <div className="lg:col-span-1">
-          <div className="bg-offwhite/5 border border-offwhite/7 p-6">
+          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
             <div className="flex items-center justify-between gap-2 mb-5">
               <div className="flex items-center gap-2 min-w-0">
                 <h1 className="font-display font-light text-[24px] text-offwhite tracking-[0.03em] truncate">
@@ -102,11 +102,11 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
           </h2>
 
           {appts.length === 0 ? (
-            <div className="bg-offwhite/5 border border-offwhite/7 p-8 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/18 italic">Sem histórico.</p>
+            <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
+              <p className="font-display font-light text-[18px] text-offwhite/[0.18] italic">Sem histórico.</p>
             </div>
           ) : (
-            <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
+            <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
               {appts.map((a: any) => {
                 const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
                 const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
