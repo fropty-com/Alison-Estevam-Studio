@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
@@ -54,17 +53,7 @@ export function AdminTopBar({
   const initial = staffName.trim().charAt(0).toUpperCase() || 'A'
 
   return (
-    <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0">
-      {/* Brand */}
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="relative shrink-0 w-[28px] h-[28px] rounded-full overflow-hidden border border-gold/30">
-          <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="28px" className="object-cover object-top" />
-        </div>
-        <p className="font-display font-light text-[14px] text-offwhite/85 tracking-[0.04em] truncate">
-          Alison Estevam
-        </p>
-      </div>
-
+    <header className="hidden lg:flex items-center justify-end h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0">
       {/* Right cluster */}
       <div className="flex items-center gap-3 shrink-0">
         <ThemeToggle />

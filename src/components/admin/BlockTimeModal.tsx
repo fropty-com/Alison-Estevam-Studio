@@ -5,7 +5,17 @@ import { useRouter } from 'next/navigation'
 import { blockTimeRange } from '@/app/admin/actions'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
+const selectCls = `${inputCls} appearance-none pr-8`
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+const optionStyle = { backgroundColor: 'rgb(var(--c-charcoal))', color: 'rgb(var(--c-offwhite))' }
+
+function ChevronIcon() {
+  return (
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-offwhite/35">
+      <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 function hourOptions(startMin: number, endMin: number): string[] {
   const opts: string[] = []
@@ -77,15 +87,21 @@ export function BlockTimeModal({
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
             <label className={labelCls}>Início</label>
-            <select value={start} onChange={e => setStart(e.target.value)} className={inputCls}>
-              {startOptions.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
+            <div className="relative">
+              <select value={start} onChange={e => setStart(e.target.value)} className={selectCls}>
+                {startOptions.map(o => <option key={o} value={o} style={optionStyle}>{o}</option>)}
+              </select>
+              <ChevronIcon />
+            </div>
           </div>
           <div>
             <label className={labelCls}>Fim</label>
-            <select value={end} onChange={e => setEnd(e.target.value)} className={inputCls}>
-              {endOptions.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
+            <div className="relative">
+              <select value={end} onChange={e => setEnd(e.target.value)} className={selectCls}>
+                {endOptions.map(o => <option key={o} value={o} style={optionStyle}>{o}</option>)}
+              </select>
+              <ChevronIcon />
+            </div>
           </div>
         </div>
 
