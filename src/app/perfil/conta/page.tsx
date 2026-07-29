@@ -7,6 +7,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { AccountForm } from '@/components/profile/AccountForm'
 import { DeleteAccountButton } from '@/components/profile/DeleteAccountButton'
+import { WhatsappConsentToggle } from '@/components/profile/WhatsappConsentToggle'
 
 export const metadata: Metadata = { title: 'Detalhes da conta — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -41,15 +42,7 @@ export default async function ContaDetalhesPage() {
           </p>
         </div>
 
-        <div className="mb-[26px] flex items-center justify-between border border-offwhite/[0.08] px-5 py-4">
-          <div>
-            <p className="font-body font-light text-[12px] text-offwhite/65">Avisos por WhatsApp</p>
-            <p className="font-body font-light text-[9.5px] text-offwhite/30 mt-[2px]">
-              {client.consent_whatsapp ? 'Ativado' : 'Desativado'}
-            </p>
-          </div>
-          <span className={`w-[10px] h-[10px] rounded-full ${client.consent_whatsapp ? 'bg-sage' : 'bg-offwhite/15'}`} />
-        </div>
+        <WhatsappConsentToggle initialConsent={client.consent_whatsapp} />
 
         <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.08em] mb-[36px]">
           Cliente desde {memberSince}.
