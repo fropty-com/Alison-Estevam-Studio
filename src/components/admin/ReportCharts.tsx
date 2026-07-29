@@ -28,7 +28,7 @@ export function ReportCharts({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
       {/* Agendamentos por semana */}
-      <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+      <div className="bg-offwhite/5 border border-offwhite/7 p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Agendamentos — últimas 6 semanas
         </p>
@@ -44,7 +44,7 @@ export function ReportCharts({
                   <div
                     className={cn(
                       'w-full h-full transition-all duration-500',
-                      w.count > 0 ? 'bg-sage/35 border-t border-sage/55' : 'bg-offwhite/6'
+                      w.count > 0 ? 'bg-sage/35 border-t border-sage/55' : 'bg-offwhite/5'
                     )}
                   />
                 </div>
@@ -58,7 +58,7 @@ export function ReportCharts({
       </div>
 
       {/* Ranking de serviços */}
-      <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+      <div className="bg-offwhite/5 border border-offwhite/7 p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Serviços mais realizados — este mês
         </p>
@@ -86,7 +86,7 @@ export function ReportCharts({
                       </span>
                     </div>
                   </div>
-                  <div className="w-full h-[3px] bg-offwhite/6 rounded-none">
+                  <div className="w-full h-[3px] bg-offwhite/5 rounded-none">
                     <div
                       className="h-full bg-sage/40 transition-all duration-500"
                       style={{ width: `${pct}%` }}
@@ -100,7 +100,7 @@ export function ReportCharts({
       </div>
 
       {/* Faturamento por forma de pagamento */}
-      <div className="bg-offwhite/3 border border-offwhite/7 p-6 lg:col-span-2">
+      <div className="bg-offwhite/5 border border-offwhite/7 p-6 lg:col-span-2">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
           Faturamento por forma de pagamento — este mês
         </p>
@@ -133,7 +133,7 @@ export function ReportCharts({
                       </span>
                     </div>
                   </div>
-                  <div className="w-full h-[3px] bg-offwhite/6 rounded-none">
+                  <div className="w-full h-[3px] bg-offwhite/5 rounded-none">
                     <div
                       className="h-full bg-gold/45 transition-all duration-500"
                       style={{ width: `${pct}%` }}

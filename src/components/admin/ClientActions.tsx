@@ -27,7 +27,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           'w-full py-[10px] font-body font-light text-[8.5px] tracking-[0.28em] uppercase',
           'border transition-all duration-200 disabled:opacity-40',
           vip
-            ? 'border-gold/30 bg-gold/8 text-gold/70 hover:bg-gold/15'
+            ? 'border-gold/30 bg-gold/10 text-gold/70 hover:bg-gold/15'
             : 'border-offwhite/10 text-offwhite/30 hover:border-gold/25 hover:text-gold/60'
         )}
       >
@@ -43,7 +43,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           rows={3}
           placeholder="Preferências, observações, histórico relevante…"
           className={cn(
-            'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/70',
+            'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/70',
             'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
             'focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
           )}

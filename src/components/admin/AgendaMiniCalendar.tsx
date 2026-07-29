@@ -54,7 +54,7 @@ function MonthGrid({
               onClick={() => onSelectDay(d)}
               className={cn(
                 'w-full aspect-square flex items-center justify-center font-data text-[10px] transition-colors duration-150 rounded-none',
-                isSelected ? 'bg-gold text-charcoal-deep' : today ? 'text-gold' : 'text-offwhite/60 hover:bg-offwhite/8',
+                isSelected ? 'bg-gold text-charcoal-deep' : today ? 'text-gold' : 'text-offwhite/60 hover:bg-offwhite/5',
               )}
             >
               {d.getDate()}

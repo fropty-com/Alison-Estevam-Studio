@@ -164,7 +164,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
                 collapsed && 'justify-center px-0',
                 isActive(href)
                   ? 'bg-gold/15 text-gold-light border-l-[2px] border-gold pl-[10px]'
-                  : 'text-offwhite/35 hover:text-offwhite/70 hover:bg-offwhite/4 border-l-[2px] border-transparent pl-[10px]',
+                  : 'text-offwhite/35 hover:text-offwhite/70 hover:bg-offwhite/5 border-l-[2px] border-transparent pl-[10px]',
                 collapsed && 'border-l-0 pl-0'
               )}
             >

@@ -8,12 +8,12 @@ export const dynamic = 'force-dynamic'
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
   pending:     { label: 'Pendente',       color: 'text-warning border-warning/30 bg-warning/8'  },
-  confirmed:   { label: 'Confirmado',     color: 'text-sage-light border-sage/30 bg-sage/8'     },
-  checked_in:  { label: 'Chegou',         color: 'text-gold border-gold/30 bg-gold/8'           },
-  in_progress: { label: 'Em atendimento', color: 'text-gold border-gold/30 bg-gold/8'           },
-  completed:   { label: 'Concluído',      color: 'text-offwhite/40 border-offwhite/12 bg-offwhite/3' },
+  confirmed:   { label: 'Confirmado',     color: 'text-sage-light border-sage/30 bg-sage/10'     },
+  checked_in:  { label: 'Chegou',         color: 'text-gold border-gold/30 bg-gold/10'           },
+  in_progress: { label: 'Em atendimento', color: 'text-gold border-gold/30 bg-gold/10'           },
+  completed:   { label: 'Concluído',      color: 'text-offwhite/40 border-offwhite/12 bg-offwhite/5' },
   cancelled:   { label: 'Cancelado',      color: 'text-error/60 border-error/20 bg-error/5'     },
-  no_show:     { label: 'No-show',        color: 'text-error/45 border-error/15 bg-error/4'     },
+  no_show:     { label: 'No-show',        color: 'text-error/45 border-error/15 bg-error/5'     },
 }
 
 export default async function AdminDashboard() {
@@ -64,7 +64,7 @@ export default async function AdminDashboard() {
           { label: 'Esta semana',    value: weekCount,          sub: 'confirmados'  },
           { label: 'Total clientes', value: totalClients,       sub: 'cadastrados'  },
         ].map(({ label, value, sub }) => (
-          <div key={label} className="bg-offwhite/3 border border-offwhite/7 p-6">
+          <div key={label} className="bg-offwhite/5 border border-offwhite/7 p-6">
             <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-2">{label}</p>
             <p className="font-data text-[32px] text-offwhite leading-none mb-1">{value}</p>
             <p className="font-body font-light text-[9px] text-offwhite/28">{sub}</p>
@@ -87,7 +87,7 @@ export default async function AdminDashboard() {
         </div>
 
         {todayAppts.length === 0 ? (
-          <div className="bg-offwhite/3 border border-offwhite/7 p-8 text-center">
+          <div className="bg-offwhite/5 border border-offwhite/7 p-8 text-center">
             <p className="font-display font-light text-[18px] text-offwhite/22 italic">
               Nenhum agendamento para hoje.
             </p>
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
               const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
               const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
               return (
-                <div key={a.id} className="flex items-center gap-4 bg-offwhite/3 border border-offwhite/7 px-5 py-4">
+                <div key={a.id} className="flex items-center gap-4 bg-offwhite/5 border border-offwhite/7 px-5 py-4">
                   <span className="font-data text-[20px] text-offwhite/60 w-12 shrink-0">
                     {slot?.start_time?.substring(0, 5) ?? '--'}
                   </span>

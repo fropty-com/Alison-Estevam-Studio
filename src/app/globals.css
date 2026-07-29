@@ -7,6 +7,12 @@
    Dark = default. Light via [data-theme="light"]
 ══════════════════════════════════════════════ */
 :root {
+  /* Tells the browser this page is dark-themed, so native form-control
+     chrome it doesn't let CSS override (date/time pickers, number-input
+     spinners, select dropdown panels) renders dark instead of defaulting
+     to the OS/browser's light scheme. */
+  color-scheme: dark;
+
   /* Easing */
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
   --ease-circ: cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,6 +42,8 @@
 }
 
 [data-theme="light"] {
+  color-scheme: light;
+
   /* ── Light theme ── */
   --c-charcoal:      241 241 241;   /* #F1F1F1 — brand light bg */
   --c-charcoal-mid:  241 241 241;   /* same bg — no alternation between sections */

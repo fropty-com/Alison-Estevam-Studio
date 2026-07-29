@@ -51,7 +51,7 @@ export default async function FidelidadePage() {
                     {loyalty.progress} <span className="text-offwhite/30 text-[16px]">de {loyalty.visitsRequired} cortes concluídos</span>
                   </p>
                 </div>
-                <div className="w-full h-[6px] bg-offwhite/6 rounded-none mb-[12px]">
+                <div className="w-full h-[6px] bg-offwhite/5 rounded-none mb-[12px]">
                   <div className="h-full bg-gold/60 transition-all duration-500" style={{ width: `${pct}%` }} />
                 </div>
                 <p className="font-body font-light text-[12px] text-offwhite/45">

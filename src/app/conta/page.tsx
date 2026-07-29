@@ -114,7 +114,7 @@ export default async function ContaPage() {
                   {loyalty.progress} <span className="text-offwhite/25">/ {loyalty.visitsRequired}</span>
                 </span>
               </div>
-              <div className="w-full h-[4px] bg-offwhite/6 rounded-none mb-[10px]">
+              <div className="w-full h-[4px] bg-offwhite/5 rounded-none mb-[10px]">
                 <div className="h-full bg-gold/50 transition-all duration-500" style={{ width: `${loyaltyPct}%` }} />
               </div>
               <p className="font-body font-light text-[11px] text-offwhite/40">
@@ -246,7 +246,7 @@ function AppointmentCard({ appt }: { appt: any }) {
         <div className={cn('flex gap-[8px]', mustConfirm ? 'mt-[10px]' : 'mt-[16px]')}>
           <Link
             href={`/reagendar/${appt.reference_code}`}
-            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 transition-all duration-200 hover:bg-offwhite/10 hover:border-offwhite/25 hover:text-offwhite/80 active:bg-offwhite/20 active:border-offwhite/30 active:text-offwhite/90"
+            className="flex-1 text-center px-3 py-[9px] font-body font-light text-[8.5px] tracking-[0.2em] uppercase border border-offwhite/15 text-offwhite/55 transition-all duration-200 hover:bg-offwhite/15 hover:border-offwhite/25 hover:text-offwhite/80 active:bg-offwhite/20 active:border-offwhite/30 active:text-offwhite/90"
           >
             Reagendar
           </Link>

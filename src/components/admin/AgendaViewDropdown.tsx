@@ -45,7 +45,7 @@ export function AgendaViewDropdown({ view, dateStr }: { view: AgendaView; dateSt
               onClick={() => setOpen(false)}
               className={cn(
                 'block px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase transition-colors',
-                v.key === view ? 'text-gold bg-gold/8' : 'text-offwhite/55 hover:bg-offwhite/6 hover:text-offwhite'
+                v.key === view ? 'text-gold bg-gold/10' : 'text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite'
               )}
             >
               {v.label}

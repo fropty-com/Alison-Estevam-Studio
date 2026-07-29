@@ -16,20 +16,20 @@ export default function SobrePage() {
             href={BRAND.siteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/3 transition-colors"
+            className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/5 transition-colors"
           >
             <span className="font-body font-light text-[13px] text-offwhite/75">Site do {BRAND.name}</span>
             <span className="font-body font-light text-offwhite/25">→</span>
           </a>
-          <Link href="/termos" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/3 transition-colors">
+          <Link href="/termos" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/5 transition-colors">
             <span className="font-body font-light text-[13px] text-offwhite/75">Termos de Serviço</span>
             <span className="font-body font-light text-offwhite/25">→</span>
           </Link>
-          <Link href="/privacidade" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/3 transition-colors">
+          <Link href="/privacidade" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/5 transition-colors">
             <span className="font-body font-light text-[13px] text-offwhite/75">Política de Privacidade</span>
             <span className="font-body font-light text-offwhite/25">→</span>
           </Link>
-          <Link href="/licencas" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/3 transition-colors">
+          <Link href="/licencas" className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/5 transition-colors">
             <span className="font-body font-light text-[13px] text-offwhite/75">Licenças</span>
             <span className="font-body font-light text-offwhite/25">→</span>
           </Link>

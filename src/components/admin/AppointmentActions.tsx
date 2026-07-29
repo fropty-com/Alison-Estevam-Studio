@@ -59,7 +59,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             className={cn(
               'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
               'bg-gold/15 border border-gold/30 text-gold',
-              'hover:bg-gold/25 transition-all duration-200 disabled:opacity-40'
+              'hover:bg-gold/20 transition-all duration-200 disabled:opacity-40'
             )}
           >
             Check-in
@@ -73,7 +73,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             className={cn(
               'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
               'bg-gold/15 border border-gold/30 text-gold',
-              'hover:bg-gold/25 transition-all duration-200 disabled:opacity-40'
+              'hover:bg-gold/20 transition-all duration-200 disabled:opacity-40'
             )}
           >
             {checkoutForm ? 'Fechar' : 'Check-out'}
@@ -141,7 +141,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               inputMode="decimal"
               value={discount}
               onChange={e => setDiscount(e.target.value)}
-              className="w-24 bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
+              className="w-24 bg-offwhite/5 border border-offwhite/9 text-offwhite/80 font-data text-lg px-3 py-[6px] outline-none rounded-none focus:border-gold/40 transition-colors"
             />
           </div>
 
@@ -168,7 +168,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             rows={2}
             placeholder="Anotações sobre este agendamento…"
             className={cn(
-              'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/80',
+              'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/80',
               'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
               'focus:border-gold/50 transition-colors placeholder:text-offwhite/20'
             )}
@@ -194,7 +194,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
             placeholder="Ex: solicitado pelo cliente"
-            className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
+            className="w-full bg-offwhite/5 border border-offwhite/9 text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
           />
           <div className="flex gap-2">
             <button
@@ -203,7 +203,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
                 setCancelModal(false)
                 act(() => updateAppointmentStatus(id, 'cancelled', cancelReason || undefined))
               }}
-              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/20 transition-all duration-200 disabled:opacity-40"
+              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all duration-200 disabled:opacity-40"
             >
               Confirmar cancelamento
             </button>

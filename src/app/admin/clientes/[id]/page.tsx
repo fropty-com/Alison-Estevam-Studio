@@ -53,7 +53,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Client card */}
         <div className="lg:col-span-1">
-          <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+          <div className="bg-offwhite/5 border border-offwhite/7 p-6">
             <div className="flex items-center justify-between gap-2 mb-5">
               <div className="flex items-center gap-2 min-w-0">
                 <h1 className="font-display font-light text-[24px] text-offwhite tracking-[0.03em] truncate">
@@ -102,11 +102,11 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
           </h2>
 
           {appts.length === 0 ? (
-            <div className="bg-offwhite/3 border border-offwhite/7 p-8 text-center">
+            <div className="bg-offwhite/5 border border-offwhite/7 p-8 text-center">
               <p className="font-display font-light text-[18px] text-offwhite/18 italic">Sem histórico.</p>
             </div>
           ) : (
-            <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+            <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
               {appts.map((a: any) => {
                 const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
                 const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services

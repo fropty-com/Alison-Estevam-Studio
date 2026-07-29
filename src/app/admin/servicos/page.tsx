@@ -19,7 +19,7 @@ export default async function ServicosPage() {
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Serviços</h1>
       </div>
 
-      <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+      <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
         {services.map((s: any) => (
           <ServiceRow key={s.id} service={s} />
         ))}

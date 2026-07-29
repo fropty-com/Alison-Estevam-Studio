@@ -49,7 +49,7 @@ export default async function PagamentosPage() {
               <Link
                 key={p.id}
                 href={`/perfil/pagamentos/${p.id}`}
-                className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/3 transition-colors"
+                className="flex items-center justify-between px-6 py-5 hover:bg-offwhite/5 transition-colors"
               >
                 <div>
                   <p className="font-body font-light text-[12.5px] text-offwhite/75">

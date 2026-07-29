@@ -29,7 +29,7 @@ export const STATUS_BLOCK: Record<string, string> = {
   confirmed:   'border-sage/60 text-sage-light bg-sage/20',
   checked_in:  'border-gold text-gold bg-gold/30',
   in_progress: 'border-gold text-gold bg-gold/30',
-  completed:   'border-offwhite/30 text-offwhite/50 bg-offwhite/7',
+  completed:   'border-offwhite/30 text-offwhite/50 bg-offwhite/5',
   cancelled:   'border-error/50 text-error/70 bg-error/15',
   no_show:     'border-error/40 text-error/55 bg-error/10',
 }

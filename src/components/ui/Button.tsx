@@ -34,7 +34,7 @@ const variants: Record<ButtonVariant, string> = {
     'hover:bg-sage-light hover:-translate-y-0.5'
   ),
   destructive: cn(
-    'bg-error/8 border border-error/25 text-[#C97070]',
+    'bg-error/10 border border-error/25 text-[#C97070]',
     'hover:bg-error/15'
   ),
 }

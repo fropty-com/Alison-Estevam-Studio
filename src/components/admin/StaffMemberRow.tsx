@@ -55,7 +55,7 @@ export function StaffMemberRow({ member, isSelf }: {
             <button
               disabled={pending}
               onClick={() => act(() => removeStaffMember(member.id))}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/20 transition-all disabled:opacity-40"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all disabled:opacity-40"
             >
               {pending ? '…' : 'Confirmar'}
             </button>

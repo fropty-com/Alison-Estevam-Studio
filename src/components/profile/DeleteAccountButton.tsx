@@ -37,7 +37,7 @@ export function DeleteAccountButton() {
             const res = await requestAccountDeletion()
             if (res?.error) setError(res.error)
           })}
-          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase bg-error/15 border border-error/35 text-error/85 hover:bg-error/25 transition-all duration-200 disabled:opacity-50"
+          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase bg-error/15 border border-error/35 text-error/85 hover:bg-error/50 transition-all duration-200 disabled:opacity-50"
         >
           {pending ? 'Processando…' : 'Confirmar exclusão'}
         </button>

@@ -25,7 +25,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
   }
 
   return (
-    <div className="bg-offwhite/3 border border-offwhite/7 p-6">
+    <div className="bg-offwhite/5 border border-offwhite/7 p-6">
       <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-3">
         Fidelidade
       </p>
@@ -39,7 +39,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
           {!confirmOpen ? (
             <button
               onClick={() => setConfirmOpen(true)}
-              className="w-full py-[10px] font-body font-light text-[8.5px] tracking-[0.28em] uppercase border border-gold/35 bg-gold/8 text-gold hover:bg-gold/15 transition-all duration-200"
+              className="w-full py-[10px] font-body font-light text-[8.5px] tracking-[0.28em] uppercase border border-gold/35 bg-gold/10 text-gold hover:bg-gold/15 transition-all duration-200"
             >
               Resgatar recompensa
             </button>
@@ -69,7 +69,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
               faltam {visitsRequired - progress}
             </span>
           </div>
-          <div className="w-full h-[4px] bg-offwhite/6 rounded-none mb-3">
+          <div className="w-full h-[4px] bg-offwhite/5 rounded-none mb-3">
             <div className="h-full bg-sage/45 transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
           <p className="font-body font-light text-[10.5px] text-offwhite/35">

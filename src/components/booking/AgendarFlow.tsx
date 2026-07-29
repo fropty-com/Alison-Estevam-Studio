@@ -156,7 +156,7 @@ function ServicePicker({
                 'border px-[18px] py-[16px] cursor-pointer',
                 'flex items-center justify-between gap-4',
                 'transition-all duration-200',
-                isSel ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-gold hover:bg-gold/6',
+                isSel ? 'border-gold bg-gold/10' : 'border-offwhite/14 hover:border-gold hover:bg-gold/5',
               )}
             >
               <div>
@@ -221,7 +221,7 @@ function CuidadoCard({
       className={cn(
         'border px-[16px] py-[14px] cursor-pointer',
         'flex items-center justify-between gap-4 transition-all duration-200',
-        selected ? 'border-gold bg-gold/8' : 'border-offwhite/14 hover:border-offwhite/30',
+        selected ? 'border-gold bg-gold/10' : 'border-offwhite/14 hover:border-offwhite/30',
       )}
     >
       <div>

@@ -43,9 +43,9 @@ export default function LoginPage() {
               required
               autoComplete="email"
               className={cn(
-                'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-display text-lg',
+                'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-display text-lg',
                 'px-[15px] py-[13px] outline-none rounded-none',
-                'focus:border-sage focus:bg-sage/5 transition-all duration-250',
+                'focus:border-sage focus:bg-sage/10 transition-all duration-250',
                 'placeholder:text-offwhite/18 placeholder:text-sm placeholder:font-body placeholder:font-light'
               )}
             />
@@ -62,9 +62,9 @@ export default function LoginPage() {
               required
               autoComplete="current-password"
               className={cn(
-                'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-display text-lg',
+                'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-display text-lg',
                 'px-[15px] py-[13px] outline-none rounded-none',
-                'focus:border-sage focus:bg-sage/5 transition-all duration-250'
+                'focus:border-sage focus:bg-sage/10 transition-all duration-250'
               )}
             />
           </div>

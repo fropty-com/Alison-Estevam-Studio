@@ -46,8 +46,8 @@ export function WeekGrid({
             key={d.date}
             className={cn(
               'flex-1 min-w-[110px] px-2 py-2 border-r border-offwhite/6 last:border-r-0',
-              d.isToday && 'bg-gold/8',
-              !d.isToday && d.isWeekendClosed && 'bg-offwhite/3'
+              d.isToday && 'bg-gold/10',
+              !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
             )}
           >
             <p className="font-body font-light text-[7.5px] tracking-[0.2em] uppercase text-offwhite/30 capitalize">{d.label}</p>
@@ -84,7 +84,7 @@ export function WeekGrid({
               className={cn(
                 'relative flex-1 min-w-[110px] border-r border-offwhite/6 last:border-r-0',
                 d.isToday && 'bg-gold/5',
-                !d.isToday && d.isWeekendClosed && 'bg-offwhite/2'
+                !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
               )}
             >
               {marks.map(({ min, isHour }) => (

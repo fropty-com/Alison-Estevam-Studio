@@ -65,7 +65,7 @@ export function MiniCalendar({
             className={cn(
               'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
               'flex items-center justify-center transition-all duration-200',
-              'hover:border-gold hover:text-gold hover:bg-gold/7',
+              'hover:border-gold hover:text-gold hover:bg-gold/5',
               'disabled:opacity-20 disabled:pointer-events-none'
             )}
           >‹</button>
@@ -75,7 +75,7 @@ export function MiniCalendar({
             className={cn(
               'w-7 h-7 border border-offwhite/10 text-offwhite/32 text-[13px]',
               'flex items-center justify-center transition-all duration-200',
-              'hover:border-gold hover:text-gold hover:bg-gold/7'
+              'hover:border-gold hover:text-gold hover:bg-gold/5'
             )}
           >›</button>
         </div>
@@ -108,7 +108,7 @@ export function MiniCalendar({
                 'aspect-square flex items-center justify-center relative rounded-full',
                 'font-body font-light text-[11.5px]',
                 'border border-transparent transition-all duration-200',
-                'outline-none focus-visible:border-gold/60 focus-visible:bg-gold/8',
+                'outline-none focus-visible:border-gold/60 focus-visible:bg-gold/10',
                 past        && 'opacity-[0.18] pointer-events-none select-none',
                 unavailable && 'opacity-[0.28] cursor-default select-none',
                 !disabled   && 'text-offwhite/75 cursor-pointer hover:bg-gold/15 hover:text-gold hover:border-gold/30',
@@ -167,8 +167,8 @@ export function SlotGrid({
                 'py-[13px] px-[6px] text-center',
                 'font-data text-[15px]',
                 'border rounded-none transition-all duration-200 select-none cursor-pointer',
-                'outline-none focus-visible:border-gold focus-visible:bg-gold/8',
-                !isSel && 'text-offwhite/65 border-offwhite/14 hover:border-gold hover:text-gold hover:bg-gold/8',
+                'outline-none focus-visible:border-gold focus-visible:bg-gold/10',
+                !isSel && 'text-offwhite/65 border-offwhite/14 hover:border-gold hover:text-gold hover:bg-gold/10',
                 isSel && 'bg-gold border-gold text-charcoal-deep',
               )}
             >

@@ -59,7 +59,7 @@ export default async function AuditoriaPage() {
       </div>
 
       {groups.length === 0 ? (
-        <div className="bg-offwhite/3 border border-offwhite/7 p-10 text-center">
+        <div className="bg-offwhite/5 border border-offwhite/7 p-10 text-center">
           <p className="font-display font-light text-[20px] text-offwhite/18 italic">
             Nenhuma ação registrada ainda.
           </p>
@@ -71,7 +71,7 @@ export default async function AuditoriaPage() {
               <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
                 {dayLabel(day)}
               </p>
-              <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+              <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
                 {items.map((entry: any) => {
                   const category = entry.action.split('.')[0]
                   return (

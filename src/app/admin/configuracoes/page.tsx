@@ -64,7 +64,7 @@ export default async function ConfiguracoesPage() {
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
           Horários de funcionamento
         </h2>
-        <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
           {rules.map((r: any) => (
             <AvailabilityRuleRow
               key={r.id}
@@ -88,7 +88,7 @@ export default async function ConfiguracoesPage() {
 
         {/* Existing */}
         {blocked.length > 0 && (
-          <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
+          <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
             {blocked.map((b: any) => (
               <div key={b.id} className="flex items-center gap-4 px-5 py-4">
                 <div className="flex-1 min-w-0">
@@ -124,7 +124,7 @@ export default async function ConfiguracoesPage() {
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
           Taxas de pagamento
         </h2>
-        <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
           {fees.map((f: any) => (
             <PaymentFeeSettingRow
               key={f.id}
@@ -148,7 +148,7 @@ export default async function ConfiguracoesPage() {
         {loyalty ? (
           <LoyaltySettingsForm settings={loyalty} />
         ) : (
-          <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic bg-offwhite/3 border border-offwhite/7">
+          <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic bg-offwhite/5 border border-offwhite/7">
             Configuração não encontrada.
           </p>
         )}
@@ -159,7 +159,7 @@ export default async function ConfiguracoesPage() {
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
           Cupons de desconto
         </h2>
-        <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
+        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
           {coupons.map((c: any) => (
             <CouponRow key={c.id} coupon={c} />
           ))}
@@ -181,7 +181,7 @@ export default async function ConfiguracoesPage() {
           Donos veem tudo, incluindo Relatórios e esta página. Funcionários veem agenda, clientes e
           serviços, sem acesso ao financeiro.
         </p>
-        <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
+        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6 mb-4">
           {staff.map((s: any) => (
             <StaffMemberRow
               key={s.id}

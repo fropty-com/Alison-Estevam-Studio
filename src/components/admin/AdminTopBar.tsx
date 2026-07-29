@@ -97,7 +97,7 @@ export function AdminTopBar({
                       key={p.id}
                       href={p.date ? `/admin/agenda?view=day&date=${p.date}` : '/admin/agenda'}
                       onClick={() => setNotifOpen(false)}
-                      className="block px-4 py-[10px] hover:bg-offwhite/4 transition-colors border-b border-offwhite/4 last:border-0"
+                      className="block px-4 py-[10px] hover:bg-offwhite/5 transition-colors border-b border-offwhite/4 last:border-0"
                     >
                       <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{p.clientName}</p>
                       <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.08em] mt-[2px]">
@@ -144,7 +144,7 @@ export function AdminTopBar({
                 <Link
                   href="/admin/configuracoes"
                   onClick={() => setProfileOpen(false)}
-                  className="block px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:bg-offwhite/6 hover:text-offwhite transition-colors"
+                  className="block px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite transition-colors"
                 >
                   Configurações
                 </Link>
@@ -154,7 +154,7 @@ export function AdminTopBar({
                 onClick={() => startTransition(() => logoutAction())}
                 className={cn(
                   'w-full text-left px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase',
-                  'text-offwhite/40 hover:bg-offwhite/6 hover:text-offwhite transition-colors disabled:opacity-40'
+                  'text-offwhite/40 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
                 )}
               >
                 {pending_ ? 'Saindo…' : '→ Sair'}

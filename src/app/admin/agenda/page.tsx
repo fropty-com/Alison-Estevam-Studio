@@ -312,14 +312,14 @@ export default async function AgendaPage({
 
       <div className="overflow-x-auto">
         <div className="min-w-[900px]">
-          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/7 border border-offwhite/7 border-b-0">
+          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/7 border-b-0">
             {WEEKDAY.map(w => (
               <div key={w} className="bg-charcoal-mid px-3 py-2">
                 <p className="font-body font-light text-[7.5px] tracking-[0.25em] uppercase text-offwhite/30">{w}</p>
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/7 border border-offwhite/7">
+          <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/7">
             {days.map(d => {
               const ds = format(d, 'yyyy-MM-dd')
               const dayAppts = byDate[ds] ?? []
@@ -333,9 +333,9 @@ export default async function AgendaPage({
                   key={ds}
                   href={`/admin/agenda?view=day&date=${ds}`}
                   className={cn(
-                    'bg-charcoal min-h-[110px] p-2 flex flex-col hover:bg-offwhite/3 transition-colors',
+                    'bg-charcoal min-h-[110px] p-2 flex flex-col hover:bg-offwhite/5 transition-colors',
                     !inMonth && 'opacity-30',
-                    todayCell && 'bg-gold/8'
+                    todayCell && 'bg-gold/10'
                   )}
                 >
                   <p className={cn(

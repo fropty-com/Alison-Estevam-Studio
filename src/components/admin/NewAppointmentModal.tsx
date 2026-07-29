@@ -11,7 +11,7 @@ interface Service { id: string; name: string; price: number; duration: number; i
 interface Complement { id: string; name: string; description: string; price: number | null }
 interface ClientHit { id: string; name: string; whatsapp: string; email: string | null }
 
-const inputCls = 'w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/18'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/28 mb-[5px]'
 
 export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
@@ -224,7 +224,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
                       key={c.id}
                       type="button"
                       onClick={() => pickClient(c)}
-                      className="w-full flex items-center justify-between gap-3 px-3 py-[8px] text-left hover:bg-offwhite/4 transition-colors"
+                      className="w-full flex items-center justify-between gap-3 px-3 py-[8px] text-left hover:bg-offwhite/5 transition-colors"
                     >
                       <span className="font-body font-light text-[11px] text-offwhite/80">{c.name}</span>
                       <span className="font-data text-[10px] text-offwhite/35">{c.whatsapp}</span>

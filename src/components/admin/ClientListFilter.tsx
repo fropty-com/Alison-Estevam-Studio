@@ -57,23 +57,23 @@ export function ClientListFilter({ clients }: { clients: ClientListItem[] }) {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Buscar por nome, WhatsApp ou e-mail…"
-          className="w-full bg-offwhite/3 border border-offwhite/9 text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
+          className="w-full bg-offwhite/5 border border-offwhite/9 text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
         />
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-offwhite/3 border border-offwhite/7 p-10 text-center">
+        <div className="bg-offwhite/5 border border-offwhite/7 p-10 text-center">
           <p className="font-display font-light text-[20px] text-offwhite/18 italic">
             {query ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.'}
           </p>
         </div>
       ) : (
-        <div className="bg-offwhite/3 border border-offwhite/7 divide-y divide-offwhite/6">
+        <div className="bg-offwhite/5 border border-offwhite/7 divide-y divide-offwhite/6">
           {filtered.map(c => (
             <Link
               key={c.id}
               href={`/admin/clientes/${c.id}`}
-              className="flex items-center gap-4 px-5 py-4 hover:bg-offwhite/4 transition-colors duration-150 group"
+              className="flex items-center gap-4 px-5 py-4 hover:bg-offwhite/5 transition-colors duration-150 group"
             >
               <ClientAvatar name={c.name} />
               <div className="flex-1 min-w-0">

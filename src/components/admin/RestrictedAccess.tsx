@@ -1,7 +1,7 @@
 export function RestrictedAccess() {
   return (
     <div className="p-8">
-      <div className="max-w-[420px] mx-auto mt-[80px] text-center bg-offwhite/3 border border-offwhite/7 p-10">
+      <div className="max-w-[420px] mx-auto mt-[80px] text-center bg-offwhite/5 border border-offwhite/7 p-10">
         <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/28 mb-4">
           Acesso restrito
         </p>
