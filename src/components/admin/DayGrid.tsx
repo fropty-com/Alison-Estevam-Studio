@@ -22,14 +22,16 @@ function minutesToHHMM(minutes: number): string {
   return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
+// Solid fills, matching Outlook's actual event blocks (solid color + colored
+// left border) rather than the diagonal hatching used before.
 export const STATUS_BLOCK: Record<string, string> = {
-  pending:     'border-gold/60 text-gold-light bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.16),rgb(var(--c-gold)/0.16)_6px,rgb(var(--c-gold)/0.08)_6px,rgb(var(--c-gold)/0.08)_12px)]',
-  confirmed:   'border-sage/60 text-sage-light bg-[repeating-linear-gradient(135deg,rgb(var(--c-sage)/0.2),rgb(var(--c-sage)/0.2)_6px,rgb(var(--c-sage)/0.1)_6px,rgb(var(--c-sage)/0.1)_12px)]',
-  checked_in:  'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.3),rgb(var(--c-gold)/0.3)_6px,rgb(var(--c-gold)/0.18)_6px,rgb(var(--c-gold)/0.18)_12px)]',
-  in_progress: 'border-gold text-gold bg-[repeating-linear-gradient(135deg,rgb(var(--c-gold)/0.3),rgb(var(--c-gold)/0.3)_6px,rgb(var(--c-gold)/0.18)_6px,rgb(var(--c-gold)/0.18)_12px)]',
-  completed:   'border-offwhite/30 text-offwhite/50 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.07),rgb(var(--c-offwhite)/0.07)_6px,rgb(var(--c-offwhite)/0.03)_6px,rgb(var(--c-offwhite)/0.03)_12px)]',
-  cancelled:   'border-error/50 text-error/70 bg-[repeating-linear-gradient(135deg,rgba(139,58,58,0.14),rgba(139,58,58,0.14)_6px,rgba(139,58,58,0.06)_6px,rgba(139,58,58,0.06)_12px)]',
-  no_show:     'border-error/40 text-error/55 bg-[repeating-linear-gradient(135deg,rgba(139,58,58,0.1),rgba(139,58,58,0.1)_6px,rgba(139,58,58,0.04)_6px,rgba(139,58,58,0.04)_12px)]',
+  pending:     'border-gold/60 text-gold-light bg-gold/15',
+  confirmed:   'border-sage/60 text-sage-light bg-sage/20',
+  checked_in:  'border-gold text-gold bg-gold/30',
+  in_progress: 'border-gold text-gold bg-gold/30',
+  completed:   'border-offwhite/30 text-offwhite/50 bg-offwhite/7',
+  cancelled:   'border-error/50 text-error/70 bg-error/15',
+  no_show:     'border-error/40 text-error/55 bg-error/10',
 }
 
 const SWIPE_THRESHOLD_PX = 60

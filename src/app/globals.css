@@ -86,6 +86,25 @@
 
   /* Prevent text size adjustment on orientation change */
   html { -webkit-text-size-adjust: 100%; }
+
+  /* Chrome/Edge/Safari force a light background + dark text on autofilled
+     fields, ignoring our own background-color entirely — the only way to
+     override it is this inset box-shadow trick, not a plain bg-color rule. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: rgb(var(--c-offwhite));
+    -webkit-box-shadow: 0 0 0px 1000px rgb(var(--c-charcoal-mid)) inset;
+    box-shadow: 0 0 0px 1000px rgb(var(--c-charcoal-mid)) inset;
+    caret-color: rgb(var(--c-offwhite));
+    transition: background-color 5000s ease-in-out 0s;
+  }
 }
 
 /* ══════════════════════════════════════════════

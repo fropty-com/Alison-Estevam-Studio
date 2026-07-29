@@ -83,6 +83,7 @@ export function WeekGrid({
               key={d.date}
               className={cn(
                 'relative flex-1 min-w-[110px] border-r border-offwhite/6 last:border-r-0',
+                d.isToday && 'bg-gold/5',
                 !d.isToday && d.isWeekendClosed && 'bg-offwhite/2'
               )}
             >
