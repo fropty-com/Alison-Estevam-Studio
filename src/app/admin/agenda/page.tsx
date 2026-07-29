@@ -11,13 +11,25 @@ import { WeekGrid, type WeekDay } from '@/components/admin/WeekGrid'
 import { NewAppointmentButton } from '@/components/admin/NewAppointmentButton'
 import { DayOffToggleButton } from '@/components/admin/DayOffToggleButton'
 import { BlockTimeButton } from '@/components/admin/BlockTimeButton'
-import { AgendaMiniCalendar } from '@/components/admin/AgendaMiniCalendar'
-import { AgendaViewDropdown, type AgendaView } from '@/components/admin/AgendaViewDropdown'
+import { AgendaDatePicker } from '@/components/admin/AgendaDatePicker'
+import { AgendaStrip } from '@/components/admin/AgendaStrip'
+import { AgendaViewSegmented, type AgendaView } from '@/components/admin/AgendaViewSegmented'
+import { AgendaSummaryCards } from '@/components/admin/AgendaSummaryCards'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { BOOKING } from '@/config/booking'
 import { cn } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
+
+const OPEN_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
+const REVENUE_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress', 'completed']
+
+function summarize(appts: { status: string; totalPrice: number }[]) {
+  const totalCount = appts.length
+  const openCount = appts.filter(a => OPEN_STATUSES.includes(a.status)).length
+  const completedCount = appts.filter(a => a.status === 'completed').length
+  return { totalCount, openCount, completedCount }
+}
 
 function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
   return (
@@ -31,6 +43,37 @@ function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayH
       <Link href={nextHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ›
       </Link>
+    </div>
+  )
+}
+
+function AgendaHeader({
+  label, dateStr, view,
+  prevHref, todayHref, nextHref,
+  children,
+}: {
+  label: string
+  dateStr: string
+  view: AgendaView
+  prevHref: string
+  todayHref: string
+  nextHref: string
+  children?: React.ReactNode
+}) {
+  return (
+    <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <div className="flex items-center gap-3 min-w-0">
+        <NavArrows prevHref={prevHref} todayHref={todayHref} nextHref={nextHref} />
+        <AgendaDatePicker selectedDate={dateStr} view={view} />
+        <h1 className="font-body font-light text-[13px] text-offwhite/85 capitalize truncate">
+          {label}
+        </h1>
+      </div>
+      <div className="flex items-center gap-2 overflow-x-auto flex-nowrap pb-1 -mb-1 md:flex-wrap md:overflow-visible md:pb-0 md:mb-0">
+        <AgendaViewSegmented view={view} dateStr={dateStr} />
+        {children}
+        <NewAppointmentButton />
+      </div>
     </div>
   )
 }
@@ -119,54 +162,48 @@ export default async function AgendaPage({
     }
 
     const gridAppointments: GridAppointment[] = appts.map(mapAppointmentRow)
+    const { totalCount, openCount, completedCount } = summarize(gridAppointments)
+    const revenueValue = gridAppointments
+      .filter(a => a.status === 'completed')
+      .reduce((sum, a) => sum + a.totalPrice, 0)
 
     return (
       <div className="p-4 md:px-6 md:py-8">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-          <div>
-            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
-            <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
-              {label}
-            </h1>
-          </div>
-          <div className="flex items-center gap-3 overflow-x-auto flex-nowrap pb-1 -mb-1 md:flex-wrap md:overflow-visible md:pb-0 md:mb-0">
-            <NewAppointmentButton />
-            <DayOffToggleButton
-              date={dateStr}
-              blocked={blockedAllDay}
-              blockedPeriodId={blockedPeriodId}
-              appointmentCount={gridAppointments.length}
-            />
-            <BlockTimeButton
-              date={dateStr}
-              gridStartMin={gridStartMin}
-              gridEndMin={gridEndMin}
-              hasRule={rules.length > 0}
-            />
-            <AgendaViewDropdown view={view} dateStr={dateStr} />
-            <NavArrows
-              prevHref={`/admin/agenda?view=day&date=${prev}`}
-              todayHref={`/admin/agenda?view=day&date=${today}`}
-              nextHref={`/admin/agenda?view=day&date=${next}`}
-            />
-          </div>
-        </div>
+        <AgendaSummaryCards
+          totalCount={totalCount}
+          openCount={openCount}
+          completedCount={completedCount}
+          revenueLabel="Faturamento"
+          revenueValue={revenueValue}
+        />
 
-        <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4 md:gap-6">
-          <AgendaMiniCalendar selectedDate={dateStr} view={view} />
-          <div className="flex-1 min-w-0">
-            <DayGrid
-              date={dateStr}
-              gridStartMin={gridStartMin}
-              gridEndMin={gridEndMin}
-              blockedAllDay={blockedAllDay}
-              blockedRanges={blockedRanges}
-              appointments={gridAppointments}
-              prevHref={`/admin/agenda?view=day&date=${prev}`}
-              nextHref={`/admin/agenda?view=day&date=${next}`}
-            />
-          </div>
-        </div>
+        <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=day&date=${prev}`} todayHref={`/admin/agenda?view=day&date=${today}`} nextHref={`/admin/agenda?view=day&date=${next}`}>
+          <DayOffToggleButton
+            date={dateStr}
+            blocked={blockedAllDay}
+            blockedPeriodId={blockedPeriodId}
+            appointmentCount={gridAppointments.length}
+          />
+          <BlockTimeButton
+            date={dateStr}
+            gridStartMin={gridStartMin}
+            gridEndMin={gridEndMin}
+            hasRule={rules.length > 0}
+          />
+        </AgendaHeader>
+
+        <AgendaStrip selectedDate={dateStr} view="day" />
+
+        <DayGrid
+          date={dateStr}
+          gridStartMin={gridStartMin}
+          gridEndMin={gridEndMin}
+          blockedAllDay={blockedAllDay}
+          blockedRanges={blockedRanges}
+          appointments={gridAppointments}
+          prevHref={`/admin/agenda?view=day&date=${prev}`}
+          nextHref={`/admin/agenda?view=day&date=${next}`}
+        />
       </div>
     )
   }
@@ -202,12 +239,15 @@ export default async function AgendaPage({
     // Bucket appointments by date (mapAppointmentRow doesn't carry the date,
     // so read it off the raw row's time_slots join before mapping).
     const byDate: Record<string, GridAppointment[]> = {}
+    const allWeekAppts: GridAppointment[] = []
     for (const raw of (apptsRes.data ?? []) as any[]) {
       const slot = Array.isArray(raw.time_slots) ? raw.time_slots[0] : raw.time_slots
       const d = slot?.date
       if (!d) continue
+      const mapped = mapAppointmentRow(raw)
       if (!byDate[d]) byDate[d] = []
-      byDate[d].push(mapAppointmentRow(raw))
+      byDate[d].push(mapped)
+      allWeekAppts.push(mapped)
     }
 
     const ruleStarts = rules.map(r => timeToMinutes(r.start_time))
@@ -229,32 +269,26 @@ export default async function AgendaPage({
       }
     })
 
+    const { totalCount, openCount, completedCount } = summarize(allWeekAppts)
+    const revenueValue = allWeekAppts
+      .filter(a => REVENUE_STATUSES.includes(a.status))
+      .reduce((sum, a) => sum + a.totalPrice, 0)
+
     return (
       <div className="p-4 md:px-6 md:py-8">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-          <div>
-            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
-            <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
-              {label}
-            </h1>
-          </div>
-          <div className="flex items-center gap-3 overflow-x-auto flex-nowrap pb-1 -mb-1 md:flex-wrap md:overflow-visible md:pb-0 md:mb-0">
-            <NewAppointmentButton />
-            <AgendaViewDropdown view={view} dateStr={dateStr} />
-            <NavArrows
-              prevHref={`/admin/agenda?view=${view}&date=${prev}`}
-              todayHref={`/admin/agenda?view=${view}&date=${today}`}
-              nextHref={`/admin/agenda?view=${view}&date=${next}`}
-            />
-          </div>
-        </div>
+        <AgendaSummaryCards
+          totalCount={totalCount}
+          openCount={openCount}
+          completedCount={completedCount}
+          revenueLabel="Previsão"
+          revenueValue={revenueValue}
+        />
 
-        <div className="flex flex-col md:flex-row items-stretch md:items-start gap-4 md:gap-6">
-          <AgendaMiniCalendar selectedDate={dateStr} view={view} />
-          <div className="flex-1 min-w-0">
-            <WeekGrid days={weekDays} gridStartMin={gridStartMin} gridEndMin={gridEndMin} />
-          </div>
-        </div>
+        <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=${view}&date=${prev}`} todayHref={`/admin/agenda?view=${view}&date=${today}`} nextHref={`/admin/agenda?view=${view}&date=${next}`} />
+
+        <AgendaStrip selectedDate={dateStr} view={view} />
+
+        <WeekGrid days={weekDays} gridStartMin={gridStartMin} gridEndMin={gridEndMin} />
       </div>
     )
   }
@@ -273,7 +307,7 @@ export default async function AgendaPage({
 
   const { data: raw } = await db
     .from('appointments')
-    .select('id, status, clients(name), time_slots!inner(date, start_time)')
+    .select('id, status, total_price, clients(name), time_slots!inner(date, start_time)')
     .gte('time_slots.date', format(gridStart, 'yyyy-MM-dd'))
     .lte('time_slots.date', format(gridEnd, 'yyyy-MM-dd'))
     .order('time_slots(start_time)', { ascending: true })
@@ -288,27 +322,25 @@ export default async function AgendaPage({
     byDate[d].push(a)
   }
 
+  const monthAppts = appts.map(a => ({ status: a.status as string, totalPrice: Number(a.total_price) }))
+  const { totalCount, openCount, completedCount } = summarize(monthAppts)
+  const revenueValue = monthAppts
+    .filter(a => REVENUE_STATUSES.includes(a.status))
+    .reduce((sum, a) => sum + a.totalPrice, 0)
+
   const MAX_VISIBLE = 3
 
   return (
     <div className="p-4 md:px-6 md:py-8">
-      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Agenda</p>
-          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em] capitalize">
-            {label}
-          </h1>
-        </div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <NewAppointmentButton />
-          <AgendaViewDropdown view={view} dateStr={dateStr} />
-          <NavArrows
-            prevHref={`/admin/agenda?view=month&date=${prev}`}
-            todayHref={`/admin/agenda?view=month&date=${today}`}
-            nextHref={`/admin/agenda?view=month&date=${next}`}
-          />
-        </div>
-      </div>
+      <AgendaSummaryCards
+        totalCount={totalCount}
+        openCount={openCount}
+        completedCount={completedCount}
+        revenueLabel="Previsão"
+        revenueValue={revenueValue}
+      />
+
+      <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=month&date=${prev}`} todayHref={`/admin/agenda?view=month&date=${today}`} nextHref={`/admin/agenda?view=month&date=${next}`} />
 
       <div className="overflow-x-auto">
         <div className="min-w-[900px]">
