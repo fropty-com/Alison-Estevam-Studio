@@ -436,7 +436,7 @@ export async function toggleClientVip(id: string, vip: boolean) {
 
 export async function updateClientProfile(
   id: string,
-  data: { name: string; whatsapp: string; email: string }
+  data: { name: string; whatsapp: string; email: string; birthDate?: string }
 ) {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }
@@ -452,6 +452,7 @@ export async function updateClientProfile(
   }
 
   const email = data.email.trim() || null
+  const birthDate = data.birthDate?.trim() || null
 
   const db = await adminDb()
 
@@ -465,7 +466,7 @@ export async function updateClientProfile(
 
   const { error } = await db
     .from('clients')
-    .update({ name, whatsapp, email, updated_at: new Date().toISOString() })
+    .update({ name, whatsapp, email, birth_date: birthDate, updated_at: new Date().toISOString() })
     .eq('id', id)
   if (error) return { error: 'Erro ao salvar dados do cliente.' }
 

@@ -8,11 +8,15 @@ export function EditClientButton({
   name,
   whatsapp,
   email,
+  birthDate,
+  onSaved,
 }: {
   id: string
   name: string
   whatsapp: string
   email: string | null
+  birthDate?: string | null
+  onSaved?: () => void
 }) {
   const [open, setOpen] = useState(false)
   return (
@@ -29,7 +33,8 @@ export function EditClientButton({
           name={name}
           whatsapp={whatsapp}
           email={email}
-          onClose={() => setOpen(false)}
+          birthDate={birthDate}
+          onClose={() => { setOpen(false); onSaved?.() }}
         />
       )}
     </>

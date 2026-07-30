@@ -63,7 +63,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
                   <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">VIP</span>
                 )}
               </div>
-              <EditClientButton id={client.id} name={client.name} whatsapp={client.whatsapp} email={client.email} />
+              <EditClientButton id={client.id} name={client.name} whatsapp={client.whatsapp} email={client.email} birthDate={client.birth_date} />
             </div>
 
             <div className="space-y-[10px] mb-6">

@@ -1,7 +1,19 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, differenceInDays, parseISO } from 'date-fns'
-import { ClientListFilter, type ClientListItem } from '@/components/admin/ClientListFilter'
+import { ptBR } from 'date-fns/locale'
+import { ClientsTable, type ClientRow } from '@/components/admin/ClientsTable'
 import { AbsentClientsCard } from '@/components/admin/AbsentClientsCard'
+
+interface ClientRecord {
+  id: string
+  name: string
+  whatsapp: string
+  email: string | null
+  vip: boolean
+  created_at: string
+  notes: string | null
+  birth_date: string | null
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -20,7 +32,7 @@ export default async function ClientesPage() {
 
   const [clientsRes, completedRes, monthPayRes] = await Promise.all([
     db.from('clients')
-      .select('id, name, whatsapp, email, vip, created_at, notes')
+      .select('id, name, whatsapp, email, vip, created_at, notes, birth_date')
       .order('name', { ascending: true }),
 
     // histórico completo de atendimentos concluídos, por cliente — base para
@@ -36,9 +48,27 @@ export default async function ClientesPage() {
       .lt('paid_at', nextMonthISO),
   ])
 
-  const list = (clientsRes.data ?? []) as ClientListItem[]
+  const list = (clientsRes.data ?? []) as ClientRecord[]
   const completedHistory = (completedRes.data ?? []) as any[]
   const monthPayments = (monthPayRes.data ?? []) as any[]
+
+  const tableRows: ClientRow[] = list.map(c => ({
+    id: c.id,
+    name: c.name,
+    whatsapp: c.whatsapp,
+    email: c.email,
+    birthDate: c.birth_date,
+    vip: c.vip,
+    createdAt: c.created_at,
+  }))
+
+  // Aniversariantes deste mês — comparação por mês da data (string, sem
+  // conversão de timezone), ordenados pelo dia do mês
+  const currentMonth = format(now, 'MM')
+  const birthdaysThisMonth = list
+    .filter(c => c.birth_date && c.birth_date.slice(5, 7) === currentMonth)
+    .map(c => ({ id: c.id, name: c.name, birthDate: c.birth_date as string }))
+    .sort((a, b) => a.birthDate.slice(8, 10).localeCompare(b.birthDate.slice(8, 10)))
 
   // Histórico por cliente, ordenado — base de tudo abaixo
   const clientHistory: Record<string, { id: string; name: string; dates: string[] }> = {}
@@ -120,7 +150,31 @@ export default async function ClientesPage() {
         </div>
       </div>
 
-      <ClientListFilter clients={list} />
+      {/* Aniversariantes deste mês */}
+      <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+        <p className="font-display font-light text-[17px] text-offwhite mb-1">🎂 Aniversariantes deste mês</p>
+        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">
+          {birthdaysThisMonth.length} cliente{birthdaysThisMonth.length !== 1 ? 's' : ''} (independe do filtro de período)
+        </p>
+        {birthdaysThisMonth.length === 0 ? (
+          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+            Nenhum aniversariante neste mês.
+          </p>
+        ) : (
+          <div className="divide-y divide-offwhite/6 -mx-6">
+            {birthdaysThisMonth.map(b => (
+              <div key={b.id} className="flex items-center justify-between px-6 py-3">
+                <span className="font-body font-light text-[12px] text-offwhite/70">{b.name}</span>
+                <span className="font-body font-light text-[9px] text-gold/70 tracking-[0.1em]">
+                  {format(parseISO(b.birthDate), "d 'de' MMMM", { locale: ptBR })}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <ClientsTable clients={tableRows} />
 
       {/* Retenção / clientes ausentes */}
       <section>

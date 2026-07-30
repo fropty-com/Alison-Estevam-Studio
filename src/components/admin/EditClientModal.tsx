@@ -12,12 +12,14 @@ export function EditClientModal({
   name: initialName,
   whatsapp: initialWhatsapp,
   email: initialEmail,
+  birthDate: initialBirthDate,
   onClose,
 }: {
   id: string
   name: string
   whatsapp: string
   email: string | null
+  birthDate?: string | null
   onClose: () => void
 }) {
   const router = useRouter()
@@ -27,13 +29,14 @@ export function EditClientModal({
   const [name, setName] = useState(initialName)
   const [whatsapp, setWhatsapp] = useState(initialWhatsapp)
   const [email, setEmail] = useState(initialEmail ?? '')
+  const [birthDate, setBirthDate] = useState(initialBirthDate ?? '')
 
   const canSubmit = name.trim().length > 0 && whatsapp.trim().length > 0
 
   const submit = () => {
     setError(null)
     startTransition(async () => {
-      const res = await updateClientProfile(id, { name, whatsapp, email })
+      const res = await updateClientProfile(id, { name, whatsapp, email, birthDate })
       if (res.error) { setError(res.error); return }
       router.refresh()
       onClose()
@@ -85,6 +88,15 @@ export function EditClientModal({
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder="cliente@email.com"
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label className={labelCls}>Data de nascimento (opcional)</label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={e => setBirthDate(e.target.value)}
               className={inputCls}
             />
           </div>
