@@ -24,7 +24,7 @@ export function ServiceRow({ service }: { service: {
   }
 
   return (
-    <div className={cn('px-5 py-4 transition-opacity duration-200', !service.active && 'opacity-45')}>
+    <div className={cn('bg-offwhite/5 border border-offwhite/[0.07] px-5 py-4 transition-all duration-200', !service.active && 'opacity-45')}>
       <div className="flex items-center gap-4">
         {/* Active toggle */}
         <button
