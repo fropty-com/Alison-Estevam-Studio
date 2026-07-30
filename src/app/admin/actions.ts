@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
+import { format } from 'date-fns'
 import { createManualAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
@@ -913,5 +914,77 @@ export async function toggleCouponActive(id: string, active: boolean): Promise<{
   await logAction('coupon.toggle', 'coupon', id, `${active ? 'Ativou' : 'Desativou'} o cupom ${coupon?.code ?? id}`, { active })
 
   revalidatePath('/admin/configuracoes')
+  return { ok: true }
+}
+
+export async function createExpense(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const description = (formData.get('description') as string)?.trim()
+  const category     = (formData.get('category') as string)?.trim()
+  const amount       = Number(formData.get('amount'))
+  const isFixed      = formData.get('is_fixed') === 'on'
+  const dueDate       = formData.get('due_date') as string
+  const paidNow       = formData.get('paid_now') === 'on'
+
+  if (!description) return { error: 'Descrição é obrigatória.' }
+  if (!category) return { error: 'Categoria é obrigatória.' }
+  if (!dueDate) return { error: 'Data de vencimento é obrigatória.' }
+  if (!Number.isFinite(amount) || amount <= 0) return { error: 'Valor inválido.' }
+
+  const db = await adminDb()
+  const { data: created, error } = await db
+    .from('expenses')
+    .insert({
+      description,
+      category,
+      amount,
+      is_fixed: isFixed,
+      due_date: dueDate,
+      paid_date: paidNow ? format(new Date(), 'yyyy-MM-dd') : null,
+    })
+    .select('id')
+    .single()
+  if (error) return { error: 'Erro ao criar despesa.' }
+
+  await logAction(
+    'expense.create', 'expense', created?.id ?? null,
+    `Registrou a despesa "${description}" (R$ ${amount.toFixed(2)}, ${category})`,
+    { description, category, amount, isFixed, dueDate, paidNow }
+  )
+
+  revalidatePath('/admin/financeiro')
+  return { ok: true }
+}
+
+export async function markExpensePaid(id: string, paid: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const db = await adminDb()
+  const { error } = await db
+    .from('expenses')
+    .update({ paid_date: paid ? format(new Date(), 'yyyy-MM-dd') : null, updated_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) return { error: 'Erro ao atualizar despesa.' }
+
+  await logAction('expense.mark_paid', 'expense', id, paid ? 'Marcou despesa como paga' : 'Desmarcou pagamento da despesa', { paid })
+
+  revalidatePath('/admin/financeiro')
+  return { ok: true }
+}
+
+export async function deleteExpense(id: string): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const db = await adminDb()
+  const { error } = await db.from('expenses').delete().eq('id', id)
+  if (error) return { error: 'Erro ao excluir despesa.' }
+
+  await logAction('expense.delete', 'expense', id, 'Excluiu despesa')
+
+  revalidatePath('/admin/financeiro')
   return { ok: true }
 }

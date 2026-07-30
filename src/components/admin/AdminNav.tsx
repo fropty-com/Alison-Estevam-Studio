@@ -24,6 +24,12 @@ function ServicesIcon() {
 function ReportsIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><line x1="2.5" y1="13" x2="12.5" y2="13" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /><rect x="3" y="8" width="2.4" height="5" stroke="currentColor" strokeWidth="1" /><rect x="6.3" y="5" width="2.4" height="8" stroke="currentColor" strokeWidth="1" /><rect x="9.6" y="2" width="2.4" height="11" stroke="currentColor" strokeWidth="1" /></svg>
 }
+function FinanceIcon() {
+  return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="7.5" cy="7.5" r="6" stroke="currentColor" strokeWidth="1.1" /><path d="M9.3 5.3c-.4-.5-1.1-.8-1.8-.8-1.2 0-2.1.8-2.1 1.8s.9 1.5 2.1 1.8c1.2.3 2.1.8 2.1 1.8s-.9 1.8-2.1 1.8c-.7 0-1.4-.3-1.8-.8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="7.5" y1="3" x2="7.5" y2="4.3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="7.5" y1="10.7" x2="7.5" y2="12" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /></svg>
+}
+function ExportIcon() {
+  return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M4.5 2h4l3 3v8h-7V2Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" /><path d="M8.5 2v3h3" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" /><path d="M6 8.5v3.5M4.3 10.2 6 8.5l1.7 1.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" /></svg>
+}
 function AuditIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="2.5" y="1.5" width="10" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.1" /><line x1="4.5" y1="5" x2="10.5" y2="5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="7.7" x2="10.5" y2="7.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="10.4" x2="8.5" y2="10.4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /></svg>
 }
@@ -57,7 +63,9 @@ const NAV = [
   { href: '/admin/espera',        label: 'Fila de Espera', Icon: WaitlistIcon, badge: false, ownerOnly: false },
   { href: '/admin/clientes',      label: 'Clientes',      Icon: ClientsIcon,   badge: false, ownerOnly: false },
   { href: '/admin/servicos',      label: 'Serviços',      Icon: ServicesIcon,  badge: false, ownerOnly: false },
-  { href: '/admin/relatorios',    label: 'Relatórios',    Icon: ReportsIcon,   badge: false, ownerOnly: true  },
+  { href: '/admin/faturamento',   label: 'Faturamento',   Icon: ReportsIcon,   badge: false, ownerOnly: true  },
+  { href: '/admin/financeiro',    label: 'Financeiro',    Icon: FinanceIcon,   badge: false, ownerOnly: true  },
+  { href: '/admin/relatorios',    label: 'Relatórios',    Icon: ExportIcon,    badge: false, ownerOnly: true  },
   { href: '/admin/auditoria',     label: 'Auditoria',     Icon: AuditIcon,     badge: false, ownerOnly: true  },
   { href: '/admin/configuracoes', label: 'Configurações', Icon: SettingsIcon,  badge: false, ownerOnly: true  },
 ]
@@ -95,7 +103,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Abrir menu"
-        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70"
+        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70 print:hidden"
       >
         <MenuIcon />
       </button>
@@ -110,7 +118,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
 
       <aside
         className={cn(
-          'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen',
+          'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen print:hidden',
           'fixed lg:sticky top-0 z-50 lg:z-auto',
           mounted ? 'transition-[width,transform] duration-200' : '',
           collapsed ? 'w-[64px]' : 'w-[220px]',
