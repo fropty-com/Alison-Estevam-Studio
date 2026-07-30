@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { todayInSaoPaulo } from '@/lib/timezone'
+import { calculatePaymentBreakdown } from '@/lib/payments'
 import { createManualAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
@@ -229,10 +230,13 @@ export async function checkOutAppointment(id: string, data: {
     .single()
 
   const feePercentage = fee?.fee_percentage ?? 0
-  const tipAmount      = Math.max(0, data.tipAmount ?? 0)
-  const netBeforeFee   = Math.max(0, data.grossAmount - data.discount)
-  const feeAmount      = Math.round(netBeforeFee * (feePercentage / 100) * 100) / 100
-  const netAmount      = Math.round((netBeforeFee - feeAmount) * 100) / 100 + tipAmount
+  const tipAmount = Math.max(0, data.tipAmount ?? 0)
+  const { feeAmount, netAmount } = calculatePaymentBreakdown({
+    grossAmount: data.grossAmount,
+    discount: data.discount,
+    feePercentage,
+    tipAmount,
+  })
 
   const now = new Date().toISOString()
 
