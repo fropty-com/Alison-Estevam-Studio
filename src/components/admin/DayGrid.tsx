@@ -23,7 +23,9 @@ function minutesToHHMM(minutes: number): string {
 }
 
 // Solid fills, matching Outlook's actual event blocks (solid color + colored
-// left border) rather than the diagonal hatching used before.
+// left border) rather than the diagonal hatching used before. Kept for the
+// compact month-view chips, which have no room/data for the richer,
+// service-colored treatment below.
 export const STATUS_BLOCK: Record<string, string> = {
   pending:     'border-gold/60 text-gold-light bg-gold/15',
   confirmed:   'border-sage/60 text-sage-light bg-sage/20',
@@ -32,6 +34,72 @@ export const STATUS_BLOCK: Record<string, string> = {
   completed:   'border-offwhite/30 text-offwhite/50 bg-offwhite/5',
   cancelled:   'border-error/50 text-error/70 bg-error/15',
   no_show:     'border-error/40 text-error/55 bg-error/10',
+}
+
+// Muted, on-brand hues used to color-code the day/week grid blocks by
+// service. Kept out of Tailwind's class system (inline rgba() instead) since
+// arbitrary opacity combinations don't reliably compile in this project.
+const SERVICE_PALETTE: [number, number, number][] = [
+  [203, 163, 57],   // gold
+  [150, 156, 115],  // sage
+  [176, 108, 74],   // terracotta
+  [98, 130, 156],   // steel blue
+  [140, 104, 140],  // plum
+  [92, 140, 130],   // teal
+]
+const OFFWHITE_RGB: [number, number, number] = [241, 241, 241]
+const ERROR_RGB:    [number, number, number] = [139, 58, 58]
+const GOLD_RGB:     [number, number, number] = [203, 163, 57]
+
+function serviceColor(serviceName: string): [number, number, number] {
+  let hash = 0
+  for (let i = 0; i < serviceName.length; i++) hash = (hash * 31 + serviceName.charCodeAt(i)) >>> 0
+  return SERVICE_PALETTE[hash % SERVICE_PALETTE.length]
+}
+
+/**
+ * Block appearance for the day/week grid: color-coded by service, with the
+ * border going from dashed+faint (pending, no client confirmation yet) to
+ * solid+bolder (confirmed) — so confirmation state reads at a glance without
+ * losing which service it is. Checked-in/in-progress get a dedicated gold
+ * highlight (more urgent than the service itself: someone is in the chair
+ * right now); completed/cancelled/no-show keep their own neutral/error tone
+ * since those statuses matter more than the service at that point.
+ */
+export function appointmentBlockStyle(status: string, serviceName: string): { style: React.CSSProperties; textClass: string } {
+  if (status === 'checked_in' || status === 'in_progress') {
+    const [r, g, b] = GOLD_RGB
+    return {
+      style: { backgroundColor: `rgba(${r},${g},${b},0.3)`, borderColor: `rgba(${r},${g},${b},0.9)`, borderStyle: 'solid' },
+      textClass: 'text-gold',
+    }
+  }
+  if (status === 'completed') {
+    const [r, g, b] = OFFWHITE_RGB
+    return {
+      style: { backgroundColor: `rgba(${r},${g},${b},0.05)`, borderColor: `rgba(${r},${g},${b},0.3)`, borderStyle: 'solid' },
+      textClass: 'text-offwhite/50',
+    }
+  }
+  if (status === 'cancelled' || status === 'no_show') {
+    const [r, g, b] = ERROR_RGB
+    return {
+      style: { backgroundColor: `rgba(${r},${g},${b},0.15)`, borderColor: `rgba(${r},${g},${b},${status === 'cancelled' ? 0.5 : 0.4})`, borderStyle: 'solid' },
+      textClass: status === 'cancelled' ? 'text-error/70' : 'text-error/55',
+    }
+  }
+
+  // pending / confirmed — service-colored, solidity signals confirmation
+  const [r, g, b] = serviceColor(serviceName)
+  const confirmed = status === 'confirmed'
+  return {
+    style: {
+      backgroundColor: `rgba(${r},${g},${b},${confirmed ? 0.3 : 0.13})`,
+      borderColor: `rgba(${r},${g},${b},${confirmed ? 0.85 : 0.55})`,
+      borderStyle: confirmed ? 'solid' : 'dashed',
+    },
+    textClass: confirmed ? 'text-offwhite/90' : 'text-offwhite/75',
+  }
 }
 
 const SWIPE_THRESHOLD_PX = 60
@@ -186,6 +254,7 @@ export function DayGrid({
                 const height = Math.max(minutesToPx(a.endMin - a.startMin), 22)
                 const widthPct = 100 / pos.cols
                 const showDetails = height >= 40
+                const { style: blockStyle, textClass } = appointmentBlockStyle(a.status, a.serviceName)
                 return (
                   <button
                     key={a.id}
@@ -193,13 +262,14 @@ export function DayGrid({
                     className={cn(
                       'absolute px-2 py-[3px] border-l-[3px] border-y border-r text-left overflow-hidden transition-all duration-150',
                       'hover:brightness-125',
-                      STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
+                      textClass,
                     )}
                     style={{
                       top,
                       height,
                       left: `${pos.col * widthPct}%`,
                       width: `calc(${widthPct}% - 2px)`,
+                      ...blockStyle,
                     }}
                   >
                     <p className="font-data text-[10px] leading-tight truncate">{a.timeLabel}</p>

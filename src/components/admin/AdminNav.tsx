@@ -41,8 +41,8 @@ function OperationalIcon() {
     </svg>
   )
 }
-function AuditIcon() {
-  return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="2.5" y="1.5" width="10" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.1" /><line x1="4.5" y1="5" x2="10.5" y2="5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="7.7" x2="10.5" y2="7.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="10.4" x2="8.5" y2="10.4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /></svg>
+function ActivityIcon() {
+  return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 8h2.5l1.5-4.5 2.5 9 1.5-4.5H13.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
 function SettingsIcon() {
   return (
@@ -78,7 +78,7 @@ const NAV = [
   { href: '/admin/financeiro',    label: 'Financeiro',    Icon: FinanceIcon,   badge: false, ownerOnly: true  },
   { href: '/admin/operacional',   label: 'Operacional',   Icon: OperationalIcon, badge: false, ownerOnly: true },
   { href: '/admin/relatorios',    label: 'Relatórios',    Icon: ExportIcon,    badge: false, ownerOnly: true  },
-  { href: '/admin/auditoria',     label: 'Auditoria',     Icon: AuditIcon,     badge: false, ownerOnly: true  },
+  { href: '/admin/atividade',     label: 'Atividade',     Icon: ActivityIcon,  badge: false, ownerOnly: true  },
   { href: '/admin/configuracoes', label: 'Configurações', Icon: SettingsIcon,  badge: false, ownerOnly: true  },
 ]
 

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
-import { useHalfHourMarks, useNowMinutes, STATUS_BLOCK, type GridAppointment } from './DayGrid'
+import { useHalfHourMarks, useNowMinutes, appointmentBlockStyle, type GridAppointment } from './DayGrid'
 import { AppointmentDetailSheet } from './AppointmentDetailSheet'
 
 export interface WeekDay {
@@ -115,6 +115,8 @@ export function WeekGrid({
                   const top = minutesToPx(a.startMin - gridStartMin)
                   const height = Math.max(minutesToPx(a.endMin - a.startMin), 20)
                   const widthPct = 100 / pos.cols
+                  const { style: blockStyle, textClass } = appointmentBlockStyle(a.status, a.serviceName)
+                  const showService = height >= 44
                   return (
                     <button
                       key={a.id}
@@ -122,17 +124,21 @@ export function WeekGrid({
                       className={cn(
                         'absolute px-[6px] py-[2px] border-l-[3px] border-y border-r text-left overflow-hidden transition-all duration-150',
                         'hover:brightness-125',
-                        STATUS_BLOCK[a.status] ?? STATUS_BLOCK.pending,
+                        textClass,
                       )}
                       style={{
                         top,
                         height,
                         left: `${pos.col * widthPct}%`,
                         width: `calc(${widthPct}% - 2px)`,
+                        ...blockStyle,
                       }}
                     >
                       <p className="font-data text-[9px] leading-tight truncate">{a.timeLabel}</p>
                       <p className="font-body font-light text-[9px] leading-tight truncate">{a.clientName}</p>
+                      {showService && (
+                        <p className="font-body font-light text-[8px] leading-tight truncate opacity-70">{a.serviceName}</p>
+                      )}
                     </button>
                   )
                 })
