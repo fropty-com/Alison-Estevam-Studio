@@ -4,6 +4,7 @@ import { ptBR } from 'date-fns/locale'
 import { ServiceRow } from '@/components/admin/ServiceRow'
 import { ServicoCharts } from '@/components/admin/ServicoCharts'
 import { AddServiceForm } from '@/components/admin/AddServiceForm'
+import { nowAnchorInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,7 +17,7 @@ function fmt(value: number) {
 export default async function ServicosPage() {
   const db = await createServiceClient() as any
 
-  const now         = new Date()
+  const now         = nowAnchorInSaoPaulo()
   const monthStart  = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd    = format(endOfMonth(now), 'yyyy-MM-dd')
   const sixMonthsAgoStart = format(startOfMonth(subMonths(now, 5)), 'yyyy-MM-dd')

@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BRAND } from '@/config/brand'
+import { dateAnchorInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 
 const METHOD_LABEL: Record<string, string> = {
   cash: 'Dinheiro',
@@ -38,8 +39,8 @@ export async function sendReceiptEmail(params: {
 
   const serviceDateLabel = serviceDate ? format(parseISO(serviceDate), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR }) : ''
   const paidAtDate = parseISO(paidAt)
-  const paidDateLabel = format(paidAtDate, "d 'de' MMM. 'de' yyyy", { locale: ptBR })
-  const paidTimeLabel = format(paidAtDate, 'HH:mm')
+  const paidDateLabel = format(dateAnchorInSaoPaulo(paidAtDate), "d 'de' MMM. 'de' yyyy", { locale: ptBR })
+  const paidTimeLabel = formatTimeInSaoPaulo(paidAtDate)
 
   const html = `
 <!DOCTYPE html>

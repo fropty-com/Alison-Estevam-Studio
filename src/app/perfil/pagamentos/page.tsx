@@ -7,6 +7,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { formatCurrency } from '@/lib/utils'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { BRAND } from '@/config/brand'
+import { dateAnchorInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 
 export const metadata: Metadata = { title: 'Pagamentos — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -53,7 +54,7 @@ export default async function PagamentosPage() {
               >
                 <div>
                   <p className="font-body font-light text-[12.5px] text-offwhite/75">
-                    {format(parseISO(p.paid_at), "dd/MM/yyyy HH:mm")}
+                    {format(dateAnchorInSaoPaulo(parseISO(p.paid_at)), 'dd/MM/yyyy')} {formatTimeInSaoPaulo(parseISO(p.paid_at))}
                   </p>
                   <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.06em] mt-[3px]">
                     {METHOD_LABEL[p.method] ?? p.method} · {BRAND.fullName}

@@ -5,6 +5,7 @@ import { ReportCharts } from '@/components/admin/ReportCharts'
 import { RevenueTrendCharts } from '@/components/admin/RevenueTrendCharts'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
+import { nowAnchorInSaoPaulo, todayInSaoPaulo, weekdayInSaoPaulo, monthKeyInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -26,7 +27,7 @@ export default async function FaturamentoPage() {
 
   const db = await createServiceClient() as any
 
-  const now        = new Date()
+  const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now),   'yyyy-MM-dd')
   const lastStart  = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd')
@@ -45,13 +46,15 @@ export default async function FaturamentoPage() {
     db.from('payments')
       .select('method, gross_amount, fee_amount, tip_amount, net_amount, paid_at, appointments(discount)')
       .gte('paid_at', monthStartISO)
-      .lt('paid_at', nextMonthISO),
+      .lt('paid_at', nextMonthISO)
+      .is('refunded_at', null),
 
     // pagamentos recebidos no mês anterior (só o bruto, pra comparação)
     db.from('payments')
       .select('gross_amount')
       .gte('paid_at', lastStartISO)
-      .lt('paid_at', monthStartISO),
+      .lt('paid_at', monthStartISO)
+      .is('refunded_at', null),
 
     // ranking de serviços (mês atual, por data do agendamento)
     db.from('appointments')
@@ -76,7 +79,8 @@ export default async function FaturamentoPage() {
     db.from('payments')
       .select('gross_amount, net_amount, paid_at')
       .gte('paid_at', sixMonthsAgoISO)
-      .lt('paid_at', nextMonthISO),
+      .lt('paid_at', nextMonthISO)
+      .is('refunded_at', null),
   ])
 
   const thisMonthPay = (thisMonthPayRes.data ?? []) as any[]
@@ -106,10 +110,10 @@ export default async function FaturamentoPage() {
   const byDateRevenue: Record<string, number> = {}
   const byWeekdayRevenue: Record<number, number> = {}
   for (const p of thisMonthPay) {
-    const d = format(parseISO(p.paid_at), 'yyyy-MM-dd')
+    const d = todayInSaoPaulo(parseISO(p.paid_at))
     const amount = Number(p.gross_amount ?? 0)
     byDateRevenue[d] = (byDateRevenue[d] ?? 0) + amount
-    const weekday = getDay(parseISO(p.paid_at))
+    const weekday = weekdayInSaoPaulo(parseISO(p.paid_at))
     byWeekdayRevenue[weekday] = (byWeekdayRevenue[weekday] ?? 0) + amount
   }
   const elapsedDays = eachDayOfInterval({ start: monthStart, end: isBefore(now, monthEnd) ? now : monthEnd })
@@ -140,7 +144,7 @@ export default async function FaturamentoPage() {
   // Tendência de receita — últimos 6 meses
   const monthlyBuckets: Record<string, { gross: number; net: number }> = {}
   for (const p of sixMonthPay) {
-    const key = format(parseISO(p.paid_at), 'yyyy-MM')
+    const key = monthKeyInSaoPaulo(parseISO(p.paid_at))
     if (!monthlyBuckets[key]) monthlyBuckets[key] = { gross: 0, net: 0 }
     monthlyBuckets[key].gross += Number(p.gross_amount ?? 0)
     monthlyBuckets[key].net   += Number(p.net_amount   ?? 0)

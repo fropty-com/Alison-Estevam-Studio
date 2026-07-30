@@ -5,6 +5,7 @@ import {
   startOfMonth, endOfMonth, addMonths, subMonths, isSameMonth, isToday,
 } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { todayInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 import Link from 'next/link'
 import { DayGrid, type GridAppointment, type BlockedRange, STATUS_BLOCK } from '@/components/admin/DayGrid'
 import { WeekGrid, type WeekDay } from '@/components/admin/WeekGrid'
@@ -99,7 +100,7 @@ function mapAppointmentRow(a: any): GridAppointment {
     clientVip: !!cli?.vip,
     serviceName: svc?.name ?? '—',
     servicePrice: svc?.price ?? null,
-    checkedInAt: a.checked_in_at ? format(new Date(a.checked_in_at), 'HH:mm') : null,
+    checkedInAt: a.checked_in_at ? formatTimeInSaoPaulo(new Date(a.checked_in_at)) : null,
   }
 }
 
@@ -114,7 +115,7 @@ export default async function AgendaPage({
     searchParams.view === 'workweek' || searchParams.view === 'week' || searchParams.view === 'month'
       ? searchParams.view
       : 'day'
-  const dateStr = searchParams.date ?? format(new Date(), 'yyyy-MM-dd')
+  const dateStr = searchParams.date ?? todayInSaoPaulo()
   const dateObj = parseISO(dateStr)
   const db = await createServiceClient() as any
 
@@ -122,7 +123,7 @@ export default async function AgendaPage({
   if (view === 'day') {
     const prev  = format(subDays(dateObj, 1), 'yyyy-MM-dd')
     const next  = format(addDays(dateObj, 1), 'yyyy-MM-dd')
-    const today = format(new Date(), 'yyyy-MM-dd')
+    const today = todayInSaoPaulo()
     const label = format(dateObj, "EEEE, d 'de' MMMM", { locale: ptBR })
     const weekday = dateObj.getDay()
 
@@ -216,7 +217,7 @@ export default async function AgendaPage({
     const days      = view === 'workweek'
       ? allDays.filter(d => !BOOKING.blockedWeekdays.includes(d.getDay()))
       : allDays
-    const today     = format(new Date(), 'yyyy-MM-dd')
+    const today     = todayInSaoPaulo()
     const prev      = format(subWeeks(dateObj, 1), 'yyyy-MM-dd')
     const next      = format(addWeeks(dateObj, 1), 'yyyy-MM-dd')
     const label     = `${format(weekStart, "d 'de' MMM", { locale: ptBR })} — ${format(weekEnd, "d 'de' MMM", { locale: ptBR })}`
@@ -299,7 +300,7 @@ export default async function AgendaPage({
   const gridStart  = startOfWeek(monthStart, { weekStartsOn: 1 })
   const gridEnd    = endOfWeek(monthEnd,     { weekStartsOn: 1 })
   const days       = eachDayOfInterval({ start: gridStart, end: gridEnd })
-  const today      = format(new Date(), 'yyyy-MM-dd')
+  const today      = todayInSaoPaulo()
   const prev       = format(subMonths(dateObj, 1), 'yyyy-MM-dd')
   const next       = format(addMonths(dateObj, 1), 'yyyy-MM-dd')
   const label      = format(dateObj, "MMMM 'de' yyyy", { locale: ptBR })

@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
-import { format } from 'date-fns'
+import { todayInSaoPaulo } from '@/lib/timezone'
 import { createManualAppointmentSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
@@ -265,6 +265,40 @@ export async function checkOutAppointment(id: string, data: {
 
   revalidatePath('/admin')
   revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
+export async function refundPayment(paymentId: string, reason: string): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const trimmedReason = reason.trim()
+  if (!trimmedReason) return { error: 'Informe o motivo do estorno.' }
+
+  const db = await adminDb()
+  const { data: payment } = await db
+    .from('payments')
+    .select('id, net_amount, refunded_at')
+    .eq('id', paymentId)
+    .maybeSingle()
+  if (!payment) return { error: 'Pagamento não encontrado.' }
+  if (payment.refunded_at) return { error: 'Este pagamento já foi estornado.' }
+
+  const { error } = await db
+    .from('payments')
+    .update({ refunded_at: new Date().toISOString(), refund_reason: trimmedReason })
+    .eq('id', paymentId)
+  if (error) return { error: 'Erro ao estornar pagamento.' }
+
+  await logAction(
+    'payment.refund', 'payment', paymentId,
+    `Estornou pagamento de R$ ${Number(payment.net_amount).toFixed(2)} (${trimmedReason})`,
+    { reason: trimmedReason }
+  )
+
+  revalidatePath('/admin')
+  revalidatePath('/admin/faturamento')
+  revalidatePath('/admin/financeiro')
   return { ok: true }
 }
 
@@ -1012,7 +1046,7 @@ export async function createExpense(formData: FormData): Promise<{ ok?: boolean;
       amount,
       is_fixed: isFixed,
       due_date: dueDate,
-      paid_date: paidNow ? format(new Date(), 'yyyy-MM-dd') : null,
+      paid_date: paidNow ? todayInSaoPaulo() : null,
     })
     .select('id')
     .single()
@@ -1035,7 +1069,7 @@ export async function markExpensePaid(id: string, paid: boolean): Promise<{ ok?:
   const db = await adminDb()
   const { error } = await db
     .from('expenses')
-    .update({ paid_date: paid ? format(new Date(), 'yyyy-MM-dd') : null, updated_at: new Date().toISOString() })
+    .update({ paid_date: paid ? todayInSaoPaulo() : null, updated_at: new Date().toISOString() })
     .eq('id', id)
   if (error) return { error: 'Erro ao atualizar despesa.' }
 

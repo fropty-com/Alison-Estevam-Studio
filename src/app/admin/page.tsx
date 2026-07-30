@@ -1,8 +1,9 @@
 import { createServiceClient } from '@/lib/supabase/server'
-import { format, startOfMonth, startOfWeek, endOfWeek } from 'date-fns'
+import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { todayInSaoPaulo, startOfWeekInSaoPaulo, endOfWeekInSaoPaulo, startOfMonthInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -112,10 +113,10 @@ function DashboardCard({
 export default async function AdminDashboard() {
   const db = await createServiceClient() as any
 
-  const today       = format(new Date(), 'yyyy-MM-dd')
-  const weekStart   = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd')
-  const weekEnd     = format(endOfWeek(new Date(), { weekStartsOn: 1 }),   'yyyy-MM-dd')
-  const monthStart  = format(startOfMonth(new Date()), 'yyyy-MM-dd')
+  const today       = todayInSaoPaulo()
+  const weekStart   = startOfWeekInSaoPaulo()
+  const weekEnd     = endOfWeekInSaoPaulo()
+  const monthStart  = startOfMonthInSaoPaulo()
   const monthStartISO = `${monthStart}T00:00:00`
 
   const [todayRes, weekRes, clientsRes, monthPayRes, newClientsRes, openRes, activeServicesRes] = await Promise.all([
@@ -133,7 +134,7 @@ export default async function AdminDashboard() {
 
     db.from('clients').select('id', { count: 'exact', head: true }),
 
-    db.from('payments').select('gross_amount').gte('paid_at', monthStartISO),
+    db.from('payments').select('gross_amount').gte('paid_at', monthStartISO).is('refunded_at', null),
 
     db.from('clients').select('id', { count: 'exact', head: true }).gte('created_at', monthStartISO),
 
@@ -154,9 +155,10 @@ export default async function AdminDashboard() {
   const activeServices  = activeServicesRes.count ?? 0
 
   const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
-  const monthLabel = format(new Date(), 'MMMM', { locale: ptBR })
+  const todayNoon = new Date(`${today}T12:00:00`)
+  const monthLabel = format(todayNoon, 'MMMM', { locale: ptBR })
 
-  const todayLabel = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })
+  const todayLabel = format(todayNoon, "EEEE, d 'de' MMMM", { locale: ptBR })
 
   return (
     <div className="px-6 py-8">

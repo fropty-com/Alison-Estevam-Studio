@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { getAdminRole } from '@/lib/admin-auth'
 import { toCsv, csvResponse } from '@/lib/csv'
 import { format } from 'date-fns'
+import { todayInSaoPaulo } from '@/lib/timezone'
 
 export async function GET() {
   const role = await getAdminRole()
@@ -29,5 +30,5 @@ export async function GET() {
     rows
   )
 
-  return csvResponse(`despesas-${format(new Date(), 'yyyy-MM-dd')}.csv`, csv)
+  return csvResponse(`despesas-${todayInSaoPaulo()}.csv`, csv)
 }

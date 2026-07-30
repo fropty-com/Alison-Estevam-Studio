@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { todayInSaoPaulo } from '@/lib/timezone'
 
 export interface CouponRow {
   id: string
@@ -39,7 +39,7 @@ export async function validateCoupon(db: any, rawCode: string, subtotal: number)
 
   if (!coupon || !coupon.active) return { valid: false, error: 'Cupom inválido.' }
 
-  const today = format(new Date(), 'yyyy-MM-dd')
+  const today = todayInSaoPaulo()
   if (coupon.expires_at && coupon.expires_at < today) return { valid: false, error: 'Cupom expirado.' }
   if (coupon.max_uses !== null && coupon.uses_count >= coupon.max_uses) return { valid: false, error: 'Cupom esgotado.' }
 

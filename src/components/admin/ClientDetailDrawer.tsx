@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useTransition } from 'react'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
+import { refundPayment } from '@/app/admin/actions'
 import { ClientActions } from './ClientActions'
 import { EditClientButton } from './EditClientButton'
 import { LoyaltyCard } from './LoyaltyCard'
@@ -25,6 +26,9 @@ interface HistoryItem {
   startTime: string | null
   serviceName: string
   servicePrice: number | null
+  paymentId: string | null
+  paymentNetAmount: number | null
+  paymentRefundedAt: string | null
 }
 interface LoyaltyProgress {
   visitsRequired: number
@@ -59,6 +63,22 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [loyalty, setLoyalty] = useState<LoyaltyProgress | null>(null)
   const [loading, setLoading] = useState(false)
+  const [refundingPaymentId, setRefundingPaymentId] = useState<string | null>(null)
+  const [refundReason, setRefundReason] = useState('')
+  const [refundError, setRefundError] = useState<string | null>(null)
+  const [refunding, startRefundTransition] = useTransition()
+
+  const handleRefund = (paymentId: string) => {
+    if (!refundReason.trim()) { setRefundError('Informe o motivo do estorno.'); return }
+    startRefundTransition(async () => {
+      const res = await refundPayment(paymentId, refundReason)
+      if (res?.error) { setRefundError(res.error); return }
+      setRefundingPaymentId(null)
+      setRefundReason('')
+      setRefundError(null)
+      if (client) load(client.id)
+    })
+  }
 
   const load = useCallback(async (id: string) => {
     setLoading(true)
@@ -175,22 +195,66 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
               ) : (
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
                   {history.map(h => (
-                    <div key={h.id} className="flex items-center gap-4 px-5 py-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-body font-light text-[12px] text-offwhite mb-[2px]">{h.serviceName}</p>
-                        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em]">
-                          {h.date ? format(parseISO(h.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'}
-                          {h.startTime ? ` às ${h.startTime}` : ''}
-                        </p>
+                    <div key={h.id} className="px-5 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-body font-light text-[12px] text-offwhite mb-[2px]">{h.serviceName}</p>
+                          <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em]">
+                            {h.date ? format(parseISO(h.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'}
+                            {h.startTime ? ` às ${h.startTime}` : ''}
+                          </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[h.status] ?? 'text-offwhite/35')}>
+                            {STATUS_LABEL[h.status] ?? h.status}
+                          </p>
+                          {h.servicePrice != null && (
+                            <p className="font-data text-[12px] text-offwhite/40 mt-[2px]">R$ {h.servicePrice}</p>
+                          )}
+                        </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[h.status] ?? 'text-offwhite/35')}>
-                          {STATUS_LABEL[h.status] ?? h.status}
-                        </p>
-                        {h.servicePrice != null && (
-                          <p className="font-data text-[12px] text-offwhite/40 mt-[2px]">R$ {h.servicePrice}</p>
-                        )}
-                      </div>
+
+                      {h.paymentId && (
+                        <div className="mt-2 pt-2 border-t border-offwhite/[0.05]">
+                          {h.paymentRefundedAt ? (
+                            <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-error/50">Pagamento estornado</p>
+                          ) : refundingPaymentId === h.paymentId ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                autoFocus
+                                value={refundReason}
+                                onChange={e => { setRefundReason(e.target.value); setRefundError(null) }}
+                                placeholder="Motivo do estorno"
+                                className="flex-1 bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-[11px] px-2 py-1 outline-none focus:border-gold/50 transition-colors"
+                              />
+                              <button
+                                disabled={refunding}
+                                onClick={() => handleRefund(h.paymentId!)}
+                                className="px-2 py-1 font-body font-light text-[8px] tracking-[0.2em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50 shrink-0"
+                              >
+                                {refunding ? '…' : 'Confirmar'}
+                              </button>
+                              <button
+                                onClick={() => { setRefundingPaymentId(null); setRefundReason(''); setRefundError(null) }}
+                                className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors shrink-0"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setRefundingPaymentId(h.paymentId)}
+                              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors"
+                            >
+                              Estornar pagamento
+                            </button>
+                          )}
+                          {refundingPaymentId === h.paymentId && refundError && (
+                            <p className="font-body font-light text-[8.5px] text-error/70 mt-1">{refundError}</p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -8,6 +8,7 @@ import { ExpenseForm } from '@/components/admin/ExpenseForm'
 import { ExpenseList, type ExpenseRow } from '@/components/admin/ExpenseList'
 import { FinanceCharts } from '@/components/admin/FinanceCharts'
 import { cn } from '@/lib/utils'
+import { nowAnchorInSaoPaulo, monthKeyInSaoPaulo, todayInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,7 +26,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
 
   const db = await createServiceClient() as any
 
-  const now         = new Date()
+  const now         = nowAnchorInSaoPaulo()
   const today       = format(now, 'yyyy-MM-dd')
   const monthStart  = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd    = format(endOfMonth(now), 'yyyy-MM-dd')
@@ -40,12 +41,14 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
     db.from('payments')
       .select('gross_amount, net_amount, paid_at, appointments(discount)')
       .gte('paid_at', monthStartISO)
-      .lt('paid_at', nextMonthISO),
+      .lt('paid_at', nextMonthISO)
+      .is('refunded_at', null),
 
     db.from('payments')
       .select('gross_amount, net_amount, paid_at')
       .gte('paid_at', sixMonthsAgoISO)
-      .lt('paid_at', nextMonthISO),
+      .lt('paid_at', nextMonthISO)
+      .is('refunded_at', null),
 
     // todas as despesas — tabela pequena o bastante pra um único negócio,
     // e a agregação (aging, categorias, vencimentos, tendência) precisa do
@@ -116,7 +119,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
   // ── Tendência 6 meses (receita líquida × despesas × lucro) ──
   const monthlyRevenue: Record<string, number> = {}
   for (const p of sixMonthPay) {
-    const key = format(parseISO(p.paid_at), 'yyyy-MM')
+    const key = monthKeyInSaoPaulo(parseISO(p.paid_at))
     monthlyRevenue[key] = (monthlyRevenue[key] ?? 0) + Number(p.gross_amount ?? 0)
   }
   const sixMonthExpenses = allExpenses.filter((e: any) => e[expenseDateField] && e[expenseDateField] >= sixMonthsAgoStart)
@@ -142,7 +145,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
   // ── Fluxo de caixa diário do mês (entradas x saídas pagas) ──
   const dailyIn: Record<string, number> = {}
   for (const p of thisMonthPay) {
-    const d = format(parseISO(p.paid_at), 'yyyy-MM-dd')
+    const d = todayInSaoPaulo(parseISO(p.paid_at))
     dailyIn[d] = (dailyIn[d] ?? 0) + Number(p.gross_amount ?? 0)
   }
   const dailyOut: Record<string, number> = {}

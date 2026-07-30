@@ -12,7 +12,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const [clientRes, apptsRes, loyalty] = await Promise.all([
     db.from('clients').select('*').eq('id', params.id).single(),
     db.from('appointments')
-      .select('id, reference_code, status, created_at, services(name, price), time_slots(date, start_time)')
+      .select('id, reference_code, status, created_at, services(name, price), time_slots(date, start_time), payments(id, net_amount, refunded_at)')
       .eq('client_id', params.id)
       .order('created_at', { ascending: false }),
     getLoyaltyProgress(db, params.id),
@@ -26,6 +26,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const history = appts.map(a => {
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
     const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
+    const payment = Array.isArray(a.payments) ? a.payments[0] : a.payments
     return {
       id: a.id,
       status: a.status,
@@ -33,6 +34,9 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
       startTime: slot?.start_time ? String(slot.start_time).slice(0, 5) : null,
       serviceName: svc?.name ?? '—',
       servicePrice: svc?.price ?? null,
+      paymentId: payment?.id ?? null,
+      paymentNetAmount: payment?.net_amount ?? null,
+      paymentRefundedAt: payment?.refunded_at ?? null,
     }
   })
 

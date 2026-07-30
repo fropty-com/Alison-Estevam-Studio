@@ -1,9 +1,10 @@
 import { createServiceClient } from '@/lib/supabase/server'
-import { format, isToday, isYesterday, parseISO, startOfMonth, endOfMonth } from 'date-fns'
+import { format, parseISO, startOfMonth, endOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { cn } from '@/lib/utils'
+import { nowAnchorInSaoPaulo, isTodayInSaoPaulo, isYesterdayInSaoPaulo, todayInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,8 +22,8 @@ const CATEGORY_DOT: Record<string, string> = {
 
 function dayLabel(dateStr: string) {
   const d = parseISO(dateStr)
-  if (isToday(d)) return 'Hoje'
-  if (isYesterday(d)) return 'Ontem'
+  if (isTodayInSaoPaulo(d)) return 'Hoje'
+  if (isYesterdayInSaoPaulo(d)) return 'Ontem'
   return format(d, "d 'de' MMMM", { locale: ptBR })
 }
 
@@ -32,7 +33,7 @@ export default async function AtividadePage() {
 
   const db = await createServiceClient() as any
 
-  const now = new Date()
+  const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
 
@@ -67,7 +68,7 @@ export default async function AtividadePage() {
   // Group by day for readability
   const groups: { day: string; items: any[] }[] = []
   for (const entry of entries) {
-    const day = format(parseISO(entry.created_at), 'yyyy-MM-dd')
+    const day = todayInSaoPaulo(parseISO(entry.created_at))
     const last = groups[groups.length - 1]
     if (last && last.day === day) last.items.push(entry)
     else groups.push({ day, items: [entry] })
@@ -136,7 +137,7 @@ export default async function AtividadePage() {
                             {entry.summary}
                           </p>
                           <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[3px]">
-                            {entry.actor_name} · {format(parseISO(entry.created_at), 'HH:mm')}
+                            {entry.actor_name} · {formatTimeInSaoPaulo(parseISO(entry.created_at))}
                           </p>
                         </div>
                       </div>

@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { ReceiptEmailButton } from '@/components/profile/ReceiptEmailButton'
 import { BRAND } from '@/config/brand'
+import { dateAnchorInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 
 export const metadata: Metadata = { title: 'Recibo — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -47,6 +48,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
   const total    = Number(payment.gross_amount)
 
   const paidAtDate = parseISO(payment.paid_at)
+  const paidDateAnchor = dateAnchorInSaoPaulo(paidAtDate)
   const serviceDateLabel = slot?.date
     ? format(parseISO(slot.date), "EEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
     : '—'
@@ -71,7 +73,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
             <div>
               <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-sage-light mb-[3px]">Pago</p>
               <p className="font-body font-light text-[12px] text-offwhite/50">
-                {format(paidAtDate, "d 'de' MMM. 'de' yyyy", { locale: ptBR })}
+                {format(paidDateAnchor, "d 'de' MMM. 'de' yyyy", { locale: ptBR })}
               </p>
             </div>
             <div className="text-right">
@@ -105,7 +107,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
 
           <div className="px-7 py-5">
             <p className="font-body font-light text-[10.5px] text-offwhite/35">
-              PAGO · {METHOD_LABEL[payment.method] ?? payment.method} · {format(paidAtDate, 'HH:mm')}, {format(paidAtDate, 'dd/MM/yyyy')}
+              PAGO · {METHOD_LABEL[payment.method] ?? payment.method} · {formatTimeInSaoPaulo(paidAtDate)}, {format(paidDateAnchor, 'dd/MM/yyyy')}
             </p>
           </div>
         </div>

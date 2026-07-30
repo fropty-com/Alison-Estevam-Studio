@@ -3,6 +3,7 @@ import { format, startOfMonth, endOfMonth, differenceInDays, parseISO } from 'da
 import { ptBR } from 'date-fns/locale'
 import { ClientsTable, type ClientRow } from '@/components/admin/ClientsTable'
 import { AbsentClientsCard } from '@/components/admin/AbsentClientsCard'
+import { nowAnchorInSaoPaulo } from '@/lib/timezone'
 
 interface ClientRecord {
   id: string
@@ -24,7 +25,7 @@ function fmt(value: number) {
 export default async function ClientesPage() {
   const db = await createServiceClient() as any
 
-  const now        = new Date()
+  const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
   const monthStartISO = `${monthStart}T00:00:00`

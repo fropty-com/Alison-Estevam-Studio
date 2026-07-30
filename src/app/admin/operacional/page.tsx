@@ -5,6 +5,7 @@ import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { PeakHoursHeatmap } from '@/components/admin/PeakHoursHeatmap'
 import { cn } from '@/lib/utils'
+import { nowAnchorInSaoPaulo } from '@/lib/timezone'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,7 +47,7 @@ export default async function OperacionalPage() {
 
   const db = await createServiceClient() as any
 
-  const now = new Date()
+  const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
   const monthStartISO = `${monthStart}T00:00:00`
@@ -61,7 +62,8 @@ export default async function OperacionalPage() {
     db.from('payments')
       .select('gross_amount, appointments(discount)')
       .gte('paid_at', monthStartISO)
-      .lt('paid_at', nextMonthISO),
+      .lt('paid_at', nextMonthISO)
+      .is('refunded_at', null),
 
     db.from('expenses')
       .select('amount, due_date')
