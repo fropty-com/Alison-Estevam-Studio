@@ -46,6 +46,22 @@ export async function updateWhatsappConsent(consent: boolean): Promise<{ ok?: bo
   return { ok: true }
 }
 
+export async function updateReminderEmailConsent(consent: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const session = await getVerifiedClientSession()
+  if (!session) return { error: 'Sessão expirada.' }
+
+  const db = await createServiceClient() as any
+  const { error } = await db
+    .from('clients')
+    .update({ receive_reminder_emails: consent })
+    .eq('id', session.clientId)
+
+  if (error) return { error: 'Erro ao salvar. Tente novamente.' }
+
+  revalidatePath('/perfil/conta')
+  return { ok: true }
+}
+
 /**
  * LGPD deletion request: scrubs identifying fields instead of deleting the
  * row outright, so appointment/payment history (and other clients' data

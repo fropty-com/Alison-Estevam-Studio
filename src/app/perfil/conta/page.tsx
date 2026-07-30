@@ -8,6 +8,7 @@ import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { AccountForm } from '@/components/profile/AccountForm'
 import { DeleteAccountButton } from '@/components/profile/DeleteAccountButton'
 import { WhatsappConsentToggle } from '@/components/profile/WhatsappConsentToggle'
+import { ReminderEmailToggle } from '@/components/profile/ReminderEmailToggle'
 
 export const metadata: Metadata = { title: 'Detalhes da conta — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -19,7 +20,7 @@ export default async function ContaDetalhesPage() {
   const db = await createServiceClient() as any
   const { data: client } = await db
     .from('clients')
-    .select('name, whatsapp, email, consent_whatsapp, created_at')
+    .select('name, whatsapp, email, consent_whatsapp, receive_reminder_emails, created_at')
     .eq('id', session.clientId)
     .single()
 
@@ -43,6 +44,7 @@ export default async function ContaDetalhesPage() {
         </div>
 
         <WhatsappConsentToggle initialConsent={client.consent_whatsapp} />
+        <ReminderEmailToggle initialConsent={client.receive_reminder_emails} />
 
         <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.08em] mb-[36px]">
           Cliente desde {memberSince}.

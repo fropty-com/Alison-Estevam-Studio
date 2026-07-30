@@ -1,8 +1,9 @@
 import { Resend } from 'resend'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { BRAND } from '@/config/brand'
+import { BRAND, BRAND_COLORS } from '@/config/brand'
 import { dateAnchorInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
+import { emailLayout } from './components'
 
 const METHOD_LABEL: Record<string, string> = {
   cash: 'Dinheiro',
@@ -42,26 +43,17 @@ export async function sendReceiptEmail(params: {
   const paidDateLabel = format(dateAnchorInSaoPaulo(paidAtDate), "d 'de' MMM. 'de' yyyy", { locale: ptBR })
   const paidTimeLabel = formatTimeInSaoPaulo(paidAtDate)
 
-  const html = `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recibo</title>
-</head>
-<body style="margin:0;padding:0;background:#1C1C1A;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#1C1C1A;">
-    <tr>
-      <td align="center" style="padding:48px 24px;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#1C1C1A;border:1px solid rgba(245,240,232,0.07);">
-
+  const C = BRAND_COLORS
+  const html = emailLayout({
+    title: 'Recibo',
+    maxWidth: 480,
+    body: `
           <tr>
             <td style="padding:36px 36px 24px;border-bottom:1px solid rgba(245,240,232,0.07);">
               <p style="margin:0 0 4px;font-size:8.5px;letter-spacing:0.4em;text-transform:uppercase;color:rgba(245,240,232,0.28);">
                 Recibo Nº ${receiptNumber}
               </p>
-              <h1 style="margin:0;font-size:24px;font-weight:300;color:#F5F0E8;letter-spacing:0.02em;">
+              <h1 style="margin:0;font-size:24px;font-weight:300;color:${C.offwhite};letter-spacing:0.02em;">
                 ${BRAND.fullName}
               </h1>
               <p style="margin:6px 0 0;font-size:11px;color:rgba(245,240,232,0.4);">
@@ -72,7 +64,7 @@ export async function sendReceiptEmail(params: {
 
           <tr>
             <td style="padding:24px 36px 8px;">
-              <p style="margin:0 0 2px;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:#7A9182;">Pago</p>
+              <p style="margin:0 0 2px;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:${C.sageLight};">Pago</p>
               <p style="margin:0;font-size:12px;color:rgba(245,240,232,0.45);">${paidDateLabel} às ${paidTimeLabel}</p>
             </td>
           </tr>
@@ -106,7 +98,7 @@ export async function sendReceiptEmail(params: {
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;padding-top:12px;border-top:1px solid rgba(245,240,232,0.1);">
                 <tr>
                   <td style="font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(245,240,232,0.4);">Total</td>
-                  <td align="right" style="font-size:20px;color:#D9B761;">${fmt(total)}</td>
+                  <td align="right" style="font-size:20px;color:${C.goldLight};">${fmt(total)}</td>
                 </tr>
               </table>
             </td>
@@ -119,14 +111,8 @@ export async function sendReceiptEmail(params: {
               </p>
               <p style="margin:8px 0 0;font-size:9px;color:rgba(245,240,232,0.18);">ID ${paymentId.slice(0, 8)}</p>
             </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`
+          </tr>`,
+  })
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY)

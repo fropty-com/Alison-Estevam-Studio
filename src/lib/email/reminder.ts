@@ -4,7 +4,7 @@ import { ptBR } from 'date-fns/locale'
 import { BRAND } from '@/config/brand'
 import { emailLayout, emailHeader, emailBody, emailText, emailDetailsBlock, emailButton, emailButtonRow, emailFooter } from './components'
 
-export async function sendConfirmationEmail(params: {
+export async function sendReminderEmail(params: {
   clientName:    string
   clientEmail:   string
   serviceName:   string
@@ -13,21 +13,20 @@ export async function sendConfirmationEmail(params: {
   referenceCode: string
 }) {
   const { clientName, clientEmail, serviceName, date, startTime, referenceCode } = params
-  const formattedDate = format(parseISO(date), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
+  const formattedDate = format(parseISO(date), "EEEE, d 'de' MMMM", { locale: ptBR })
 
   const html = emailLayout({
-    title: 'Agendamento Confirmado',
+    title: 'Lembrete de agendamento',
     body: [
-      emailHeader('ALISON ESTEVAM STUDIO', 'Agendamento confirmado.'),
+      emailHeader('ALISON ESTEVAM STUDIO', 'Seu horário é amanhã.'),
       emailBody([
-        emailText(`Olá, ${clientName}. Seu agendamento foi recebido. Toque no botão abaixo para confirmar sua presença.`),
+        emailText(`Oi, ${clientName}! Passando para lembrar do seu horário amanhã, ${formattedDate}.`),
         emailDetailsBlock('DETALHES', [
           ['Serviço', serviceName],
           ['Data', formattedDate],
           ['Horário', startTime.replace(':', 'h')],
           ['Código', referenceCode],
         ]),
-        emailButton(`${BRAND.siteUrl}/confirmar/${referenceCode}`, 'Confirmar presença', 'primary'),
         emailButtonRow([
           { href: `https://wa.me/${BRAND.whatsapp}`, label: 'Falar no WhatsApp', variant: 'secondary' },
           { href: `${BRAND.siteUrl}/reagendar/${referenceCode}`, label: 'Reagendar', variant: 'ghost' },
@@ -43,15 +42,11 @@ export async function sendConfirmationEmail(params: {
     const { error } = await resend.emails.send({
       from:    `${BRAND.fullName} <${BRAND.emailFrom}>`,
       to:      clientEmail,
-      subject: `Agendamento recebido — ${referenceCode}`,
+      subject: `Lembrete: seu horário é amanhã — ${referenceCode}`,
       html,
     })
-    // The Resend SDK returns { error } instead of throwing for API-level
-    // failures (unverified domain, bad key, invalid recipient) — without
-    // this check those failures were silently swallowed as "sent".
-    if (error) console.error('Failed to send confirmation email:', error)
+    if (error) console.error('Failed to send reminder email:', error)
   } catch (err) {
-    // Email is non-critical — log and continue
-    console.error('Failed to send confirmation email:', err)
+    console.error('Failed to send reminder email:', err)
   }
 }
