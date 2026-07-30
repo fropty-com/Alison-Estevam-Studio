@@ -106,58 +106,103 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto border border-offwhite/[0.07]">
-          <table className="w-full text-left border-collapse min-w-[860px]">
-            <thead>
-              <tr className="bg-offwhite/5 border-b border-offwhite/[0.07]">
-                {['Nome completo', 'Telefone', 'Data de nasc.', 'E-mail', 'VIP', 'Cliente desde', ''].map(h => (
-                  <th key={h} className="px-4 py-3 font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 whitespace-nowrap">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(c => (
-                <tr key={c.id} className="border-b border-offwhite/[0.05] last:border-b-0 hover:bg-offwhite/5 transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <ClientAvatar name={c.name} />
-                      <span className="font-body font-light text-[12.5px] text-offwhite truncate">{c.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="font-data text-[11.5px] text-offwhite/60 whitespace-nowrap">{c.whatsapp}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="font-body font-light text-[11px] text-offwhite/45 whitespace-nowrap">
-                      {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: ptBR }) : '—'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="font-body font-light text-[11px] text-offwhite/45 truncate">{c.email ?? '—'}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <VipToggle id={c.id} vip={c.vip} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
-                      {format(parseISO(c.createdAt), 'MMM yyyy', { locale: ptBR })}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => setOpenId(c.id)}
-                      className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/35 border border-offwhite/[0.12] hover:border-gold/35 hover:text-gold/[0.75] transition-all duration-200"
-                    >
-                      Editar
-                    </button>
-                  </td>
+        <>
+          {/* Desktop/tablet — real table. Below `lg` there isn't enough room
+              next to the sidebar for the ~860px table, so it switches to a
+              card list instead of relying on horizontal scroll alone. */}
+          <div className="hidden lg:block overflow-x-auto border border-offwhite/[0.07]">
+            <table className="w-full text-left border-collapse min-w-[860px]">
+              <thead>
+                <tr className="bg-offwhite/5 border-b border-offwhite/[0.07]">
+                  {['Nome completo', 'Telefone', 'Data de nasc.', 'E-mail', 'VIP', 'Cliente desde', ''].map(h => (
+                    <th key={h} className="px-4 py-3 font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 whitespace-nowrap">
+                      {h}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map(c => (
+                  <tr key={c.id} className="border-b border-offwhite/[0.05] last:border-b-0 hover:bg-offwhite/5 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <ClientAvatar name={c.name} />
+                        <span className="font-body font-light text-[12.5px] text-offwhite truncate">{c.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-data text-[11.5px] text-offwhite/60 whitespace-nowrap">{c.whatsapp}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-body font-light text-[11px] text-offwhite/45 whitespace-nowrap">
+                        {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: ptBR }) : '—'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-body font-light text-[11px] text-offwhite/45 truncate">{c.email ?? '—'}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <VipToggle id={c.id} vip={c.vip} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
+                        {format(parseISO(c.createdAt), 'MMM yyyy', { locale: ptBR })}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => setOpenId(c.id)}
+                        className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/35 border border-offwhite/[0.12] hover:border-gold/35 hover:text-gold/[0.75] transition-all duration-200"
+                      >
+                        Editar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile/tablet — card list, no horizontal scroll needed */}
+          <div className="lg:hidden space-y-[6px]">
+            {filtered.map(c => (
+              <button
+                key={c.id}
+                onClick={() => setOpenId(c.id)}
+                className="w-full text-left bg-offwhite/5 border border-offwhite/[0.07] px-4 py-[14px] hover:border-offwhite/[0.14] transition-colors"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <ClientAvatar name={c.name} />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-body font-light text-[13px] text-offwhite truncate">{c.name}</p>
+                    <p className="font-data text-[10.5px] text-offwhite/45">{c.whatsapp}</p>
+                  </div>
+                  <div onClick={e => e.stopPropagation()} className="shrink-0">
+                    <VipToggle id={c.id} vip={c.vip} />
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 mt-[10px] pt-[10px] border-t border-offwhite/[0.05]">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">E-mail</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/45 truncate">{c.email ?? '—'}</p>
+                  </div>
+                  <div className="shrink-0">
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">Nascimento</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/45 whitespace-nowrap">
+                      {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: ptBR }) : '—'}
+                    </p>
+                  </div>
+                  <div className="shrink-0">
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">Desde</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
+                      {format(parseISO(c.createdAt), 'MMM yyyy', { locale: ptBR })}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </>
       )}
 
       <ClientDetailDrawer clientId={openId} onClose={() => setOpenId(null)} />
