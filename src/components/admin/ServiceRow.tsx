@@ -1,16 +1,19 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { updateService } from '@/app/admin/actions'
+import { useRouter } from 'next/navigation'
+import { updateService, deleteService } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 
-export function ServiceRow({ service }: { service: {
+export function ServiceRow({ service, appointmentCount }: { service: {
   id: string; name: string; description: string | null
   duration: number; price: number; active: boolean; position: number
   hidden_from_list?: boolean
-}}) {
+}, appointmentCount: number }) {
+  const router = useRouter()
   const [pending,   startTransition] = useTransition()
   const [editing,   setEditing]  = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const [price,     setPrice]    = useState(String(service.price))
   const [duration,  setDuration] = useState(String(service.duration))
   const [feedback,  setFeedback] = useState<string | null>(null)
@@ -20,6 +23,14 @@ export function ServiceRow({ service }: { service: {
       const res = await fn()
       if (res?.error) setFeedback(res.error)
       else { setFeedback(null); setEditing(false) }
+    })
+  }
+
+  const handleDelete = () => {
+    startTransition(async () => {
+      const res = await deleteService(service.id)
+      if (res?.error) { setFeedback(res.error); setConfirmDelete(false) }
+      else router.refresh()
     })
   }
 
@@ -73,6 +84,32 @@ export function ServiceRow({ service }: { service: {
             >
               Editar
             </button>
+            {appointmentCount === 0 && (
+              !confirmDelete ? (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
+                >
+                  Excluir
+                </button>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <button
+                    disabled={pending}
+                    onClick={handleDelete}
+                    className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50"
+                  >
+                    {pending ? '…' : 'Confirmar'}
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(false)}
+                    className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )
+            )}
           </div>
         ) : (
           <div className="flex items-center gap-2 shrink-0">

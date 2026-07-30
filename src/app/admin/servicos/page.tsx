@@ -3,6 +3,7 @@ import { format, startOfMonth, endOfMonth, subMonths, parseISO, differenceInDays
 import { ptBR } from 'date-fns/locale'
 import { ServiceRow } from '@/components/admin/ServiceRow'
 import { ServicoCharts } from '@/components/admin/ServicoCharts'
+import { AddServiceForm } from '@/components/admin/AddServiceForm'
 
 export const dynamic = 'force-dynamic'
 
@@ -20,7 +21,7 @@ export default async function ServicosPage() {
   const monthEnd    = format(endOfMonth(now), 'yyyy-MM-dd')
   const sixMonthsAgoStart = format(startOfMonth(subMonths(now, 5)), 'yyyy-MM-dd')
 
-  const [servicesRes, monthApptRes, historyRes, sixMonthApptRes] = await Promise.all([
+  const [servicesRes, monthApptRes, historyRes, sixMonthApptRes, apptCountRes] = await Promise.all([
     db.from('services')
       .select('id, name, slug, description, duration, price, active, position, hidden_from_list')
       .order('position', { ascending: true }),
@@ -43,11 +44,20 @@ export default async function ServicosPage() {
       .eq('status', 'completed')
       .gte('time_slots.date', sixMonthsAgoStart)
       .lte('time_slots.date', monthEnd),
+
+    // contagem total (qualquer status) por serviço — usado só pra saber se é
+    // seguro excluir (sem nenhum vínculo de agendamento, de qualquer época)
+    db.from('appointments').select('service_id'),
   ])
 
   const services  = (servicesRes.data   ?? []) as any[]
   const rawMonth  = (monthApptRes.data  ?? []) as any[]
   const history   = (historyRes.data    ?? []) as any[]
+  const allApptCounts: Record<string, number> = {}
+  for (const a of (apptCountRes.data ?? []) as any[]) {
+    if (!a.service_id) continue
+    allApptCounts[a.service_id] = (allApptCounts[a.service_id] ?? 0) + 1
+  }
   const sixMonth  = (sixMonthApptRes.data ?? []) as any[]
 
   const monthAppts = rawMonth.map(a => {
@@ -256,13 +266,14 @@ export default async function ServicosPage() {
       />
 
       {/* Gestão de serviços */}
-      <section>
-        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
+      <section className="space-y-4">
+        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
           Gerenciar serviços
         </h2>
+        <AddServiceForm />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {services.map((s: any) => (
-            <ServiceRow key={s.id} service={s} />
+            <ServiceRow key={s.id} service={s} appointmentCount={allApptCounts[s.id] ?? 0} />
           ))}
         </div>
       </section>

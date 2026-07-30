@@ -501,6 +501,74 @@ export async function updateService(id: string, data: { name?: string; price?: n
   return { ok: true }
 }
 
+export async function createService(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const name        = (formData.get('name') as string)?.trim()
+  const description = (formData.get('description') as string)?.trim()
+  const duration     = Number(formData.get('duration'))
+  const price        = Number(formData.get('price'))
+  const hiddenFromList = formData.get('hidden_from_list') === 'on'
+
+  if (!name) return { error: 'Nome é obrigatório.' }
+  if (!Number.isFinite(duration) || duration <= 0) return { error: 'Duração inválida.' }
+  if (!Number.isFinite(price) || price < 0) return { error: 'Valor inválido.' }
+
+  const slugBase = name
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+
+  const db = await adminDb()
+
+  const { data: existingSlugs } = await db.from('services').select('slug').ilike('slug', `${slugBase}%`)
+  const takenSlugs = new Set(((existingSlugs ?? []) as { slug: string }[]).map(s => s.slug))
+  let slug = slugBase
+  let suffix = 2
+  while (takenSlugs.has(slug)) { slug = `${slugBase}-${suffix}`; suffix++ }
+
+  const { data: maxPos } = await db.from('services').select('position').order('position', { ascending: false }).limit(1).maybeSingle()
+  const position = (maxPos?.position ?? 0) + 1
+
+  const { data: created, error } = await db
+    .from('services')
+    .insert({
+      name, slug, description: description || null, duration, price,
+      hidden_from_list: hiddenFromList, active: true, position,
+    })
+    .select('id')
+    .single()
+  if (error) return { error: 'Erro ao criar serviço.' }
+
+  await logAction('service.create', 'service', created?.id ?? null, `Criou o serviço "${name}"`, { name, duration, price, hiddenFromList })
+
+  revalidatePath('/admin/servicos')
+  return { ok: true }
+}
+
+export async function deleteService(id: string): Promise<{ ok?: boolean; error?: string }> {
+  const ownerError = await requireOwner()
+  if (ownerError) return ownerError
+
+  const db = await adminDb()
+
+  const { count } = await db.from('appointments').select('id', { count: 'exact', head: true }).eq('service_id', id)
+  if ((count ?? 0) > 0) return { error: 'Este serviço já tem agendamentos e não pode ser excluído — desative-o em vez disso.' }
+
+  const { data: service } = await db.from('services').select('name').eq('id', id).maybeSingle()
+
+  await db.from('service_complements').delete().eq('service_id', id)
+  const { error } = await db.from('services').delete().eq('id', id)
+  if (error) return { error: 'Erro ao excluir serviço.' }
+
+  await logAction('service.delete', 'service', id, `Excluiu o serviço "${service?.name ?? id}"`)
+
+  revalidatePath('/admin/servicos')
+  return { ok: true }
+}
+
 /* ── Blocked Periods ──────────────────────────── */
 
 export async function addBlockedPeriod(formData: FormData) {
