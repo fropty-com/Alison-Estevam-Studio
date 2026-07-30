@@ -30,6 +30,17 @@ function FinanceIcon() {
 function ExportIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M4.5 2h4l3 3v8h-7V2Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" /><path d="M8.5 2v3h3" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" /><path d="M6 8.5v3.5M4.3 10.2 6 8.5l1.7 1.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
+function OperationalIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      {[1.5, 6, 10.5].flatMap((y, i) =>
+        [1.5, 6, 10.5].map((x, j) => (
+          <rect key={`${i}-${j}`} x={x} y={y} width="3" height="3" fill="currentColor" opacity={i === 1 && j === 1 ? 1 : 0.35} />
+        ))
+      )}
+    </svg>
+  )
+}
 function AuditIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="2.5" y="1.5" width="10" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.1" /><line x1="4.5" y1="5" x2="10.5" y2="5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="7.7" x2="10.5" y2="7.7" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /><line x1="4.5" y1="10.4" x2="8.5" y2="10.4" stroke="currentColor" strokeWidth="1" strokeLinecap="round" /></svg>
 }
@@ -65,6 +76,7 @@ const NAV = [
   { href: '/admin/servicos',      label: 'Serviços',      Icon: ServicesIcon,  badge: false, ownerOnly: false },
   { href: '/admin/faturamento',   label: 'Faturamento',   Icon: ReportsIcon,   badge: false, ownerOnly: true  },
   { href: '/admin/financeiro',    label: 'Financeiro',    Icon: FinanceIcon,   badge: false, ownerOnly: true  },
+  { href: '/admin/operacional',   label: 'Operacional',   Icon: OperationalIcon, badge: false, ownerOnly: true },
   { href: '/admin/relatorios',    label: 'Relatórios',    Icon: ExportIcon,    badge: false, ownerOnly: true  },
   { href: '/admin/auditoria',     label: 'Auditoria',     Icon: AuditIcon,     badge: false, ownerOnly: true  },
   { href: '/admin/configuracoes', label: 'Configurações', Icon: SettingsIcon,  badge: false, ownerOnly: true  },

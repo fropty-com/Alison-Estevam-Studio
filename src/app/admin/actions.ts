@@ -372,6 +372,7 @@ export async function createManualAppointment(input: unknown): Promise<{ ok?: bo
       complements_price: complementsPrice,
       total_price:       totalPrice,
       notes:             notes || null,
+      source:            'presencial',
     }).select('id').single(),
     db.from('time_slots').update({ status: 'booked' }).eq('id', slotId),
   ])
