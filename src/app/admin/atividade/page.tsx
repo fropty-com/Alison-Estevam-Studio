@@ -1,12 +1,18 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, parseISO, startOfMonth, endOfMonth } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { cn } from '@/lib/utils'
 import { nowAnchorInSaoPaulo, isTodayInSaoPaulo, isYesterdayInSaoPaulo, todayInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pt'
+import type { Locale } from '@/lib/i18n/locales'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 const CATEGORY_DOT: Record<string, string> = {
   appointment: 'bg-sage/70',
@@ -20,11 +26,11 @@ const CATEGORY_DOT: Record<string, string> = {
   expense: 'bg-error/50',
 }
 
-function dayLabel(dateStr: string) {
+function dayLabel(dateStr: string, locale: Locale, t: Dictionary) {
   const d = parseISO(dateStr)
-  if (isTodayInSaoPaulo(d)) return 'Hoje'
-  if (isYesterdayInSaoPaulo(d)) return 'Ontem'
-  return format(d, "d 'de' MMMM", { locale: ptBR })
+  if (isTodayInSaoPaulo(d)) return t.activity.today
+  if (isYesterdayInSaoPaulo(d)) return t.activity.yesterday
+  return format(d, locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: DATE_FNS_LOCALE[locale] })
 }
 
 export default async function AtividadePage() {
@@ -32,6 +38,8 @@ export default async function AtividadePage() {
   if (role !== 'owner') return <RestrictedAccess />
 
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
 
   const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -77,17 +85,17 @@ export default async function AtividadePage() {
   return (
     <div className="px-6 py-8 space-y-6">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Atividade</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.activity.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.activity.title}</h1>
       </div>
 
       {/* Top serviços do mês */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">Top serviços — este mês</p>
-        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">Mais realizados deste mês</p>
+        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.activity.topServices.title}</p>
+        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">{t.activity.topServices.subtitle}</p>
         {topServices.length === 0 ? (
           <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
-            Nenhum serviço realizado deste mês.
+            {t.activity.topServices.empty}
           </p>
         ) : (
           <div className="space-y-[12px]">
@@ -108,15 +116,15 @@ export default async function AtividadePage() {
 
       {/* Atividade recente */}
       <div>
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">Atividade recente</p>
+        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.activity.recent.title}</p>
         <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">
-          Últimas ações do sistema — {entries.length} registradas
+          {t.activity.recent.subtitle(entries.length)}
         </p>
 
         {groups.length === 0 ? (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
             <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
-              Nenhuma atividade registrada ainda.
+              {t.activity.recent.empty}
             </p>
           </div>
         ) : (
@@ -124,7 +132,7 @@ export default async function AtividadePage() {
             {groups.map(({ day, items }) => (
               <div key={day}>
                 <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
-                  {dayLabel(day)}
+                  {dayLabel(day, locale, t)}
                 </p>
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
                   {items.map(entry => {

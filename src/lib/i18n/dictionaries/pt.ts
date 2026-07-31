@@ -662,6 +662,22 @@ const pt = {
       success: 'Membro adicionado.',
     },
   },
+  activity: {
+    eyebrow: 'Admin',
+    title: 'Atividade',
+    today: 'Hoje',
+    yesterday: 'Ontem',
+    topServices: {
+      title: 'Top serviços — este mês',
+      subtitle: 'Mais realizados deste mês',
+      empty: 'Nenhum serviço realizado deste mês.',
+    },
+    recent: {
+      title: 'Atividade recente',
+      subtitle: (count: number) => `Últimas ações do sistema — ${count} registradas`,
+      empty: 'Nenhuma atividade registrada ainda.',
+    },
+  },
 }
 
 export default pt

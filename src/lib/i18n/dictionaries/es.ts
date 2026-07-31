@@ -664,6 +664,22 @@ const es: Dictionary = {
       success: 'Miembro agregado.',
     },
   },
+  activity: {
+    eyebrow: 'Admin',
+    title: 'Actividad',
+    today: 'Hoy',
+    yesterday: 'Ayer',
+    topServices: {
+      title: 'Top servicios — este mes',
+      subtitle: 'Más realizados este mes',
+      empty: 'Ningún servicio realizado este mes.',
+    },
+    recent: {
+      title: 'Actividad reciente',
+      subtitle: (count: number) => `Últimas acciones del sistema — ${count} registradas`,
+      empty: 'Ninguna actividad registrada todavía.',
+    },
+  },
 }
 
 export default es
