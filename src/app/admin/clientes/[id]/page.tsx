@@ -1,6 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, parseISO } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -8,8 +8,12 @@ import { ClientActions } from '@/components/admin/ClientActions'
 import { EditClientButton } from '@/components/admin/EditClientButton'
 import { LoyaltyCard } from '@/components/admin/LoyaltyCard'
 import { getLoyaltyProgress } from '@/lib/loyalty'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 const STATUS_COLOR: Record<string, string> = {
   pending:   'text-gold',
@@ -18,13 +22,12 @@ const STATUS_COLOR: Record<string, string> = {
   cancelled: 'text-error/50',
   no_show:   'text-error/40',
 }
-const STATUS_LABEL: Record<string, string> = {
-  pending: 'Pendente', confirmed: 'Confirmado', completed: 'Concluído',
-  cancelled: 'Cancelado', no_show: 'No-show',
-}
 
 export default async function ClienteDetailPage({ params }: { params: { id: string } }) {
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const [clientRes, apptsRes] = await Promise.all([
     db.from('clients').select('*').eq('id', params.id).single(),
@@ -47,7 +50,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
     <div className="px-6 py-8">
       {/* Back */}
       <Link href="/admin/clientes" className="inline-flex items-center gap-2 font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/[0.28] hover:text-offwhite/55 transition-colors mb-6">
-        ← Clientes
+        {t.clients.backToClients}
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -68,10 +71,10 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
 
             <div className="space-y-[10px] mb-6">
               {[
-                { label: 'WhatsApp', value: client.whatsapp },
-                { label: 'E-mail',   value: client.email ?? '—' },
-                { label: 'Visitas',  value: `${completed} concluídas / ${total} total` },
-                { label: 'Desde',    value: format(parseISO(client.created_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) },
+                { label: t.clients.detail.whatsapp, value: client.whatsapp },
+                { label: t.clients.detail.email,   value: client.email ?? '—' },
+                { label: t.clients.detail.visitsLabel,  value: t.clients.detail.visits(completed, total) },
+                { label: t.clients.detail.since,    value: format(parseISO(client.created_at), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[2px]">{label}</p>
@@ -98,12 +101,12 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
         {/* History */}
         <div className="lg:col-span-2">
           <h2 className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-            Histórico de agendamentos
+            {t.clients.detail.historyTitle}
           </h2>
 
           {appts.length === 0 ? (
             <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/[0.18] italic">Sem histórico.</p>
+              <p className="font-display font-light text-[18px] text-offwhite/[0.18] italic">{t.clients.detail.noHistory}</p>
             </div>
           ) : (
             <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
@@ -115,13 +118,13 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
                     <div className="flex-1 min-w-0">
                       <p className="font-body font-light text-[12px] text-offwhite mb-[2px]">{svc?.name ?? '—'}</p>
                       <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em]">
-                        {slot?.date ? format(parseISO(slot.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'}
-                        {slot?.start_time ? ` às ${slot.start_time.substring(0, 5)}` : ''}
+                        {slot?.date ? format(parseISO(slot.date), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) : '—'}
+                        {slot?.start_time ? t.clients.detail.at(slot.start_time.substring(0, 5)) : ''}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[a.status] ?? 'text-offwhite/35')}>
-                        {STATUS_LABEL[a.status] ?? a.status}
+                        {t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status}
                       </p>
                       {svc?.price && (
                         <p className="font-data text-[12px] text-offwhite/40 mt-[2px]">R$ {svc.price}</p>

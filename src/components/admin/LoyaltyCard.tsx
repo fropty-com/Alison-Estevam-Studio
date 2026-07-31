@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { redeemLoyaltyReward } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescription, availableRewards }: {
   clientId: string
@@ -11,6 +12,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
   rewardDescription: string
   availableRewards: number
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
@@ -27,13 +29,13 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-3">
-        Fidelidade
+        {t.clients.loyalty.title}
       </p>
 
       {availableRewards > 0 ? (
         <div>
           <p className="font-body font-light text-[13px] text-gold mb-1">
-            {availableRewards > 1 ? `${availableRewards} recompensas disponíveis` : 'Recompensa disponível'}
+            {t.clients.loyalty.rewardsAvailable(availableRewards)}
           </p>
           <p className="font-body font-light text-[11px] text-offwhite/45 mb-4">{rewardDescription}</p>
           {!confirmOpen ? (
@@ -41,7 +43,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
               onClick={() => setConfirmOpen(true)}
               className="w-full py-[10px] font-body font-light text-[8.5px] tracking-[0.28em] uppercase border border-gold/35 bg-gold/10 text-gold hover:bg-gold/15 transition-all duration-200"
             >
-              Resgatar recompensa
+              {t.clients.loyalty.redeem}
             </button>
           ) : (
             <div className="flex items-center gap-2">
@@ -50,7 +52,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
                 onClick={handleRedeem}
                 className="flex-1 py-[9px] font-body font-light text-[8px] tracking-[0.22em] uppercase bg-gold/20 border border-gold/40 text-gold hover:bg-gold/30 transition-all disabled:opacity-40"
               >
-                {pending ? 'Registrando…' : 'Confirmar resgate'}
+                {pending ? t.clients.loyalty.registering : t.clients.loyalty.confirmRedeem}
               </button>
               <button
                 onClick={() => setConfirmOpen(false)}
@@ -66,14 +68,14 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
           <div className="flex items-baseline justify-between mb-2">
             <span className="font-data text-[18px] text-offwhite/70">{progress}<span className="text-offwhite/30 text-[12px]"> / {visitsRequired}</span></span>
             <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-              faltam {visitsRequired - progress}
+              {t.clients.loyalty.remaining(visitsRequired - progress)}
             </span>
           </div>
           <div className="w-full h-[4px] bg-offwhite/5 rounded-none mb-3">
             <div className="h-full bg-sage/45 transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
           <p className="font-body font-light text-[10.5px] text-offwhite/35">
-            Próxima recompensa: <span className="text-offwhite/55">{rewardDescription}</span>
+            {t.clients.loyalty.nextReward} <span className="text-offwhite/55">{rewardDescription}</span>
           </p>
         </div>
       )}

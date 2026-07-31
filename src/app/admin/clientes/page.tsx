@@ -1,9 +1,13 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, differenceInDays, parseISO } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { ClientsTable, type ClientRow } from '@/components/admin/ClientsTable'
 import { AbsentClientsCard } from '@/components/admin/AbsentClientsCard'
 import { nowAnchorInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 interface ClientRecord {
   id: string
@@ -24,6 +28,9 @@ function fmt(value: number) {
 
 export default async function ClientesPage() {
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -120,46 +127,46 @@ export default async function ClientesPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.clients.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">
-          Clientes <span className="text-offwhite/25 text-[22px]">{list.length}</span>
+          {t.clients.title} <span className="text-offwhite/25 text-[22px]">{list.length}</span>
         </h1>
       </div>
 
       {/* Cards do mês */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Novos vs recorrentes</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.cardNewVsReturning}</p>
           <p className="font-data text-[26px] leading-none mb-2">
             <span className="text-sage-light">{novosThisMonth}</span>
             <span className="text-offwhite/25"> / </span>
             <span className="text-offwhite">{recorrentesThisMonth}</span>
           </p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">novos / recorrentes este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.newReturningSub}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Frequência média</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.avgFrequency}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{frequenciaMedia.toFixed(1)}x</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">visitas por cliente este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.avgFrequencySub}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Ticket médio/cliente</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.avgTicket}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(ticketMedioCliente)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">receita por cliente este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.avgTicketSub}</p>
         </div>
       </div>
 
       {/* Aniversariantes deste mês */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">🎂 Aniversariantes deste mês</p>
+        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.clients.birthdaysTitle}</p>
         <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">
-          {birthdaysThisMonth.length} cliente{birthdaysThisMonth.length !== 1 ? 's' : ''} (independe do filtro de período)
+          {t.clients.birthdaysSub(birthdaysThisMonth.length)}
         </p>
         {birthdaysThisMonth.length === 0 ? (
           <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
-            Nenhum aniversariante neste mês.
+            {t.clients.noBirthdays}
           </p>
         ) : (
           <div className="divide-y divide-offwhite/6 -mx-6">
@@ -167,7 +174,7 @@ export default async function ClientesPage() {
               <div key={b.id} className="flex items-center justify-between px-6 py-3">
                 <span className="font-body font-light text-[12px] text-offwhite/70">{b.name}</span>
                 <span className="font-body font-light text-[9px] text-gold/70 tracking-[0.1em]">
-                  {format(parseISO(b.birthDate), "d 'de' MMMM", { locale: ptBR })}
+                  {format(parseISO(b.birthDate), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale })}
                 </span>
               </div>
             ))}
@@ -181,10 +188,10 @@ export default async function ClientesPage() {
       <section>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
-            Retenção
+            {t.clients.retention}
           </h2>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
-            {recurringClients.length} de {clientsWithHistory.length} clientes voltaram · {retentionRate.toFixed(1)}%
+            {t.clients.retentionSub(recurringClients.length, clientsWithHistory.length, retentionRate.toFixed(1))}
           </p>
         </div>
 

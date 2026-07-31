@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 interface Absence {
   id: string
@@ -14,6 +15,7 @@ interface Absence {
 const THRESHOLDS = [15, 30] as const
 
 export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
+  const { t } = useTranslation()
   const [threshold, setThreshold] = useState<typeof THRESHOLDS[number]>(30)
   const filtered = absences.filter(a => a.daysSinceLast >= threshold)
 
@@ -21,22 +23,22 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <div className="flex items-center justify-between mb-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
-          Clientes ausentes
+          {t.clients.absent.title}
         </p>
         <div className="flex gap-[6px]">
-          {THRESHOLDS.map(t => (
+          {THRESHOLDS.map(th => (
             <button
-              key={t}
+              key={th}
               type="button"
-              onClick={() => setThreshold(t)}
+              onClick={() => setThreshold(th)}
               className={cn(
                 'px-3 py-[5px] font-body font-light text-[9px] tracking-[0.1em] transition-all duration-150',
-                threshold === t
+                threshold === th
                   ? 'bg-error text-offwhite'
                   : 'border border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
               )}
             >
-              {t} dias
+              {t.clients.absent.daysSuffix(th)}
             </button>
           ))}
         </div>
@@ -44,7 +46,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
 
       {filtered.length === 0 ? (
         <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
-          Nenhum cliente ausente há {threshold}+ dias.
+          {t.clients.absent.none(threshold)}
         </p>
       ) : (
         <div className="divide-y divide-offwhite/6 -mx-6">
@@ -56,7 +58,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
             >
               <span className="font-body font-light text-[12px] text-offwhite/70">{c.name}</span>
               <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-                {c.daysSinceLast}d sem voltar <span className="text-offwhite/[0.18]">· costuma voltar a cada {c.avgGap}d</span>
+                {t.clients.absent.daysSinceLast(c.daysSinceLast)} <span className="text-offwhite/[0.18]">{t.clients.absent.usuallyReturns(c.avgGap)}</span>
               </span>
             </Link>
           ))}

@@ -3,8 +3,10 @@
 import { useState, useTransition } from 'react'
 import { updateClientNotes, toggleClientVip } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; notes: string }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [noteText, setNoteText]  = useState(notes)
   const [feedback, setFeedback]  = useState<string | null>(null)
@@ -31,17 +33,17 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
             : 'border-offwhite/10 text-offwhite/30 hover:border-gold/25 hover:text-gold/60'
         )}
       >
-        {vip ? '★ Cliente VIP' : '☆ Marcar como VIP'}
+        {vip ? t.clients.actions.vipMember : t.clients.actions.markVip}
       </button>
 
       {/* Notes */}
       <div>
-        <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[6px]">Notas internas</p>
+        <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[6px]">{t.clients.actions.internalNotes}</p>
         <textarea
           value={noteText}
           onChange={e => setNoteText(e.target.value)}
           rows={3}
-          placeholder="Preferências, observações, histórico relevante…"
+          placeholder={t.clients.actions.notesPlaceholder}
           className={cn(
             'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/70',
             'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
@@ -53,7 +55,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           onClick={() => act(() => updateClientNotes(id, noteText))}
           className="mt-2 px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/10 border border-sage/[0.22] text-sage-light hover:bg-sage/20 transition-all duration-200 disabled:opacity-40"
         >
-          {pending ? 'Salvando…' : 'Salvar notas'}
+          {pending ? t.clients.actions.saving : t.clients.actions.saveNotes}
         </button>
       </div>
 

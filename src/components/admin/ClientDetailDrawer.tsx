@@ -2,12 +2,15 @@
 
 import { useEffect, useState, useCallback, useTransition } from 'react'
 import { format, parseISO } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { refundPayment } from '@/app/admin/actions'
 import { ClientActions } from './ClientActions'
 import { EditClientButton } from './EditClientButton'
 import { LoyaltyCard } from './LoyaltyCard'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 interface ClientDetail {
   id: string
@@ -44,10 +47,6 @@ const STATUS_COLOR: Record<string, string> = {
   cancelled: 'text-error/50',
   no_show:   'text-error/40',
 }
-const STATUS_LABEL: Record<string, string> = {
-  pending: 'Pendente', confirmed: 'Confirmado', completed: 'Concluído',
-  cancelled: 'Cancelado', no_show: 'No-show',
-}
 
 function CloseIcon() {
   return (
@@ -59,6 +58,8 @@ function CloseIcon() {
 }
 
 export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | null; onClose: () => void }) {
+  const { t, locale } = useTranslation()
+  const dateLocale = DATE_FNS_LOCALE[locale]
   const [client, setClient] = useState<ClientDetail | null>(null)
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [loyalty, setLoyalty] = useState<LoyaltyProgress | null>(null)
@@ -69,7 +70,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
   const [refunding, startRefundTransition] = useTransition()
 
   const handleRefund = (paymentId: string) => {
-    if (!refundReason.trim()) { setRefundError('Informe o motivo do estorno.'); return }
+    if (!refundReason.trim()) { setRefundError(t.clients.detail.refundReasonRequired); return }
     startRefundTransition(async () => {
       const res = await refundPayment(paymentId, refundReason)
       if (res?.error) { setRefundError(res.error); return }
@@ -119,10 +120,10 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
         )}
       >
         <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-5 bg-charcoal border-b border-offwhite/[0.07]">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">Cliente</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">{t.clients.detail.eyebrow}</p>
           <button
             onClick={onClose}
-            aria-label="Fechar"
+            aria-label={t.clients.detail.close}
             className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/40 hover:text-offwhite transition-colors border border-offwhite/[0.12] hover:border-offwhite/30"
           >
             <CloseIcon />
@@ -131,9 +132,9 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
 
         <div className="p-6">
           {loading && !client ? (
-            <p className="font-body font-light text-[12px] text-offwhite/30 italic text-center py-10">Carregando…</p>
+            <p className="font-body font-light text-[12px] text-offwhite/30 italic text-center py-10">{t.clients.detail.loading}</p>
           ) : !client ? (
-            <p className="font-body font-light text-[12px] text-error/60 italic text-center py-10">Não foi possível carregar o cliente.</p>
+            <p className="font-body font-light text-[12px] text-error/60 italic text-center py-10">{t.clients.detail.loadError}</p>
           ) : (
             <>
               <div className="flex items-center justify-between gap-2 mb-5">
@@ -155,11 +156,11 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
 
               <div className="space-y-[10px] mb-6">
                 {[
-                  { label: 'WhatsApp', value: client.whatsapp },
-                  { label: 'E-mail', value: client.email ?? '—' },
-                  { label: 'Data de nascimento', value: client.birthDate ? format(parseISO(client.birthDate), "d 'de' MMMM", { locale: ptBR }) : '—' },
-                  { label: 'Visitas', value: `${history.filter(h => h.status === 'completed').length} concluídas / ${history.length} total` },
-                  { label: 'Desde', value: format(parseISO(client.createdAt), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) },
+                  { label: t.clients.detail.whatsapp, value: client.whatsapp },
+                  { label: t.clients.detail.email, value: client.email ?? '—' },
+                  { label: t.clients.detail.birthDate, value: client.birthDate ? format(parseISO(client.birthDate), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale }) : '—' },
+                  { label: t.clients.detail.visitsLabel, value: t.clients.detail.visits(history.filter(h => h.status === 'completed').length, history.length) },
+                  { label: t.clients.detail.since, value: format(parseISO(client.createdAt), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) },
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[2px]">{label}</p>
@@ -185,12 +186,12 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
               )}
 
               <h3 className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-                Histórico de agendamentos
+                {t.clients.detail.historyTitle}
               </h3>
 
               {history.length === 0 ? (
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 text-center">
-                  <p className="font-display font-light text-[15px] text-offwhite/[0.18] italic">Sem histórico.</p>
+                  <p className="font-display font-light text-[15px] text-offwhite/[0.18] italic">{t.clients.detail.noHistory}</p>
                 </div>
               ) : (
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
@@ -200,13 +201,13 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                         <div className="flex-1 min-w-0">
                           <p className="font-body font-light text-[12px] text-offwhite mb-[2px]">{h.serviceName}</p>
                           <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em]">
-                            {h.date ? format(parseISO(h.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : '—'}
-                            {h.startTime ? ` às ${h.startTime}` : ''}
+                            {h.date ? format(parseISO(h.date), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) : '—'}
+                            {h.startTime ? t.clients.detail.at(h.startTime) : ''}
                           </p>
                         </div>
                         <div className="text-right shrink-0">
                           <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[h.status] ?? 'text-offwhite/35')}>
-                            {STATUS_LABEL[h.status] ?? h.status}
+                            {t.dashboard.status[h.status as keyof typeof t.dashboard.status] ?? h.status}
                           </p>
                           {h.servicePrice != null && (
                             <p className="font-data text-[12px] text-offwhite/40 mt-[2px]">R$ {h.servicePrice}</p>
@@ -217,7 +218,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                       {h.paymentId && (
                         <div className="mt-2 pt-2 border-t border-offwhite/[0.05]">
                           {h.paymentRefundedAt ? (
-                            <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-error/50">Pagamento estornado</p>
+                            <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-error/50">{t.clients.detail.paymentRefunded}</p>
                           ) : refundingPaymentId === h.paymentId ? (
                             <div className="flex items-center gap-2">
                               <input
@@ -225,7 +226,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                                 autoFocus
                                 value={refundReason}
                                 onChange={e => { setRefundReason(e.target.value); setRefundError(null) }}
-                                placeholder="Motivo do estorno"
+                                placeholder={t.clients.detail.refundReasonPlaceholder}
                                 className="flex-1 bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-[11px] px-2 py-1 outline-none focus:border-gold/50 transition-colors"
                               />
                               <button
@@ -233,7 +234,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                                 onClick={() => handleRefund(h.paymentId!)}
                                 className="px-2 py-1 font-body font-light text-[8px] tracking-[0.2em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50 shrink-0"
                               >
-                                {refunding ? '…' : 'Confirmar'}
+                                {refunding ? '…' : t.clients.detail.confirm}
                               </button>
                               <button
                                 onClick={() => { setRefundingPaymentId(null); setRefundReason(''); setRefundError(null) }}
@@ -247,7 +248,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                               onClick={() => setRefundingPaymentId(h.paymentId)}
                               className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors"
                             >
-                              Estornar pagamento
+                              {t.clients.detail.refundPayment}
                             </button>
                           )}
                           {refundingPaymentId === h.paymentId && refundError && (

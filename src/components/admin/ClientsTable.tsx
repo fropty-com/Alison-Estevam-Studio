@@ -2,10 +2,13 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import { format, parseISO } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { toggleClientVip } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 import { ClientDetailDrawer } from './ClientDetailDrawer'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 export interface ClientRow {
   id: string
@@ -71,6 +74,8 @@ function VipToggle({ id, vip }: { id: string; vip: boolean }) {
 }
 
 export function ClientsTable({ clients }: { clients: ClientRow[] }) {
+  const { t, locale } = useTranslation()
+  const dateLocale = DATE_FNS_LOCALE[locale]
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState<string | null>(null)
 
@@ -94,7 +99,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Buscar por nome, WhatsApp ou e-mail…"
+          placeholder={t.clients.table.searchPlaceholder}
           className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
         />
       </div>
@@ -102,7 +107,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
       {filtered.length === 0 ? (
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
           <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
-            {query ? 'Nenhum cliente encontrado.' : 'Nenhum cliente cadastrado.'}
+            {query ? t.clients.table.noneFound : t.clients.table.noneRegistered}
           </p>
         </div>
       ) : (
@@ -114,7 +119,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
             <table className="w-full text-left border-collapse min-w-[860px]">
               <thead>
                 <tr className="bg-offwhite/5 border-b border-offwhite/[0.07]">
-                  {['Nome completo', 'Telefone', 'Data de nasc.', 'E-mail', 'VIP', 'Cliente desde', ''].map(h => (
+                  {[t.clients.table.colName, t.clients.table.colPhone, t.clients.table.colBirthDate, t.clients.table.colEmail, t.clients.table.colVip, t.clients.table.colSince, ''].map(h => (
                     <th key={h} className="px-4 py-3 font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 whitespace-nowrap">
                       {h}
                     </th>
@@ -135,7 +140,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                     </td>
                     <td className="px-4 py-3">
                       <span className="font-body font-light text-[11px] text-offwhite/45 whitespace-nowrap">
-                        {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: ptBR }) : '—'}
+                        {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: dateLocale }) : '—'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -146,7 +151,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                     </td>
                     <td className="px-4 py-3">
                       <span className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
-                        {format(parseISO(c.createdAt), 'MMM yyyy', { locale: ptBR })}
+                        {format(parseISO(c.createdAt), 'MMM yyyy', { locale: dateLocale })}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -154,7 +159,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                         onClick={() => setOpenId(c.id)}
                         className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/35 border border-offwhite/[0.12] hover:border-gold/35 hover:text-gold/[0.75] transition-all duration-200"
                       >
-                        Editar
+                        {t.clients.table.edit}
                       </button>
                     </td>
                   </tr>
@@ -183,19 +188,19 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                 </div>
                 <div className="flex items-center gap-4 mt-[10px] pt-[10px] border-t border-offwhite/[0.05]">
                   <div className="min-w-0 flex-1">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">E-mail</p>
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.emailLabel}</p>
                     <p className="font-body font-light text-[10.5px] text-offwhite/45 truncate">{c.email ?? '—'}</p>
                   </div>
                   <div className="shrink-0">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">Nascimento</p>
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.birthLabel}</p>
                     <p className="font-body font-light text-[10.5px] text-offwhite/45 whitespace-nowrap">
-                      {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: ptBR }) : '—'}
+                      {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: dateLocale }) : '—'}
                     </p>
                   </div>
                   <div className="shrink-0">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">Desde</p>
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.sinceLabel}</p>
                     <p className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
-                      {format(parseISO(c.createdAt), 'MMM yyyy', { locale: ptBR })}
+                      {format(parseISO(c.createdAt), 'MMM yyyy', { locale: dateLocale })}
                     </p>
                   </div>
                 </div>
