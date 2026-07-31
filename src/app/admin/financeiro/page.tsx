@@ -1,6 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, subMonths, addDays, eachDayOfInterval, parseISO, differenceInDays } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import Link from 'next/link'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
@@ -9,8 +9,12 @@ import { ExpenseList, type ExpenseRow } from '@/components/admin/ExpenseList'
 import { FinanceCharts } from '@/components/admin/FinanceCharts'
 import { cn } from '@/lib/utils'
 import { nowAnchorInSaoPaulo, monthKeyInSaoPaulo, todayInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 type Regime = 'caixa' | 'competencia'
 
@@ -25,6 +29,9 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
   const regime: Regime = searchParams.regime === 'competencia' ? 'competencia' : 'caixa'
 
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const now         = nowAnchorInSaoPaulo()
   const today       = format(now, 'yyyy-MM-dd')
@@ -134,7 +141,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
     const revenue = monthlyRevenue[key] ?? 0
     const expenses = monthlyExpenses[key] ?? 0
     return {
-      label: format(m, 'MMM', { locale: ptBR }).replace('.', ''),
+      label: format(m, 'MMM', { locale: dateLocale }).replace('.', ''),
       revenue,
       expenses,
       profit: revenue - expenses,
@@ -171,10 +178,10 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
 
   // ── Contas atrasadas (aging) ──
   const agingBuckets = [
-    { label: '1–15 dias', min: 1, max: 15, total: 0, count: 0 },
-    { label: '16–30 dias', min: 16, max: 30, total: 0, count: 0 },
-    { label: '31–60 dias', min: 31, max: 60, total: 0, count: 0 },
-    { label: '60+ dias', min: 61, max: Infinity, total: 0, count: 0 },
+    { label: t.finance.agingBuckets[0], min: 1, max: 15, total: 0, count: 0 },
+    { label: t.finance.agingBuckets[1], min: 16, max: 30, total: 0, count: 0 },
+    { label: t.finance.agingBuckets[2], min: 31, max: 60, total: 0, count: 0 },
+    { label: t.finance.agingBuckets[3], min: 61, max: Infinity, total: 0, count: 0 },
   ]
   let piorAging: { description: string; daysOverdue: number } | null = null
   for (const e of unpaidExpenses) {
@@ -214,22 +221,22 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
     isFixed: e.is_fixed,
     dueDate: e.due_date,
     paidDate: e.paid_date,
-    dueLabel: format(parseISO(e.due_date), "d 'de' MMM", { locale: ptBR }),
+    dueLabel: format(parseISO(e.due_date), locale === 'pt' ? "d 'de' MMM" : 'MMM d', { locale: dateLocale }),
   }))
 
-  const monthLabel = format(now, "MMMM 'de' yyyy", { locale: ptBR })
+  const monthLabel = format(now, locale === 'pt' ? "MMMM 'de' yyyy" : 'MMMM yyyy', { locale: dateLocale })
 
   return (
     <div className="px-6 py-8 space-y-10">
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Financeiro</h1>
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.finance.eyebrow}</p>
+          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.finance.title}</h1>
           <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
         </div>
         <div>
-          <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/30 mb-[6px]">Regime contábil</p>
+          <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/30 mb-[6px]">{t.finance.accountingRegime}</p>
           <div className="flex border border-offwhite/[0.14] h-[34px] p-[2px]">
             {(['caixa', 'competencia'] as Regime[]).map(r => (
               <Link
@@ -240,7 +247,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
                   regime === r ? 'bg-gold text-charcoal-deep' : 'text-offwhite/50 hover:text-offwhite'
                 )}
               >
-                {r === 'caixa' ? 'Caixa' : 'Competência'}
+                {r === 'caixa' ? t.finance.cash : t.finance.accrual}
               </Link>
             ))}
           </div>
@@ -250,111 +257,111 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       {/* Cards principais */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Despesas ({regime === 'caixa' ? 'pagas' : 'competência'}) deste mês</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.expensesTitle(regime === 'caixa' ? t.finance.cards.paid : t.finance.cards.accrualLabel)}</p>
           <p className="font-data text-[26px] text-error/80 leading-none mb-2">{fmt(despesasThis)}</p>
           <p className={cn('font-body font-light text-[9px] tracking-[0.12em]', despesasThis >= despesasLast ? 'text-error/60' : 'text-sage-light')}>
-            {despesasLast > 0 ? `${despesasThis >= despesasLast ? '↑' : '↓'} ${Math.abs(((despesasThis - despesasLast) / despesasLast) * 100).toFixed(1)}% vs mês anterior` : 'Sem variação'}
+            {despesasLast > 0 ? t.finance.cards.vsLastMonth(despesasThis >= despesasLast ? '↑' : '↓', Math.abs(((despesasThis - despesasLast) / despesasLast) * 100).toFixed(1)) : t.finance.cards.noVariation}
           </p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Lucro líquido</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.netProfit}</p>
           <p className={cn('font-data text-[26px] leading-none mb-2', lucroLiquido >= 0 ? 'text-sage-light' : 'text-error/70')}>{fmt(lucroLiquido)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">receita líquida − despesas</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.netProfitSub}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Margem operacional</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.operatingMargin}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{margemOperacional.toFixed(0)}%</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {receitaLiquida > 0 ? ((despesasThis / receitaLiquida) * 100).toFixed(0) : '0'}% das despesas sobre receita
+            {t.finance.cards.operatingMarginSub(receitaLiquida > 0 ? ((despesasThis / receitaLiquida) * 100).toFixed(0) : '0')}
           </p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">A receber em aberto</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.receivable}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(aReceber)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{receivable.length} agendamento{receivable.length !== 1 ? 's' : ''} pendente{receivable.length !== 1 ? 's' : ''}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.receivableSub(receivable.length)}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">A pagar em aberto</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.payable}</p>
           <p className="font-data text-[26px] text-error/80 leading-none mb-2">{fmt(aPagar)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{unpaidExpenses.length} conta{unpaidExpenses.length !== 1 ? 's' : ''} pendente{unpaidExpenses.length !== 1 ? 's' : ''}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.payableSub(unpaidExpenses.length)}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Receita líquida</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.netRevenue}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(receitaLiquida)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">bruta {fmt(grossThis)} · desc {fmt(discountsThis)}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.netRevenueSub(fmt(grossThis), fmt(discountsThis))}</p>
         </div>
       </div>
 
       {/* Insights */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Maior despesa</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.finance.insights.biggestExpense}</p>
           {maiorDespesa ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{maiorDespesa.description}</p>
               <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(Number(maiorDespesa.amount))}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.insights.noData}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Categoria que mais cresceu</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.finance.insights.fastestGrowingCategory}</p>
           {categoriaQueMaisCresceu && categoriaQueMaisCresceu.diff > 0 ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{categoriaQueMaisCresceu.category}</p>
               <p className="font-body font-light text-[9px] text-error/60 tracking-[0.1em]">+{fmt(categoriaQueMaisCresceu.diff)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem crescimento.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.insights.noGrowth}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Mês mais lucrativo (6m)</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.finance.insights.mostProfitableMonth}</p>
           {mesMaisLucrativo ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 capitalize">{mesMaisLucrativo.label}</p>
               <p className="font-body font-light text-[9px] text-sage-light tracking-[0.1em]">{fmt(mesMaisLucrativo.profit)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.insights.noData}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Pior aging</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.finance.insights.worstAging}</p>
           {piorAging ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{piorAging.description}</p>
-              <p className="font-body font-light text-[9px] text-error/60 tracking-[0.1em]">{piorAging.daysOverdue}d atrasada</p>
+              <p className="font-body font-light text-[9px] text-error/60 tracking-[0.1em]">{t.finance.insights.daysOverdue(piorAging.daysOverdue)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Nenhuma conta atrasada.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.insights.noOverdue}</p>}
         </div>
       </div>
 
       {/* DRE Simplificado */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 max-w-[440px]">
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">DRE Simplificado</p>
+        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.finance.dre.title}</p>
         <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-5">
-          Demonstrativo de resultado deste mês · regime de {regime === 'caixa' ? 'caixa' : 'competência'}
+          {t.finance.dre.subtitle(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}
         </p>
         <div className="space-y-[10px]">
           <div className="flex items-center justify-between">
-            <span className="font-body font-light text-[11px] text-offwhite/60">Receita Bruta</span>
+            <span className="font-body font-light text-[11px] text-offwhite/60">{t.finance.dre.grossRevenue}</span>
             <span className="font-data text-[13px] text-sage-light">{fmt(grossThis)}</span>
           </div>
           <div className="flex items-center justify-between pl-4">
-            <span className="font-body font-light text-[10px] text-offwhite/35">(−) Descontos</span>
+            <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.discounts}</span>
             <span className="font-data text-[12px] text-error/60">− {fmt(discountsThis)}</span>
           </div>
           <div className="flex items-center justify-between pt-[6px] border-t border-offwhite/[0.07]">
-            <span className="font-body font-light text-[11px] text-offwhite/70">Receita Líquida</span>
+            <span className="font-body font-light text-[11px] text-offwhite/70">{t.finance.dre.netRevenue}</span>
             <span className="font-data text-[13px] text-offwhite">{fmt(receitaLiquida)}</span>
           </div>
           <div className="flex items-center justify-between pl-4">
-            <span className="font-body font-light text-[10px] text-offwhite/35">(−) Despesas ({regime === 'caixa' ? 'caixa' : 'competência'})</span>
+            <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.expenses(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}</span>
             <span className="font-data text-[12px] text-error/60">− {fmt(despesasThis)}</span>
           </div>
           <div className="flex items-center justify-between pt-[10px] border-t border-offwhite/[0.14]">
-            <span className="font-body font-medium text-[12px] text-offwhite">Resultado</span>
+            <span className="font-body font-medium text-[12px] text-offwhite">{t.finance.dre.result}</span>
             <span className={cn('font-data text-[16px]', lucroLiquido >= 0 ? 'text-sage-light' : 'text-error/70')}>{fmt(lucroLiquido)}</span>
           </div>
         </div>
@@ -373,11 +380,11 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       {/* Contas atrasadas (aging) */}
       <section>
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
-          Contas atrasadas (aging)
+          {t.finance.agingTitle}
         </h2>
         {!hasOverdue ? (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
-            <p className="font-body font-light text-[12px] text-sage-light">Nenhuma conta atrasada — parabéns!</p>
+            <p className="font-body font-light text-[12px] text-sage-light">{t.finance.noOverdueAccounts}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -385,7 +392,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
               <div key={b.label} className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
                 <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/30 mb-3">{b.label}</p>
                 <p className={cn('font-data text-[22px] leading-none mb-1', b.count > 0 ? 'text-error/75' : 'text-offwhite/30')}>{fmt(b.total)}</p>
-                <p className="font-body font-light text-[9px] text-offwhite/25">{b.count} conta{b.count !== 1 ? 's' : ''}</p>
+                <p className="font-body font-light text-[9px] text-offwhite/25">{t.finance.accountsCount(b.count)}</p>
               </div>
             ))}
           </div>
@@ -395,25 +402,25 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       {/* Próximos vencimentos */}
       <section>
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-1">
-          Próximos vencimentos
+          {t.finance.upcomingTitle}
         </h2>
         <p className="font-body font-light text-[9px] text-offwhite/[0.22] tracking-[0.1em] mb-4">
-          A partir de hoje, em buckets de 7, 15 e 30 dias
+          {t.finance.upcomingSub}
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {upcomingBuckets.map(b => (
             <div key={b.days} className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-              <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/30 mb-4">Próximos {b.days} dias</p>
+              <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/30 mb-4">{t.finance.nextDays(b.days)}</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="font-body font-light text-[10px] text-sage-light tracking-[0.1em] uppercase">A receber</span>
+                <span className="font-body font-light text-[10px] text-sage-light tracking-[0.1em] uppercase">{t.finance.receivableLabel}</span>
                 <span className="font-data text-[14px] text-offwhite">{fmt(b.aReceber)}</span>
               </div>
-              <p className="font-body font-light text-[8.5px] text-offwhite/25 mb-3">{b.aReceberCount} conta(s)</p>
+              <p className="font-body font-light text-[8.5px] text-offwhite/25 mb-3">{t.finance.accountsParens(b.aReceberCount)}</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="font-body font-light text-[10px] text-error/70 tracking-[0.1em] uppercase">A pagar</span>
+                <span className="font-body font-light text-[10px] text-error/70 tracking-[0.1em] uppercase">{t.finance.payableLabel}</span>
                 <span className="font-data text-[14px] text-offwhite">{fmt(b.aPagar)}</span>
               </div>
-              <p className="font-body font-light text-[8.5px] text-offwhite/25">{b.aPagarCount} conta(s)</p>
+              <p className="font-body font-light text-[8.5px] text-offwhite/25">{t.finance.accountsParens(b.aPagarCount)}</p>
             </div>
           ))}
         </div>
@@ -422,13 +429,13 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       {/* Gestão de despesas */}
       <section>
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
-          Despesas
+          {t.finance.expensesSection}
         </h2>
         <div className="space-y-4">
           <ExpenseForm />
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
             <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-2">
-              Lançamentos recentes
+              {t.finance.recentEntries}
             </p>
             <ExpenseList expenses={expenseRows} />
           </div>

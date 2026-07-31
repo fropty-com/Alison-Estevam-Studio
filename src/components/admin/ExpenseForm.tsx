@@ -3,10 +3,12 @@
 import { useState, useTransition } from 'react'
 import { createExpense } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 const CATEGORY_SUGGESTIONS = ['Aluguel', 'Produtos', 'Contas', 'Marketing', 'Equipamentos', 'Equipe', 'Outros']
 
 export function ExpenseForm() {
+  const { t } = useTranslation()
   const [pending,  startTransition] = useTransition()
   const [feedback, setFeedback]     = useState<string | null>(null)
   const [success,  setSuccess]      = useState(false)
@@ -38,36 +40,36 @@ export function ExpenseForm() {
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-        Nova despesa
+        {t.finance.form.title}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="col-span-2">
-          <label className={labelCls}>Descrição</label>
-          <input type="text" name="description" required placeholder="Ex: Aluguel de julho" className={inputCls} />
+          <label className={labelCls}>{t.finance.form.description}</label>
+          <input type="text" name="description" required placeholder={t.finance.form.descriptionPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Categoria</label>
-          <input type="text" name="category" required list="expense-categories" placeholder="Ex: Aluguel" className={inputCls} />
+          <label className={labelCls}>{t.finance.form.category}</label>
+          <input type="text" name="category" required list="expense-categories" placeholder={t.finance.form.categoryPlaceholder} className={inputCls} />
           <datalist id="expense-categories">
             {CATEGORY_SUGGESTIONS.map(c => <option key={c} value={c} />)}
           </datalist>
         </div>
         <div>
-          <label className={labelCls}>Valor R$</label>
-          <input type="number" name="amount" required min="0.01" step="0.01" placeholder="150,00" className={inputCls} />
+          <label className={labelCls}>{t.finance.form.amount}</label>
+          <input type="number" name="amount" required min="0.01" step="0.01" placeholder={t.finance.form.amountPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Vencimento</label>
+          <label className={labelCls}>{t.finance.form.dueDate}</label>
           <input type="date" name="due_date" required className={inputCls} />
         </div>
         <div className="flex items-end gap-4 col-span-2 sm:col-span-1">
           <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/50 cursor-pointer">
             <input type="checkbox" checked={isFixed} onChange={e => setIsFixed(e.target.checked)} className="accent-gold" />
-            Fixa
+            {t.finance.form.fixed}
           </label>
           <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/50 cursor-pointer">
             <input type="checkbox" checked={paidNow} onChange={e => setPaidNow(e.target.checked)} className="accent-gold" />
-            Já paga
+            {t.finance.form.alreadyPaid}
           </label>
         </div>
         <div className="col-span-2 sm:col-span-4 flex items-center gap-3 mt-1">
@@ -81,9 +83,9 @@ export function ExpenseForm() {
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {pending ? 'Salvando…' : 'Adicionar despesa'}
+            {pending ? t.finance.form.saving : t.finance.form.submit}
           </button>
-          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">Despesa registrada.</p>}
+          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">{t.finance.form.registered}</p>}
           {feedback && <p className="font-body font-light text-[9px] tracking-[0.2em] text-error/70">{feedback}</p>}
         </div>
       </form>

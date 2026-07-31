@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { markExpensePaid, deleteExpense } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface ExpenseRow {
   id: string
@@ -21,6 +22,7 @@ function fmt(value: number) {
 }
 
 export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
 
@@ -32,7 +34,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
   }
 
   const remove = (id: string, description: string) => {
-    const ok = window.confirm(`Excluir a despesa "${description}"?`)
+    const ok = window.confirm(t.finance.list.confirmDelete(description))
     if (!ok) return
     startTransition(async () => {
       await deleteExpense(id)
@@ -43,7 +45,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
   if (expenses.length === 0) {
     return (
       <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
-        Nenhuma despesa registrada.
+        {t.finance.list.none}
       </p>
     )
   }
@@ -58,7 +60,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
             <div className="flex-1 min-w-0">
               <p className="font-body font-light text-[12px] text-offwhite/75 truncate">{e.description}</p>
               <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-                {e.category} · {e.isFixed ? 'fixa' : 'variável'} · vence {e.dueLabel}
+                {e.category} · {e.isFixed ? t.finance.list.fixed : t.finance.list.variable} · {t.finance.list.dueLabel(e.dueLabel)}
               </p>
             </div>
             <span className="font-data text-[13px] text-offwhite/65 shrink-0">{fmt(e.amount)}</span>
@@ -75,13 +77,13 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
                     : 'border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
               )}
             >
-              {paid ? 'Paga' : overdue ? 'Atrasada' : 'Marcar paga'}
+              {paid ? t.finance.list.paid : overdue ? t.finance.list.overdue : t.finance.list.markPaid}
             </button>
             <button
               type="button"
               disabled={pending}
               onClick={() => remove(e.id, e.description)}
-              aria-label="Excluir despesa"
+              aria-label={t.finance.list.deleteLabel}
               className="shrink-0 text-offwhite/25 hover:text-error/70 transition-colors text-[13px] disabled:opacity-40"
             >
               ✕
