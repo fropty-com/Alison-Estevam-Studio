@@ -1,6 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, parseISO } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import Link from 'next/link'
 import { AvailabilityRuleRow } from '@/components/admin/AvailabilityRuleRow'
 import { BlockedPeriodForm } from '@/components/admin/BlockedPeriodForm'
@@ -14,18 +14,13 @@ import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { removeBlockedPeriod } from '@/app/admin/actions'
 import { getAdminRole, getAdminUser } from '@/lib/admin-auth'
 import { cn } from '@/lib/utils'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pt'
 
 export const dynamic = 'force-dynamic'
 
-const WEEKDAY = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
-
-const METHOD_LABEL: Record<string, string> = {
-  cash: 'Dinheiro',
-  pix: 'Pix',
-  debit_card: 'Cartão de Débito',
-  credit_card: 'Cartão de Crédito',
-  courtesy: 'Cortesia',
-}
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 const METHOD_ORDER = ['cash', 'pix', 'debit_card', 'credit_card', 'courtesy']
 
@@ -54,15 +49,17 @@ function ArrowIcon() {
   return <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9 3M9 3H4M9 3v5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 }
 
-const QUICK_LINKS = [
-  { href: '#horarios',  Icon: ClockIcon,    label: 'Horários',   desc: 'Funcionamento por dia da semana' },
-  { href: '#bloqueios', Icon: LockIcon,     label: 'Bloqueios',  desc: 'Folgas e períodos fechados' },
-  { href: '#taxas',     Icon: CurrencyIcon, label: 'Taxas',      desc: 'Taxas de pagamento e chave Pix' },
-  { href: '#fidelidade',Icon: StarIcon,     label: 'Fidelidade', desc: 'Recompensa por visitas' },
-  { href: '#cupons',    Icon: TagIcon,      label: 'Cupons',     desc: 'Descontos promocionais' },
-  { href: '#equipe',    Icon: TeamIcon,     label: 'Equipe',     desc: 'Quem tem acesso ao painel' },
-  { href: '/admin/servicos', Icon: ScissorsIcon, label: 'Serviços', desc: 'Adicionar, editar e remover' },
-]
+function getQuickLinks(t: Dictionary) {
+  return [
+    { href: '#horarios',  Icon: ClockIcon,    ...t.settings.quickLinks.hours },
+    { href: '#bloqueios', Icon: LockIcon,     ...t.settings.quickLinks.blocked },
+    { href: '#taxas',     Icon: CurrencyIcon, ...t.settings.quickLinks.fees },
+    { href: '#fidelidade',Icon: StarIcon,     ...t.settings.quickLinks.loyalty },
+    { href: '#cupons',    Icon: TagIcon,      ...t.settings.quickLinks.coupons },
+    { href: '#equipe',    Icon: TeamIcon,     ...t.settings.quickLinks.staff },
+    { href: '/admin/servicos', Icon: ScissorsIcon, ...t.settings.quickLinks.services },
+  ]
+}
 
 function SectionCard({ id, icon, title, children }: { id: string; icon: React.ReactNode; title: string; children: React.ReactNode }) {
   return (
@@ -86,6 +83,10 @@ export default async function ConfiguracoesPage() {
 
   const currentUser = await getAdminUser()
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
+  const QUICK_LINKS = getQuickLinks(t)
 
   const [rulesRes, blockedRes, feesRes, staffRes, loyaltyRes, couponsRes] = await Promise.all([
     db.from('availability_rules').select('*').order('weekday', { ascending: true }),
@@ -107,10 +108,10 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Configurações</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.settings.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.settings.title}</h1>
         <p className="font-body font-light text-[11px] text-offwhite/35 tracking-[0.05em] mt-2 max-w-[560px]">
-          Personalize o que for necessário para o dia a dia do seu trabalho — horários, preços, equipe e muito mais.
+          {t.settings.subtitle}
         </p>
       </div>
 
@@ -137,34 +138,34 @@ export default async function ConfiguracoesPage() {
       </div>
 
       {/* Working hours */}
-      <SectionCard id="horarios" icon={<ClockIcon />} title="Horários de funcionamento">
+      <SectionCard id="horarios" icon={<ClockIcon />} title={t.settings.hours.title}>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
           {rules.map(r => (
             <AvailabilityRuleRow
               key={r.id}
               rule={r}
-              weekdayLabel={WEEKDAY[r.weekday] ?? `Dia ${r.weekday}`}
+              weekdayLabel={t.billing.weekdayShort[r.weekday] ?? t.settings.hours.dayFallback(r.weekday)}
             />
           ))}
           {rules.length === 0 && (
             <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
-              Nenhuma regra cadastrada. Adicione no banco de dados.
+              {t.settings.hours.noRules}
             </p>
           )}
         </div>
       </SectionCard>
 
       {/* Blocked periods */}
-      <SectionCard id="bloqueios" icon={<LockIcon />} title="Períodos bloqueados">
+      <SectionCard id="bloqueios" icon={<LockIcon />} title={t.settings.blocked.title}>
         {blocked.length > 0 && (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
             {blocked.map(b => (
               <div key={b.id} className="flex items-center gap-4 px-5 py-4">
                 <div className="flex-1 min-w-0">
                   <p className="font-body font-light text-[12px] text-offwhite/75">
-                    {format(parseISO(b.date_start), "d 'de' MMMM", { locale: ptBR })}
+                    {format(parseISO(b.date_start), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale })}
                     {b.date_start !== b.date_end && (
-                      <> → {format(parseISO(b.date_end), "d 'de' MMMM", { locale: ptBR })}</>
+                      <> → {format(parseISO(b.date_end), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale })}</>
                     )}
                   </p>
                   {b.reason && (
@@ -176,7 +177,7 @@ export default async function ConfiguracoesPage() {
                     type="submit"
                     className="font-body font-light text-[8px] tracking-[0.22em] uppercase text-error/45 hover:text-error/70 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
                   >
-                    Remover
+                    {t.settings.blocked.remove}
                   </button>
                 </form>
               </div>
@@ -187,43 +188,43 @@ export default async function ConfiguracoesPage() {
       </SectionCard>
 
       {/* Payment fees */}
-      <SectionCard id="taxas" icon={<CurrencyIcon />} title="Taxas de pagamento">
+      <SectionCard id="taxas" icon={<CurrencyIcon />} title={t.settings.fees.title}>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
           {fees.map(f => (
             <PaymentFeeSettingRow
               key={f.id}
               setting={f}
-              label={METHOD_LABEL[f.method] ?? f.method}
+              label={t.settings.fees.methods[f.method as keyof typeof t.settings.fees.methods] ?? f.method}
             />
           ))}
           {fees.length === 0 && (
             <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
-              Nenhuma taxa cadastrada.
+              {t.settings.fees.noFees}
             </p>
           )}
         </div>
       </SectionCard>
 
       {/* Loyalty program */}
-      <SectionCard id="fidelidade" icon={<StarIcon />} title="Programa de fidelidade">
+      <SectionCard id="fidelidade" icon={<StarIcon />} title={t.settings.loyalty.title}>
         {loyalty ? (
           <LoyaltySettingsForm settings={loyalty} />
         ) : (
           <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic bg-offwhite/5 border border-offwhite/[0.07]">
-            Configuração não encontrada.
+            {t.settings.loyalty.notFound}
           </p>
         )}
       </SectionCard>
 
       {/* Coupons */}
-      <SectionCard id="cupons" icon={<TagIcon />} title="Cupons de desconto">
+      <SectionCard id="cupons" icon={<TagIcon />} title={t.settings.coupons.title}>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
           {coupons.map(c => (
             <CouponRow key={c.id} coupon={{ ...c, discount_type: c.discount_type as 'percentage' | 'fixed' }} />
           ))}
           {coupons.length === 0 && (
             <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
-              Nenhum cupom criado.
+              {t.settings.coupons.noCoupons}
             </p>
           )}
         </div>
@@ -231,10 +232,9 @@ export default async function ConfiguracoesPage() {
       </SectionCard>
 
       {/* Team / roles */}
-      <SectionCard id="equipe" icon={<TeamIcon />} title="Equipe">
+      <SectionCard id="equipe" icon={<TeamIcon />} title={t.settings.staff.title}>
         <p className="font-body font-light text-[11px] text-offwhite/35 leading-[1.6] mb-4 max-w-[520px]">
-          Proprietários veem tudo, incluindo Financeiro e esta página. Funcionários veem agenda, clientes e
-          serviços, sem acesso ao financeiro.
+          {t.settings.staff.description}
         </p>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
           {staff.map(s => (
@@ -246,7 +246,7 @@ export default async function ConfiguracoesPage() {
           ))}
           {staff.length === 0 && (
             <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
-              Nenhum membro cadastrado.
+              {t.settings.staff.noMembers}
             </p>
           )}
         </div>

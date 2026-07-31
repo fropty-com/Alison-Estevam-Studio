@@ -3,11 +3,13 @@
 import { useState, useTransition } from 'react'
 import { updateStaffRole, removeStaffMember } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function StaffMemberRow({ member, isSelf }: {
   member: { id: string; name: string; role: 'owner' | 'staff' }
   isSelf: boolean
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [confirmRemove, setConfirmRemove] = useState(false)
   const [feedback, setFeedback] = useState<string | null>(null)
@@ -27,7 +29,7 @@ export function StaffMemberRow({ member, isSelf }: {
       <div className="flex items-center gap-4">
         <span className="font-body font-light text-[12px] text-offwhite/70 flex-1">
           {member.name}
-          {isSelf && <span className="text-offwhite/25"> (você)</span>}
+          {isSelf && <span className="text-offwhite/25">{t.settings.staff.you}</span>}
         </span>
 
         <button
@@ -40,7 +42,7 @@ export function StaffMemberRow({ member, isSelf }: {
               : 'border-offwhite/[0.12] text-offwhite/45 hover:border-offwhite/25'
           )}
         >
-          {isOwner ? 'Proprietário' : 'Funcionário'}
+          {isOwner ? t.settings.staff.owner : t.settings.staff.staffRole}
         </button>
 
         {!confirmRemove ? (
@@ -48,7 +50,7 @@ export function StaffMemberRow({ member, isSelf }: {
             onClick={() => setConfirmRemove(true)}
             className="font-body font-light text-[8px] tracking-[0.22em] uppercase text-error/45 hover:text-error/70 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
           >
-            Remover
+            {t.settings.staff.remove}
           </button>
         ) : (
           <div className="flex items-center gap-2">
@@ -57,7 +59,7 @@ export function StaffMemberRow({ member, isSelf }: {
               onClick={() => act(() => removeStaffMember(member.id))}
               className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all disabled:opacity-40"
             >
-              {pending ? '…' : 'Confirmar'}
+              {pending ? '…' : t.settings.staff.confirm}
             </button>
             <button
               onClick={() => setConfirmRemove(false)}

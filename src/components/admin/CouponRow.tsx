@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { toggleCouponActive } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function CouponRow({ coupon }: {
   coupon: {
@@ -10,6 +11,7 @@ export function CouponRow({ coupon }: {
     max_uses: number | null; uses_count: number; expires_at: string | null; active: boolean
   }
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<string | null>(null)
 
@@ -17,9 +19,7 @@ export function CouponRow({ coupon }: {
     ? `${coupon.discount_value}%`
     : `R$ ${coupon.discount_value}`
 
-  const usageLabel = coupon.max_uses !== null
-    ? `${coupon.uses_count} / ${coupon.max_uses} usos`
-    : `${coupon.uses_count} usos`
+  const usageLabel = t.settings.coupons.usesLabel(coupon.uses_count, coupon.max_uses)
 
   const expired = coupon.expires_at !== null && coupon.expires_at < new Date().toISOString().slice(0, 10)
 
@@ -36,7 +36,7 @@ export function CouponRow({ coupon }: {
             'w-[34px] h-[20px] rounded-full border transition-all duration-300 relative shrink-0 disabled:opacity-40',
             coupon.active ? 'bg-sage/25 border-sage/40' : 'bg-offwhite/5 border-offwhite/15'
           )}
-          aria-label={coupon.active ? 'Desativar' : 'Ativar'}
+          aria-label={coupon.active ? t.settings.fees.deactivate : t.settings.fees.activate}
         >
           <span className={cn(
             'absolute top-[3px] w-[12px] h-[12px] rounded-full transition-all duration-300',
@@ -50,7 +50,7 @@ export function CouponRow({ coupon }: {
 
         {coupon.expires_at && (
           <span className={cn('font-body font-light text-[10px] tracking-[0.1em] shrink-0', expired ? 'text-error/60' : 'text-offwhite/30')}>
-            {expired ? 'expirado' : `até ${coupon.expires_at.split('-').reverse().join('/')}`}
+            {expired ? t.settings.coupons.expired : t.settings.coupons.until(coupon.expires_at.split('-').reverse().join('/'))}
           </span>
         )}
       </div>

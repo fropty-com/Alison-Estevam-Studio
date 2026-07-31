@@ -3,8 +3,10 @@
 import { useState, useTransition } from 'react'
 import { addStaffMember } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function AddStaffMemberForm() {
+  const { t } = useTranslation()
   const [pending,  startTransition] = useTransition()
   const [feedback, setFeedback]     = useState<string | null>(null)
   const [success,  setSuccess]      = useState(false)
@@ -29,23 +31,23 @@ export function AddStaffMemberForm() {
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-        Adicionar à equipe
+        {t.settings.staff.formTitle}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label className={labelCls}>Nome</label>
-          <input type="text" name="name" required placeholder="Nome completo" className={inputCls} />
+          <label className={labelCls}>{t.settings.staff.name}</label>
+          <input type="text" name="name" required placeholder={t.settings.staff.namePlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>E-mail</label>
-          <input type="email" name="email" required placeholder="email@exemplo.com" className={inputCls} />
+          <label className={labelCls}>{t.settings.staff.email}</label>
+          <input type="email" name="email" required placeholder={t.settings.staff.emailPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Senha inicial</label>
-          <input type="password" name="password" required minLength={8} placeholder="Mínimo 8 caracteres" className={inputCls} />
+          <label className={labelCls}>{t.settings.staff.password}</label>
+          <input type="password" name="password" required minLength={8} placeholder={t.settings.staff.passwordPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Papel</label>
+          <label className={labelCls}>{t.settings.staff.role}</label>
           <div className="flex gap-[6px]">
             <button
               type="button"
@@ -55,7 +57,7 @@ export function AddStaffMemberForm() {
                 role === 'staff' ? 'border-offwhite/40 text-offwhite/80 bg-offwhite/5' : 'border-offwhite/[0.12] text-offwhite/40 hover:border-offwhite/25'
               )}
             >
-              Funcionário
+              {t.settings.staff.staffRole}
             </button>
             <button
               type="button"
@@ -65,7 +67,7 @@ export function AddStaffMemberForm() {
                 role === 'owner' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/[0.12] text-offwhite/40 hover:border-offwhite/25'
               )}
             >
-              Proprietário
+              {t.settings.staff.owner}
             </button>
           </div>
         </div>
@@ -80,9 +82,9 @@ export function AddStaffMemberForm() {
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {pending ? 'Adicionando…' : 'Adicionar membro'}
+            {pending ? t.settings.staff.submitting : t.settings.staff.submit}
           </button>
-          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">Membro adicionado.</p>}
+          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">{t.settings.staff.success}</p>}
           {feedback && <p className="font-body font-light text-[9px] tracking-[0.2em] text-error/70">{feedback}</p>}
         </div>
       </form>

@@ -3,10 +3,12 @@
 import { useState, useTransition } from 'react'
 import { updateLoyaltySettings } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function LoyaltySettingsForm({ settings }: {
   settings: { visits_required: number; reward_description: string }
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [editing, setEditing]   = useState(false)
   const [visits,  setVisits]    = useState(String(settings.visits_required))
@@ -35,7 +37,7 @@ export function LoyaltySettingsForm({ settings }: {
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="font-body font-light text-[12px] text-offwhite/75">
-              A cada <span className="font-data text-offwhite">{settings.visits_required}</span> atendimentos concluídos, o cliente ganha:
+              {t.settings.loyalty.summaryPrefix} <span className="font-data text-offwhite">{settings.visits_required}</span> {t.settings.loyalty.summarySuffix}
             </p>
             <p className="font-body font-light text-[13px] text-gold mt-1">{settings.reward_description}</p>
           </div>
@@ -43,14 +45,14 @@ export function LoyaltySettingsForm({ settings }: {
             onClick={() => setEditing(true)}
             className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
           >
-            Editar
+            {t.settings.loyalty.edit}
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
-              Visitas necessárias
+              {t.settings.loyalty.visitsRequired}
             </label>
             <input
               type="number"
@@ -62,13 +64,13 @@ export function LoyaltySettingsForm({ settings }: {
           </div>
           <div className="sm:col-span-2">
             <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
-              Recompensa
+              {t.settings.loyalty.reward}
             </label>
             <input
               type="text"
               value={reward}
               onChange={e => setReward(e.target.value)}
-              placeholder="Ex: Um atendimento grátis"
+              placeholder={t.settings.loyalty.rewardPlaceholder}
               className={cn(inputCls, 'w-full')}
             />
           </div>
@@ -78,18 +80,18 @@ export function LoyaltySettingsForm({ settings }: {
               onClick={handleSave}
               className="px-6 py-[10px] font-body font-light text-[9px] tracking-[0.35em] uppercase bg-offwhite/5 border border-offwhite/[0.14] text-offwhite/60 hover:bg-sage/15 hover:border-sage/30 hover:text-sage-light transition-all duration-200 disabled:opacity-40"
             >
-              {pending ? 'Salvando…' : 'Salvar'}
+              {pending ? t.settings.loyalty.saving : t.settings.loyalty.save}
             </button>
             <button
               onClick={() => { setEditing(false); setVisits(String(settings.visits_required)); setReward(settings.reward_description) }}
               className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/25 hover:text-offwhite/50 transition-colors"
             >
-              Cancelar
+              {t.settings.loyalty.cancel}
             </button>
           </div>
         </div>
       )}
-      {success && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light mt-3">Programa atualizado.</p>}
+      {success && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light mt-3">{t.settings.loyalty.updated}</p>}
       {feedback && <p className="font-body font-light text-[9px] tracking-[0.2em] text-error/70 mt-3">{feedback}</p>}
     </div>
   )

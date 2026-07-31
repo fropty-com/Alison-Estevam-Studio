@@ -3,11 +3,13 @@
 import { useState, useTransition } from 'react'
 import { updateAvailabilityRule } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function AvailabilityRuleRow({ rule, weekdayLabel }: {
   rule: { id: string; weekday: number; start_time: string; end_time: string; active: boolean }
   weekdayLabel: string
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [editing, setEditing]  = useState(false)
   const [start,   setStart]    = useState(rule.start_time.substring(0, 5))
@@ -33,7 +35,7 @@ export function AvailabilityRuleRow({ rule, weekdayLabel }: {
             'w-[34px] h-[20px] rounded-full border transition-all duration-300 relative shrink-0 disabled:opacity-40',
             rule.active ? 'bg-sage/25 border-sage/40' : 'bg-offwhite/5 border-offwhite/15'
           )}
-          aria-label={rule.active ? 'Desativar' : 'Ativar'}
+          aria-label={rule.active ? t.settings.hours.deactivate : t.settings.hours.activate}
         >
           <span className={cn(
             'absolute top-[3px] w-[12px] h-[12px] rounded-full transition-all duration-300',
@@ -52,7 +54,7 @@ export function AvailabilityRuleRow({ rule, weekdayLabel }: {
               onClick={() => setEditing(true)}
               className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
-              Editar
+              {t.settings.hours.edit}
             </button>
           </>
         ) : (
@@ -67,7 +69,7 @@ export function AvailabilityRuleRow({ rule, weekdayLabel }: {
               onClick={() => act(() => updateAvailabilityRule(rule.id, { start_time: start, end_time: end }))}
               className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-sage/15 border border-sage/25 text-sage-light hover:bg-sage/25 transition-all disabled:opacity-40"
             >
-              {pending ? '…' : 'Ok'}
+              {pending ? '…' : t.settings.hours.ok}
             </button>
             <button onClick={() => setEditing(false)}
               className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors">

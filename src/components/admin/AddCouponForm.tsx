@@ -3,8 +3,10 @@
 import { useState, useTransition } from 'react'
 import { addCoupon } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function AddCouponForm() {
+  const { t } = useTranslation()
   const [pending,  startTransition] = useTransition()
   const [feedback, setFeedback]     = useState<string | null>(null)
   const [success,  setSuccess]      = useState(false)
@@ -29,15 +31,15 @@ export function AddCouponForm() {
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-        Criar cupom
+        {t.settings.coupons.formTitle}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="col-span-2 sm:col-span-1">
-          <label className={labelCls}>Código</label>
-          <input type="text" name="code" required placeholder="Ex: BEMVINDO10" className={cn(inputCls, 'uppercase')} />
+          <label className={labelCls}>{t.settings.coupons.code}</label>
+          <input type="text" name="code" required placeholder={t.settings.coupons.codePlaceholder} className={cn(inputCls, 'uppercase')} />
         </div>
         <div>
-          <label className={labelCls}>Tipo</label>
+          <label className={labelCls}>{t.settings.coupons.type}</label>
           <div className="flex gap-[4px]">
             <button
               type="button"
@@ -62,15 +64,15 @@ export function AddCouponForm() {
           </div>
         </div>
         <div>
-          <label className={labelCls}>Valor</label>
+          <label className={labelCls}>{t.settings.coupons.value}</label>
           <input type="number" name="discount_value" required min="0.01" step="0.01" placeholder={type === 'percentage' ? '10' : '20'} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Limite de usos</label>
-          <input type="number" name="max_uses" min="1" placeholder="Sem limite" className={inputCls} />
+          <label className={labelCls}>{t.settings.coupons.maxUses}</label>
+          <input type="number" name="max_uses" min="1" placeholder={t.settings.coupons.maxUsesPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Validade</label>
+          <label className={labelCls}>{t.settings.coupons.validity}</label>
           <input type="date" name="expires_at" className={inputCls} />
         </div>
         <div className="col-span-2 sm:col-span-4 flex items-center gap-3 mt-1">
@@ -84,9 +86,9 @@ export function AddCouponForm() {
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {pending ? 'Criando…' : 'Criar cupom'}
+            {pending ? t.settings.coupons.submitting : t.settings.coupons.submit}
           </button>
-          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">Cupom criado.</p>}
+          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">{t.settings.coupons.success}</p>}
           {feedback && <p className="font-body font-light text-[9px] tracking-[0.2em] text-error/70">{feedback}</p>}
         </div>
       </form>
