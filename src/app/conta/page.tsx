@@ -48,7 +48,7 @@ export default async function ContaPage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: client } = await db
     .from('clients')
@@ -65,7 +65,7 @@ export default async function ContaPage() {
     .order('time_slots(date)', { ascending: false })
     .order('time_slots(start_time)', { ascending: false })
 
-  const appts = (apptsRaw ?? []) as any[]
+  const appts = apptsRaw ?? []
   const upcoming = appts.filter(a => UPCOMING_STATUSES.includes(a.status)).reverse()
   const history  = appts.filter(a => a.status === 'completed').slice(0, 5)
   const next     = upcoming[0]

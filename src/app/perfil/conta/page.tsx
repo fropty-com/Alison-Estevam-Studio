@@ -17,7 +17,7 @@ export default async function ContaDetalhesPage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data: client } = await db
     .from('clients')
     .select('name, whatsapp, email, consent_whatsapp, receive_reminder_emails, created_at')

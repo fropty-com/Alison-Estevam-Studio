@@ -16,7 +16,7 @@ export async function updateAccountDetails(data: { name: string; email: string }
   if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { error } = await db
     .from('clients')
     .update({ name, email: email || null })
@@ -34,7 +34,7 @@ export async function updateWhatsappConsent(consent: boolean): Promise<{ ok?: bo
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { error } = await db
     .from('clients')
     .update({ consent_whatsapp: consent })
@@ -50,7 +50,7 @@ export async function updateReminderEmailConsent(consent: boolean): Promise<{ ok
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { error } = await db
     .from('clients')
     .update({ receive_reminder_emails: consent })
@@ -72,7 +72,7 @@ export async function requestAccountDeletion(): Promise<{ ok?: boolean; error?: 
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { error } = await db
     .from('clients')
     .update({
@@ -97,7 +97,7 @@ export async function submitReview(data: { appointmentId: string; rating: number
   if (!session) return { error: 'Sessão expirada.' }
   if (data.rating < 1 || data.rating > 5) return { error: 'Nota inválida.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: appt } = await db
     .from('appointments')
@@ -132,7 +132,7 @@ export async function sendReceiptByEmail(data: { paymentId: string; email: strin
   const email = data.email.trim()
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: payment } = await db
     .from('payments')

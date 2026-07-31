@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: 'Confirmar Presença' }
 export const dynamic = 'force-dynamic'
 
 export default async function ConfirmarPage({ params }: { params: { code: string } }) {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const code = params.code.toUpperCase()
 
   const { data: appt } = await db

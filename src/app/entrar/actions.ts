@@ -16,7 +16,7 @@ export async function checkPhoneAction(phoneRaw: string): Promise<{ error: strin
     return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
   }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const [{ data: client }, { data: staff }] = await Promise.all([
     db.from('clients').select('id, name').eq('whatsapp', phone).maybeSingle(),
     db.from('staff_members').select('id, name').eq('phone', phone).maybeSingle(),
@@ -34,7 +34,7 @@ export async function checkPhoneAction(phoneRaw: string): Promise<{ error: strin
  * reach this — clients can't self-promote.
  */
 async function establishStaffSession(staffId: string): Promise<{ error?: string }> {
-  const serviceDb = await createServiceClient() as any
+  const serviceDb = await createServiceClient()
   const { data: userData, error: userError } = await serviceDb.auth.admin.getUserById(staffId)
   if (userError || !userData?.user?.email) return { error: 'Erro ao acessar conta administrativa.' }
 
@@ -97,7 +97,7 @@ export async function verifyAndLoginAction(input: {
   const result = await verifyOtp(phone, input.code.trim())
   if (!result.ok) return { error: result.error }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   // A registered staff phone always wins — routes straight into the admin
   // panel instead of the client account, no separate email/password needed.

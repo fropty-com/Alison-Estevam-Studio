@@ -15,7 +15,7 @@ export default async function AgendarPage() {
   let initialClient: { name: string; whatsapp: string; email: string } | null = null
 
   if (session) {
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
     const { data: client } = await db
       .from('clients')
       .select('name, whatsapp, email')

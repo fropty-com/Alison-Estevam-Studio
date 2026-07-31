@@ -14,7 +14,7 @@ export default async function AvaliacoesPage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [reviewsRes, completedRes] = await Promise.all([
     db.from('reviews')
@@ -27,9 +27,9 @@ export default async function AvaliacoesPage() {
       .eq('status', 'completed'),
   ])
 
-  const reviews = (reviewsRes.data ?? []) as any[]
+  const reviews = reviewsRes.data ?? []
   const reviewedIds = new Set(reviews.map(r => r.appointment_id))
-  const pending = ((completedRes.data ?? []) as any[]).filter(a => !reviewedIds.has(a.id))
+  const pending = (completedRes.data ?? []).filter(a => !reviewedIds.has(a.id))
 
   return (
     <div className="min-h-screen bg-charcoal">

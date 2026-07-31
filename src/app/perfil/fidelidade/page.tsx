@@ -12,7 +12,7 @@ export default async function FidelidadePage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const loyalty = await getLoyaltyProgress(db, session.clientId)
   const hasActivity = loyalty.completedCount > 0
   const pct = Math.min(100, (loyalty.progress / loyalty.visitsRequired) * 100)

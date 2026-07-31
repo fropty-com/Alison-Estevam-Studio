@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: 'Cancelar Agendamento' }
 export const dynamic = 'force-dynamic'
 
 export default async function CancelarPage({ params }: { params: { code: string } }) {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const code = params.code.toUpperCase()
 
   const { data: appt } = await db

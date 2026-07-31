@@ -14,7 +14,7 @@ export async function confirmAppointmentAction(appointmentId: string): Promise<{
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada. Faça login novamente.' }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: appt } = await db
     .from('appointments')

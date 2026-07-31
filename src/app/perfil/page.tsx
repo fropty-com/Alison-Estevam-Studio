@@ -17,7 +17,7 @@ export default async function PerfilPage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data: client } = await db
     .from('clients')
     .select('name, whatsapp, avatar_url')
