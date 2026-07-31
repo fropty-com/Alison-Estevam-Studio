@@ -1,16 +1,19 @@
+'use client'
+
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export type AgendaView = 'day' | 'workweek' | 'week' | 'month'
 
-const VIEWS: { key: AgendaView; label: string }[] = [
-  { key: 'day',      label: 'Dia' },
-  { key: 'workweek', label: 'Sem. útil' },
-  { key: 'week',     label: 'Semana' },
-  { key: 'month',    label: 'Mês' },
-]
-
 export function AgendaViewSegmented({ view, dateStr }: { view: AgendaView; dateStr: string }) {
+  const { t } = useTranslation()
+  const VIEWS: { key: AgendaView; label: string }[] = [
+    { key: 'day',      label: t.agenda.views.day },
+    { key: 'workweek', label: t.agenda.views.workweek },
+    { key: 'week',     label: t.agenda.views.week },
+    { key: 'month',    label: t.agenda.views.month },
+  ]
   return (
     <div className="shrink-0 flex items-center border border-offwhite/[0.14] h-[36px] p-[2px]">
       {VIEWS.map(v => (

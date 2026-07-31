@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { addBlockedPeriod, removeBlockedPeriod } from '@/app/admin/actions'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function DayOffToggleButton({
   date,
@@ -16,14 +17,13 @@ export function DayOffToggleButton({
   blockedPeriodId: string | null
   appointmentCount: number
 }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
 
   const handleClick = () => {
     if (!blocked && appointmentCount > 0) {
-      const ok = window.confirm(
-        `Há ${appointmentCount} agendamento(s) nesse dia. Eles não serão cancelados, mas o dia ficará marcado como folga. Continuar?`
-      )
+      const ok = window.confirm(t.agenda.dayOff.confirm(appointmentCount))
       if (!ok) return
     }
 
@@ -52,7 +52,7 @@ export function DayOffToggleButton({
           : 'border-offwhite/[0.18] text-offwhite/45 hover:border-offwhite/40 hover:text-offwhite'
       )}
     >
-      {pending ? 'Salvando…' : blocked ? 'Remover folga' : 'Marcar folga'}
+      {pending ? t.agenda.dayOff.saving : blocked ? t.agenda.dayOff.remove : t.agenda.dayOff.mark}
     </button>
   )
 }

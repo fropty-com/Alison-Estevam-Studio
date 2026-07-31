@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { useHalfHourMarks, useNowMinutes, appointmentBlockStyle, type GridAppointment } from './DayGrid'
 import { AppointmentDetailSheet } from './AppointmentDetailSheet'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface WeekDay {
   date: string
@@ -25,6 +26,7 @@ export function WeekGrid({
   gridStartMin: number
   gridEndMin: number
 }) {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<GridAppointment | null>(null)
   const marks = useHalfHourMarks(gridStartMin, gridEndMin)
   const totalHeight = minutesToPx(gridEndMin - gridStartMin)
@@ -107,7 +109,7 @@ export function WeekGrid({
 
               {d.blockedAllDay ? (
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.03),rgba(241,241,241,0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
-                  <p className="font-body font-light text-[9px] text-offwhite/25 italic">Folga</p>
+                  <p className="font-body font-light text-[9px] text-offwhite/25 italic">{t.agenda.dayOffShort}</p>
                 </div>
               ) : (
                 d.appointments.map(a => {

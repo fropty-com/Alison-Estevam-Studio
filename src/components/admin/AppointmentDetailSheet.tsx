@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { AppointmentActions } from './AppointmentActions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface DetailAppointment {
   id: string
@@ -20,18 +21,9 @@ export interface DetailAppointment {
   checkedInAt: string | null
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  pending:     'Pendente',
-  confirmed:   'Confirmado',
-  checked_in:  'Chegou',
-  in_progress: 'Em atendimento',
-  completed:   'Concluído',
-  cancelled:   'Cancelado',
-  no_show:     'No-show',
-}
-
 /** Slide-over panel on desktop, bottom sheet on mobile — shows one appointment's full detail + actions on top of the day grid. */
 export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointment; onClose: () => void }) {
+  const { t } = useTranslation()
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
@@ -57,14 +49,14 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
         <div className="flex items-start justify-between px-6 py-5 border-b border-offwhite/[0.08]">
           <div>
             <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/[0.28] mb-1">
-              {STATUS_LABEL[appt.status] ?? appt.status}
+              {t.dashboard.status[appt.status as keyof typeof t.dashboard.status] ?? appt.status}
             </p>
             <p className="font-data text-[22px] text-offwhite/80 leading-none">{appt.timeLabel}</p>
             <p className="font-body font-light text-[8px] text-offwhite/25 mt-1 tracking-[0.15em]">{appt.durationLabel}</p>
           </div>
           <button
             onClick={onClose}
-            aria-label="Fechar"
+            aria-label={t.agenda.close}
             className="w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
           >
             ✕
@@ -75,7 +67,7 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
           <div className="flex items-center gap-2 mb-[3px]">
             <p className="font-body font-light text-[16px] text-offwhite">{appt.clientName}</p>
             {appt.clientVip && (
-              <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70">VIP</span>
+              <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70">{t.agenda.detail.vip}</span>
             )}
           </div>
           <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.15em] mb-[2px]">
@@ -83,7 +75,7 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
           </p>
           <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.1em]">
             {appt.clientWhatsapp} · #{appt.referenceCode}
-            {appt.checkedInAt && ` · chegou às ${appt.checkedInAt}`}
+            {appt.checkedInAt && t.agenda.detail.checkedInAt(appt.checkedInAt)}
           </p>
 
           <AppointmentActions

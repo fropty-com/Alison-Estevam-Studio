@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { blockTimeRange } from '@/app/admin/actions'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
 const selectCls = `${inputCls} appearance-none pr-8`
@@ -36,6 +37,7 @@ export function BlockTimeModal({
   gridEndMin: number
   onClose: () => void
 }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -55,9 +57,7 @@ export function BlockTimeModal({
     startTransition(async () => {
       const res = await blockTimeRange(date, start, end, reason || undefined, confirmed)
       if (res.needsConfirm) {
-        const ok = window.confirm(
-          `Há ${res.count} agendamento(s) nesse período. Eles não serão cancelados, mas o horário ficará bloqueado. Continuar?`
-        )
+        const ok = window.confirm(t.agenda.blockTime.confirmCount(res.count ?? 0))
         if (ok) submit(true)
         return
       }
@@ -75,18 +75,18 @@ export function BlockTimeModal({
       <div className="relative w-full max-w-[380px] bg-charcoal border border-offwhite/[0.14] p-6">
         <button
           onClick={onClose}
-          aria-label="Fechar"
+          aria-label={t.agenda.close}
           className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Agenda</p>
-        <h2 className="font-display font-light text-[20px] text-offwhite tracking-[0.02em] mb-5">Bloquear horário</h2>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.agenda.blockTime.eyebrow}</p>
+        <h2 className="font-display font-light text-[20px] text-offwhite tracking-[0.02em] mb-5">{t.agenda.blockTime.title}</h2>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <label className={labelCls}>Início</label>
+            <label className={labelCls}>{t.agenda.blockTime.start}</label>
             <div className="relative">
               <select value={start} onChange={e => setStart(e.target.value)} className={selectCls}>
                 {startOptions.map(o => <option key={o} value={o} style={optionStyle}>{o}</option>)}
@@ -95,7 +95,7 @@ export function BlockTimeModal({
             </div>
           </div>
           <div>
-            <label className={labelCls}>Fim</label>
+            <label className={labelCls}>{t.agenda.blockTime.end}</label>
             <div className="relative">
               <select value={end} onChange={e => setEnd(e.target.value)} className={selectCls}>
                 {endOptions.map(o => <option key={o} value={o} style={optionStyle}>{o}</option>)}
@@ -106,12 +106,12 @@ export function BlockTimeModal({
         </div>
 
         <div className="mb-5">
-          <label className={labelCls}>Motivo (opcional)</label>
+          <label className={labelCls}>{t.agenda.blockTime.reason}</label>
           <input
             type="text"
             value={reason}
             onChange={e => setReason(e.target.value)}
-            placeholder="Ex: almoço"
+            placeholder={t.agenda.blockTime.reasonPlaceholder}
             className={inputCls}
           />
         </div>
@@ -121,7 +121,7 @@ export function BlockTimeModal({
         )}
         {!canSubmit && (
           <p className="font-body font-light text-[9px] tracking-[0.1em] text-offwhite/30 mb-3">
-            A hora de início deve ser antes da hora de fim.
+            {t.agenda.blockTime.startBeforeEnd}
           </p>
         )}
 
@@ -131,7 +131,7 @@ export function BlockTimeModal({
           onClick={() => submit()}
           className="w-full px-6 py-[11px] font-body font-medium text-[9px] tracking-[0.35em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {pending ? 'Bloqueando…' : 'Bloquear horário'}
+          {pending ? t.agenda.blockTime.blocking : t.agenda.blockTime.submit}
         </button>
       </div>
     </div>

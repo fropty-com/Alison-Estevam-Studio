@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { BlockTimeModal } from './BlockTimeModal'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 function LockIcon() {
   return (
@@ -23,6 +24,7 @@ export function BlockTimeButton({
   gridEndMin: number
   hasRule: boolean
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -33,7 +35,7 @@ export function BlockTimeButton({
         className="shrink-0 whitespace-nowrap flex items-center gap-[7px] px-4 h-[36px] border border-offwhite/[0.18] font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/50 transition-all duration-200 hover:border-offwhite/40 hover:text-offwhite disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <LockIcon />
-        Bloquear
+        {t.agenda.blockTime.button}
       </button>
       {open && (
         <BlockTimeModal

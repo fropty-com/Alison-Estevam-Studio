@@ -3,10 +3,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format, addMonths, subMonths, startOfMonth, getDay, getDaysInMonth, isSameDay, isToday as isDateToday } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
-const WEEKDAY = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
+const WEEKDAY_BY_LOCALE = {
+  pt: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+  en: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+  es: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+}
 
 function CalendarIcon() {
   return (
@@ -20,6 +26,9 @@ function CalendarIcon() {
 }
 
 export function AgendaDatePicker({ selectedDate, view }: { selectedDate: string; view: string }) {
+  const { t, locale } = useTranslation()
+  const dateLocale = DATE_FNS_LOCALE[locale]
+  const WEEKDAY = WEEKDAY_BY_LOCALE[locale]
   const router = useRouter()
   const dateObj = new Date(`${selectedDate}T00:00:00`)
   const [open, setOpen] = useState(false)
@@ -53,7 +62,7 @@ export function AgendaDatePicker({ selectedDate, view }: { selectedDate: string;
     <div className="relative shrink-0" ref={ref}>
       <button
         onClick={() => setOpen(o => !o)}
-        aria-label="Escolher data"
+        aria-label={t.agenda.datePicker.choose}
         className="w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200"
       >
         <CalendarIcon />
@@ -62,11 +71,11 @@ export function AgendaDatePicker({ selectedDate, view }: { selectedDate: string;
         <div className="absolute left-0 top-[calc(100%+6px)] z-30 w-[240px] bg-charcoal border border-offwhite/[0.14] p-[16px]">
           <div className="flex items-center justify-between mb-[12px]">
             <p className="font-body font-light text-[10px] tracking-[0.1em] text-offwhite/60 capitalize">
-              {format(viewingMonth, 'MMMM yyyy', { locale: ptBR })}
+              {format(viewingMonth, 'MMMM yyyy', { locale: dateLocale })}
             </p>
             <div className="flex gap-1">
-              <button onClick={() => setViewingMonth(m => subMonths(m, 1))} aria-label="Mês anterior" className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">‹</button>
-              <button onClick={() => setViewingMonth(m => addMonths(m, 1))} aria-label="Próximo mês" className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">›</button>
+              <button onClick={() => setViewingMonth(m => subMonths(m, 1))} aria-label={t.agenda.datePicker.prevMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">‹</button>
+              <button onClick={() => setViewingMonth(m => addMonths(m, 1))} aria-label={t.agenda.datePicker.nextMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">›</button>
             </div>
           </div>
           <div className="grid grid-cols-7 gap-y-[2px]">

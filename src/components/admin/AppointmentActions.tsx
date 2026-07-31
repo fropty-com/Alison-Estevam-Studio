@@ -3,16 +3,17 @@
 import { useState, useTransition } from 'react'
 import { updateAppointmentStatus, addAppointmentNote, checkInAppointment, checkOutAppointment } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
-
-const PAYMENT_METHODS: { value: 'cash' | 'pix' | 'debit_card' | 'credit_card' | 'courtesy'; label: string }[] = [
-  { value: 'cash',        label: 'Dinheiro' },
-  { value: 'pix',         label: 'Pix' },
-  { value: 'debit_card',  label: 'Débito' },
-  { value: 'credit_card', label: 'Crédito' },
-  { value: 'courtesy',    label: 'Cortesia' },
-]
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function AppointmentActions({ id, status, notes, totalPrice }: { id: string; status: string; notes?: string | null; totalPrice: number }) {
+  const { t } = useTranslation()
+  const PAYMENT_METHODS: { value: 'cash' | 'pix' | 'debit_card' | 'credit_card' | 'courtesy'; label: string }[] = [
+    { value: 'cash',        label: t.agenda.actions.paymentMethods.cash },
+    { value: 'pix',         label: t.agenda.actions.paymentMethods.pix },
+    { value: 'debit_card',  label: t.agenda.actions.paymentMethods.debit_card },
+    { value: 'credit_card', label: t.agenda.actions.paymentMethods.credit_card },
+    { value: 'courtesy',    label: t.agenda.actions.paymentMethods.courtesy },
+  ]
   const [pending, startTransition] = useTransition()
   const [showNote,    setShowNote]    = useState(false)
   const [noteText,    setNoteText]    = useState(notes ?? '')
@@ -50,7 +51,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               'hover:bg-sage/25 transition-all duration-200 disabled:opacity-40'
             )}
           >
-            Confirmar
+            {t.agenda.actions.confirm}
           </button>
         )}
 
@@ -64,7 +65,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               'hover:bg-gold/20 transition-all duration-200 disabled:opacity-40'
             )}
           >
-            Check-in
+            {t.agenda.actions.checkIn}
           </button>
         )}
 
@@ -78,7 +79,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               'hover:bg-gold/20 transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {checkoutForm ? 'Fechar' : 'Check-out'}
+            {checkoutForm ? t.agenda.actions.close : t.agenda.actions.checkOut}
           </button>
         )}
 
@@ -92,7 +93,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               'hover:bg-error/10 transition-all duration-200 disabled:opacity-40'
             )}
           >
-            Cancelar
+            {t.agenda.actions.cancel}
           </button>
         )}
 
@@ -104,7 +105,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             'hover:border-offwhite/25 hover:text-offwhite/55 transition-all duration-200'
           )}
         >
-          {showNote ? 'Fechar nota' : 'Nota'}
+          {showNote ? t.agenda.actions.closeNote : t.agenda.actions.note}
         </button>
       </div>
 
@@ -112,7 +113,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
       {checkoutForm && (
         <div className="bg-gold/5 border border-gold/20 p-4 space-y-3">
           <p className="font-body font-light text-[9px] tracking-[0.22em] uppercase text-gold/80">
-            Registrar pagamento
+            {t.agenda.actions.registerPayment}
           </p>
 
           <div className="flex flex-wrap gap-[6px]">
@@ -136,7 +137,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
 
           <div className="flex items-center gap-3">
             <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
-              Desconto R$
+              {t.agenda.actions.discount}
             </label>
             <input
               type="text"
@@ -149,7 +150,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
 
           <div className="flex items-center gap-3">
             <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
-              Gorjeta R$
+              {t.agenda.actions.tip}
             </label>
             <input
               type="text"
@@ -161,7 +162,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
           </div>
 
           <p className="font-body font-light text-[11px] text-offwhite/55">
-            Valor final: <span className="font-data text-gold">R$ {finalValue.toFixed(2)}</span>
+            {t.agenda.actions.finalValue} <span className="font-data text-gold">R$ {finalValue.toFixed(2)}</span>
           </p>
 
           <button
@@ -169,7 +170,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             onClick={() => act(() => checkOutAppointment(id, { method, grossAmount: totalPrice, discount: discountValue, tipAmount: tipValue }))}
             className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-gold/20 border border-gold/40 text-gold hover:bg-gold/30 transition-all duration-200 disabled:opacity-40"
           >
-            {pending ? 'Registrando…' : 'Confirmar pagamento'}
+            {pending ? t.agenda.actions.registering : t.agenda.actions.confirmPayment}
           </button>
         </div>
       )}
@@ -181,7 +182,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             value={noteText}
             onChange={e => setNoteText(e.target.value)}
             rows={2}
-            placeholder="Anotações sobre este agendamento…"
+            placeholder={t.agenda.actions.notePlaceholder}
             className={cn(
               'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80',
               'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
@@ -193,7 +194,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             onClick={() => act(() => addAppointmentNote(id, noteText))}
             className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-sage/15 border border-sage/25 text-sage-light hover:bg-sage/25 transition-all duration-200 disabled:opacity-40"
           >
-            {pending ? 'Salvando…' : 'Salvar nota'}
+            {pending ? t.agenda.actions.saving : t.agenda.actions.saveNote}
           </button>
         </div>
       )}
@@ -202,13 +203,13 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
       {cancelModal && (
         <div className="bg-error/5 border border-error/20 p-4 space-y-2">
           <p className="font-body font-light text-[9px] tracking-[0.22em] uppercase text-error/70">
-            Motivo do cancelamento (opcional)
+            {t.agenda.actions.cancelReasonLabel}
           </p>
           <input
             type="text"
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
-            placeholder="Ex: solicitado pelo cliente"
+            placeholder={t.agenda.actions.cancelReasonPlaceholder}
             className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
           />
           <div className="flex gap-2">
@@ -220,13 +221,13 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
               }}
               className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all duration-200 disabled:opacity-40"
             >
-              Confirmar cancelamento
+              {t.agenda.actions.confirmCancel}
             </button>
             <button
               onClick={() => setCancelModal(false)}
               className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:text-offwhite/55 transition-colors"
             >
-              Voltar
+              {t.agenda.actions.back}
             </button>
           </div>
         </div>

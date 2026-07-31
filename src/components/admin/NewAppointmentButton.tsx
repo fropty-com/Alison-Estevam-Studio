@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { NewAppointmentModal } from './NewAppointmentModal'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 function PlusIcon() {
   return (
@@ -13,6 +14,7 @@ function PlusIcon() {
 }
 
 export function NewAppointmentButton() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -21,7 +23,7 @@ export function NewAppointmentButton() {
         className="shrink-0 whitespace-nowrap flex items-center gap-[7px] px-4 h-[36px] bg-gold font-body font-medium text-[8px] tracking-[0.28em] uppercase text-charcoal-deep hover:bg-gold-light transition-all duration-200"
       >
         <PlusIcon />
-        Agendar
+        {t.agenda.newAppointment.button}
       </button>
       {open && <NewAppointmentModal onClose={() => setOpen(false)} />}
     </>

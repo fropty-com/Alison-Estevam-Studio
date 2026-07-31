@@ -6,6 +6,7 @@ import { cn, maskPhoneInput, isFullName, isValidWhatsApp, formatCurrency } from 
 import { createManualAppointment } from '@/app/admin/actions'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 import { startOfMonth, format } from 'date-fns'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 interface Service { id: string; name: string; price: number; duration: number; is_whatsapp_only: boolean }
 interface Complement { id: string; name: string; description: string; price: number | null }
@@ -15,6 +16,7 @@ const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhi
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
 
 export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -126,18 +128,18 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
       <div className="relative w-full max-w-[560px] my-8 bg-charcoal border border-offwhite/[0.14] p-6">
         <button
           onClick={onClose}
-          aria-label="Fechar"
+          aria-label={t.agenda.close}
           className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Agenda</p>
-        <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] mb-5">Novo agendamento</h2>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.agenda.newAppointment.eyebrow}</p>
+        <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] mb-5">{t.agenda.newAppointment.title}</h2>
 
         {/* Service */}
         <div className="mb-5">
-          <label className={labelCls}>Serviço</label>
+          <label className={labelCls}>{t.agenda.newAppointment.service}</label>
           <div className="flex flex-col gap-[6px]">
             {services.map(s => {
               const isSel = selectedService?.id === s.id
@@ -151,7 +153,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
                     isSel ? 'border-gold bg-gold/10' : 'border-offwhite/10 hover:border-offwhite/25',
                   )}
                 >
-                  <span className="font-body font-light text-[12px] text-offwhite">{s.name}{s.is_whatsapp_only ? ' (Exclusivo)' : ''}</span>
+                  <span className="font-body font-light text-[12px] text-offwhite">{s.name}{s.is_whatsapp_only ? t.agenda.newAppointment.exclusive : ''}</span>
                   <span className="font-data text-[12px] text-gold shrink-0">{formatCurrency(s.price)}</span>
                 </button>
               )
@@ -162,7 +164,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
         {/* Complements */}
         {selectedService && complements.length > 0 && (
           <div className="mb-5">
-            <label className={labelCls}>Complementos (opcional)</label>
+            <label className={labelCls}>{t.agenda.newAppointment.complements}</label>
             <div className="flex flex-col gap-[6px]">
               {complements.map(c => {
                 const isSel = selectedComplementIds.includes(c.id)
@@ -188,7 +190,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
         {/* Date/time */}
         {selectedService && (
           <div className="mb-5">
-            <label className={labelCls}>Data e horário</label>
+            <label className={labelCls}>{t.agenda.newAppointment.dateTime}</label>
             <MiniCalendar
               current={viewing}
               selected={selectedDate}
@@ -212,12 +214,12 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
         {selectedSlot && (
           <>
             <div className="mb-5">
-              <label className={labelCls}>Buscar cliente existente</label>
+              <label className={labelCls}>{t.agenda.newAppointment.searchExisting}</label>
               <input
                 type="text"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                placeholder="Nome ou WhatsApp…"
+                placeholder={t.agenda.newAppointment.searchPlaceholder}
                 className={inputCls}
               />
               {hits.length > 0 && (
@@ -239,20 +241,20 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
 
             <div className="grid grid-cols-2 gap-3 mb-5">
               <div className="col-span-2">
-                <label className={labelCls}>Nome completo</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
+                <label className={labelCls}>{t.agenda.newAppointment.fullName}</label>
+                <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t.agenda.newAppointment.fullNamePlaceholder} className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>WhatsApp</label>
+                <label className={labelCls}>{t.agenda.newAppointment.whatsapp}</label>
                 <input type="tel" value={whatsapp} onChange={e => setWhatsapp(maskPhoneInput(e.target.value))} placeholder="(00) 00000-0000" className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>E-mail (opcional)</label>
+                <label className={labelCls}>{t.agenda.newAppointment.emailOptional}</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="cliente@email.com" className={inputCls} />
               </div>
               <div className="col-span-2">
-                <label className={labelCls}>Nota interna (opcional)</label>
-                <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Visível só para a equipe…" className={cn(inputCls, 'resize-none')} />
+                <label className={labelCls}>{t.agenda.newAppointment.internalNote}</label>
+                <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder={t.agenda.newAppointment.internalNotePlaceholder} className={cn(inputCls, 'resize-none')} />
               </div>
             </div>
           </>
@@ -264,7 +266,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
 
         <div className="flex items-center justify-between gap-4 pt-2 border-t border-offwhite/[0.08]">
           <p className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/35">
-            Total <span className="font-data text-gold ml-1">{formatCurrency(totalPrice)}</span>
+            {t.agenda.newAppointment.total} <span className="font-data text-gold ml-1">{formatCurrency(totalPrice)}</span>
           </p>
           <button
             type="button"
@@ -276,7 +278,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
               'hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed',
             )}
           >
-            {pending ? 'Salvando…' : 'Salvar agendamento'}
+            {pending ? t.agenda.newAppointment.saving : t.agenda.newAppointment.submit}
           </button>
         </div>
       </div>

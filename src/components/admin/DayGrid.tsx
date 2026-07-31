@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { AppointmentDetailSheet, type DetailAppointment } from './AppointmentDetailSheet'
 import { unblockTimeRange } from '@/app/admin/actions'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface GridAppointment extends DetailAppointment {
   startMin: number
@@ -150,6 +151,7 @@ export function DayGrid({
   prevHref: string
   nextHref: string
 }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [selected, setSelected] = useState<GridAppointment | null>(null)
   const [, startTransition] = useTransition()
@@ -159,7 +161,7 @@ export function DayGrid({
   const nowMin = useNowMinutes(isToday)
 
   const handleUnblock = (range: BlockedRange) => {
-    const ok = window.confirm(`Desbloquear o horário de ${minutesToHHMM(range.startMin)} a ${minutesToHHMM(range.endMin)}?`)
+    const ok = window.confirm(t.agenda.unblockConfirm(minutesToHHMM(range.startMin), minutesToHHMM(range.endMin)))
     if (!ok) return
     startTransition(async () => {
       await unblockTimeRange(date, minutesToHHMM(range.startMin), minutesToHHMM(range.endMin))
@@ -229,7 +231,7 @@ export function DayGrid({
 
           {blockedAllDay ? (
             <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.03),rgb(var(--c-offwhite)/0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
-              <p className="font-display font-light text-[16px] text-offwhite/25 italic">Folga / fechado</p>
+              <p className="font-display font-light text-[16px] text-offwhite/25 italic">{t.agenda.dayOffClosed}</p>
             </div>
           ) : (
             <>
@@ -240,11 +242,11 @@ export function DayGrid({
                   <button
                     key={i}
                     onClick={() => handleUnblock(r)}
-                    title="Clique para desbloquear"
+                    title={t.agenda.unblockTitle}
                     className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.04),rgb(var(--c-offwhite)/0.04)_8px,transparent_8px,transparent_16px)] border-y border-offwhite/10 flex items-center justify-center hover:bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.07),rgb(var(--c-offwhite)/0.07)_8px,transparent_8px,transparent_16px)] transition-all duration-150"
                     style={{ top, height }}
                   >
-                    <p className="font-body font-light text-[9px] text-offwhite/30 uppercase tracking-[0.15em]">Bloqueado</p>
+                    <p className="font-body font-light text-[9px] text-offwhite/30 uppercase tracking-[0.15em]">{t.agenda.blockedLabel}</p>
                   </button>
                 )
               })}

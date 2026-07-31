@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 function EyeIcon({ hidden }: { hidden: boolean }) {
   if (hidden) {
@@ -37,13 +38,14 @@ export function AgendaSummaryCards({
   revenueLabel: string
   revenueValue: number
 }) {
+  const { t } = useTranslation()
   const [revenueHidden, setRevenueHidden] = useState(false)
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
       <div className="bg-gold px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-medium text-[9px] tracking-[0.14em] text-charcoal-deep/70">Agendamentos</p>
+          <p className="font-body font-medium text-[9px] tracking-[0.14em] text-charcoal-deep/70">{t.agenda.summary.appointments}</p>
           <span className="text-charcoal-deep/60 text-[13px]" aria-hidden="true">↗</span>
         </div>
         <p className="font-data text-[26px] text-charcoal-deep leading-none">{totalCount}</p>
@@ -51,7 +53,7 @@ export function AgendaSummaryCards({
 
       <div className="border border-offwhite/[0.14] px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">Em aberto</p>
+          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">{t.agenda.summary.open}</p>
           <span className="text-offwhite/30 text-[13px]" aria-hidden="true">↗</span>
         </div>
         <p className="font-data text-[26px] text-offwhite leading-none">{openCount}</p>
@@ -59,7 +61,7 @@ export function AgendaSummaryCards({
 
       <div className="border border-offwhite/[0.14] px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">Concluídos</p>
+          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">{t.agenda.summary.completed}</p>
           <span className="text-offwhite/30 text-[13px]" aria-hidden="true">↗</span>
         </div>
         <p className="font-data text-[26px] text-offwhite leading-none">{completedCount}</p>
@@ -71,7 +73,7 @@ export function AgendaSummaryCards({
           <button
             type="button"
             onClick={() => setRevenueHidden(v => !v)}
-            aria-label={revenueHidden ? 'Mostrar valor' : 'Esconder valor'}
+            aria-label={revenueHidden ? t.agenda.summary.showValue : t.agenda.summary.hideValue}
             className="text-offwhite/30 hover:text-offwhite/60 transition-colors"
           >
             <EyeIcon hidden={revenueHidden} />

@@ -6,8 +6,12 @@ import {
   format, addDays, subDays, isSameDay, isToday,
   startOfWeek, endOfWeek, addWeeks, subWeeks, isSameWeek,
 } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import type { Locale } from '@/lib/i18n/locales'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 interface Chip {
   key: string
@@ -18,14 +22,15 @@ interface Chip {
   today: boolean
 }
 
-function buildDayChips(selectedDate: Date, view: string): Chip[] {
+function buildDayChips(selectedDate: Date, view: string, locale: Locale): Chip[] {
+  const dateLocale = DATE_FNS_LOCALE[locale]
   const chips: Chip[] = []
   for (let offset = -7; offset <= 7; offset++) {
     const d = offset < 0 ? subDays(selectedDate, -offset) : addDays(selectedDate, offset)
     chips.push({
       key: format(d, 'yyyy-MM-dd'),
       href: `/admin/agenda?view=${view}&date=${format(d, 'yyyy-MM-dd')}`,
-      top: format(d, 'EEE', { locale: ptBR }).replace('.', '').toUpperCase(),
+      top: format(d, 'EEE', { locale: dateLocale }).replace('.', '').toUpperCase(),
       bottom: format(d, 'd'),
       active: isSameDay(d, selectedDate),
       today: isToday(d),
@@ -34,7 +39,8 @@ function buildDayChips(selectedDate: Date, view: string): Chip[] {
   return chips
 }
 
-function buildWeekChips(selectedDate: Date, view: string): Chip[] {
+function buildWeekChips(selectedDate: Date, view: string, locale: Locale): Chip[] {
+  const dateLocale = DATE_FNS_LOCALE[locale]
   const chips: Chip[] = []
   for (let offset = -6; offset <= 6; offset++) {
     const base = offset < 0 ? subWeeks(selectedDate, -offset) : addWeeks(selectedDate, offset)
@@ -43,7 +49,7 @@ function buildWeekChips(selectedDate: Date, view: string): Chip[] {
     chips.push({
       key: format(start, 'yyyy-MM-dd'),
       href: `/admin/agenda?view=${view}&date=${format(start, 'yyyy-MM-dd')}`,
-      top: format(start, 'MMM', { locale: ptBR }).replace('.', '').toUpperCase(),
+      top: format(start, 'MMM', { locale: dateLocale }).replace('.', '').toUpperCase(),
       bottom: `${format(start, 'd')}–${format(end, 'd')}`,
       active: isSameWeek(base, selectedDate, { weekStartsOn: 1 }),
       today: isSameWeek(base, new Date(), { weekStartsOn: 1 }),
@@ -53,10 +59,11 @@ function buildWeekChips(selectedDate: Date, view: string): Chip[] {
 }
 
 export function AgendaStrip({ selectedDate, view }: { selectedDate: string; view: 'day' | 'workweek' | 'week'; }) {
+  const { locale } = useTranslation()
   const dateObj = new Date(`${selectedDate}T00:00:00`)
   const activeRef = useRef<HTMLAnchorElement>(null)
 
-  const chips = view === 'day' ? buildDayChips(dateObj, view) : buildWeekChips(dateObj, view)
+  const chips = view === 'day' ? buildDayChips(dateObj, view, locale) : buildWeekChips(dateObj, view, locale)
 
   useEffect(() => {
     activeRef.current?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'auto' })

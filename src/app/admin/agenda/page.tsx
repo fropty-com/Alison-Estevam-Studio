@@ -4,7 +4,7 @@ import {
   startOfWeek, endOfWeek, addWeeks, subWeeks, eachDayOfInterval,
   startOfMonth, endOfMonth, addMonths, subMonths, isSameMonth, isToday,
 } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { todayInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 import Link from 'next/link'
 import { DayGrid, type GridAppointment, type BlockedRange, STATUS_BLOCK } from '@/components/admin/DayGrid'
@@ -19,8 +19,13 @@ import { AgendaSummaryCards } from '@/components/admin/AgendaSummaryCards'
 import { timeToMinutes } from '@/lib/schedule/dayGridLayout'
 import { BOOKING } from '@/config/booking'
 import { cn } from '@/lib/utils'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pt'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 const OPEN_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
 const REVENUE_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress', 'completed']
@@ -32,14 +37,14 @@ function summarize(appts: { status: string; totalPrice: number }[]) {
   return { totalCount, openCount, completedCount }
 }
 
-function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayHref: string; nextHref: string }) {
+function NavArrows({ t, prevHref, todayHref, nextHref }: { t: Dictionary; prevHref: string; todayHref: string; nextHref: string }) {
   return (
     <div className="flex items-center gap-2 shrink-0">
       <Link href={prevHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ‹
       </Link>
       <Link href={todayHref} className="shrink-0 whitespace-nowrap px-4 h-[36px] border border-offwhite/[0.14] font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 flex items-center hover:border-gold/50 hover:text-gold transition-all duration-200">
-        Hoje
+        {t.agenda.today}
       </Link>
       <Link href={nextHref} className="shrink-0 w-[36px] h-[36px] border border-offwhite/[0.14] text-offwhite/55 text-[15px] flex items-center justify-center hover:border-gold/50 hover:text-gold transition-all duration-200">
         ›
@@ -49,10 +54,11 @@ function NavArrows({ prevHref, todayHref, nextHref }: { prevHref: string; todayH
 }
 
 function AgendaHeader({
-  label, dateStr, view,
+  t, label, dateStr, view,
   prevHref, todayHref, nextHref,
   children,
 }: {
+  t: Dictionary
   label: string
   dateStr: string
   view: AgendaView
@@ -64,7 +70,7 @@ function AgendaHeader({
   return (
     <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
       <div className="flex items-center gap-3 min-w-0">
-        <NavArrows prevHref={prevHref} todayHref={todayHref} nextHref={nextHref} />
+        <NavArrows t={t} prevHref={prevHref} todayHref={todayHref} nextHref={nextHref} />
         <AgendaDatePicker selectedDate={dateStr} view={view} />
         <h1 className="font-body font-light text-[13px] text-offwhite/85 capitalize truncate">
           {label}
@@ -118,13 +124,16 @@ export default async function AgendaPage({
   const dateStr = searchParams.date ?? todayInSaoPaulo()
   const dateObj = parseISO(dateStr)
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   // ── Day view — hour-ruler grid with proportional blocks ──
   if (view === 'day') {
     const prev  = format(subDays(dateObj, 1), 'yyyy-MM-dd')
     const next  = format(addDays(dateObj, 1), 'yyyy-MM-dd')
     const today = todayInSaoPaulo()
-    const label = format(dateObj, "EEEE, d 'de' MMMM", { locale: ptBR })
+    const label = format(dateObj, locale === 'pt' ? "EEEE, d 'de' MMMM" : 'EEEE, MMMM d', { locale: dateLocale })
     const weekday = dateObj.getDay()
 
     const [apptsRes, rulesRes, blockedRes, blockedSlotsRes] = await Promise.all([
@@ -174,11 +183,11 @@ export default async function AgendaPage({
           totalCount={totalCount}
           openCount={openCount}
           completedCount={completedCount}
-          revenueLabel="Faturamento"
+          revenueLabel={t.agenda.summary.revenueDay}
           revenueValue={revenueValue}
         />
 
-        <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=day&date=${prev}`} todayHref={`/admin/agenda?view=day&date=${today}`} nextHref={`/admin/agenda?view=day&date=${next}`}>
+        <AgendaHeader t={t} label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=day&date=${prev}`} todayHref={`/admin/agenda?view=day&date=${today}`} nextHref={`/admin/agenda?view=day&date=${next}`}>
           <DayOffToggleButton
             date={dateStr}
             blocked={blockedAllDay}
@@ -220,7 +229,8 @@ export default async function AgendaPage({
     const today     = todayInSaoPaulo()
     const prev      = format(subWeeks(dateObj, 1), 'yyyy-MM-dd')
     const next      = format(addWeeks(dateObj, 1), 'yyyy-MM-dd')
-    const label     = `${format(weekStart, "d 'de' MMM", { locale: ptBR })} — ${format(weekEnd, "d 'de' MMM", { locale: ptBR })}`
+    const weekLabelFmt = locale === 'pt' ? "d 'de' MMM" : 'MMM d'
+    const label     = `${format(weekStart, weekLabelFmt, { locale: dateLocale })} — ${format(weekEnd, weekLabelFmt, { locale: dateLocale })}`
     const dateStrs  = days.map(d => format(d, 'yyyy-MM-dd'))
     const weekdays  = Array.from(new Set(days.map(d => d.getDay())))
 
@@ -261,7 +271,7 @@ export default async function AgendaPage({
       const blockedAllDay = blockedPeriods.some(b => ds >= b.date_start && ds <= b.date_end)
       return {
         date: ds,
-        label: format(d, 'EEEE', { locale: ptBR }),
+        label: format(d, 'EEEE', { locale: dateLocale }),
         dayNumber: d.getDate(),
         isToday: isToday(d),
         isWeekendClosed: BOOKING.blockedWeekdays.includes(d.getDay()),
@@ -281,11 +291,11 @@ export default async function AgendaPage({
           totalCount={totalCount}
           openCount={openCount}
           completedCount={completedCount}
-          revenueLabel="Previsão"
+          revenueLabel={t.agenda.summary.revenueForecast}
           revenueValue={revenueValue}
         />
 
-        <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=${view}&date=${prev}`} todayHref={`/admin/agenda?view=${view}&date=${today}`} nextHref={`/admin/agenda?view=${view}&date=${next}`} />
+        <AgendaHeader t={t} label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=${view}&date=${prev}`} todayHref={`/admin/agenda?view=${view}&date=${today}`} nextHref={`/admin/agenda?view=${view}&date=${next}`} />
 
         <AgendaStrip selectedDate={dateStr} view={view} />
 
@@ -303,8 +313,8 @@ export default async function AgendaPage({
   const today      = todayInSaoPaulo()
   const prev       = format(subMonths(dateObj, 1), 'yyyy-MM-dd')
   const next       = format(addMonths(dateObj, 1), 'yyyy-MM-dd')
-  const label      = format(dateObj, "MMMM 'de' yyyy", { locale: ptBR })
-  const WEEKDAY    = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+  const label      = format(dateObj, locale === 'pt' ? "MMMM 'de' yyyy" : 'MMMM yyyy', { locale: dateLocale })
+  const WEEKDAY    = t.agenda.weekdayShort
 
   const { data: raw } = await db
     .from('appointments')
@@ -337,11 +347,11 @@ export default async function AgendaPage({
         totalCount={totalCount}
         openCount={openCount}
         completedCount={completedCount}
-        revenueLabel="Previsão"
+        revenueLabel={t.agenda.summary.revenueForecast}
         revenueValue={revenueValue}
       />
 
-      <AgendaHeader label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=month&date=${prev}`} todayHref={`/admin/agenda?view=month&date=${today}`} nextHref={`/admin/agenda?view=month&date=${next}`} />
+      <AgendaHeader t={t} label={label} dateStr={dateStr} view={view} prevHref={`/admin/agenda?view=month&date=${prev}`} todayHref={`/admin/agenda?view=month&date=${today}`} nextHref={`/admin/agenda?view=month&date=${next}`} />
 
       <div className="overflow-x-auto">
         <div className="min-w-[900px]">
@@ -395,7 +405,7 @@ export default async function AgendaPage({
                       )
                     })}
                     {overflow > 0 && (
-                      <p className="font-body font-light text-[8px] text-offwhite/25 pl-[6px]">+{overflow} mais</p>
+                      <p className="font-body font-light text-[8px] text-offwhite/25 pl-[6px]">{t.agenda.monthMore(overflow)}</p>
                     )}
                   </div>
                 </Link>
