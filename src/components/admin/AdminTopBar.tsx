@@ -7,6 +7,7 @@ import { ptBR } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { logoutAction } from '@/app/admin/actions'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { AdminGlobalSearch } from '@/components/admin/AdminGlobalSearch'
 
 export interface PendingItem {
   id: string
@@ -53,7 +54,9 @@ export function AdminTopBar({
   const initial = staffName.trim().charAt(0).toUpperCase() || 'A'
 
   return (
-    <header className="hidden lg:flex items-center justify-end h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0 print:hidden">
+    <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0 print:hidden">
+      <AdminGlobalSearch />
+
       {/* Right cluster */}
       <div className="flex items-center gap-3 shrink-0">
         <ThemeToggle />
