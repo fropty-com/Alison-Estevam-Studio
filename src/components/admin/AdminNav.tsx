@@ -143,6 +143,23 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
+        {/* Brand — mirrors the landing page logo, so the panel reads as a
+            continuation of the same site rather than a separate system. */}
+        <div className={cn(
+          'flex items-center h-[52px] border-b border-offwhite/[0.06] shrink-0 overflow-hidden',
+          collapsed ? 'justify-center' : 'justify-start px-4'
+        )}>
+          <Link
+            href="/admin"
+            className={cn(
+              'font-display font-normal uppercase text-offwhite/85 hover:text-offwhite transition-colors whitespace-nowrap',
+              collapsed ? 'text-[13px] tracking-[0.05em]' : 'text-[14px] tracking-[0.08em]'
+            )}
+          >
+            {collapsed ? 'AE' : 'Alison Estevam'}
+          </Link>
+        </div>
+
         {/* Collapse toggle */}
         <div className={cn('flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
           <button

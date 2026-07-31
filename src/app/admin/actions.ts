@@ -11,7 +11,8 @@ import { formatWhatsApp, isFullName } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
 import { SLOT_STATUS } from '@/config/booking'
-import { isStaffMember } from '@/lib/admin-auth'
+import { isStaffMember, establishStaffSession } from '@/lib/admin-auth'
+import { verifyOtp } from '@/lib/client-auth/otp'
 import type { Database, Json, TablesUpdate } from '@/types/database'
 
 async function adminDb() {
@@ -118,6 +119,51 @@ export async function loginAction(formData: FormData) {
 
   const { error } = await supabase.auth.signInWithPassword({ email, password })
   if (error) return { error: 'E-mail ou senha incorretos.' }
+
+  redirect('/admin')
+}
+
+/**
+ * Whether a phone is registered on staff_members — checked before sending
+ * an OTP from the login screen's phone tab, so a number with no admin
+ * access doesn't get a WhatsApp code for nothing.
+ */
+export async function checkStaffPhoneAction(phoneRaw: string): Promise<{ error: string; exists?: undefined } | { error?: undefined; exists: boolean }> {
+  let phone: string
+  try {
+    phone = formatWhatsApp(phoneRaw)
+  } catch {
+    return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+  }
+
+  const db = await adminDb()
+  const { data: staff } = await db.from('staff_members').select('id').eq('phone', phone).maybeSingle()
+  if (!staff) return { error: 'Este telefone não tem acesso ao painel administrativo.' }
+  return { exists: true }
+}
+
+/**
+ * Verifies the WhatsApp OTP and bridges straight into an admin session —
+ * unlike /entrar's verifyAndLoginAction, this never falls back to creating
+ * a client account: a phone that isn't on staff_members is always an error.
+ */
+export async function verifyStaffPhoneLoginAction(input: { phoneRaw: string; code: string }): Promise<{ error?: string }> {
+  let phone: string
+  try {
+    phone = formatWhatsApp(input.phoneRaw)
+  } catch {
+    return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+  }
+
+  const result = await verifyOtp(phone, input.code.trim())
+  if (!result.ok) return { error: result.error }
+
+  const db = await adminDb()
+  const { data: staff } = await db.from('staff_members').select('id').eq('phone', phone).maybeSingle()
+  if (!staff) return { error: 'Este telefone não tem acesso ao painel administrativo.' }
+
+  const sessionResult = await establishStaffSession(staff.id)
+  if (sessionResult.error) return sessionResult
 
   redirect('/admin')
 }

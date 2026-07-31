@@ -5,6 +5,52 @@ import { createServiceClient } from '@/lib/supabase/server'
 export type StaffRole = 'owner' | 'staff'
 
 /**
+ * Bridges a WhatsApp-OTP-verified staff phone into a real Supabase Auth
+ * admin session, without a password: mint a one-time magic-link token via
+ * the admin API, then redeem it through the cookie-aware SSR client so the
+ * browser gets the same session cookies loginAction() would set. Only a
+ * phone an owner explicitly registered on staff_members.phone can ever
+ * reach this — clients can't self-promote. Shared by /entrar (client-facing
+ * phone login, staff phones bridge straight into /admin) and /admin/login's
+ * own phone tab.
+ */
+export async function establishStaffSession(staffId: string): Promise<{ error?: string }> {
+  const serviceDb = await createServiceClient()
+  const { data: userData, error: userError } = await serviceDb.auth.admin.getUserById(staffId)
+  if (userError || !userData?.user?.email) return { error: 'Erro ao acessar conta administrativa.' }
+
+  const { data: linkData, error: linkError } = await serviceDb.auth.admin.generateLink({
+    type: 'magiclink',
+    email: userData.user.email,
+  })
+  if (linkError || !linkData?.properties?.hashed_token) return { error: 'Erro ao gerar sessão administrativa.' }
+
+  const cookieStore = await cookies()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet: { name: string; value: string; options?: object }[]) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            cookieStore.set(name, value, options as Parameters<typeof cookieStore.set>[2])
+          )
+        },
+      },
+    }
+  )
+
+  const { error: verifyError } = await supabase.auth.verifyOtp({
+    type: 'email',
+    token_hash: linkData.properties.hashed_token,
+  })
+  if (verifyError) return { error: 'Erro ao autenticar. Tente novamente.' }
+
+  return {}
+}
+
+/**
  * Whether a Supabase Auth user id is provisioned as staff. This is the real
  * admin-access gate — being an authenticated Supabase Auth user is NOT
  * enough on its own (any of the project's Auth accounts, including ones

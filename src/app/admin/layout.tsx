@@ -13,6 +13,13 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getAdminUser()
+
+  // Only /admin/login ever reaches this layout without a session (middleware
+  // redirects every other /admin/* route to it otherwise) — so an absent
+  // user always means "showing the login screen," which gets none of the
+  // authenticated chrome (sidebar, topbar, search, notifications).
+  if (!user) return <>{children}</>
+
   const locale = await getLocale()
 
   const db = await createServiceClient()
