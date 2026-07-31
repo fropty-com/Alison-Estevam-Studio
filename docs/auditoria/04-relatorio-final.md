@@ -46,6 +46,10 @@ O crescimento reflete a massa de demonstração da Fase 2 (12 meses atrás a 3 m
 - Advisors de performance do Supabase: 0 avisos WARN. Restam apenas 12 avisos INFO de "índice não utilizado" — esperado, são os índices novos da Fase 6 e dois pré-existentes (`audit_log_target_idx`, `expenses_paid_date_idx`) ainda sem tráfego suficiente para aparecer como usados.
 - Deploy de produção (Vercel): READY no commit `bedc729`.
 
+## Atualização pós-fechamento (mesma data)
+
+Revisão contra os 8 documentos originais em `referencias/md/` encontrou um item pendente que não tinha sido carregado para este relatório: o design system documentado formalmente (pedido explícito de `analise-critica.md` §6, `docs/design-system.md`). Escrito e commitado — ver [docs/design-system.md](../design-system.md).
+
 ## O que ficou fora do escopo (decisão consciente, não esquecimento)
 
 1. **Remoção dos `as any` nas chamadas Supabase** — o type `Database` regenerado na Fase 6 é preciso, mas a maioria das chamadas no app usa `as any`. Corrigir isso em massa é um esforço maior e separado, com risco de expor incompatibilidades de tipo latentes; decidido não fazer dentro do orçamento "S" da Fase 6.
@@ -54,6 +58,7 @@ O crescimento reflete a massa de demonstração da Fase 2 (12 meses atrás a 3 m
 4. **Auditoria formal de contraste WCAG, teste em navegadores reais além do Chromium, navegação 100% por teclado** — fora do escopo da Fase 5, candidatos a uma fase de acessibilidade dedicada.
 5. **CI próprio (lint/typecheck/testes automatizados antes do deploy)** — hoje o único gate é o build da Vercel; não foi criado workflow de CI nesta missão.
 6. **Proteção de senha vazada no Supabase Auth** — 1 clique no painel, mas não se aplica de fato (clientes não usam senha; só a conta admin usa Supabase Auth).
+7. **Busca global, command palette, atalhos de teclado, breadcrumb no admin** — `analise-critica.md` §5 pede explicitamente para *avaliar*, não implementar por obrigação ("não implemente obrigatoriamente esse modelo... avalie"). Avaliação: o admin já navega bem por uma sidebar com poucos itens (11 seções) e sem sinal de atrito relatado pelo usuário; adicionar busca global/command palette seria complexidade nova sem problema real a resolver hoje. Fica como melhoria válida se o número de seções crescer.
 
 ## Recomendação de próximos passos (se houver interesse futuro)
 
