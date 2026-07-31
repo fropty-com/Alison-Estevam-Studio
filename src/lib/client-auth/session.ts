@@ -64,7 +64,7 @@ export async function getVerifiedClientSession(): Promise<{ clientId: string } |
   const session = await getClientSession()
   if (!session) return null
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data: client } = await db
     .from('clients')
     .select('id')

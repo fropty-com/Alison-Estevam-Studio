@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
   const serviceId = searchParams.get('serviceId')
 
   try {
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
 
     if (serviceId) {
       const { data, error } = await db

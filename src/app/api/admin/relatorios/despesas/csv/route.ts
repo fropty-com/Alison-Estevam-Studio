@@ -8,7 +8,7 @@ export async function GET() {
   const role = await getAdminRole()
   if (role !== 'owner') return new Response('Não autorizado.', { status: 403 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data } = await db
     .from('expenses')
@@ -16,7 +16,7 @@ export async function GET() {
     .order('due_date', { ascending: false })
     .limit(1000)
 
-  const rows = ((data ?? []) as any[]).map(e => [
+  const rows = (data ?? []).map(e => [
     e.description,
     e.category,
     e.is_fixed ? 'Fixa' : 'Variável',

@@ -17,7 +17,7 @@ export async function GET() {
   const role = await getAdminRole()
   if (role !== 'owner') return new Response('Não autorizado.', { status: 403 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const now = new Date()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
@@ -29,7 +29,7 @@ export async function GET() {
     .lte('time_slots.date', monthEnd)
     .order('time_slots(date)', { ascending: true })
 
-  const rows = ((data ?? []) as any[]).map(a => {
+  const rows = (data ?? []).map(a => {
     const client = Array.isArray(a.clients) ? a.clients[0] : a.clients
     const service = Array.isArray(a.services) ? a.services[0] : a.services
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots

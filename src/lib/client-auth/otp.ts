@@ -45,7 +45,7 @@ async function sendOtpViaSms(phone: string, code: string): Promise<void> {
 const DEV_MODE = process.env.NODE_ENV === 'development' || process.env.OTP_DEBUG_LEAK === 'true'
 
 export async function requestOtp(phone: string): Promise<{ devCode?: string; error?: string }> {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   // Rate limit per phone, enforced against otp_codes itself — no new infra.
   // Without this, MAX_ATTEMPTS above is meaningless: an attacker just calls
@@ -60,7 +60,7 @@ export async function requestOtp(phone: string): Promise<{ devCode?: string; err
     .gte('created_at', oneHourAgo)
     .order('created_at', { ascending: false })
 
-  const recentRows = (recent ?? []) as { created_at: string }[]
+  const recentRows = recent ?? []
   if (recentRows.length > 0) {
     const secondsSinceLast = (Date.now() - new Date(recentRows[0].created_at).getTime()) / 1000
     if (secondsSinceLast < MIN_INTERVAL_SEC) {
@@ -87,7 +87,7 @@ export async function requestOtp(phone: string): Promise<{ devCode?: string; err
 }
 
 export async function verifyOtp(phone: string, code: string): Promise<{ ok: true } | { ok: false; error: string }> {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: row } = await db
     .from('otp_codes')

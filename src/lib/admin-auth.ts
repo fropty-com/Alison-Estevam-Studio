@@ -12,7 +12,7 @@ export type StaffRole = 'owner' | 'staff'
  * Server Actions, since those only checked "is authenticated").
  */
 export async function isStaffMember(userId: string): Promise<boolean> {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data } = await db.from('staff_members').select('id').eq('id', userId).maybeSingle()
   return !!data
 }
@@ -60,7 +60,7 @@ export async function getAdminRole(): Promise<StaffRole | null> {
   const user = await getAdminUser()
   if (!user) return null
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data } = await db
     .from('staff_members')
     .select('role')

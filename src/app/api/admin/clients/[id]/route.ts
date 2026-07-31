@@ -7,7 +7,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const user = await getAdminUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [clientRes, apptsRes, loyalty] = await Promise.all([
     db.from('clients').select('*').eq('id', params.id).single(),
@@ -20,8 +20,8 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 
   if (!clientRes.data) return NextResponse.json({ error: 'Cliente não encontrado.' }, { status: 404 })
 
-  const client = clientRes.data as any
-  const appts = (apptsRes.data ?? []) as any[]
+  const client = clientRes.data
+  const appts = apptsRes.data ?? []
 
   const history = appts.map(a => {
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots

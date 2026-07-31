@@ -8,7 +8,7 @@ import { createServiceClient } from '@/lib/supabase/server'
  * take down a real feature, so the request is allowed through.
  */
 export async function checkRateLimit(key: string, windowSeconds: number, max: number): Promise<boolean> {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data, error } = await db.rpc('check_rate_limit', {
     p_key: key,
     p_window_seconds: windowSeconds,

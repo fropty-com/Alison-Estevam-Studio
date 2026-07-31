@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
   const q = qRaw.replace(/[,()]/g, '')
   if (q.length < 2) return NextResponse.json({ clients: [] })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data } = await db
     .from('clients')
     .select('id, name, whatsapp, email')

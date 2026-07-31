@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, whatsapp, serviceId, preferredDate, note } = parsed.data
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
 
     const { data: service } = await db
       .from('services')

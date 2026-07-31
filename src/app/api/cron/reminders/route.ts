@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
   }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const tomorrow = todayInSaoPaulo(new Date(Date.now() + 24 * 60 * 60 * 1000))
 
   const { data: appointments, error } = await db
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   let skipped = 0
   const failures: string[] = []
 
-  for (const appt of (appointments ?? []) as any[]) {
+  for (const appt of appointments ?? []) {
     const client = Array.isArray(appt.clients) ? appt.clients[0] : appt.clients
     const service = Array.isArray(appt.services) ? appt.services[0] : appt.services
     const slot = Array.isArray(appt.time_slots) ? appt.time_slots[0] : appt.time_slots

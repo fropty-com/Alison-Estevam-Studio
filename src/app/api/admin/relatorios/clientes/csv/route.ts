@@ -8,15 +8,15 @@ export async function GET() {
   const role = await getAdminRole()
   if (role !== 'owner') return new Response('Não autorizado.', { status: 403 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [clientsRes, completedRes] = await Promise.all([
     db.from('clients').select('id, name, whatsapp, email, vip, created_at').order('name', { ascending: true }),
     db.from('appointments').select('client_id, total_price, time_slots!inner(date)').eq('status', 'completed'),
   ])
 
-  const clients = (clientsRes.data ?? []) as any[]
-  const completed = (completedRes.data ?? []) as any[]
+  const clients = clientsRes.data ?? []
+  const completed = completedRes.data ?? []
 
   const statsByClient: Record<string, { count: number; total: number; lastDate: string }> = {}
   for (const a of completed) {

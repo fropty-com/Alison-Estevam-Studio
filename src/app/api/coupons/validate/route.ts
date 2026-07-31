@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ valid: false, error: 'Dados inválidos.' }, { status: 422 })
     }
 
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
     const result = await validateCoupon(db, code, subtotal)
 
     if (!result.valid) {

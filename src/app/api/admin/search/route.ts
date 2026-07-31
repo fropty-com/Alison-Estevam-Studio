@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   const q = qRaw.replace(/[,()]/g, '')
   if (q.length < 2) return NextResponse.json({ clients: [], appointments: [] })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [clientsRes, appointmentsRes] = await Promise.all([
     db
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
       .limit(5),
   ])
 
-  const appointments = (appointmentsRes.data ?? []).map((a: any) => {
+  const appointments = (appointmentsRes.data ?? []).map(a => {
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
     const client = Array.isArray(a.clients) ? a.clients[0] : a.clients
     const service = Array.isArray(a.services) ? a.services[0] : a.services

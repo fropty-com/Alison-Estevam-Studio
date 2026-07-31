@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   const scope = request.nextUrl.searchParams.get('scope')
 
   try {
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
 
     if (slug) {
       const { data, error } = await db
