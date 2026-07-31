@@ -3,8 +3,10 @@
 import { useState, useTransition } from 'react'
 import { createService } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function AddServiceForm() {
+  const { t } = useTranslation()
   const [pending,  startTransition] = useTransition()
   const [feedback, setFeedback]     = useState<string | null>(null)
   const [success,  setSuccess]      = useState(false)
@@ -33,29 +35,29 @@ export function AddServiceForm() {
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
-        Novo serviço
+        {t.services.addForm.title}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="col-span-2">
-          <label className={labelCls}>Nome</label>
-          <input type="text" name="name" required placeholder="Ex: Corte Degradê" className={inputCls} />
+          <label className={labelCls}>{t.services.addForm.name}</label>
+          <input type="text" name="name" required placeholder={t.services.addForm.namePlaceholder} className={inputCls} />
         </div>
         <div className="col-span-2 sm:col-span-2">
-          <label className={labelCls}>Descrição (opcional)</label>
-          <input type="text" name="description" placeholder="Breve descrição" className={inputCls} />
+          <label className={labelCls}>{t.services.addForm.descriptionOptional}</label>
+          <input type="text" name="description" placeholder={t.services.addForm.descriptionPlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Valor R$</label>
-          <input type="number" name="price" required min="0" step="0.01" placeholder="60,00" className={inputCls} />
+          <label className={labelCls}>{t.services.addForm.price}</label>
+          <input type="number" name="price" required min="0" step="0.01" placeholder={t.services.addForm.pricePlaceholder} className={inputCls} />
         </div>
         <div>
-          <label className={labelCls}>Duração (min)</label>
-          <input type="number" name="duration" required min="1" step="1" placeholder="45" className={inputCls} />
+          <label className={labelCls}>{t.services.addForm.duration}</label>
+          <input type="number" name="duration" required min="1" step="1" placeholder={t.services.addForm.durationPlaceholder} className={inputCls} />
         </div>
         <div className="col-span-2 sm:col-span-2 flex items-end">
           <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/50 cursor-pointer">
             <input type="checkbox" checked={hidden} onChange={e => setHidden(e.target.checked)} className="accent-gold" />
-            Cuidado avulso (não aparece na lista principal de Serviços)
+            {t.services.addForm.standaloneCheckbox}
           </label>
         </div>
         <div className="col-span-2 sm:col-span-4 flex items-center gap-3 mt-1">
@@ -69,9 +71,9 @@ export function AddServiceForm() {
               'transition-all duration-200 disabled:opacity-40'
             )}
           >
-            {pending ? 'Criando…' : 'Adicionar serviço'}
+            {pending ? t.services.addForm.creating : t.services.addForm.submit}
           </button>
-          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">Serviço criado.</p>}
+          {success  && <p className="font-body font-light text-[9px] tracking-[0.2em] text-sage-light">{t.services.addForm.created}</p>}
           {feedback && <p className="font-body font-light text-[9px] tracking-[0.2em] text-error/70">{feedback}</p>}
         </div>
       </form>

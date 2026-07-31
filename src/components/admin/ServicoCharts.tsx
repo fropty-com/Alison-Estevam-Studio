@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+
 interface MonthPoint  { label: string; revenue: number }
 interface CountPoint  { name: string; count: number }
 interface StalePoint  { id: string; name: string; daysSince: number | null; neverUsed: boolean }
@@ -25,6 +27,7 @@ export function ServicoCharts({
   receitaPorHora: HourPoint[]
   realizadosJuntos: PairPoint[]
 }) {
+  const { t } = useTranslation()
   const maxTrend = Math.max(...monthlyTrend.map(m => m.revenue), 1)
   const maxMais  = Math.max(...maisRealizados.map(s => s.count), 1)
   const maxMenos = Math.max(...menosRealizados.map(s => s.count), 1)
@@ -36,9 +39,9 @@ export function ServicoCharts({
       {/* Tendência de receita de serviços */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">
-          Receita de serviços
+          {t.services.charts.revenueTitle}
         </p>
-        <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-5">Últimos 6 meses</p>
+        <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-5">{t.services.charts.last6Months}</p>
         <div className="flex items-end gap-[10px] h-[140px]">
           {monthlyTrend.map((m, i) => (
             <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
@@ -57,10 +60,10 @@ export function ServicoCharts({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Mais realizados */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Mais realizados — este mês</p>
-          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">Ranking por quantidade</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.services.charts.mostPerformedTitle}</p>
+          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">{t.services.charts.rankingByCount}</p>
           {maisRealizados.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">Nenhum serviço realizado deste mês.</p>
+            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">{t.services.charts.noneThisMonth}</p>
           ) : (
             <div className="space-y-[12px]">
               {maisRealizados.map((s, i) => (
@@ -80,10 +83,10 @@ export function ServicoCharts({
 
         {/* Menos realizados */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Menos realizados no mês</p>
-          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">Serviços com menor procura</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.services.charts.leastPerformedTitle}</p>
+          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">{t.services.charts.lowestDemand}</p>
           {menosRealizados.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">Nenhum serviço realizado deste mês.</p>
+            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">{t.services.charts.noneThisMonth}</p>
           ) : (
             <div className="space-y-[12px]">
               {menosRealizados.map((s, i) => (
@@ -104,17 +107,17 @@ export function ServicoCharts({
 
       {/* Serviços parados */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Serviços parados</p>
-        <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">Sem realização há mais de 30 dias ou nunca realizados</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.services.charts.staleTitle}</p>
+        <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">{t.services.charts.staleSub}</p>
         {staleList.length === 0 ? (
-          <p className="font-body font-light text-[12px] text-sage-light text-center py-6">Todos os serviços foram realizados recentemente.</p>
+          <p className="font-body font-light text-[12px] text-sage-light text-center py-6">{t.services.charts.allRecentlyPerformed}</p>
         ) : (
           <div className="divide-y divide-offwhite/6 -mx-6">
             {staleList.map(s => (
               <div key={s.id} className="flex items-center justify-between px-6 py-3">
                 <span className="font-body font-light text-[12px] text-offwhite/70">{s.name}</span>
                 <span className="font-body font-light text-[9px] text-error/60 tracking-[0.1em]">
-                  {s.neverUsed ? 'Nunca realizado' : `${s.daysSince}d sem realização`}
+                  {s.neverUsed ? t.services.insights.neverPerformed : t.services.insights.daysSinceNoPerformance(s.daysSince!)}
                 </span>
               </div>
             ))}
@@ -125,10 +128,10 @@ export function ServicoCharts({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Receita por hora */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Receita por hora</p>
-          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">Eficiência: quanto cada serviço gera por hora de trabalho</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.services.charts.revenuePerHourTitle}</p>
+          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">{t.services.charts.efficiencySub}</p>
           {receitaPorHora.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">Cadastre duração nos serviços para ver a eficiência.</p>
+            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">{t.services.charts.registerDuration}</p>
           ) : (
             <div className="space-y-[12px]">
               {receitaPorHora.slice(0, 6).map((s, i) => (
@@ -148,10 +151,10 @@ export function ServicoCharts({
 
         {/* Realizados juntos */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Realizados juntos</p>
-          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">Pares mais frequentes na mesma comanda</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.services.charts.pairedTitle}</p>
+          <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">{t.services.charts.pairedSub}</p>
           {realizadosJuntos.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">Nenhum par de serviços encontrado.</p>
+            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">{t.services.charts.noPairsFound}</p>
           ) : (
             <div className="space-y-[12px]">
               {realizadosJuntos.map((p, i) => (

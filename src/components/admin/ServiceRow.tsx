@@ -4,12 +4,14 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateService, deleteService } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function ServiceRow({ service, appointmentCount }: { service: {
   id: string; name: string; description: string | null
   duration: number; price: number; active: boolean; position: number
   hidden_from_list?: boolean
 }, appointmentCount: number }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending,   startTransition] = useTransition()
   const [editing,   setEditing]  = useState(false)
@@ -45,7 +47,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
             'w-[34px] h-[20px] rounded-full border transition-all duration-300 relative shrink-0 disabled:opacity-40',
             service.active ? 'bg-sage/25 border-sage/40' : 'bg-offwhite/5 border-offwhite/15'
           )}
-          aria-label={service.active ? 'Desativar' : 'Ativar'}
+          aria-label={service.active ? t.services.row.deactivate : t.services.row.activate}
         >
           <span className={cn(
             'absolute top-[3px] w-[12px] h-[12px] rounded-full transition-all duration-300',
@@ -58,10 +60,10 @@ export function ServiceRow({ service, appointmentCount }: { service: {
             <p className="font-body font-light text-[13px] text-offwhite">{service.name}</p>
             {service.hidden_from_list && (
               <span
-                title="Não aparece na lista pública de Serviços — reservado só via botão próprio na seção Cuidados"
+                title={t.services.row.careBadgeTitle}
                 className="font-body font-light text-[7px] tracking-[0.25em] uppercase px-[6px] py-[2px] border border-offwhite/15 text-offwhite/35 shrink-0"
               >
-                Cuidado
+                {t.services.row.careBadge}
               </span>
             )}
           </div>
@@ -82,7 +84,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
               onClick={() => setEditing(true)}
               className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
-              Editar
+              {t.services.row.edit}
             </button>
             {appointmentCount === 0 && (
               !confirmDelete ? (
@@ -90,7 +92,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
                   onClick={() => setConfirmDelete(true)}
                   className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
                 >
-                  Excluir
+                  {t.services.row.delete}
                 </button>
               ) : (
                 <div className="flex items-center gap-1">
@@ -99,7 +101,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
                     onClick={handleDelete}
                     className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50"
                   >
-                    {pending ? '…' : 'Confirmar'}
+                    {pending ? '…' : t.services.row.confirm}
                   </button>
                   <button
                     onClick={() => setConfirmDelete(false)}
@@ -136,7 +138,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
               onClick={() => act(() => updateService(service.id, { price: parseFloat(price), duration: parseInt(duration) }))}
               className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-sage/15 border border-sage/25 text-sage-light hover:bg-sage/25 transition-all disabled:opacity-40"
             >
-              {pending ? '…' : 'Ok'}
+              {pending ? '…' : t.services.row.ok}
             </button>
             <button
               onClick={() => setEditing(false)}

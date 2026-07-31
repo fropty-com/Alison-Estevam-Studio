@@ -1,12 +1,16 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, subMonths, parseISO, differenceInDays } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { ServiceRow } from '@/components/admin/ServiceRow'
 import { ServicoCharts } from '@/components/admin/ServicoCharts'
 import { AddServiceForm } from '@/components/admin/AddServiceForm'
 import { nowAnchorInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 const STALE_DAYS = 30
 
@@ -16,6 +20,9 @@ function fmt(value: number) {
 
 export default async function ServicosPage() {
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const now         = nowAnchorInSaoPaulo()
   const monthStart  = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -146,7 +153,7 @@ export default async function ServicosPage() {
   const monthlyTrend = Array.from({ length: 6 }, (_, i) => {
     const m = subMonths(now, 5 - i)
     const key = format(m, 'yyyy-MM')
-    return { label: format(m, 'MMM', { locale: ptBR }).replace('.', ''), revenue: monthlyBuckets[key] ?? 0 }
+    return { label: format(m, 'MMM', { locale: dateLocale }).replace('.', ''), revenue: monthlyBuckets[key] ?? 0 }
   })
 
   // ── Realizados juntos: par serviço + complemento, este mês ──
@@ -171,89 +178,89 @@ export default async function ServicosPage() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 6)
 
-  const monthLabel = format(now, "MMMM 'de' yyyy", { locale: ptBR })
+  const monthLabel = format(now, locale === 'pt' ? "MMMM 'de' yyyy" : 'MMMM yyyy', { locale: dateLocale })
 
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Serviços</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.services.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.services.title}</h1>
         <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
       {/* Cards do mês */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Receita de serviços</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.revenue}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(receitaServicos)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.thisMonth}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Serviços realizados</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.performed}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{servicosRealizados}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">no período este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.periodThisMonth}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Total cadastrados</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.registered}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{totalCadastrados}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">serviços ativos</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.activeServices}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Ticket médio</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.avgTicket}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(ticketMedio)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">por comanda com serviço</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.perTicketWithService}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Duração média</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.avgDuration}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{Math.round(duracaoMedia)} min</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">por serviço realizado</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.perServicePerformed}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Cuidados avulsos</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.standaloneCare}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{cuidadosAvulsos}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">reservados sozinhos este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.bookedAloneThisMonth}</p>
         </div>
       </div>
 
       {/* Insights */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Campeão de vendas</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.salesChampion}</p>
           {campeaoVendas ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{campeaoVendas.name}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{campeaoVendas.count}× este mês</p>
+              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{t.services.insights.timesThisMonth(campeaoVendas.count)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem serviços deste mês.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noServicesThisMonth}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Maior receita</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.highestRevenue}</p>
           {maiorReceita ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{maiorReceita.name}</p>
               <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(maiorReceita.revenue)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem serviços deste mês.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noServicesThisMonth}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Mais eficiente</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.mostEfficient}</p>
           {maisEficiente ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{maisEficiente.name}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(maisEficiente.perHour)}/hora</p>
+              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(maisEficiente.perHour)}{t.services.insights.perHour}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados de duração.</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noDurationData}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">Mais tempo parado</p>
+          <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.longestStale}</p>
           {piorParado ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{piorParado.name}</p>
               <p className="font-body font-light text-[9px] text-error/60 tracking-[0.1em]">
-                {piorParado.neverUsed ? 'Nunca realizado' : `${piorParado.daysSince}d sem realização`}
+                {piorParado.neverUsed ? t.services.insights.neverPerformed : t.services.insights.daysSinceNoPerformance(piorParado.daysSince!)}
               </p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-sage-light italic">Todos os serviços ativos.</p>}
+          ) : <p className="font-body font-light text-[11px] text-sage-light italic">{t.services.insights.allActive}</p>}
         </div>
       </div>
 
@@ -269,7 +276,7 @@ export default async function ServicosPage() {
       {/* Gestão de serviços */}
       <section className="space-y-4">
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
-          Gerenciar serviços
+          {t.services.manage.title}
         </h2>
         <AddServiceForm />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
