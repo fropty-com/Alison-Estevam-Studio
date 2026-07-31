@@ -1,21 +1,29 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, parseISO, isToday, isTomorrow } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { WaitlistEntryRow } from '@/components/admin/WaitlistEntryRow'
 import { AddWaitlistButton } from '@/components/admin/AddWaitlistButton'
 import { buildWaitlistNotifyUrl } from '@/lib/whatsapp/messages'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pt'
+import type { Locale } from '@/lib/i18n/locales'
 
 export const dynamic = 'force-dynamic'
 
-function dayLabel(dateStr: string) {
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
+
+function dayLabel(dateStr: string, locale: Locale, t: Dictionary) {
   const d = parseISO(dateStr)
-  if (isToday(d)) return 'Hoje'
-  if (isTomorrow(d)) return 'Amanhã'
-  return format(d, "EEEE, d 'de' MMMM", { locale: ptBR })
+  if (isToday(d)) return t.waitlist.today
+  if (isTomorrow(d)) return t.waitlist.tomorrow
+  return format(d, locale === 'pt' ? "EEEE, d 'de' MMMM" : 'EEEE, MMMM d', { locale: DATE_FNS_LOCALE[locale] })
 }
 
 export default async function EsperaPage() {
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
 
   const { data: raw } = await db
     .from('waitlist_entries')
@@ -37,10 +45,10 @@ export default async function EsperaPage() {
     <div className="px-6 py-8">
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Fila de espera</h1>
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.waitlist.eyebrow}</p>
+          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.waitlist.title}</h1>
           <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
-            Clientes esperando um horário abrir. {entries.length} na fila.
+            {t.waitlist.subtitle(entries.length)}
           </p>
         </div>
         <AddWaitlistButton />
@@ -49,7 +57,7 @@ export default async function EsperaPage() {
       {groups.length === 0 ? (
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
           <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
-            Ninguém na fila de espera.
+            {t.waitlist.empty}
           </p>
         </div>
       ) : (
@@ -57,7 +65,7 @@ export default async function EsperaPage() {
           {groups.map(({ day, items }) => (
             <div key={day}>
               <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
-                {dayLabel(day)}
+                {dayLabel(day, locale, t)}
               </p>
               <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
                 {items.map(entry => (

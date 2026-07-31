@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { AddWaitlistModal } from './AddWaitlistModal'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 function SearchIcon() {
   return (
@@ -13,6 +14,7 @@ function SearchIcon() {
 }
 
 export function AddWaitlistButton() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -21,7 +23,7 @@ export function AddWaitlistButton() {
         className="shrink-0 whitespace-nowrap flex items-center gap-[7px] px-4 h-[36px] bg-gold font-body font-medium text-[8px] tracking-[0.28em] uppercase text-charcoal-deep hover:bg-gold-light transition-all duration-200"
       >
         <SearchIcon />
-        Buscar cliente
+        {t.waitlist.addClient}
       </button>
       {open && <AddWaitlistModal onClose={() => setOpen(false)} />}
     </>

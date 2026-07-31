@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { updateWaitlistStatus } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export function WaitlistEntryRow({
   id,
@@ -21,6 +22,7 @@ export function WaitlistEntryRow({
   status: 'waiting' | 'notified'
   notifyUrl: string
 }) {
+  const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
 
   const act = (next: 'notified' | 'resolved' | 'cancelled') => {
@@ -53,21 +55,21 @@ export function WaitlistEntryRow({
             'hover:bg-sage/25 transition-all duration-200'
           )}
         >
-          {status === 'notified' ? 'Notificar de novo' : 'Notificar'}
+          {status === 'notified' ? t.waitlist.notifyAgain : t.waitlist.notify}
         </a>
         <button
           disabled={pending}
           onClick={() => act('resolved')}
           className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:border-offwhite/25 hover:text-offwhite/55 transition-all duration-200 disabled:opacity-40"
         >
-          Agendou
+          {t.waitlist.scheduled}
         </button>
         <button
           disabled={pending}
           onClick={() => act('cancelled')}
           className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/5 border border-error/20 text-error/60 hover:bg-error/10 transition-all duration-200 disabled:opacity-40"
         >
-          Remover
+          {t.waitlist.remove}
         </button>
       </div>
     </div>

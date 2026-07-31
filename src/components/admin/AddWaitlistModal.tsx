@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { cn, maskPhoneInput, isFullName, isValidWhatsApp } from '@/lib/utils'
 import { createManualWaitlistEntry } from '@/app/admin/actions'
 import { todayInSaoPaulo } from '@/lib/timezone'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 interface Service { id: string; name: string; is_whatsapp_only: boolean }
 interface ClientHit { id: string; name: string; whatsapp: string; email: string | null }
@@ -22,6 +23,7 @@ function SearchIcon() {
 }
 
 export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -79,18 +81,18 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
       <div className="relative w-full max-w-[480px] my-8 bg-charcoal border border-offwhite/[0.14] p-6">
         <button
           onClick={onClose}
-          aria-label="Fechar"
+          aria-label={t.waitlist.modal.close}
           className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">Fila de espera</p>
-        <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] mb-5">Adicionar cliente</h2>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.waitlist.modal.eyebrow}</p>
+        <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] mb-5">{t.waitlist.modal.title}</h2>
 
         {/* Client search */}
         <div className="mb-5">
-          <label className={labelCls}>Buscar cliente existente</label>
+          <label className={labelCls}>{t.waitlist.modal.searchExisting}</label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/30 pointer-events-none">
               <SearchIcon />
@@ -99,7 +101,7 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Nome ou WhatsApp…"
+              placeholder={t.waitlist.modal.searchPlaceholder}
               className={cn(inputCls, 'pl-9')}
             />
           </div>
@@ -122,32 +124,32 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
 
         <div className="grid grid-cols-2 gap-3 mb-5">
           <div className="col-span-2">
-            <label className={labelCls}>Nome completo</label>
-            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
+            <label className={labelCls}>{t.waitlist.modal.fullName}</label>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder={t.waitlist.modal.fullNamePlaceholder} className={inputCls} />
           </div>
           <div className="col-span-2">
-            <label className={labelCls}>WhatsApp</label>
+            <label className={labelCls}>{t.waitlist.modal.whatsapp}</label>
             <input type="tel" value={whatsapp} onChange={e => setWhatsapp(maskPhoneInput(e.target.value))} placeholder="(00) 00000-0000" className={inputCls} />
           </div>
 
           <div className="col-span-2">
-            <label className={labelCls}>Serviço desejado</label>
+            <label className={labelCls}>{t.waitlist.modal.desiredService}</label>
             <select
               value={serviceId}
               onChange={e => setServiceId(e.target.value)}
               className={cn(inputCls, 'appearance-none [color-scheme:dark]')}
             >
-              <option value="" className="bg-charcoal">Selecione…</option>
+              <option value="" className="bg-charcoal">{t.waitlist.modal.selectPlaceholder}</option>
               {services.map(s => (
                 <option key={s.id} value={s.id} className="bg-charcoal">
-                  {s.name}{s.is_whatsapp_only ? ' (Exclusivo)' : ''}
+                  {s.name}{s.is_whatsapp_only ? t.waitlist.modal.exclusive : ''}
                 </option>
               ))}
             </select>
           </div>
 
           <div className="col-span-2">
-            <label className={labelCls}>Data preferida</label>
+            <label className={labelCls}>{t.waitlist.modal.preferredDate}</label>
             <input
               type="date"
               value={preferredDate}
@@ -158,8 +160,8 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className="col-span-2">
-            <label className={labelCls}>Nota interna (opcional)</label>
-            <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} placeholder="Visível só para a equipe…" className={cn(inputCls, 'resize-none')} />
+            <label className={labelCls}>{t.waitlist.modal.internalNote}</label>
+            <textarea value={note} onChange={e => setNote(e.target.value)} rows={2} placeholder={t.waitlist.modal.internalNotePlaceholder} className={cn(inputCls, 'resize-none')} />
           </div>
         </div>
 
@@ -178,7 +180,7 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
               'hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed',
             )}
           >
-            {pending ? 'Salvando…' : 'Adicionar à fila'}
+            {pending ? t.waitlist.modal.saving : t.waitlist.modal.submit}
           </button>
         </div>
       </div>
