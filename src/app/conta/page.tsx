@@ -9,9 +9,10 @@ import { formatCurrency, cn } from '@/lib/utils'
 import { getLoyaltyProgress } from '@/lib/loyalty'
 import { BRAND } from '@/config/brand'
 import { BOOKING } from '@/config/booking'
-import { ClientHeader, clientHeaderLinkCls } from '@/components/layout/ClientHeader'
+import { ClientHeader } from '@/components/layout/ClientHeader'
+import { ClientAccountMenu } from '@/components/profile/ClientAccountMenu'
+import { getLocale } from '@/lib/i18n/getLocale'
 import { ConfirmAttendanceButton } from '@/components/booking/ConfirmAttendanceButton'
-import { logoutClientAction } from './actions'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -52,18 +53,21 @@ export default async function ContaPage() {
 
   const { data: client } = await db
     .from('clients')
-    .select('id, name')
+    .select('id, name, avatar_url')
     .eq('id', session.clientId)
     .single()
 
   if (!client) redirect('/entrar')
 
-  const { data: apptsRaw } = await db
-    .from('appointments')
-    .select('id, reference_code, status, total_price, services(name), time_slots!inner(date, start_time)')
-    .eq('client_id', client.id)
-    .order('time_slots(date)', { ascending: false })
-    .order('time_slots(start_time)', { ascending: false })
+  const [{ data: apptsRaw }, locale] = await Promise.all([
+    db
+      .from('appointments')
+      .select('id, reference_code, status, total_price, services(name), time_slots!inner(date, start_time)')
+      .eq('client_id', client.id)
+      .order('time_slots(date)', { ascending: false })
+      .order('time_slots(start_time)', { ascending: false }),
+    getLocale(),
+  ])
 
   const appts = apptsRaw ?? []
   const upcoming = appts.filter(a => UPCOMING_STATUSES.includes(a.status)).reverse()
@@ -72,16 +76,27 @@ export default async function ContaPage() {
   const loyalty  = await getLoyaltyProgress(db, client.id)
   const loyaltyPct = Math.min(100, (loyalty.progress / loyalty.visitsRequired) * 100)
 
+  const upcomingForMenu = upcoming.slice(0, 5).map(a => {
+    const svc = Array.isArray(a.services) ? a.services[0] : a.services
+    const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
+    return {
+      id: a.id,
+      serviceName: svc?.name ?? '—',
+      date: slot?.date as string | undefined,
+      startTime: slot?.start_time ? (slot.start_time as string).substring(0, 5) : undefined,
+    }
+  })
+
   return (
     <div className="min-h-screen bg-charcoal">
       <ClientHeader
         right={
-          <>
-            <Link href="/perfil" className={clientHeaderLinkCls}>Perfil</Link>
-            <form action={logoutClientAction} className="contents">
-              <button type="submit" className={clientHeaderLinkCls}>Sair</button>
-            </form>
-          </>
+          <ClientAccountMenu
+            locale={locale}
+            name={client.name}
+            avatarUrl={client.avatar_url ?? null}
+            upcoming={upcomingForMenu}
+          />
         }
       />
 

@@ -79,10 +79,9 @@ export function Nav() {
       <nav
         role="navigation"
         aria-label="Navegação principal (desktop)"
-        className="hidden lg:grid fixed top-0 left-0 right-0 z-[200] grid-cols-[1fr_auto_1fr] gap-6
-                   items-center px-8 xl:px-[60px] py-6 bg-charcoal
-                   border-b border-offwhite/[0.08]"
+        className="hidden lg:block fixed top-0 left-0 right-0 z-[200] bg-charcoal border-b border-offwhite/[0.08]"
       >
+      <div className="max-w-[1400px] mx-auto grid grid-cols-[1fr_auto_1fr] gap-6 items-center px-8 xl:px-[60px] py-6">
         <Link
           href="/"
           aria-label={`${BRAND.name} — Início`}
@@ -128,6 +127,7 @@ export function Nav() {
             Agendar
           </button>
         </div>
+      </div>
       </nav>
 
       {/* Mobile drawer */}

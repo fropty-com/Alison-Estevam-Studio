@@ -42,6 +42,11 @@ const es: Dictionary = {
     licenses: 'Licencias',
     language: 'Idioma',
   },
+  client: {
+    searchPlaceholder: 'Buscar por fecha o servicio…',
+    noResults: (q: string) => `No se encontraron citas para "${q}".`,
+    home: 'Inicio',
+  },
   dashboard: {
     greeting: (name: string) => `Buenos días, ${name}.`,
     today: 'Hoy',

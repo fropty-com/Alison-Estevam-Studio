@@ -40,6 +40,11 @@ const pt = {
     licenses: 'Licenças',
     language: 'Idioma',
   },
+  client: {
+    searchPlaceholder: 'Buscar por data ou serviço…',
+    noResults: (q: string) => `Nenhum agendamento encontrado para "${q}".`,
+    home: 'Início',
+  },
   dashboard: {
     greeting: (name: string) => `Bom dia, ${name}.`,
     today: 'Hoje',

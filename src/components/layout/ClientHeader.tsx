@@ -22,8 +22,9 @@ export function ClientHeader({
     <nav
       role="navigation"
       aria-label="Navegação da área do cliente"
-      className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-8 xl:px-[60px] py-6 bg-charcoal border-b border-offwhite/[0.08]"
+      className="fixed top-0 left-0 right-0 z-[200] bg-charcoal border-b border-offwhite/[0.08]"
     >
+    <div className="max-w-[1400px] mx-auto flex items-center justify-between px-8 xl:px-[60px] py-6">
       {backHref ? (
         <div className="flex items-center gap-4 min-w-0">
           <Link
@@ -53,6 +54,7 @@ export function ClientHeader({
         <ThemeToggle />
         {right}
       </div>
+    </div>
     </nav>
   )
 }
