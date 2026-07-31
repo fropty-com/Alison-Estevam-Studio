@@ -3,6 +3,8 @@ import { AdminNav } from '@/components/admin/AdminNav'
 import { AdminTopBar } from '@/components/admin/AdminTopBar'
 import { getAdminUser } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/server'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
 
 export const metadata: Metadata = {
   title: { default: 'Admin · Alison Estevam', template: '%s · Admin' },
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getAdminUser()
+  const locale = await getLocale()
 
   const db = await createServiceClient()
   const [{ data: staff }, { data: pending }] = await Promise.all([
@@ -40,18 +43,20 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   })
 
   return (
-    <div className="min-h-screen bg-charcoal text-offwhite flex">
-      <AdminNav isOwner={isOwner} />
-      <div className="flex-1 min-w-0 flex flex-col">
-        <AdminTopBar
-          staffName={staff?.name ?? user?.email ?? 'Equipe'}
-          isOwner={isOwner}
-          pending={pendingList}
-        />
-        <main className="flex-1 min-w-0 pt-8 lg:pt-0">
-          {children}
-        </main>
+    <LanguageProvider initialLocale={locale}>
+      <div className="min-h-screen bg-charcoal text-offwhite flex">
+        <AdminNav isOwner={isOwner} />
+        <div className="flex-1 min-w-0 flex flex-col">
+          <AdminTopBar
+            staffName={staff?.name ?? user?.email ?? 'Equipe'}
+            isOwner={isOwner}
+            pending={pendingList}
+          />
+          <main className="flex-1 min-w-0 pt-8 lg:pt-0">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </LanguageProvider>
   )
 }

@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { PendingBadge } from './PendingBadge'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import type { Dictionary } from '@/lib/i18n/getDictionary'
 
 function DashboardIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect x="1.5" y="1.5" width="5" height="5" stroke="currentColor" strokeWidth="1.1" /><rect x="8.5" y="1.5" width="5" height="5" stroke="currentColor" strokeWidth="1.1" /><rect x="1.5" y="8.5" width="5" height="5" stroke="currentColor" strokeWidth="1.1" /><rect x="8.5" y="8.5" width="5" height="5" stroke="currentColor" strokeWidth="1.1" /></svg>
@@ -68,21 +70,25 @@ function MenuIcon() {
   return <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><line x1="2" y1="4.5" x2="14" y2="4.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /><line x1="2" y1="11.5" x2="14" y2="11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></svg>
 }
 
-const NAV = [
-  { href: '/admin',               label: 'Dashboard',     Icon: DashboardIcon, badge: true,  ownerOnly: false },
-  { href: '/admin/agenda',        label: 'Agenda',        Icon: AgendaIcon,    badge: false, ownerOnly: false },
-  { href: '/admin/espera',        label: 'Fila de Espera', Icon: WaitlistIcon, badge: false, ownerOnly: false },
-  { href: '/admin/clientes',      label: 'Clientes',      Icon: ClientsIcon,   badge: false, ownerOnly: false },
-  { href: '/admin/servicos',      label: 'Serviços',      Icon: ServicesIcon,  badge: false, ownerOnly: false },
-  { href: '/admin/faturamento',   label: 'Faturamento',   Icon: ReportsIcon,   badge: false, ownerOnly: true  },
-  { href: '/admin/financeiro',    label: 'Financeiro',    Icon: FinanceIcon,   badge: false, ownerOnly: true  },
-  { href: '/admin/operacional',   label: 'Operacional',   Icon: OperationalIcon, badge: false, ownerOnly: true },
-  { href: '/admin/relatorios',    label: 'Relatórios',    Icon: ExportIcon,    badge: false, ownerOnly: true  },
-  { href: '/admin/atividade',     label: 'Atividade',     Icon: ActivityIcon,  badge: false, ownerOnly: true  },
-  { href: '/admin/configuracoes', label: 'Configurações', Icon: SettingsIcon,  badge: false, ownerOnly: true  },
-]
+function getNav(t: Dictionary) {
+  return [
+    { href: '/admin',               label: t.nav.dashboard,   Icon: DashboardIcon, badge: true,  ownerOnly: false },
+    { href: '/admin/agenda',        label: t.nav.agenda,      Icon: AgendaIcon,    badge: false, ownerOnly: false },
+    { href: '/admin/espera',        label: t.nav.waitlist,    Icon: WaitlistIcon,  badge: false, ownerOnly: false },
+    { href: '/admin/clientes',      label: t.nav.clients,     Icon: ClientsIcon,   badge: false, ownerOnly: false },
+    { href: '/admin/servicos',      label: t.nav.services,    Icon: ServicesIcon,  badge: false, ownerOnly: false },
+    { href: '/admin/faturamento',   label: t.nav.billing,     Icon: ReportsIcon,   badge: false, ownerOnly: true  },
+    { href: '/admin/financeiro',    label: t.nav.finance,     Icon: FinanceIcon,   badge: false, ownerOnly: true  },
+    { href: '/admin/operacional',   label: t.nav.operational, Icon: OperationalIcon, badge: false, ownerOnly: true },
+    { href: '/admin/relatorios',    label: t.nav.reports,     Icon: ExportIcon,    badge: false, ownerOnly: true  },
+    { href: '/admin/atividade',     label: t.nav.activity,    Icon: ActivityIcon,  badge: false, ownerOnly: true  },
+    { href: '/admin/configuracoes', label: t.nav.settings,    Icon: SettingsIcon,  badge: false, ownerOnly: true  },
+  ]
+}
 
 export function AdminNav({ isOwner }: { isOwner: boolean }) {
+  const { t } = useTranslation()
+  const NAV = getNav(t)
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -114,7 +120,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       {/* Mobile hamburger — always mounted so the drawer can be reopened */}
       <button
         onClick={() => setMobileOpen(true)}
-        aria-label="Abrir menu"
+        aria-label={t.nav.openMenu}
         className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70 print:hidden"
       >
         <MenuIcon />
@@ -141,7 +147,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
         <div className={cn('flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
           <button
             onClick={toggleCollapsed}
-            aria-label={collapsed ? 'Expandir menu' : 'Encolher menu'}
+            aria-label={collapsed ? t.nav.expand : t.nav.collapse}
             className="w-[28px] h-[28px] flex items-center justify-center text-offwhite/30 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200"
           >
             <ChevronIcon dir={collapsed ? 'right' : 'left'} />

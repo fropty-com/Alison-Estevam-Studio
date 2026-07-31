@@ -8,6 +8,9 @@ import { cn } from '@/lib/utils'
 import { logoutAction } from '@/app/admin/actions'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { AdminGlobalSearch } from '@/components/admin/AdminGlobalSearch'
+import { LanguageSelector } from '@/components/admin/LanguageSelector'
+import { HelpMenu } from '@/components/admin/HelpMenu'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface PendingItem {
   id: string
@@ -36,6 +39,7 @@ export function AdminTopBar({
   isOwner: boolean
   pending: PendingItem[]
 }) {
+  const { t } = useTranslation()
   const [pending_, startTransition] = useTransition()
   const [notifOpen, setNotifOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
@@ -59,13 +63,15 @@ export function AdminTopBar({
 
       {/* Right cluster */}
       <div className="flex items-center gap-3 shrink-0">
+        <LanguageSelector />
+        <HelpMenu />
         <ThemeToggle />
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button
             onClick={() => { setNotifOpen(o => !o); setProfileOpen(false) }}
-            aria-label="Notificações"
+            aria-label={t.topbar.notifications}
             className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
           >
             <BellIcon />
@@ -78,10 +84,10 @@ export function AdminTopBar({
           {notifOpen && (
             <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[280px] bg-charcoal border border-offwhite/[0.14] py-2">
               <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/[0.06]">
-                Agendamentos pendentes
+                {t.topbar.pendingAppointments}
               </p>
               {pending.length === 0 ? (
-                <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/35 italic">Nada pendente por aqui.</p>
+                <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.nothingPending}</p>
               ) : (
                 <div className="max-h-[280px] overflow-y-auto">
                   {pending.map(p => (
@@ -107,7 +113,7 @@ export function AdminTopBar({
                 onClick={() => setNotifOpen(false)}
                 className="block px-4 pt-2 mt-1 border-t border-offwhite/[0.06] font-body font-light text-[8.5px] tracking-[0.25em] uppercase text-gold/70 hover:text-gold transition-colors"
               >
-                Ver agenda →
+                {t.topbar.viewAgenda}
               </Link>
             </div>
           )}
@@ -129,16 +135,23 @@ export function AdminTopBar({
               <div className="px-4 py-3 border-b border-offwhite/[0.06]">
                 <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{staffName}</p>
                 <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 mt-[2px]">
-                  {isOwner ? 'Dono' : 'Equipe'}
+                  {isOwner ? t.topbar.owner : t.topbar.staff}
                 </p>
               </div>
+              <Link
+                href="/admin/perfil"
+                onClick={() => setProfileOpen(false)}
+                className="block px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite transition-colors"
+              >
+                {t.topbar.myProfile}
+              </Link>
               {isOwner && (
                 <Link
                   href="/admin/configuracoes"
                   onClick={() => setProfileOpen(false)}
                   className="block px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite transition-colors"
                 >
-                  Configurações
+                  {t.topbar.settings}
                 </Link>
               )}
               <button
@@ -149,7 +162,7 @@ export function AdminTopBar({
                   'text-offwhite/40 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
                 )}
               >
-                {pending_ ? 'Saindo…' : '→ Sair'}
+                {pending_ ? t.topbar.signingOut : t.topbar.signOut}
               </button>
             </div>
           )}

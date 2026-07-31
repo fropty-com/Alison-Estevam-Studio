@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 interface ClientResult {
   id: string
@@ -21,11 +22,6 @@ interface AppointmentResult {
   date?: string
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  pending: 'Pendente', confirmed: 'Confirmado', completed: 'Concluído',
-  cancelled: 'Cancelado', no_show: 'No-show',
-}
-
 function SearchIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true">
@@ -36,6 +32,7 @@ function SearchIcon() {
 }
 
 export function AdminGlobalSearch() {
+  const { t } = useTranslation()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
@@ -119,7 +116,7 @@ export function AdminGlobalSearch() {
         value={query}
         onChange={e => setQuery(e.target.value)}
         onFocus={() => setOpen(true)}
-        placeholder="Buscar cliente ou agendamento…"
+        placeholder={t.topbar.searchPlaceholder}
         className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-[12px] pl-[34px] pr-[52px] py-[8px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
       />
       <kbd className="absolute right-2 top-1/2 -translate-y-1/2 px-[6px] py-[2px] font-body font-light text-[8.5px] tracking-[0.08em] text-offwhite/25 border border-offwhite/[0.12] pointer-events-none">
@@ -129,17 +126,17 @@ export function AdminGlobalSearch() {
       {showPanel && (
         <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[360px] bg-charcoal border border-offwhite/[0.14] py-2 max-h-[420px] overflow-y-auto">
           {loading && (
-            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">Buscando…</p>
+            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.searching}</p>
           )}
 
           {!loading && !hasResults && (
-            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">Nada encontrado para &ldquo;{query.trim()}&rdquo;.</p>
+            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.noResults(query.trim())}</p>
           )}
 
           {!loading && clients.length > 0 && (
             <div className="mb-1">
               <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30">
-                Clientes
+                {t.topbar.clients}
               </p>
               {clients.map(c => (
                 <button
@@ -157,7 +154,7 @@ export function AdminGlobalSearch() {
           {!loading && appointments.length > 0 && (
             <div className={clients.length > 0 ? 'pt-2 border-t border-offwhite/[0.06]' : ''}>
               <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30">
-                Agendamentos
+                {t.topbar.appointments}
               </p>
               {appointments.map(a => (
                 <button
@@ -171,7 +168,7 @@ export function AdminGlobalSearch() {
                   <p className="font-data text-[9.5px] text-offwhite/35 mt-[1px]">
                     {a.referenceCode}
                     {a.date && <> · {format(parseISO(a.date), "d MMM", { locale: ptBR })}</>}
-                    {' · '}{STATUS_LABEL[a.status] ?? a.status}
+                    {' · '}{t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status}
                   </p>
                 </button>
               ))}

@@ -1,20 +1,24 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { todayInSaoPaulo, startOfWeekInSaoPaulo, endOfWeekInSaoPaulo, startOfMonthInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
 
-const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  pending:     { label: 'Pendente',       color: 'text-warning border-warning/30 bg-warning/[0.08]'  },
-  confirmed:   { label: 'Confirmado',     color: 'text-sage-light border-sage/30 bg-sage/10'     },
-  checked_in:  { label: 'Chegou',         color: 'text-gold border-gold/30 bg-gold/10'           },
-  in_progress: { label: 'Em atendimento', color: 'text-gold border-gold/30 bg-gold/10'           },
-  completed:   { label: 'Concluído',      color: 'text-offwhite/40 border-offwhite/[0.12] bg-offwhite/5' },
-  cancelled:   { label: 'Cancelado',      color: 'text-error/60 border-error/20 bg-error/5'     },
-  no_show:     { label: 'No-show',        color: 'text-error/45 border-error/15 bg-error/5'     },
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
+
+const STATUS_COLOR: Record<string, string> = {
+  pending:     'text-warning border-warning/30 bg-warning/[0.08]',
+  confirmed:   'text-sage-light border-sage/30 bg-sage/10',
+  checked_in:  'text-gold border-gold/30 bg-gold/10',
+  in_progress: 'text-gold border-gold/30 bg-gold/10',
+  completed:   'text-offwhite/40 border-offwhite/[0.12] bg-offwhite/5',
+  cancelled:   'text-error/60 border-error/20 bg-error/5',
+  no_show:     'text-error/45 border-error/15 bg-error/5',
 }
 
 function CurrencyIcon() {
@@ -112,6 +116,9 @@ function DashboardCard({
 
 export default async function AdminDashboard() {
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const today       = todayInSaoPaulo()
   const weekStart   = startOfWeekInSaoPaulo()
@@ -156,9 +163,9 @@ export default async function AdminDashboard() {
 
   const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
   const todayNoon = new Date(`${today}T12:00:00`)
-  const monthLabel = format(todayNoon, 'MMMM', { locale: ptBR })
+  const monthLabel = format(todayNoon, 'MMMM', { locale: dateLocale })
 
-  const todayLabel = format(todayNoon, "EEEE, d 'de' MMMM", { locale: ptBR })
+  const todayLabel = format(todayNoon, locale === 'pt' ? "EEEE, d 'de' MMMM" : 'EEEE, MMMM d', { locale: dateLocale })
 
   return (
     <div className="px-6 py-8">
@@ -168,46 +175,47 @@ export default async function AdminDashboard() {
           {todayLabel}
         </p>
         <h1 className="font-display font-light text-[34px] text-offwhite tracking-[0.03em]">
-          Bom dia, Alison.
+          {t.dashboard.greeting('Alison')}
         </h1>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <DashboardCard icon={<CalendarIcon />} tone="gold" label="Hoje" value={todayAppts.length} sub="agendamentos" href="/admin/agenda" />
-        <DashboardCard icon={<CalendarIcon />} tone="neutral" label="Esta semana" value={weekCount} sub="confirmados" href="/admin/agenda?view=week" />
-        <DashboardCard icon={<PersonPlusIcon />} tone="sage" label="Total clientes" value={totalClients} sub="cadastrados" href="/admin/clientes" />
-        <DashboardCard icon={<PersonPlusIcon />} tone="sage" label="Clientes novos" value={newClientsMonth} sub={`em ${monthLabel}`} href="/admin/clientes" />
-        <DashboardCard icon={<CurrencyIcon />} tone="gold" label="Receita do mês" value={fmt(monthRevenue)} sub={`em ${monthLabel}`} href="/admin/relatorios" />
-        <DashboardCard icon={<ScaleIcon />} tone="neutral" label="Ticket médio" value={fmt(avgTicketMonth)} sub={`${monthPayments.length} pagamento${monthPayments.length !== 1 ? 's' : ''}`} href="/admin/relatorios" />
-        <DashboardCard icon={<TicketIcon />} tone="gold" label="Comandas em aberto" value={openComandas} sub="aguardando check-out" href="/admin/agenda" />
-        <DashboardCard icon={<ScissorsIcon />} tone="neutral" label="Serviços ativos" value={activeServices} sub="ver seção serviços" href="/admin/servicos" />
+        <DashboardCard icon={<CalendarIcon />} tone="gold" label={t.dashboard.today} value={todayAppts.length} sub={t.dashboard.appointmentsLabel} href="/admin/agenda" />
+        <DashboardCard icon={<CalendarIcon />} tone="neutral" label={t.dashboard.thisWeek} value={weekCount} sub={t.dashboard.confirmed} href="/admin/agenda?view=week" />
+        <DashboardCard icon={<PersonPlusIcon />} tone="sage" label={t.dashboard.totalClients} value={totalClients} sub={t.dashboard.registered} href="/admin/clientes" />
+        <DashboardCard icon={<PersonPlusIcon />} tone="sage" label={t.dashboard.newClients} value={newClientsMonth} sub={t.dashboard.inMonth(monthLabel)} href="/admin/clientes" />
+        <DashboardCard icon={<CurrencyIcon />} tone="gold" label={t.dashboard.monthRevenue} value={fmt(monthRevenue)} sub={t.dashboard.inMonth(monthLabel)} href="/admin/relatorios" />
+        <DashboardCard icon={<ScaleIcon />} tone="neutral" label={t.dashboard.avgTicket} value={fmt(avgTicketMonth)} sub={t.dashboard.payments(monthPayments.length)} href="/admin/relatorios" />
+        <DashboardCard icon={<TicketIcon />} tone="gold" label={t.dashboard.openTabs} value={openComandas} sub={t.dashboard.awaitingCheckout} href="/admin/agenda" />
+        <DashboardCard icon={<ScissorsIcon />} tone="neutral" label={t.dashboard.activeServices} value={activeServices} sub={t.dashboard.seeServicesSection} href="/admin/servicos" />
       </div>
 
       {/* Today's agenda */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/45">
-            Agenda de hoje
+            {t.dashboard.todayAgenda}
           </h2>
           <Link
             href="/admin/agenda"
             className="font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-sage-light/60 hover:text-sage-light transition-colors"
           >
-            Ver completa →
+            {t.dashboard.viewFull}
           </Link>
         </div>
 
         {todayAppts.length === 0 ? (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
             <p className="font-display font-light text-[18px] text-offwhite/[0.22] italic">
-              Nenhum agendamento para hoje.
+              {t.dashboard.noAppointmentsToday}
             </p>
           </div>
         ) : (
           <div className="space-y-[6px]">
             {todayAppts.map(a => {
-              const st = STATUS_LABEL[a.status] ?? STATUS_LABEL.pending
+              const statusColor = STATUS_COLOR[a.status] ?? STATUS_COLOR.pending
+              const statusLabel = t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status
               const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
               const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
               const cli  = Array.isArray(a.clients)    ? a.clients[0]    : a.clients
@@ -224,9 +232,9 @@ export default async function AdminDashboard() {
                   </div>
                   <span className={cn(
                     'font-body font-light text-[8px] tracking-[0.22em] uppercase px-[9px] py-[4px] border',
-                    st.color
+                    statusColor
                   )}>
-                    {st.label}
+                    {statusLabel}
                   </span>
                 </div>
               )
