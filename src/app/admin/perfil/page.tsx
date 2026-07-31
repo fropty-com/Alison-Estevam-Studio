@@ -18,7 +18,7 @@ export default async function AdminPerfilPage() {
   const db = await createServiceClient()
   const { data: staff } = await db
     .from('staff_members')
-    .select('name, phone, role, avatar_url, created_at')
+    .select('name, phone, role, avatar_url, birth_date, created_at')
     .eq('id', user.id)
     .single()
 
@@ -37,13 +37,15 @@ export default async function AdminPerfilPage() {
         </p>
       </div>
 
-      <section className="mb-10">
+      <section className="mb-5">
         <h2 className={h2Cls}>Dados do perfil</h2>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <EditStaffProfileForm
             userId={user.id}
             initialName={staff?.name ?? ''}
             initialPhone={initialPhone}
+            initialEmail={user.email ?? ''}
+            initialBirthDate={staff?.birth_date ?? ''}
             initialAvatarUrl={staff?.avatar_url ?? null}
           />
         </div>
@@ -53,12 +55,8 @@ export default async function AdminPerfilPage() {
         <h2 className={h2Cls}>Dados da conta</h2>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
           <div className="px-5 py-4">
-            <p className={labelCls}>E-mail</p>
-            <p className={valueCls}>{user.email}</p>
-          </div>
-          <div className="px-5 py-4">
             <p className={labelCls}>Papel</p>
-            <p className={valueCls}>{staff?.role === 'owner' ? 'Dono' : 'Funcionário'}</p>
+            <p className={valueCls}>{staff?.role === 'owner' ? 'Proprietário' : 'Funcionário'}</p>
           </div>
           <div className="px-5 py-4">
             <p className={labelCls}>Membro desde</p>

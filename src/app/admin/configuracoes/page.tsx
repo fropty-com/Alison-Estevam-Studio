@@ -233,7 +233,7 @@ export default async function ConfiguracoesPage() {
       {/* Team / roles */}
       <SectionCard id="equipe" icon={<TeamIcon />} title="Equipe">
         <p className="font-body font-light text-[11px] text-offwhite/35 leading-[1.6] mb-4 max-w-[520px]">
-          Donos veem tudo, incluindo Financeiro e esta página. Funcionários veem agenda, clientes e
+          Proprietários veem tudo, incluindo Financeiro e esta página. Funcionários veem agenda, clientes e
           serviços, sem acesso ao financeiro.
         </p>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">

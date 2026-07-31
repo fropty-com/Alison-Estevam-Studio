@@ -65,7 +65,7 @@ export function AddStaffMemberForm() {
                 role === 'owner' ? 'border-gold bg-gold/15 text-gold' : 'border-offwhite/[0.12] text-offwhite/40 hover:border-offwhite/25'
               )}
             >
-              Dono
+              Proprietário
             </button>
           </div>
         </div>

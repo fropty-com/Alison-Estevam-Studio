@@ -928,7 +928,7 @@ export async function addStaffMember(formData: FormData): Promise<{ ok?: boolean
     return { error: 'Erro ao registrar membro da equipe.' }
   }
 
-  await logAction('staff.add', 'staff_member', created.user.id, `Adicionou ${name} à equipe como ${role === 'owner' ? 'dono' : 'funcionário'}`, { email, role })
+  await logAction('staff.add', 'staff_member', created.user.id, `Adicionou ${name} à equipe como ${role === 'owner' ? 'proprietário' : 'funcionário'}`, { email, role })
 
   revalidatePath('/admin/configuracoes')
   return { ok: true }
@@ -949,7 +949,7 @@ export async function updateStaffRole(id: string, role: 'owner' | 'staff') {
   const { error } = await db.from('staff_members').update({ role }).eq('id', id)
   if (error) return { error: 'Erro ao atualizar papel.' }
 
-  await logAction('staff.role_change', 'staff_member', id, `Mudou o papel de ${member?.name ?? id} para ${role === 'owner' ? 'dono' : 'funcionário'}`, { role })
+  await logAction('staff.role_change', 'staff_member', id, `Mudou o papel de ${member?.name ?? id} para ${role === 'owner' ? 'proprietário' : 'funcionário'}`, { role })
 
   revalidatePath('/admin/configuracoes')
   return { ok: true }
@@ -1163,12 +1163,15 @@ export async function deleteExpense(id: string): Promise<{ ok?: boolean; error?:
 
 /* ── Meu perfil (self-service, qualquer membro da equipe) ────────── */
 
-export async function updateStaffProfile(input: { name: string; phone?: string }): Promise<{ ok?: boolean; error?: string }> {
+export async function updateStaffProfile(input: { name: string; phone?: string; email: string; birthDate?: string }): Promise<{ ok?: boolean; error?: string }> {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }
 
   const name = input.name.trim()
   if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
+
+  const email = input.email.trim()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
   let phone: string | null = null
   if (input.phone?.trim()) {
@@ -1179,8 +1182,21 @@ export async function updateStaffProfile(input: { name: string; phone?: string }
     }
   }
 
+  const birthDate = input.birthDate?.trim() || null
+
   const db = await adminDb()
-  const { error } = await db.from('staff_members').update({ name, phone }).eq('id', user.id)
+
+  // E-mail is the Supabase Auth login — separate from staff_members —
+  // so it's only touched when it actually changed.
+  if (email !== user.email) {
+    const { error: authError } = await db.auth.admin.updateUserById(user.id, { email, email_confirm: true })
+    if (authError) {
+      const alreadyExists = authError.message?.toLowerCase().includes('already')
+      return { error: alreadyExists ? 'Já existe uma conta com esse e-mail.' : 'Erro ao atualizar e-mail.' }
+    }
+  }
+
+  const { error } = await db.from('staff_members').update({ name, phone, birth_date: birthDate }).eq('id', user.id)
   if (error) {
     if (error.code === '23505') return { error: 'Esse telefone já está em uso por outro membro da equipe.' }
     return { error: 'Erro ao salvar perfil.' }

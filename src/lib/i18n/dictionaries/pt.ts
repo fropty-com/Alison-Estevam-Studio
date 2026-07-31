@@ -27,7 +27,7 @@ const pt = {
     viewAgenda: 'Ver agenda →',
     lightMode: 'Ativar modo claro',
     darkMode: 'Ativar modo escuro',
-    owner: 'Dono',
+    owner: 'Proprietário',
     staff: 'Equipe',
     myProfile: 'Meu perfil',
     settings: 'Configurações',

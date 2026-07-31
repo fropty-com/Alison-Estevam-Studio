@@ -20,11 +20,15 @@ export function EditStaffProfileForm({
   userId,
   initialName,
   initialPhone,
+  initialEmail,
+  initialBirthDate,
   initialAvatarUrl,
 }: {
   userId: string
   initialName: string
   initialPhone: string
+  initialEmail: string
+  initialBirthDate: string
   initialAvatarUrl: string | null
 }) {
   const router = useRouter()
@@ -34,16 +38,18 @@ export function EditStaffProfileForm({
 
   const [name, setName] = useState(initialName)
   const [phone, setPhone] = useState(initialPhone)
+  const [email, setEmail] = useState(initialEmail)
+  const [birthDate, setBirthDate] = useState(initialBirthDate)
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const canSubmit = isFullName(name)
+  const canSubmit = isFullName(name) && email.trim().length > 0
 
   const handleSave = () => {
     if (!canSubmit) return
     setError(null)
     startTransition(async () => {
-      const res = await updateStaffProfile({ name, phone: phone || undefined })
+      const res = await updateStaffProfile({ name, phone: phone || undefined, email, birthDate: birthDate || undefined })
       if (res?.error) setError(res.error)
       else router.refresh()
     })
@@ -159,19 +165,38 @@ export function EditStaffProfileForm({
         </div>
       </div>
 
-      {/* Name / phone */}
+      {/* Name / phone / email / birth date */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="col-span-2">
           <label className={labelCls}>Nome completo</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
         </div>
-        <div className="col-span-2">
+        <div>
           <label className={labelCls}>WhatsApp (opcional)</label>
           <input
             type="tel"
             value={phone}
             onChange={e => setPhone(maskPhoneInput(e.target.value))}
             placeholder="(00) 00000-0000"
+            className={inputCls}
+          />
+        </div>
+        <div>
+          <label className={labelCls}>Data de nascimento (opcional)</label>
+          <input
+            type="date"
+            value={birthDate}
+            onChange={e => setBirthDate(e.target.value)}
+            className={inputCls}
+          />
+        </div>
+        <div className="col-span-2">
+          <label className={labelCls}>E-mail</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="voce@email.com"
             className={inputCls}
           />
         </div>

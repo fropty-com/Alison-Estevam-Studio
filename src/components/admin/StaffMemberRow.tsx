@@ -40,7 +40,7 @@ export function StaffMemberRow({ member, isSelf }: {
               : 'border-offwhite/[0.12] text-offwhite/45 hover:border-offwhite/25'
           )}
         >
-          {isOwner ? 'Dono' : 'Funcionário'}
+          {isOwner ? 'Proprietário' : 'Funcionário'}
         </button>
 
         {!confirmRemove ? (
