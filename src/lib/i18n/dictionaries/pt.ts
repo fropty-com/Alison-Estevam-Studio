@@ -534,6 +534,29 @@ const pt = {
     weekdayFull: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
     weekdayShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
   },
+  operational: {
+    eyebrow: 'Admin',
+    title: 'Operacional',
+    cancelRate: {
+      title: 'Taxa de cancelamento',
+      sub: (cancelled: number, total: number) => `${cancelled} de ${total} este mês`,
+    },
+    channel: {
+      title: 'Online vs presencial',
+      onlinePct: (pct: string) => `${pct} online`,
+      sub: (online: number, presencial: number) => `${online} online · ${presencial} presencial`,
+    },
+    margin: {
+      title: 'Margem operacional',
+      sub: 'resultado / receita líquida',
+    },
+    heatmap: {
+      title: 'Horários de pico',
+      subtitle: 'Mapa de calor dos agendamentos deste mês',
+      weekdayLabels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+      tooltip: (label: string, hour: number, count: number) => `${label} ${hour}h: ${count} agendamento${count !== 1 ? 's' : ''}`,
+    },
+  },
 }
 
 export default pt

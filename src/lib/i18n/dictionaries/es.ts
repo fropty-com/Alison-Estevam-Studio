@@ -536,6 +536,29 @@ const es: Dictionary = {
     weekdayFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
     weekdayShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
   },
+  operational: {
+    eyebrow: 'Admin',
+    title: 'Operativo',
+    cancelRate: {
+      title: 'Tasa de cancelación',
+      sub: (cancelled: number, total: number) => `${cancelled} de ${total} este mes`,
+    },
+    channel: {
+      title: 'Online vs presencial',
+      onlinePct: (pct: string) => `${pct} online`,
+      sub: (online: number, presencial: number) => `${online} online · ${presencial} presencial`,
+    },
+    margin: {
+      title: 'Margen operativo',
+      sub: 'resultado / ingreso neto',
+    },
+    heatmap: {
+      title: 'Horarios pico',
+      subtitle: 'Mapa de calor de las citas de este mes',
+      weekdayLabels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+      tooltip: (label: string, hour: number, count: number) => `${label} ${hour}h: ${count} cita${count !== 1 ? 's' : ''}`,
+    },
+  },
 }
 
 export default es

@@ -1,13 +1,17 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { PeakHoursHeatmap } from '@/components/admin/PeakHoursHeatmap'
 import { cn } from '@/lib/utils'
 import { nowAnchorInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
+
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 function CancelIcon() {
   return (
@@ -46,6 +50,9 @@ export default async function OperacionalPage() {
   if (role !== 'owner') return <RestrictedAccess />
 
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
 
   const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -114,13 +121,13 @@ export default async function OperacionalPage() {
     return { weekday, hour, count }
   })
 
-  const monthLabel = format(now, "MMMM 'de' yyyy", { locale: ptBR })
+  const monthLabel = format(now, locale === 'pt' ? "MMMM 'de' yyyy" : 'MMMM yyyy', { locale: dateLocale })
 
   return (
     <div className="px-6 py-8 space-y-8">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Operacional</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.operational.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.operational.title}</h1>
         <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
@@ -130,9 +137,9 @@ export default async function OperacionalPage() {
             <CancelIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">Taxa de cancelamento</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.cancelRate.title}</p>
             <p className={cn('font-data text-[22px] leading-none mb-1', cancelRate > 20 ? 'text-error/75' : 'text-offwhite')}>{fmtPct(cancelRate)}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">{cancelledMonth} de {totalMonth} este mês</p>
+            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.cancelRate.sub(cancelledMonth, totalMonth)}</p>
           </div>
         </div>
 
@@ -141,9 +148,9 @@ export default async function OperacionalPage() {
             <ChannelIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">Online vs presencial</p>
-            <p className="font-data text-[22px] text-gold leading-none mb-1">{fmtPct(onlinePct)} online</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">{onlineCount} online · {presencialCount} presencial</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.channel.title}</p>
+            <p className="font-data text-[22px] text-gold leading-none mb-1">{t.operational.channel.onlinePct(fmtPct(onlinePct))}</p>
+            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.channel.sub(onlineCount, presencialCount)}</p>
           </div>
         </div>
 
@@ -152,9 +159,9 @@ export default async function OperacionalPage() {
             <MarginIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">Margem operacional</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.margin.title}</p>
             <p className={cn('font-data text-[22px] leading-none mb-1', margemOperacional >= 0 ? 'text-sage-light' : 'text-error/75')}>{fmtPct(margemOperacional)}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">resultado / receita líquida</p>
+            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.margin.sub}</p>
           </div>
         </div>
       </div>
