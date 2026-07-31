@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, whatsapp, email, serviceId, slotId, complementIds, couponCode } = parsed.data
-    // Cast to any — Supabase v2.43 generics don't resolve table types reliably
-    const db = await createServiceClient() as any
+    const db = await createServiceClient()
 
     // 1. Verify slot is still available
     const { data: slot, error: slotError } = await db

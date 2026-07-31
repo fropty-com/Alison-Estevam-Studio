@@ -117,7 +117,7 @@ export default async function AgendaPage({
       : 'day'
   const dateStr = searchParams.date ?? todayInSaoPaulo()
   const dateObj = parseISO(dateStr)
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   // ── Day view — hour-ruler grid with proportional blocks ──
   if (view === 'day') {
@@ -137,11 +137,11 @@ export default async function AgendaPage({
       db.from('time_slots').select('start_time, end_time').eq('date', dateStr).eq('status', 'blocked').order('start_time', { ascending: true }),
     ])
 
-    const appts  = (apptsRes.data  ?? []) as any[]
-    const rules  = (rulesRes.data  ?? []) as { start_time: string; end_time: string }[]
-    const blockedAllDay = ((blockedRes.data ?? []) as any[]).length > 0
-    const blockedPeriodId = ((blockedRes.data ?? []) as { id: string }[])[0]?.id ?? null
-    const blockedSlots = (blockedSlotsRes.data ?? []) as { start_time: string; end_time: string }[]
+    const appts  = apptsRes.data  ?? []
+    const rules  = rulesRes.data  ?? []
+    const blockedAllDay = (blockedRes.data ?? []).length > 0
+    const blockedPeriodId = blockedRes.data?.[0]?.id ?? null
+    const blockedSlots = blockedSlotsRes.data ?? []
 
     // Grid spans the earliest rule start to the latest rule end for the day,
     // falling back to a sensible default when there's no rule (e.g. a
@@ -234,14 +234,14 @@ export default async function AgendaPage({
       db.from('blocked_periods').select('date_start, date_end').lte('date_start', dateStrs[dateStrs.length - 1]).gte('date_end', dateStrs[0]),
     ])
 
-    const rules = (rulesRes.data ?? []) as { weekday: number; start_time: string; end_time: string }[]
-    const blockedPeriods = (blockedRes.data ?? []) as { date_start: string; date_end: string }[]
+    const rules = rulesRes.data ?? []
+    const blockedPeriods = blockedRes.data ?? []
 
     // Bucket appointments by date (mapAppointmentRow doesn't carry the date,
     // so read it off the raw row's time_slots join before mapping).
     const byDate: Record<string, GridAppointment[]> = {}
     const allWeekAppts: GridAppointment[] = []
-    for (const raw of (apptsRes.data ?? []) as any[]) {
+    for (const raw of apptsRes.data ?? []) {
       const slot = Array.isArray(raw.time_slots) ? raw.time_slots[0] : raw.time_slots
       const d = slot?.date
       if (!d) continue
@@ -313,8 +313,8 @@ export default async function AgendaPage({
     .lte('time_slots.date', format(gridEnd, 'yyyy-MM-dd'))
     .order('time_slots(start_time)', { ascending: true })
 
-  const appts = (raw ?? []) as any[]
-  const byDate: Record<string, any[]> = {}
+  const appts = raw ?? []
+  const byDate: Record<string, typeof appts> = {}
   for (const a of appts) {
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
     const d = slot?.date

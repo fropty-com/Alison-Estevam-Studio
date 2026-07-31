@@ -13,7 +13,7 @@ export async function POST(
     return NextResponse.json({ error: 'Muitas tentativas. Aguarde alguns minutos.' }, { status: 429 })
   }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const body = await request.json().catch(() => ({}))
   const reason = (body?.reason as string | undefined) || null

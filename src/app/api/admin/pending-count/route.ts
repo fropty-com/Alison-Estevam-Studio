@@ -8,7 +8,7 @@ export async function GET() {
   const user = await getAdminUser()
   if (!user) return NextResponse.json({ error: 'Não autorizado.' }, { status: 401 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { count } = await db
     .from('appointments')
     .select('id', { count: 'exact', head: true })

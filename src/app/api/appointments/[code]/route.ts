@@ -5,7 +5,7 @@ export async function GET(
   _request: NextRequest,
   { params }: { params: { code: string } }
 ) {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data, error } = await db
     .from('appointments')

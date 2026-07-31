@@ -11,7 +11,7 @@ export async function POST(
     return NextResponse.json({ error: 'Muitas tentativas. Aguarde alguns minutos.' }, { status: 429 })
   }
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: appt, error } = await db
     .from('appointments')
