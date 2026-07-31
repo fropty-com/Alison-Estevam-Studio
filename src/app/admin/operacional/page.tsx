@@ -45,7 +45,7 @@ export default async function OperacionalPage() {
   const role = await getAdminRole()
   if (role !== 'owner') return <RestrictedAccess />
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -71,9 +71,9 @@ export default async function OperacionalPage() {
       .lte('due_date', monthEnd),
   ])
 
-  const appts = (apptRes.data ?? []) as any[]
-  const payments = (payRes.data ?? []) as any[]
-  const expenses = (expRes.data ?? []) as any[]
+  const appts = apptRes.data ?? []
+  const payments = payRes.data ?? []
+  const expenses = expRes.data ?? []
 
   // ── Taxa de cancelamento ──
   const totalMonth = appts.length

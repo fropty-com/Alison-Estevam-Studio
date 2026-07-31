@@ -85,7 +85,7 @@ export default async function ConfiguracoesPage() {
   if (role !== 'owner') return <RestrictedAccess />
 
   const currentUser = await getAdminUser()
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [rulesRes, blockedRes, feesRes, staffRes, loyaltyRes, couponsRes] = await Promise.all([
     db.from('availability_rules').select('*').order('weekday', { ascending: true }),
@@ -96,12 +96,12 @@ export default async function ConfiguracoesPage() {
     db.from('coupons').select('*').order('created_at', { ascending: false }),
   ])
 
-  const rules   = (rulesRes.data   ?? []) as any[]
-  const blocked = (blockedRes.data ?? []) as any[]
-  const staff   = (staffRes.data   ?? []) as any[]
+  const rules   = rulesRes.data   ?? []
+  const blocked = blockedRes.data ?? []
+  const staff   = staffRes.data   ?? []
   const loyalty = loyaltyRes.data as { visits_required: number; reward_description: string } | null
-  const coupons = (couponsRes.data ?? []) as any[]
-  const fees    = ((feesRes.data   ?? []) as any[])
+  const coupons = couponsRes.data ?? []
+  const fees    = (feesRes.data   ?? [])
     .sort((a, b) => METHOD_ORDER.indexOf(a.method) - METHOD_ORDER.indexOf(b.method))
 
   return (
@@ -139,7 +139,7 @@ export default async function ConfiguracoesPage() {
       {/* Working hours */}
       <SectionCard id="horarios" icon={<ClockIcon />} title="Horários de funcionamento">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
-          {rules.map((r: any) => (
+          {rules.map(r => (
             <AvailabilityRuleRow
               key={r.id}
               rule={r}
@@ -158,7 +158,7 @@ export default async function ConfiguracoesPage() {
       <SectionCard id="bloqueios" icon={<LockIcon />} title="Períodos bloqueados">
         {blocked.length > 0 && (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
-            {blocked.map((b: any) => (
+            {blocked.map(b => (
               <div key={b.id} className="flex items-center gap-4 px-5 py-4">
                 <div className="flex-1 min-w-0">
                   <p className="font-body font-light text-[12px] text-offwhite/75">
@@ -189,7 +189,7 @@ export default async function ConfiguracoesPage() {
       {/* Payment fees */}
       <SectionCard id="taxas" icon={<CurrencyIcon />} title="Taxas de pagamento">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
-          {fees.map((f: any) => (
+          {fees.map(f => (
             <PaymentFeeSettingRow
               key={f.id}
               setting={f}
@@ -218,8 +218,8 @@ export default async function ConfiguracoesPage() {
       {/* Coupons */}
       <SectionCard id="cupons" icon={<TagIcon />} title="Cupons de desconto">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
-          {coupons.map((c: any) => (
-            <CouponRow key={c.id} coupon={c} />
+          {coupons.map(c => (
+            <CouponRow key={c.id} coupon={{ ...c, discount_type: c.discount_type as 'percentage' | 'fixed' }} />
           ))}
           {coupons.length === 0 && (
             <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
@@ -237,10 +237,10 @@ export default async function ConfiguracoesPage() {
           serviços, sem acesso ao financeiro.
         </p>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
-          {staff.map((s: any) => (
+          {staff.map(s => (
             <StaffMemberRow
               key={s.id}
-              member={s}
+              member={{ ...s, role: s.role as 'owner' | 'staff' }}
               isSelf={s.id === currentUser?.id}
             />
           ))}

@@ -23,7 +23,7 @@ function fmt(value: number) {
 }
 
 export default async function ClientesPage() {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -50,8 +50,8 @@ export default async function ClientesPage() {
   ])
 
   const list = (clientsRes.data ?? []) as ClientRecord[]
-  const completedHistory = (completedRes.data ?? []) as any[]
-  const monthPayments = (monthPayRes.data ?? []) as any[]
+  const completedHistory = completedRes.data ?? []
+  const monthPayments = monthPayRes.data ?? []
 
   const tableRows: ClientRow[] = list.map(c => ({
     id: c.id,

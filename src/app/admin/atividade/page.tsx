@@ -31,7 +31,7 @@ export default async function AtividadePage() {
   const role = await getAdminRole()
   if (role !== 'owner') return <RestrictedAccess />
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -50,8 +50,8 @@ export default async function AtividadePage() {
       .lte('time_slots.date', monthEnd),
   ])
 
-  const entries = (logRes.data ?? []) as any[]
-  const svcAppts = (svcRes.data ?? []) as any[]
+  const entries = logRes.data ?? []
+  const svcAppts = svcRes.data ?? []
 
   const svcCounts: Record<string, number> = {}
   for (const a of svcAppts) {
@@ -66,7 +66,7 @@ export default async function AtividadePage() {
   const maxCount = Math.max(...topServices.map(s => s.count), 1)
 
   // Group by day for readability
-  const groups: { day: string; items: any[] }[] = []
+  const groups: { day: string; items: typeof entries }[] = []
   for (const entry of entries) {
     const day = todayInSaoPaulo(parseISO(entry.created_at))
     const last = groups[groups.length - 1]
@@ -127,7 +127,7 @@ export default async function AtividadePage() {
                   {dayLabel(day)}
                 </p>
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
-                  {items.map((entry: any) => {
+                  {items.map(entry => {
                     const category = entry.action.split('.')[0]
                     return (
                       <div key={entry.id} className="flex items-start gap-3 px-5 py-4">

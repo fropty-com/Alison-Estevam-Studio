@@ -24,7 +24,9 @@ function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
-async function loadFaturamento(db: any) {
+type ReportDb = Awaited<ReturnType<typeof createServiceClient>>
+
+async function loadFaturamento(db: ReportDb) {
   const now = new Date()
   const monthStartISO = `${format(startOfMonth(now), 'yyyy-MM-dd')}T00:00:00`
   const nextMonthISO  = `${format(startOfMonth(now), 'yyyy-MM-dd')}T00:00:00`
@@ -36,7 +38,7 @@ async function loadFaturamento(db: any) {
     .order('paid_at', { ascending: true })
 
   const headers = ['Data', 'Cliente', 'Serviço', 'Forma', 'Bruto', 'Taxa', 'Gorjeta', 'Líquido']
-  const rows = ((data ?? []) as any[]).map(p => {
+  const rows = (data ?? []).map(p => {
     const appt = Array.isArray(p.appointments) ? p.appointments[0] : p.appointments
     const client = Array.isArray(appt?.clients) ? appt.clients[0] : appt?.clients
     const service = Array.isArray(appt?.services) ? appt.services[0] : appt?.services
@@ -54,13 +56,13 @@ async function loadFaturamento(db: any) {
   return { headers, rows }
 }
 
-async function loadClientes(db: any) {
+async function loadClientes(db: ReportDb) {
   const [clientsRes, completedRes] = await Promise.all([
     db.from('clients').select('id, name, whatsapp, vip').order('name', { ascending: true }),
     db.from('appointments').select('client_id, total_price, time_slots!inner(date)').eq('status', 'completed'),
   ])
-  const clients = (clientsRes.data ?? []) as any[]
-  const completed = (completedRes.data ?? []) as any[]
+  const clients = clientsRes.data ?? []
+  const completed = completedRes.data ?? []
   const stats: Record<string, { count: number; total: number }> = {}
   for (const a of completed) {
     if (!a.client_id) continue
@@ -76,7 +78,7 @@ async function loadClientes(db: any) {
   return { headers, rows }
 }
 
-async function loadAgendamentos(db: any) {
+async function loadAgendamentos(db: ReportDb) {
   const now = new Date()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
@@ -88,7 +90,7 @@ async function loadAgendamentos(db: any) {
     .order('time_slots(date)', { ascending: true })
 
   const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Status', 'Valor']
-  const rows = ((data ?? []) as any[]).map(a => {
+  const rows = (data ?? []).map(a => {
     const client = Array.isArray(a.clients) ? a.clients[0] : a.clients
     const service = Array.isArray(a.services) ? a.services[0] : a.services
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
@@ -104,7 +106,7 @@ async function loadAgendamentos(db: any) {
   return { headers, rows }
 }
 
-async function loadDespesas(db: any) {
+async function loadDespesas(db: ReportDb) {
   const { data } = await db
     .from('expenses')
     .select('description, category, amount, is_fixed, due_date, paid_date')
@@ -112,7 +114,7 @@ async function loadDespesas(db: any) {
     .limit(500)
 
   const headers = ['Descrição', 'Categoria', 'Tipo', 'Valor', 'Vencimento', 'Pagamento']
-  const rows = ((data ?? []) as any[]).map(e => [
+  const rows = (data ?? []).map(e => [
     e.description,
     e.category,
     e.is_fixed ? 'Fixa' : 'Variável',
@@ -130,7 +132,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
   const role = await getAdminRole()
   if (role !== 'owner') return <RestrictedAccess />
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { headers, rows } =
     params.tipo === 'faturamento'   ? await loadFaturamento(db)   :

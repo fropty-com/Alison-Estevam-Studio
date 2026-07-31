@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getAdminUser()
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const [{ data: staff }, { data: pending }] = await Promise.all([
     user
       ? db.from('staff_members').select('name, role').eq('id', user.id).maybeSingle()
@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const isOwner = staff?.role === 'owner'
 
-  const pendingList = (pending ?? []).map((a: any) => {
+  const pendingList = (pending ?? []).map(a => {
     const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
     return {
       id: a.id,

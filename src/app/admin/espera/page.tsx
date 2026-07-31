@@ -14,7 +14,7 @@ function dayLabel(dateStr: string) {
 }
 
 export default async function EsperaPage() {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const { data: raw } = await db
     .from('waitlist_entries')
@@ -23,9 +23,9 @@ export default async function EsperaPage() {
     .order('preferred_date', { ascending: true })
     .order('created_at', { ascending: true })
 
-  const entries = (raw ?? []) as any[]
+  const entries = raw ?? []
 
-  const groups: { day: string; items: any[] }[] = []
+  const groups: { day: string; items: typeof entries }[] = []
   for (const entry of entries) {
     const last = groups[groups.length - 1]
     if (last && last.day === entry.preferred_date) last.items.push(entry)
@@ -56,7 +56,7 @@ export default async function EsperaPage() {
                 {dayLabel(day)}
               </p>
               <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
-                {items.map((entry: any) => (
+                {items.map(entry => (
                   <WaitlistEntryRow
                     key={entry.id}
                     id={entry.id}
@@ -64,7 +64,7 @@ export default async function EsperaPage() {
                     clientWhatsapp={entry.clients?.whatsapp ?? ''}
                     serviceName={entry.services?.name ?? '—'}
                     note={entry.note}
-                    status={entry.status}
+                    status={entry.status as 'waiting' | 'notified'}
                     notifyUrl={buildWaitlistNotifyUrl({
                       clientName: entry.clients?.name ?? '',
                       clientWhatsapp: entry.clients?.whatsapp ?? '',

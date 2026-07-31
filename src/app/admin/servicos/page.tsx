@@ -15,7 +15,7 @@ function fmt(value: number) {
 }
 
 export default async function ServicosPage() {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now         = nowAnchorInSaoPaulo()
   const monthStart  = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -51,15 +51,15 @@ export default async function ServicosPage() {
     db.from('appointments').select('service_id'),
   ])
 
-  const services  = (servicesRes.data   ?? []) as any[]
-  const rawMonth  = (monthApptRes.data  ?? []) as any[]
-  const history   = (historyRes.data    ?? []) as any[]
+  const services  = servicesRes.data   ?? []
+  const rawMonth  = monthApptRes.data  ?? []
+  const history   = historyRes.data    ?? []
   const allApptCounts: Record<string, number> = {}
-  for (const a of (apptCountRes.data ?? []) as any[]) {
+  for (const a of apptCountRes.data ?? []) {
     if (!a.service_id) continue
     allApptCounts[a.service_id] = (allApptCounts[a.service_id] ?? 0) + 1
   }
-  const sixMonth  = (sixMonthApptRes.data ?? []) as any[]
+  const sixMonth  = sixMonthApptRes.data ?? []
 
   const monthAppts = rawMonth.map(a => {
     const svc  = Array.isArray(a.services) ? a.services[0] : a.services
@@ -158,7 +158,7 @@ export default async function ServicosPage() {
       .select('appointment_id, complements(name)')
       .in('appointment_id', monthApptIds)
     const apptById = new Map(monthAppts.map(a => [a.id, a]))
-    for (const row of (pairData ?? []) as any[]) {
+    for (const row of pairData ?? []) {
       const appt = apptById.get(row.appointment_id)
       const complement = Array.isArray(row.complements) ? row.complements[0] : row.complements
       if (!appt || !complement?.name) continue
@@ -273,7 +273,7 @@ export default async function ServicosPage() {
         </h2>
         <AddServiceForm />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {services.map((s: any) => (
+          {services.map(s => (
             <ServiceRow key={s.id} service={s} appointmentCount={allApptCounts[s.id] ?? 0} />
           ))}
         </div>

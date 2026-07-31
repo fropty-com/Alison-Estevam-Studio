@@ -111,7 +111,7 @@ function DashboardCard({
 }
 
 export default async function AdminDashboard() {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const today       = todayInSaoPaulo()
   const weekStart   = startOfWeekInSaoPaulo()
@@ -143,11 +143,11 @@ export default async function AdminDashboard() {
     db.from('services').select('id', { count: 'exact', head: true }).eq('active', true),
   ])
 
-  const todayAppts   = (todayRes.data   ?? []) as any[]
+  const todayAppts   = todayRes.data   ?? []
   const weekCount    = weekRes.count    ?? 0
   const totalClients = clientsRes.count ?? 0
 
-  const monthPayments   = (monthPayRes.data ?? []) as any[]
+  const monthPayments   = monthPayRes.data ?? []
   const monthRevenue    = monthPayments.reduce((sum, p) => sum + Number(p.gross_amount ?? 0), 0)
   const avgTicketMonth  = monthPayments.length > 0 ? monthRevenue / monthPayments.length : 0
   const newClientsMonth = newClientsRes.count ?? 0
@@ -206,7 +206,7 @@ export default async function AdminDashboard() {
           </div>
         ) : (
           <div className="space-y-[6px]">
-            {todayAppts.map((a: any) => {
+            {todayAppts.map(a => {
               const st = STATUS_LABEL[a.status] ?? STATUS_LABEL.pending
               const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
               const svc  = Array.isArray(a.services)   ? a.services[0]   : a.services
