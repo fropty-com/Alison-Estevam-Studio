@@ -868,7 +868,7 @@ export async function unblockTimeRange(date: string, startTime: string, endTime:
 
 /* ── Payment Fee Settings ─────────────────────── */
 
-export async function updatePaymentFeeSetting(id: string, data: { fee_percentage?: number; active?: boolean }) {
+export async function updatePaymentFeeSetting(id: string, data: { fee_percentage?: number; active?: boolean; pix_key?: string | null }) {
   const user = await getSessionUser()
   if (!user) return { error: 'Não autorizado.' }
 

@@ -3,7 +3,7 @@
  * hand; regenerate after any migration via the Supabase MCP
  * `generate_typescript_types` tool (or `supabase gen types typescript
  * --project-id mgzwmunzvtrwmhykyxcl` if using the CLI locally).
- * Last regenerated: 2026-07-30.
+ * Last regenerated: 2026-07-31.
  */
 export type Json =
   | string
@@ -520,6 +520,7 @@ export type Database = {
           fee_percentage: number
           id: string
           method: string
+          pix_key: string | null
           updated_at: string
         }
         Insert: {
@@ -528,6 +529,7 @@ export type Database = {
           fee_percentage?: number
           id?: string
           method: string
+          pix_key?: string | null
           updated_at?: string
         }
         Update: {
@@ -536,6 +538,7 @@ export type Database = {
           fee_percentage?: number
           id?: string
           method?: string
+          pix_key?: string | null
           updated_at?: string
         }
         Relationships: []

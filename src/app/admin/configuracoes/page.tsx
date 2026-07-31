@@ -57,7 +57,7 @@ function ArrowIcon() {
 const QUICK_LINKS = [
   { href: '#horarios',  Icon: ClockIcon,    label: 'Horários',   desc: 'Funcionamento por dia da semana' },
   { href: '#bloqueios', Icon: LockIcon,     label: 'Bloqueios',  desc: 'Folgas e períodos fechados' },
-  { href: '#taxas',     Icon: CurrencyIcon, label: 'Taxas',      desc: 'Custo por forma de pagamento' },
+  { href: '#taxas',     Icon: CurrencyIcon, label: 'Taxas',      desc: 'Taxas de pagamento e chave Pix' },
   { href: '#fidelidade',Icon: StarIcon,     label: 'Fidelidade', desc: 'Recompensa por visitas' },
   { href: '#cupons',    Icon: TagIcon,      label: 'Cupons',     desc: 'Descontos promocionais' },
   { href: '#equipe',    Icon: TeamIcon,     label: 'Equipe',     desc: 'Quem tem acesso ao painel' },
