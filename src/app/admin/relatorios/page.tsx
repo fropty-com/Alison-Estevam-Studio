@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pt'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,40 +27,30 @@ function DocIcon() {
   )
 }
 
-const REPORTS = [
-  {
-    slug: 'faturamento',
-    title: 'Faturamento do mês',
-    description: 'Todos os pagamentos recebidos este mês, com forma de pagamento, taxas e gorjetas.',
-  },
-  {
-    slug: 'clientes',
-    title: 'Clientes',
-    description: 'Lista completa de clientes com total de visitas, ticket médio e última visita.',
-  },
-  {
-    slug: 'agendamentos',
-    title: 'Agendamentos do mês',
-    description: 'Todos os agendamentos deste mês, com status, cliente, serviço e valor.',
-  },
-  {
-    slug: 'despesas',
-    title: 'Despesas',
-    description: 'Histórico de despesas registradas, com categoria, vencimento e status de pagamento.',
-  },
-]
+function getReports(t: Dictionary) {
+  return [
+    { slug: 'faturamento', ...t.reports.list.faturamento },
+    { slug: 'clientes', ...t.reports.list.clientes },
+    { slug: 'agendamentos', ...t.reports.list.agendamentos },
+    { slug: 'despesas', ...t.reports.list.despesas },
+  ]
+}
 
 export default async function RelatoriosPage() {
   const role = await getAdminRole()
   if (role !== 'owner') return <RestrictedAccess />
 
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const REPORTS = getReports(t)
+
   return (
     <div className="px-6 py-8">
       <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Relatórios</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.reports.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.reports.title}</h1>
         <p className="font-body font-light text-[11px] text-offwhite/35 tracking-[0.05em] mt-2 max-w-[520px]">
-          Exporte os dados do negócio em planilha (CSV, compatível com Excel) ou em PDF para impressão/arquivo.
+          {t.reports.subtitle}
         </p>
       </div>
 
@@ -74,7 +67,7 @@ export default async function RelatoriosPage() {
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-[10px] font-body font-light text-[9px] tracking-[0.22em] uppercase border border-sage/30 text-sage-light hover:bg-sage/10 hover:border-sage/50 transition-all duration-200"
               >
                 <SheetIcon />
-                Exportar Excel
+                {t.reports.exportExcel}
               </a>
               <Link
                 href={`/admin/relatorios/${r.slug}/imprimir`}
@@ -82,7 +75,7 @@ export default async function RelatoriosPage() {
                 className="flex-1 flex items-center justify-center gap-2 px-4 py-[10px] font-body font-light text-[9px] tracking-[0.22em] uppercase border border-gold/30 text-gold hover:bg-gold/10 hover:border-gold/50 transition-all duration-200"
               >
                 <DocIcon />
-                Exportar PDF
+                {t.reports.exportPdf}
               </Link>
             </div>
           </div>

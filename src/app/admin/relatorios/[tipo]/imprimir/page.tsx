@@ -4,29 +4,22 @@ import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { PrintButton } from '@/components/admin/PrintButton'
 import { format, startOfMonth, endOfMonth } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
 
-const REPORT_TITLES: Record<string, string> = {
-  faturamento: 'Relatório de Faturamento',
-  clientes: 'Relatório de Clientes',
-  agendamentos: 'Relatório de Agendamentos',
-  despesas: 'Relatório de Despesas',
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  pending: 'Pendente', confirmed: 'Confirmado', checked_in: 'Chegou',
-  in_progress: 'Em atendimento', completed: 'Concluído', cancelled: 'Cancelado', no_show: 'No-show',
-}
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
 type ReportDb = Awaited<ReturnType<typeof createServiceClient>>
+type ReportDictionary = ReturnType<typeof getDictionary>
 
-async function loadFaturamento(db: ReportDb) {
+async function loadFaturamento(db: ReportDb, t: ReportDictionary) {
   const now = new Date()
   const monthStartISO = `${format(startOfMonth(now), 'yyyy-MM-dd')}T00:00:00`
   const nextMonthISO  = `${format(startOfMonth(now), 'yyyy-MM-dd')}T00:00:00`
@@ -37,7 +30,8 @@ async function loadFaturamento(db: ReportDb) {
     .lt('paid_at', nextMonthISO)
     .order('paid_at', { ascending: true })
 
-  const headers = ['Data', 'Cliente', 'Serviço', 'Forma', 'Bruto', 'Taxa', 'Gorjeta', 'Líquido']
+  const c = t.reports.print.columns
+  const headers = [c.date, c.client, c.service, c.method, c.gross, c.fee, c.tip, c.net]
   const rows = (data ?? []).map(p => {
     const appt = Array.isArray(p.appointments) ? p.appointments[0] : p.appointments
     const client = Array.isArray(appt?.clients) ? appt.clients[0] : appt?.clients
@@ -56,7 +50,7 @@ async function loadFaturamento(db: ReportDb) {
   return { headers, rows }
 }
 
-async function loadClientes(db: ReportDb) {
+async function loadClientes(db: ReportDb, t: ReportDictionary) {
   const [clientsRes, completedRes] = await Promise.all([
     db.from('clients').select('id, name, whatsapp, vip').order('name', { ascending: true }),
     db.from('appointments').select('client_id, total_price, time_slots!inner(date)').eq('status', 'completed'),
@@ -70,15 +64,16 @@ async function loadClientes(db: ReportDb) {
     s.count++
     s.total += Number(a.total_price ?? 0)
   }
-  const headers = ['Nome', 'WhatsApp', 'VIP', 'Visitas', 'Ticket médio']
-  const rows = clients.map(c => {
-    const s = stats[c.id]
-    return [c.name, c.whatsapp ?? '', c.vip ? 'Sim' : 'Não', s?.count ?? 0, fmt(s ? s.total / s.count : 0)]
+  const c = t.reports.print.columns
+  const headers = [c.name, c.whatsapp, c.vip, c.visits, c.avgTicket]
+  const rows = clients.map(cl => {
+    const s = stats[cl.id]
+    return [cl.name, cl.whatsapp ?? '', cl.vip ? c.yes : c.no, s?.count ?? 0, fmt(s ? s.total / s.count : 0)]
   })
   return { headers, rows }
 }
 
-async function loadAgendamentos(db: ReportDb) {
+async function loadAgendamentos(db: ReportDb, t: ReportDictionary) {
   const now = new Date()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
   const monthEnd   = format(endOfMonth(now), 'yyyy-MM-dd')
@@ -89,7 +84,8 @@ async function loadAgendamentos(db: ReportDb) {
     .lte('time_slots.date', monthEnd)
     .order('time_slots(date)', { ascending: true })
 
-  const headers = ['Data', 'Hora', 'Cliente', 'Serviço', 'Status', 'Valor']
+  const c = t.reports.print.columns
+  const headers = [c.date, c.time, c.client, c.service, c.status, c.value]
   const rows = (data ?? []).map(a => {
     const client = Array.isArray(a.clients) ? a.clients[0] : a.clients
     const service = Array.isArray(a.services) ? a.services[0] : a.services
@@ -99,34 +95,38 @@ async function loadAgendamentos(db: ReportDb) {
       (slot?.start_time ?? '').slice(0, 5),
       client?.name ?? '',
       service?.name ?? '',
-      STATUS_LABEL[a.status] ?? a.status,
+      t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status,
       fmt(Number(a.total_price ?? 0)),
     ]
   })
   return { headers, rows }
 }
 
-async function loadDespesas(db: ReportDb) {
+async function loadDespesas(db: ReportDb, t: ReportDictionary) {
   const { data } = await db
     .from('expenses')
     .select('description, category, amount, is_fixed, due_date, paid_date')
     .order('due_date', { ascending: false })
     .limit(500)
 
-  const headers = ['Descrição', 'Categoria', 'Tipo', 'Valor', 'Vencimento', 'Pagamento']
+  const c = t.reports.print.columns
+  const headers = [c.description, c.category, c.type, c.value, c.dueDate, c.paidDate]
   const rows = (data ?? []).map(e => [
     e.description,
     e.category,
-    e.is_fixed ? 'Fixa' : 'Variável',
+    e.is_fixed ? c.fixed : c.variable,
     fmt(Number(e.amount ?? 0)),
     format(new Date(`${e.due_date}T00:00:00`), 'dd/MM/yyyy'),
-    e.paid_date ? format(new Date(`${e.paid_date}T00:00:00`), 'dd/MM/yyyy') : 'Não paga',
+    e.paid_date ? format(new Date(`${e.paid_date}T00:00:00`), 'dd/MM/yyyy') : c.notPaid,
   ])
   return { headers, rows }
 }
 
 export default async function ImprimirRelatorioPage({ params }: { params: { tipo: string } }) {
-  const title = REPORT_TITLES[params.tipo]
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+
+  const title = t.reports.print.titles[params.tipo as keyof typeof t.reports.print.titles]
   if (!title) notFound()
 
   const role = await getAdminRole()
@@ -135,12 +135,12 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
   const db = await createServiceClient()
 
   const { headers, rows } =
-    params.tipo === 'faturamento'   ? await loadFaturamento(db)   :
-    params.tipo === 'clientes'      ? await loadClientes(db)      :
-    params.tipo === 'agendamentos'  ? await loadAgendamentos(db)  :
-    await loadDespesas(db)
+    params.tipo === 'faturamento'   ? await loadFaturamento(db, t)   :
+    params.tipo === 'clientes'      ? await loadClientes(db, t)      :
+    params.tipo === 'agendamentos'  ? await loadAgendamentos(db, t)  :
+    await loadDespesas(db, t)
 
-  const generatedAt = format(new Date(), "d 'de' MMMM 'de' yyyy, HH:mm", { locale: ptBR })
+  const generatedAt = format(new Date(), locale === 'pt' ? "d 'de' MMMM 'de' yyyy, HH:mm" : 'MMMM d, yyyy, HH:mm', { locale: DATE_FNS_LOCALE[locale] })
 
   return (
     <div className="px-6 py-8 print:bg-white print:text-black print:px-0 print:py-0">
@@ -151,7 +151,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
           </p>
           <h1 className="font-display font-light text-[26px] text-offwhite print:text-black tracking-[0.02em]">{title}</h1>
           <p className="font-body font-light text-[9px] text-offwhite/30 print:text-black/50 tracking-[0.1em] mt-1">
-            Gerado em {generatedAt}
+            {t.reports.print.generatedAt(generatedAt)}
           </p>
         </div>
         <PrintButton />
@@ -172,7 +172,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={headers.length} className="px-3 py-6 text-center font-body font-light text-[11px] text-offwhite/[0.22] print:text-black/40 italic">
-                  Nenhum dado encontrado.
+                  {t.reports.print.noData}
                 </td>
               </tr>
             ) : rows.map((row, i) => (
