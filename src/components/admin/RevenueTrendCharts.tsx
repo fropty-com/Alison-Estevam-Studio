@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
+
 interface MonthPoint   { label: string; gross: number }
 interface WeekdayPoint { weekday: number; label: string; avg: number }
 interface DayPoint     { label: string; revenue: number }
@@ -17,6 +19,7 @@ export function RevenueTrendCharts({
   weekdayAverages: WeekdayPoint[]
   dailyThisMonth: DayPoint[]
 }) {
+  const { t } = useTranslation()
   const maxMonth = Math.max(...monthlyTrend.map(m => m.gross), 1)
   const maxWeekday = Math.max(...weekdayAverages.map(w => w.avg), 1)
   const maxDay = Math.max(...dailyThisMonth.map(d => d.revenue), 1)
@@ -27,7 +30,7 @@ export function RevenueTrendCharts({
       {/* Tendência de receita — 6 meses */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
-          Tendência de receita — últimos 6 meses
+          {t.billing.charts.revenueTrendTitle}
         </p>
         <div className="flex items-end gap-[10px] h-[140px]">
           {monthlyTrend.map((m, i) => {
@@ -52,10 +55,10 @@ export function RevenueTrendCharts({
       {/* Receita por dia da semana */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">
-          Receita por dia da semana
+          {t.billing.charts.revenueByWeekdayTitle}
         </p>
         <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-5">
-          Média por ocorrência deste mês
+          {t.billing.charts.avgPerOccurrence}
         </p>
         <div className="flex items-end gap-[10px] h-[110px]">
           {weekdayAverages.map((w, i) => {
@@ -80,13 +83,13 @@ export function RevenueTrendCharts({
       {/* Receita dia a dia do mês */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
-          Receita deste mês — dia a dia
+          {t.billing.charts.dailyRevenueTitle}
         </p>
         <div className="flex items-end gap-[3px] h-[100px] overflow-x-auto">
           {dailyThisMonth.map((d, i) => {
             const pct = (d.revenue / maxDay) * 100
             return (
-              <div key={i} className="flex-1 min-w-[10px] flex flex-col items-center gap-1 h-full justify-end" title={`Dia ${d.label}: ${fmt(d.revenue)}`}>
+              <div key={i} className="flex-1 min-w-[10px] flex flex-col items-center gap-1 h-full justify-end" title={t.billing.charts.dayTooltip(d.label, fmt(d.revenue))}>
                 <div className="w-full relative" style={{ height: `${Math.max(pct, 2)}%` }}>
                   <div className={d.revenue > 0 ? 'w-full h-full bg-gold/45 transition-all duration-500' : 'w-full h-full bg-offwhite/5'} />
                 </div>

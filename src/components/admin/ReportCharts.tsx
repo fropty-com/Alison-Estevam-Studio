@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 interface WeeklyPoint   { label: string; count: number }
 interface SvcPoint      { name: string; count: number; revenue: number }
@@ -19,6 +20,7 @@ export function ReportCharts({
   svcRanking: SvcPoint[]
   paymentBreakdown: PaymentPoint[]
 }) {
+  const { t } = useTranslation()
   const maxCount = Math.max(...weeklyData.map(w => w.count), 1)
   const maxSvc   = Math.max(...svcRanking.map(s => s.count), 1)
   const maxGross = Math.max(...paymentBreakdown.map(p => p.gross), 1)
@@ -30,7 +32,7 @@ export function ReportCharts({
       {/* Agendamentos por semana */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
-          Agendamentos — últimas 6 semanas
+          {t.billing.charts.weeklyTitle}
         </p>
         <div className="flex items-end gap-[10px] h-[140px]">
           {weeklyData.map((w, i) => {
@@ -60,12 +62,12 @@ export function ReportCharts({
       {/* Ranking de serviços */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
-          Serviços mais realizados — este mês
+          {t.billing.charts.svcRankingTitle}
         </p>
 
         {svcRanking.length === 0 ? (
           <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
-            Nenhum dado disponível.
+            {t.billing.charts.noData}
           </p>
         ) : (
           <div className="space-y-[14px]">
@@ -102,12 +104,12 @@ export function ReportCharts({
       {/* Faturamento por forma de pagamento */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
         <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
-          Faturamento por forma de pagamento — este mês
+          {t.billing.charts.paymentBreakdownTitle}
         </p>
 
         {paymentBreakdown.length === 0 ? (
           <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
-            Nenhum pagamento registrado.
+            {t.billing.charts.noPayments}
           </p>
         ) : (
           <div className="space-y-[14px]">
@@ -123,7 +125,7 @@ export function ReportCharts({
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
                       <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-                        líq. {fmt(p.net)}
+                        {t.billing.charts.net} {fmt(p.net)}
                       </span>
                       <span className="font-data text-[13px] text-offwhite/55">
                         {fmt(p.gross)}

@@ -1,24 +1,20 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, addMonths, subMonths, eachWeekOfInterval, eachDayOfInterval, startOfWeek, endOfWeek, parseISO, getDay, isBefore } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
+import { ptBR, enUS, es } from 'date-fns/locale'
 import { ReportCharts } from '@/components/admin/ReportCharts'
 import { RevenueTrendCharts } from '@/components/admin/RevenueTrendCharts'
 import { RestrictedAccess } from '@/components/admin/RestrictedAccess'
 import { getAdminRole } from '@/lib/admin-auth'
 import { nowAnchorInSaoPaulo, todayInSaoPaulo, weekdayInSaoPaulo, monthKeyInSaoPaulo } from '@/lib/timezone'
+import { getLocale } from '@/lib/i18n/getLocale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const dynamic = 'force-dynamic'
 
+const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
+
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-}
-
-const METHOD_LABEL: Record<string, string> = {
-  cash: 'Dinheiro',
-  pix: 'Pix',
-  debit_card: 'Cartão de Débito',
-  credit_card: 'Cartão de Crédito',
-  courtesy: 'Cortesia',
 }
 
 export default async function FaturamentoPage() {
@@ -26,6 +22,10 @@ export default async function FaturamentoPage() {
   if (role !== 'owner') return <RestrictedAccess />
 
   const db = await createServiceClient()
+  const locale = await getLocale()
+  const t = getDictionary(locale)
+  const dateLocale = DATE_FNS_LOCALE[locale]
+  const METHOD_LABEL: Record<string, string> = t.billing.methods
 
   const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -122,8 +122,8 @@ export default async function FaturamentoPage() {
     const weekday = getDay(d)
     weekdayOccurrences[weekday] = (weekdayOccurrences[weekday] ?? 0) + 1
   }
-  const WEEKDAY_FULL  = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']
-  const WEEKDAY_SHORT = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+  const WEEKDAY_FULL  = t.billing.weekdayFull
+  const WEEKDAY_SHORT = t.billing.weekdayShort
   // Ordem Dom→Sáb, para o gráfico da semana (inclui dias sem ocorrência ainda, com média 0)
   const weekdayAverages = WEEKDAY_SHORT.map((label, wd) => ({
     weekday: wd,
@@ -138,7 +138,7 @@ export default async function FaturamentoPage() {
 
   const bestDayEntry = Object.entries(byDateRevenue).sort((a, b) => b[1] - a[1])[0]
   const bestDay = bestDayEntry
-    ? { date: format(parseISO(bestDayEntry[0]), "d 'de' MMMM", { locale: ptBR }), revenue: bestDayEntry[1] }
+    ? { date: format(parseISO(bestDayEntry[0]), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale }), revenue: bestDayEntry[1] }
     : null
 
   // Tendência de receita — últimos 6 meses
@@ -153,7 +153,7 @@ export default async function FaturamentoPage() {
     const m = subMonths(now, 5 - i)
     const key = format(m, 'yyyy-MM')
     return {
-      label: format(m, 'MMM', { locale: ptBR }).replace('.', ''),
+      label: format(m, 'MMM', { locale: dateLocale }).replace('.', ''),
       gross: monthlyBuckets[key]?.gross ?? 0,
     }
   })
@@ -225,19 +225,19 @@ export default async function FaturamentoPage() {
       return d >= wS && d <= wE
     }).length
     return {
-      label: format(weekStart, "d/MM", { locale: ptBR }),
+      label: format(weekStart, "d/MM", { locale: dateLocale }),
       count,
     }
   })
 
-  const monthLabel = format(now, "MMMM 'de' yyyy", { locale: ptBR })
+  const monthLabel = format(now, locale === 'pt' ? "MMMM 'de' yyyy" : 'MMMM yyyy', { locale: dateLocale })
 
   return (
     <div className="px-6 py-8 space-y-10">
       {/* Header */}
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Faturamento</h1>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.billing.eyebrow}</p>
+        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.billing.title}</h1>
         <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
@@ -245,121 +245,121 @@ export default async function FaturamentoPage() {
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Faturamento bruto */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Faturamento bruto</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.grossRevenue}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(grossThis)}</p>
           {revDiff !== null && (
             <p className={`font-body font-light text-[9px] tracking-[0.12em] ${revDiff >= 0 ? 'text-sage-light' : 'text-error/60'}`}>
-              {revDiff >= 0 ? '↑' : '↓'} {Math.abs(revDiff).toFixed(1)}% vs mês anterior
+              {t.billing.cards.vsLastMonth(revDiff >= 0 ? '↑' : '↓', Math.abs(revDiff).toFixed(1))}
             </p>
           )}
         </div>
 
         {/* Taxas pagas */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Taxas de pagamento</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.fees}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(feeThis)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {grossThis > 0 ? ((feeThis / grossThis) * 100).toFixed(1) : '0.0'}% do bruto
+            {t.billing.cards.pctOfGross(grossThis > 0 ? ((feeThis / grossThis) * 100).toFixed(1) : '0.0')}
           </p>
         </div>
 
         {/* Faturamento líquido */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Faturamento líquido</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.netRevenue}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(netThis)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">após taxas</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.cards.afterFees}</p>
         </div>
 
         {/* Ticket médio */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Ticket médio</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.avgTicket}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(avgTicket)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {thisMonthPay.length} pagamento{thisMonthPay.length !== 1 ? 's' : ''}
+            {t.billing.cards.payments(thisMonthPay.length)}
           </p>
         </div>
 
         {/* Taxa de cancelamento */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Cancelamentos</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.cancellations}</p>
           <p className={`font-data text-[26px] leading-none mb-2 ${cancelRate > 20 ? 'text-error/70' : 'text-offwhite'}`}>
             {cancelRate.toFixed(1)}%
           </p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {cancelledMonth} de {totalMonth} marcados
+            {t.billing.cards.outOfBooked(cancelledMonth, totalMonth)}
           </p>
         </div>
 
         {/* Clientes novos */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Clientes novos</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.newClients}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{newClients}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.cards.thisMonth}</p>
         </div>
 
         {/* Atendimentos */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Atendimentos</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.appointments}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{atendimentosCount}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">concluídos este mês</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.cards.completedThisMonth}</p>
         </div>
 
         {/* Descontos concedidos */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Descontos concedidos</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.discountsGiven}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(discountsThis)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">
-            {grossThis > 0 ? ((discountsThis / grossThis) * 100).toFixed(1) : '0.0'}% do bruto
+            {t.billing.cards.pctOfGross(grossThis > 0 ? ((discountsThis / grossThis) * 100).toFixed(1) : '0.0')}
           </p>
         </div>
 
         {/* Gorjetas recebidas */}
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">Gorjetas recebidas</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.billing.cards.tipsReceived}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(tipsThis)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">registradas no checkout</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.cards.registeredAtCheckout}</p>
         </div>
       </div>
 
       {/* Insights do mês */}
       <section>
         <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40 mb-4">
-          Insights do mês
+          {t.billing.insights.title}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">Melhor dia</p>
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">{t.billing.insights.bestDay}</p>
             {bestDay ? (
               <>
                 <p className="font-display font-light text-[19px] text-offwhite leading-none mb-2 capitalize">{bestDay.date}</p>
-                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{fmt(bestDay.revenue)} faturados</p>
+                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.insights.revenueGenerated(fmt(bestDay.revenue))}</p>
               </>
             ) : (
-              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados este mês.</p>
+              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.billing.insights.noDataThisMonth}</p>
             )}
           </div>
 
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">Dia da semana top</p>
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">{t.billing.insights.topWeekday}</p>
             {topWeekdayFull ? (
               <>
                 <p className="font-display font-light text-[19px] text-offwhite leading-none mb-2">{topWeekdayFull.label}</p>
-                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{fmt(topWeekdayFull.avg)} em média</p>
+                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.insights.onAverage(fmt(topWeekdayFull.avg))}</p>
               </>
             ) : (
-              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados este mês.</p>
+              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.billing.insights.noDataThisMonth}</p>
             )}
           </div>
 
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">Forma de pagamento top</p>
+            <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-gold/60 mb-3">{t.billing.insights.topPaymentMethod}</p>
             {paymentBreakdown[0] ? (
               <>
                 <p className="font-display font-light text-[19px] text-offwhite leading-none mb-2">{paymentBreakdown[0].label}</p>
-                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{fmt(paymentBreakdown[0].gross)} recebidos</p>
+                <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.billing.insights.received(fmt(paymentBreakdown[0].gross))}</p>
               </>
             ) : (
-              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">Sem dados este mês.</p>
+              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.billing.insights.noDataThisMonth}</p>
             )}
           </div>
         </div>
