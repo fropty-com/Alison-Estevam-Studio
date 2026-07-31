@@ -7,7 +7,7 @@ import { createServerClient } from '@supabase/ssr'
 import { todayInSaoPaulo } from '@/lib/timezone'
 import { calculatePaymentBreakdown } from '@/lib/payments'
 import { createManualAppointmentSchema, joinWaitlistSchema } from '@/lib/validations/booking'
-import { formatWhatsApp } from '@/lib/utils'
+import { formatWhatsApp, isFullName } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
 import { SLOT_STATUS } from '@/config/booking'
@@ -1158,5 +1158,48 @@ export async function deleteExpense(id: string): Promise<{ ok?: boolean; error?:
   await logAction('expense.delete', 'expense', id, 'Excluiu despesa')
 
   revalidatePath('/admin/financeiro')
+  return { ok: true }
+}
+
+/* ── Meu perfil (self-service, qualquer membro da equipe) ────────── */
+
+export async function updateStaffProfile(input: { name: string; phone?: string }): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const name = input.name.trim()
+  if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
+
+  let phone: string | null = null
+  if (input.phone?.trim()) {
+    try {
+      phone = formatWhatsApp(input.phone)
+    } catch {
+      return { error: 'Telefone inválido. Informe o DDD + 9 dígitos.' }
+    }
+  }
+
+  const db = await adminDb()
+  const { error } = await db.from('staff_members').update({ name, phone }).eq('id', user.id)
+  if (error) {
+    if (error.code === '23505') return { error: 'Esse telefone já está em uso por outro membro da equipe.' }
+    return { error: 'Erro ao salvar perfil.' }
+  }
+
+  revalidatePath('/admin/perfil')
+  revalidatePath('/admin', 'layout')
+  return { ok: true }
+}
+
+export async function updateStaffAvatar(avatarUrl: string | null): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { error } = await db.from('staff_members').update({ avatar_url: avatarUrl }).eq('id', user.id)
+  if (error) return { error: 'Erro ao salvar foto.' }
+
+  revalidatePath('/admin/perfil')
+  revalidatePath('/admin', 'layout')
   return { ok: true }
 }

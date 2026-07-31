@@ -3,7 +3,7 @@
  * hand; regenerate after any migration via the Supabase MCP
  * `generate_typescript_types` tool (or `supabase gen types typescript
  * --project-id mgzwmunzvtrwmhykyxcl` if using the CLI locally).
- * Last regenerated: 2026-07-31.
+ * Last regenerated: 2026-07-31 (staff_members.avatar_url).
  */
 export type Json =
   | string
@@ -752,6 +752,7 @@ export type Database = {
       }
       staff_members: {
         Row: {
+          avatar_url: string | null
           created_at: string
           id: string
           name: string
@@ -759,6 +760,7 @@ export type Database = {
           role: string
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string
           id: string
           name: string
@@ -766,6 +768,7 @@ export type Database = {
           role: string
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string
           id?: string
           name?: string

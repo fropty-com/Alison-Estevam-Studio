@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const db = await createServiceClient()
   const [{ data: staff }, { data: pending }] = await Promise.all([
     user
-      ? db.from('staff_members').select('name, role').eq('id', user.id).maybeSingle()
+      ? db.from('staff_members').select('name, role, avatar_url').eq('id', user.id).maybeSingle()
       : Promise.resolve({ data: null }),
     db
       .from('appointments')
@@ -49,6 +49,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="flex-1 min-w-0 flex flex-col">
           <AdminTopBar
             staffName={staff?.name ?? user?.email ?? 'Equipe'}
+            staffAvatarUrl={staff?.avatar_url ?? null}
             isOwner={isOwner}
             pending={pendingList}
           />
