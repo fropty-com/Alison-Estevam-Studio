@@ -24,14 +24,14 @@ export default async function PagamentosPage() {
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data: raw } = await db
     .from('payments')
     .select('id, method, gross_amount, paid_at, appointments!inner(client_id)')
     .eq('appointments.client_id', session.clientId)
     .order('paid_at', { ascending: false })
 
-  const payments = (raw ?? []) as any[]
+  const payments = raw ?? []
 
   return (
     <div className="min-h-screen bg-charcoal">

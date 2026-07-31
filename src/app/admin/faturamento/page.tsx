@@ -25,7 +25,7 @@ export default async function FaturamentoPage() {
   const role = await getAdminRole()
   if (role !== 'owner') return <RestrictedAccess />
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now        = nowAnchorInSaoPaulo()
   const monthStart = format(startOfMonth(now), 'yyyy-MM-dd')
@@ -83,12 +83,12 @@ export default async function FaturamentoPage() {
       .is('refunded_at', null),
   ])
 
-  const thisMonthPay = (thisMonthPayRes.data ?? []) as any[]
-  const lastMonthPay = (lastMonthPayRes.data ?? []) as any[]
-  const allSvcAppt    = (svcRankRes.data      ?? []) as any[]
-  const weekly         = (weeklyRes.data      ?? []) as any[]
+  const thisMonthPay = thisMonthPayRes.data ?? []
+  const lastMonthPay = lastMonthPayRes.data ?? []
+  const allSvcAppt    = svcRankRes.data      ?? []
+  const weekly         = weeklyRes.data      ?? []
   const newClients     = newClientsRes.count  ?? 0
-  const sixMonthPay    = (sixMonthPayRes.data ?? []) as any[]
+  const sixMonthPay    = sixMonthPayRes.data ?? []
 
   // Faturamento (a partir de pagamentos reais)
   const grossThis = thisMonthPay.reduce((sum, p) => sum + Number(p.gross_amount ?? 0), 0)

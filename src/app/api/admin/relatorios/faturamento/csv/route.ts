@@ -8,7 +8,7 @@ export async function GET() {
   const role = await getAdminRole()
   if (role !== 'owner') return new Response('Não autorizado.', { status: 403 })
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const now = nowAnchorInSaoPaulo()
   const monthStartISO = `${format(startOfMonth(now), 'yyyy-MM-dd')}T00:00:00`
   const nextMonthISO  = `${format(startOfMonth(addMonths(now, 1)), 'yyyy-MM-dd')}T00:00:00`
@@ -21,7 +21,7 @@ export async function GET() {
     .is('refunded_at', null)
     .order('paid_at', { ascending: true })
 
-  const rows = ((data ?? []) as any[]).map(p => {
+  const rows = (data ?? []).map(p => {
     const appt = Array.isArray(p.appointments) ? p.appointments[0] : p.appointments
     const client = Array.isArray(appt?.clients) ? appt.clients[0] : appt?.clients
     const service = Array.isArray(appt?.services) ? appt.services[0] : appt?.services

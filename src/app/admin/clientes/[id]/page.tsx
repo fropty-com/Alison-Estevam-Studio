@@ -24,7 +24,7 @@ const STATUS_LABEL: Record<string, string> = {
 }
 
 export default async function ClienteDetailPage({ params }: { params: { id: string } }) {
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const [clientRes, apptsRes] = await Promise.all([
     db.from('clients').select('*').eq('id', params.id).single(),
@@ -36,8 +36,8 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
 
   if (!clientRes.data) notFound()
 
-  const client = clientRes.data as any
-  const appts  = (apptsRes.data ?? []) as any[]
+  const client = clientRes.data
+  const appts  = apptsRes.data ?? []
 
   const completed = appts.filter((a: any) => a.status === 'completed').length
   const total     = appts.length

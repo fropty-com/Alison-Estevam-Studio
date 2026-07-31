@@ -25,7 +25,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
   const session = await getVerifiedClientSession()
   if (!session) redirect('/entrar')
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
   const { data: payment } = await db
     .from('payments')
     .select(`

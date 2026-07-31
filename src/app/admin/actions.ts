@@ -12,14 +12,15 @@ import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
 import { SLOT_STATUS } from '@/config/booking'
 import { isStaffMember } from '@/lib/admin-auth'
+import type { Database, Json, TablesUpdate } from '@/types/database'
 
 async function adminDb() {
   // Service-role client — bypasses RLS, server-only
   const { createClient } = await import('@supabase/supabase-js')
-  return createClient(
+  return createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
-  ) as any
+  )
 }
 
 async function getSessionUser() {
@@ -86,7 +87,7 @@ async function logAction(
       target_type: targetType,
       target_id: targetId,
       summary,
-      metadata: metadata ?? null,
+      metadata: (metadata as Json) ?? null,
     })
   } catch {
     // best-effort — see doc comment above
@@ -148,7 +149,7 @@ export async function updateAppointmentStatus(id: string, status: string, reason
   if (!user) return { error: 'Não autorizado.' }
 
   const db = await adminDb()
-  const update: Record<string, unknown> = { status, updated_at: new Date().toISOString() }
+  const update: TablesUpdate<'appointments'> = { status, updated_at: new Date().toISOString() }
   if (status === 'cancelled') {
     update.cancelled_at = new Date().toISOString()
     if (reason) update.cancellation_reason = reason
@@ -185,7 +186,7 @@ export async function updateWaitlistStatus(id: string, status: 'notified' | 'res
   if (!user) return { error: 'Não autorizado.' }
 
   const db = await adminDb()
-  const update: Record<string, unknown> = { status }
+  const update: TablesUpdate<'waitlist_entries'> = { status }
   if (status === 'notified') update.notified_at = new Date().toISOString()
 
   const { error } = await db.from('waitlist_entries').update(update).eq('id', id)
@@ -702,7 +703,7 @@ export async function updateAvailabilityRule(id: string, data: { start_time?: st
   const WEEKDAY = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
   await logAction(
     'availability_rule.update', 'availability_rule', id,
-    `Alterou horário de funcionamento de ${WEEKDAY[before?.weekday] ?? 'um dia'}`,
+    `Alterou horário de funcionamento de ${WEEKDAY[before?.weekday ?? -1] ?? 'um dia'}`,
     { before, after: data }
   )
 
@@ -913,7 +914,7 @@ export async function removeStaffMember(id: string) {
 }
 
 /** Blocks demoting/removing a member if they're the last remaining owner. */
-async function ensureNotLastOwner(db: any, id: string): Promise<{ error: string } | null> {
+async function ensureNotLastOwner(db: Awaited<ReturnType<typeof adminDb>>, id: string): Promise<{ error: string } | null> {
   const { data: current } = await db.from('staff_members').select('role').eq('id', id).single()
   if (current?.role !== 'owner') return null
 

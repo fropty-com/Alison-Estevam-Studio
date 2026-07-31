@@ -24,7 +24,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
 
   const regime: Regime = searchParams.regime === 'competencia' ? 'competencia' : 'caixa'
 
-  const db = await createServiceClient() as any
+  const db = await createServiceClient()
 
   const now         = nowAnchorInSaoPaulo()
   const today       = format(now, 'yyyy-MM-dd')
@@ -65,10 +65,10 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       .gte('time_slots.date', today),
   ])
 
-  const thisMonthPay = (thisMonthPayRes.data ?? []) as any[]
-  const sixMonthPay   = (sixMonthPayRes.data  ?? []) as any[]
-  const allExpenses   = (expensesRes.data     ?? []) as any[]
-  const receivable    = (receivableRes.data   ?? []) as any[]
+  const thisMonthPay = thisMonthPayRes.data ?? []
+  const sixMonthPay   = sixMonthPayRes.data  ?? []
+  const allExpenses   = expensesRes.data     ?? []
+  const receivable    = receivableRes.data   ?? []
 
   // ── Receita do mês (igual nos dois regimes, já que pagamento e conclusão
   // do serviço acontecem juntos neste negócio — a diferença de regime pesa
@@ -82,13 +82,13 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
 
   // ── Despesas do mês, conforme o regime contábil ──
   const expenseDateField = regime === 'caixa' ? 'paid_date' : 'due_date'
-  const expensesThisMonth = allExpenses.filter((e: any) => {
+  const expensesThisMonth = allExpenses.filter(e => {
     const d = e[expenseDateField]
     return d && d >= monthStart && d <= monthEnd
   })
   const despesasThis = expensesThisMonth.reduce((sum, e) => sum + Number(e.amount ?? 0), 0)
 
-  const expensesLastMonth = allExpenses.filter((e: any) => {
+  const expensesLastMonth = allExpenses.filter(e => {
     const d = e[expenseDateField]
     return d && d >= lastStart && d <= lastEnd
   })
@@ -99,7 +99,7 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
 
   // ── A Receber / A Pagar em aberto ──
   const aReceber = receivable.reduce((sum, a) => sum + Number(a.total_price ?? 0), 0)
-  const unpaidExpenses = allExpenses.filter((e: any) => !e.paid_date)
+  const unpaidExpenses = allExpenses.filter(e => !e.paid_date)
   const aPagar = unpaidExpenses.reduce((sum, e) => sum + Number(e.amount ?? 0), 0)
 
   // ── Maior despesa do mês ──
@@ -122,10 +122,10 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
     const key = monthKeyInSaoPaulo(parseISO(p.paid_at))
     monthlyRevenue[key] = (monthlyRevenue[key] ?? 0) + Number(p.gross_amount ?? 0)
   }
-  const sixMonthExpenses = allExpenses.filter((e: any) => e[expenseDateField] && e[expenseDateField] >= sixMonthsAgoStart)
+  const sixMonthExpenses = allExpenses.filter(e => e[expenseDateField] && e[expenseDateField]! >= sixMonthsAgoStart)
   const monthlyExpenses: Record<string, number> = {}
   for (const e of sixMonthExpenses) {
-    const key = e[expenseDateField].slice(0, 7)
+    const key = e[expenseDateField]!.slice(0, 7)
     monthlyExpenses[key] = (monthlyExpenses[key] ?? 0) + Number(e.amount ?? 0)
   }
   const monthlyTrend = Array.from({ length: 6 }, (_, i) => {
@@ -166,8 +166,8 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
     .sort((a, b) => b.total - a.total)
 
   // ── Fixas vs Variáveis (mês atual) ──
-  const fixedTotal    = expensesThisMonth.filter((e: any) => e.is_fixed).reduce((sum, e) => sum + Number(e.amount), 0)
-  const variableTotal = expensesThisMonth.filter((e: any) => !e.is_fixed).reduce((sum, e) => sum + Number(e.amount), 0)
+  const fixedTotal    = expensesThisMonth.filter(e => e.is_fixed).reduce((sum, e) => sum + Number(e.amount), 0)
+  const variableTotal = expensesThisMonth.filter(e => !e.is_fixed).reduce((sum, e) => sum + Number(e.amount), 0)
 
   // ── Contas atrasadas (aging) ──
   const agingBuckets = [
@@ -196,17 +196,17 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       })
       .reduce((sum, a) => sum + Number(a.total_price ?? 0), 0)
     const aPagarBucket = unpaidExpenses
-      .filter((e: any) => e.due_date >= today && e.due_date <= limit)
+      .filter(e => e.due_date >= today && e.due_date <= limit)
       .reduce((sum, e) => sum + Number(e.amount ?? 0), 0)
     const aReceberCount = receivable.filter(a => {
       const slot = Array.isArray(a.time_slots) ? a.time_slots[0] : a.time_slots
       return slot?.date && slot.date >= today && slot.date <= limit
     }).length
-    const aPagarCount = unpaidExpenses.filter((e: any) => e.due_date >= today && e.due_date <= limit).length
+    const aPagarCount = unpaidExpenses.filter(e => e.due_date >= today && e.due_date <= limit).length
     return { days, aReceber: aReceberBucket, aReceberCount, aPagar: aPagarBucket, aPagarCount }
   })
 
-  const expenseRows: ExpenseRow[] = allExpenses.slice(0, 30).map((e: any) => ({
+  const expenseRows: ExpenseRow[] = allExpenses.slice(0, 30).map(e => ({
     id: e.id,
     description: e.description,
     category: e.category,
