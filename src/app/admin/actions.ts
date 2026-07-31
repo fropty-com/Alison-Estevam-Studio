@@ -6,7 +6,7 @@ import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { todayInSaoPaulo } from '@/lib/timezone'
 import { calculatePaymentBreakdown } from '@/lib/payments'
-import { createManualAppointmentSchema } from '@/lib/validations/booking'
+import { createManualAppointmentSchema, joinWaitlistSchema } from '@/lib/validations/booking'
 import { formatWhatsApp } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
@@ -191,6 +191,69 @@ export async function updateWaitlistStatus(id: string, status: 'notified' | 'res
 
   const { error } = await db.from('waitlist_entries').update(update).eq('id', id)
   if (error) return { error: 'Erro ao atualizar fila de espera.' }
+
+  revalidatePath('/admin/espera')
+  return { ok: true }
+}
+
+/**
+ * Registers a client on the waitlist from the admin panel (e.g. a phone
+ * request). Mirrors POST /api/waitlist's find-or-create-client logic, but
+ * as an authenticated admin action with an audit log entry.
+ */
+export async function createManualWaitlistEntry(input: unknown): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const parsed = joinWaitlistSchema.safeParse(input)
+  if (!parsed.success) return { error: 'Dados inválidos.' }
+  const { name, whatsapp, serviceId, preferredDate, note } = parsed.data
+
+  const db = await adminDb()
+
+  const { data: service } = await db
+    .from('services')
+    .select('id')
+    .eq('id', serviceId)
+    .eq('active', true)
+    .maybeSingle()
+  if (!service) return { error: 'Serviço não encontrado.' }
+
+  const formattedWhatsapp = formatWhatsApp(whatsapp)
+  let clientId: string
+
+  const { data: existingClient } = await db
+    .from('clients')
+    .select('id')
+    .eq('whatsapp', formattedWhatsapp)
+    .maybeSingle()
+
+  if (existingClient) {
+    clientId = existingClient.id
+    await db.from('clients').update({ name }).eq('id', clientId)
+  } else {
+    const { data: newClient, error: clientError } = await db
+      .from('clients')
+      .insert({ name, whatsapp: formattedWhatsapp })
+      .select('id')
+      .single()
+    if (clientError || !newClient) return { error: 'Erro ao registrar cliente.' }
+    clientId = newClient.id
+  }
+
+  const { error: waitlistError } = await db.from('waitlist_entries').insert({
+    client_id: clientId,
+    service_id: serviceId,
+    preferred_date: preferredDate,
+    note: note || null,
+  })
+  if (waitlistError) return { error: 'Erro ao adicionar à fila de espera.' }
+
+  await logAction(
+    'waitlist.manual_add', 'client', clientId,
+    `Adicionou ${name} à fila de espera`,
+    { serviceId, preferredDate }
+  )
 
   revalidatePath('/admin/espera')
   return { ok: true }

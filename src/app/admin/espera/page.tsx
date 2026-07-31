@@ -2,6 +2,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { format, parseISO, isToday, isTomorrow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { WaitlistEntryRow } from '@/components/admin/WaitlistEntryRow'
+import { AddWaitlistButton } from '@/components/admin/AddWaitlistButton'
 import { buildWaitlistNotifyUrl } from '@/lib/whatsapp/messages'
 
 export const dynamic = 'force-dynamic'
@@ -34,12 +35,15 @@ export default async function EsperaPage() {
 
   return (
     <div className="px-6 py-8">
-      <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
-        <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Fila de espera</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
-          Clientes esperando um horário abrir. {entries.length} na fila.
-        </p>
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div>
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
+          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Fila de espera</h1>
+          <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
+            Clientes esperando um horário abrir. {entries.length} na fila.
+          </p>
+        </div>
+        <AddWaitlistButton />
       </div>
 
       {groups.length === 0 ? (

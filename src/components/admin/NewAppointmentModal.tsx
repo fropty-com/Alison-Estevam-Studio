@@ -89,7 +89,10 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
 
   const pickClient = (c: ClientHit) => {
     setName(c.name)
-    setWhatsapp(maskPhoneInput(c.whatsapp))
+    // c.whatsapp comes from the DB in E.164 (+5511987654321) — maskPhoneInput
+    // expects a bare local number, so the +55 must be stripped first or it
+    // gets masked in as if it were the area code, corrupting the number.
+    setWhatsapp(maskPhoneInput(c.whatsapp.replace(/^\+?55/, '')))
     setEmail(c.email ?? '')
     setQuery('')
     setHits([])
