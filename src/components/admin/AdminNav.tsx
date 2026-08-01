@@ -138,7 +138,12 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
         className={cn(
           'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen print:hidden',
           'fixed lg:sticky top-0 z-50 lg:z-auto',
-          mounted ? 'transition-[width,transform] duration-200' : '',
+          // Only `transform` transitions — animating `width` on a
+          // `position: sticky` element makes Chromium fail to recompute the
+          // element's box size on the collapse/expand toggle, leaving it
+          // visually stuck at the old width while its children render the
+          // new (collapsed/expanded) layout, a real mismatched-size bug.
+          mounted ? 'transition-transform duration-200' : '',
           collapsed ? 'w-[64px]' : 'w-[220px]',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
