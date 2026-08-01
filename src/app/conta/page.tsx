@@ -11,7 +11,9 @@ import { BRAND } from '@/config/brand'
 import { BOOKING } from '@/config/booking'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { ClientAccountMenu } from '@/components/profile/ClientAccountMenu'
+import { ClientSearchBox } from '@/components/profile/ClientSearchBox'
 import { getLocale } from '@/lib/i18n/getLocale'
+import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
 import { ConfirmAttendanceButton } from '@/components/booking/ConfirmAttendanceButton'
 
 export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
@@ -89,16 +91,18 @@ export default async function ContaPage() {
 
   return (
     <div className="min-h-screen bg-charcoal">
-      <ClientHeader
-        right={
-          <ClientAccountMenu
-            locale={locale}
-            name={client.name}
-            avatarUrl={client.avatar_url ?? null}
-            upcoming={upcomingForMenu}
-          />
-        }
-      />
+      <LanguageProvider initialLocale={locale}>
+        <ClientHeader
+          search={<ClientSearchBox />}
+          right={
+            <ClientAccountMenu
+              name={client.name}
+              avatarUrl={client.avatar_url ?? null}
+              upcoming={upcomingForMenu}
+            />
+          }
+        />
+      </LanguageProvider>
 
       <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
         {/* Greeting */}

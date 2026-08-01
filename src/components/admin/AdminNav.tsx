@@ -61,7 +61,7 @@ function SettingsIcon() {
 }
 function ChevronIcon({ dir }: { dir: 'left' | 'right' }) {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true" className={cn('transition-transform', dir === 'right' && 'rotate-180')}>
+    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true" className={cn('transition-transform', dir === 'right' && 'rotate-180')}>
       <path d="M7.5 2.5 3.5 6l4 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -143,11 +143,11 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
-        {/* Brand — mirrors the landing page logo, so the panel reads as a
-            continuation of the same site rather than a separate system. */}
+        {/* Brand + collapse toggle — a single row matching the topbar's
+            height so the sidebar and content borders line up exactly. */}
         <div className={cn(
-          'flex items-center h-[52px] border-b border-offwhite/[0.06] shrink-0 overflow-hidden',
-          collapsed ? 'justify-center' : 'justify-start px-4'
+          'relative flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0 overflow-hidden',
+          collapsed ? 'justify-center gap-[6px] px-2' : 'justify-center px-4'
         )}>
           <Link
             href="/admin"
@@ -158,14 +158,13 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
           >
             {collapsed ? 'AE' : 'Alison Estevam'}
           </Link>
-        </div>
-
-        {/* Collapse toggle */}
-        <div className={cn('flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0', collapsed ? 'justify-center px-0' : 'justify-end px-3')}>
           <button
             onClick={toggleCollapsed}
             aria-label={collapsed ? t.nav.expand : t.nav.collapse}
-            className="w-[28px] h-[28px] flex items-center justify-center text-offwhite/30 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200"
+            className={cn(
+              'shrink-0 w-[20px] h-[20px] flex items-center justify-center text-offwhite/30 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200',
+              !collapsed && 'absolute right-3 top-1/2 -translate-y-1/2'
+            )}
           >
             <ChevronIcon dir={collapsed ? 'right' : 'left'} />
           </button>

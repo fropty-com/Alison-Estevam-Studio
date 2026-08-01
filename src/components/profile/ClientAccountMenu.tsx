@@ -1,33 +1,31 @@
 'use client'
 
-import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
-import type { Locale } from '@/lib/i18n/locales'
 import { LanguageSelector } from '@/components/admin/LanguageSelector'
 import { HelpMenu } from '@/components/admin/HelpMenu'
-import { ClientSearchBox } from './ClientSearchBox'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { ClientNotificationsBell, type UpcomingItem } from './ClientNotificationsBell'
 import { ClientProfileMenu } from './ClientProfileMenu'
 
+/** Icon cluster for the client topbar — mirrors AdminTopBar's right-side
+    order exactly (Language, Help, Theme, Notifications, Profile). Rendered
+    inside the caller's own LanguageProvider, shared with ClientSearchBox
+    so both slots of ClientHeader read from the same locale context. */
 export function ClientAccountMenu({
-  locale,
   name,
   avatarUrl,
   upcoming,
 }: {
-  locale: Locale
   name: string
   avatarUrl: string | null
   upcoming: UpcomingItem[]
 }) {
   return (
-    <LanguageProvider initialLocale={locale}>
-      <div className="flex items-center gap-3">
-        <ClientSearchBox />
-        <LanguageSelector />
-        <HelpMenu />
-        <ClientNotificationsBell upcoming={upcoming} />
-        <ClientProfileMenu name={name} avatarUrl={avatarUrl} />
-      </div>
-    </LanguageProvider>
+    <div className="flex items-center gap-3">
+      <LanguageSelector />
+      <HelpMenu />
+      <ThemeToggle />
+      <ClientNotificationsBell upcoming={upcoming} />
+      <ClientProfileMenu name={name} avatarUrl={avatarUrl} />
+    </div>
   )
 }

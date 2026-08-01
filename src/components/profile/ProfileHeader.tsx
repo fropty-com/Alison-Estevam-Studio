@@ -1,8 +1,10 @@
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { ClientAccountMenu } from '@/components/profile/ClientAccountMenu'
+import { ClientSearchBox } from '@/components/profile/ClientSearchBox'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getLocale } from '@/lib/i18n/getLocale'
+import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
 
 const UPCOMING_STATUSES = ['pending', 'confirmed', 'checked_in', 'in_progress']
 
@@ -37,17 +39,19 @@ export async function ProfileHeader({ title, backHref = '/perfil' }: { title: st
     })
 
   return (
-    <ClientHeader
-      backHref={backHref}
-      title={title}
-      right={
-        <ClientAccountMenu
-          locale={locale}
-          name={client?.name ?? 'Cliente'}
-          avatarUrl={client?.avatar_url ?? null}
-          upcoming={upcoming}
-        />
-      }
-    />
+    <LanguageProvider initialLocale={locale}>
+      <ClientHeader
+        backHref={backHref}
+        title={title}
+        search={<ClientSearchBox />}
+        right={
+          <ClientAccountMenu
+            name={client?.name ?? 'Cliente'}
+            avatarUrl={client?.avatar_url ?? null}
+            upcoming={upcoming}
+          />
+        }
+      />
+    </LanguageProvider>
   )
 }

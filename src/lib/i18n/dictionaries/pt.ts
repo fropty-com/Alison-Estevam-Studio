@@ -43,7 +43,7 @@ const pt = {
   client: {
     searchPlaceholder: 'Buscar por data ou serviço…',
     noResults: (q: string) => `Nenhum agendamento encontrado para "${q}".`,
-    home: 'Início',
+    role: 'Cliente',
   },
   dashboard: {
     greeting: (name: string) => `Bom dia, ${name}.`,

@@ -12,10 +12,12 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 export function ClientHeader({
   backHref,
   title,
+  search,
   right,
 }: {
   backHref?: string
   title?: string
+  search?: React.ReactNode
   right?: React.ReactNode
 }) {
   return (
@@ -24,35 +26,39 @@ export function ClientHeader({
       aria-label="Navegação da área do cliente"
       className="fixed top-0 left-0 right-0 z-[200] bg-charcoal border-b border-offwhite/[0.08]"
     >
-    <div className="max-w-[1400px] mx-auto flex items-center justify-between px-8 xl:px-[60px] py-6">
-      {backHref ? (
-        <div className="flex items-center gap-4 min-w-0">
+    <div className="max-w-[1400px] mx-auto flex items-center gap-6 px-8 xl:px-[60px] py-6">
+      <div className="flex items-center gap-6 min-w-0">
+        {backHref ? (
+          <div className="flex items-center gap-4 min-w-0">
+            <Link
+              href={backHref}
+              aria-label="Voltar"
+              className="font-body font-light text-lg text-offwhite/40 hover:text-offwhite/70 transition-colors shrink-0"
+            >
+              ←
+            </Link>
+            {title && (
+              <span className="font-display font-light text-[19px] text-offwhite tracking-[0.02em] truncate">
+                {title}
+              </span>
+            )}
+          </div>
+        ) : (
           <Link
-            href={backHref}
-            aria-label="Voltar"
-            className="font-body font-light text-lg text-offwhite/40 hover:text-offwhite/70 transition-colors shrink-0"
+            href="/"
+            aria-label="Alison Estevam — Início"
+            className="font-display font-normal text-lg tracking-[0.08em] uppercase text-offwhite/85 hover:text-offwhite transition-colors leading-none whitespace-nowrap"
           >
-            ←
+            Alison Estevam
           </Link>
-          {title && (
-            <span className="font-display font-light text-[19px] text-offwhite tracking-[0.02em] truncate">
-              {title}
-            </span>
-          )}
-        </div>
-      ) : (
-        <Link
-          href="/"
-          aria-label="Alison Estevam — Início"
-          className="font-display font-normal text-lg tracking-[0.08em] uppercase text-offwhite/85 hover:text-offwhite transition-colors leading-none whitespace-nowrap"
-        >
-          Alison Estevam
-        </Link>
-      )}
+        )}
+        {search && <div className="hidden md:block">{search}</div>}
+      </div>
+
+      <div className="flex-1" />
 
       <div className="flex items-center gap-4 shrink-0">
-        <ThemeToggle />
-        {right}
+        {right ?? <ThemeToggle />}
       </div>
     </div>
     </nav>

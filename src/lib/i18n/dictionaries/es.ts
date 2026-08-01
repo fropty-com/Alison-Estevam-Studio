@@ -45,7 +45,7 @@ const es: Dictionary = {
   client: {
     searchPlaceholder: 'Buscar por fecha o servicio…',
     noResults: (q: string) => `No se encontraron citas para "${q}".`,
-    home: 'Inicio',
+    role: 'Cliente',
   },
   dashboard: {
     greeting: (name: string) => `Buenos días, ${name}.`,
