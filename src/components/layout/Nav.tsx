@@ -113,6 +113,13 @@ export function Nav() {
         <div className="flex items-center gap-4 justify-self-end">
           <ThemeToggle />
           <Link
+            href="/produtos"
+            aria-label="Ver produtos"
+            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+          >
+            Produtos
+          </Link>
+          <Link
             href="/entrar"
             aria-label="Entrar na conta"
             className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
@@ -160,6 +167,13 @@ export function Nav() {
         >
           Agendar
         </button>
+        <Link
+          href="/produtos"
+          onClick={() => setMenuOpen(false)}
+          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/[0.18] px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
+        >
+          Produtos
+        </Link>
         <Link
           href="/entrar"
           onClick={() => setMenuOpen(false)}
