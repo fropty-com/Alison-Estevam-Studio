@@ -1,7 +1,7 @@
 import { createServiceClient } from '@/lib/supabase/server'
 import { format, startOfMonth, endOfMonth, differenceInDays, parseISO } from 'date-fns'
 import { ptBR, enUS, es } from 'date-fns/locale'
-import { ClientsTable, type ClientRow } from '@/components/admin/ClientsTable'
+import { ClientsTable, ClientAvatar, type ClientRow } from '@/components/admin/ClientsTable'
 import { AbsentClientsCard } from '@/components/admin/AbsentClientsCard'
 import { nowAnchorInSaoPaulo } from '@/lib/timezone'
 import { getLocale } from '@/lib/i18n/getLocale'
@@ -24,6 +24,21 @@ export const dynamic = 'force-dynamic'
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+}
+
+function CakeIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <rect x="2" y="8.5" width="11" height="4.5" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M2 10.5c1.2-1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+      <line x1="4.5" y1="8.5" x2="4.5" y2="5.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+      <line x1="7.5" y1="8.5" x2="7.5" y2="5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+      <line x1="10.5" y1="8.5" x2="10.5" y2="5.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+      <path d="M4.5 5.5c-.6-.5-.6-1 0-1.6.6.6.6 1.1 0 1.6z" fill="currentColor" />
+      <path d="M7.5 5c-.6-.6-.6-1.2 0-1.8.6.6.6 1.2 0 1.8z" fill="currentColor" />
+      <path d="M10.5 5.5c-.6-.5-.6-1 0-1.6.6.6.6 1.1 0 1.6z" fill="currentColor" />
+    </svg>
+  )
 }
 
 export default async function ClientesPage() {
@@ -160,10 +175,17 @@ export default async function ClientesPage() {
 
       {/* Aniversariantes deste mês */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.clients.birthdaysTitle}</p>
-        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">
-          {t.clients.birthdaysSub(birthdaysThisMonth.length)}
-        </p>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2 text-gold/70">
+            <CakeIcon />
+            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+              {t.clients.birthdaysTitle}
+            </p>
+          </div>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
+            {t.clients.birthdaysSub(birthdaysThisMonth.length)}
+          </p>
+        </div>
         {birthdaysThisMonth.length === 0 ? (
           <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
             {t.clients.noBirthdays}
@@ -171,9 +193,12 @@ export default async function ClientesPage() {
         ) : (
           <div className="divide-y divide-offwhite/6 -mx-6">
             {birthdaysThisMonth.map(b => (
-              <div key={b.id} className="flex items-center justify-between px-6 py-3">
-                <span className="font-body font-light text-[12px] text-offwhite/70">{b.name}</span>
-                <span className="font-body font-light text-[9px] text-gold/70 tracking-[0.1em]">
+              <div key={b.id} className="flex items-center justify-between gap-3 px-6 py-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <ClientAvatar name={b.name} />
+                  <span className="font-body font-light text-[12px] text-offwhite/70 truncate">{b.name}</span>
+                </div>
+                <span className="shrink-0 font-body font-light text-[9px] text-gold tracking-[0.1em] uppercase bg-gold/10 border border-gold/25 px-2 py-1">
                   {format(parseISO(b.birthDate), locale === 'pt' ? "d 'de' MMMM" : 'MMMM d', { locale: dateLocale })}
                 </span>
               </div>

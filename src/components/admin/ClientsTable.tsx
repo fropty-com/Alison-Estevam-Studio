@@ -29,7 +29,7 @@ function SearchIcon() {
   )
 }
 
-function ClientAvatar({ name }: { name: string }) {
+export function ClientAvatar({ name }: { name: string }) {
   const initial = name.trim().charAt(0).toUpperCase() || '?'
   return (
     <span className="w-[28px] h-[28px] shrink-0 flex items-center justify-center bg-gold/15 border border-gold/25 text-gold font-body font-light text-[11px]">
