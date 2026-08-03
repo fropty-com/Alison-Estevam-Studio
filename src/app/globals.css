@@ -12,6 +12,11 @@
      spinners, select dropdown panels) renders dark instead of defaulting
      to the OS/browser's light scheme. */
   color-scheme: dark;
+  /* Mirrors color-scheme above as a custom property so individual native
+     controls (e.g. <select> dropdown panels) can opt in explicitly —
+     :root's color-scheme alone isn't reliably inherited by a select's
+     native popup in every browser. */
+  --form-scheme: dark;
 
   /* Easing */
   --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
@@ -43,6 +48,7 @@
 
 [data-theme="light"] {
   color-scheme: light;
+  --form-scheme: light;
 
   /* ── Light theme ── */
   --c-charcoal:      241 241 241;   /* #F1F1F1 — brand light bg */

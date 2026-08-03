@@ -213,7 +213,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
                 <div className="space-y-4 border-l-2 border-offwhite/[0.08] pl-5">
                   <div>
                     <label className={labelCls}>Faixa de frete</label>
-                    <select value={shippingRateId} onChange={e => setShippingRateId(e.target.value)} className={inputCls}>
+                    <select value={shippingRateId} onChange={e => setShippingRateId(e.target.value)} className={`${inputCls} [color-scheme:var(--form-scheme)]`}>
                       <option value="">Selecione…</option>
                       {shippingRates.map(r => (
                         <option key={r.id} value={r.id}>{r.label}{r.state ? ` (${r.state})` : ''} — {fmt(r.price)}</option>

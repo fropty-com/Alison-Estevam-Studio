@@ -74,6 +74,7 @@ export function PaymentBrick({
               creditCard: 'all',
               debitCard: 'all',
               bankTransfer: 'all',
+              maxInstallments: 12,
             },
           },
           callbacks: {
