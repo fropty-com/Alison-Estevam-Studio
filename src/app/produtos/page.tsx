@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
 import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
+import { AddToCartButton } from '@/components/cart/AddToCartButton'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: `Produtos — ${BRAND.fullName}` }
@@ -114,12 +115,16 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
                     <h3 className="font-display font-normal text-base tracking-[0.03em] text-offwhite leading-tight mb-2 truncate">
                       {p.name}
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mb-3">
                       {p.compare_at_price && (
                         <span className="font-data italic text-xs text-offwhite/25 line-through">{fmt(p.compare_at_price)}</span>
                       )}
                       <span className="font-data italic text-base text-gold">{fmt(p.price)}</span>
                     </div>
+                    <AddToCartButton
+                      product={{ id: p.id, slug: p.slug, name: p.name, price: p.price, imageUrl: p.image_url, stockQuantity: p.stock_quantity }}
+                      className="[&>button]:py-[9px] [&>button]:text-[8px]"
+                    />
                   </div>
                 </Link>
               )

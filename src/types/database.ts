@@ -3,7 +3,7 @@
  * hand; regenerate after any migration via the Supabase MCP
  * `generate_typescript_types` tool (or `supabase gen types typescript
  * --project-id mgzwmunzvtrwmhykyxcl` if using the CLI locally).
- * Last regenerated: 2026-08-03 (products, shipping_rates, orders, order_items, order_payments, coupon_redemptions.order_id).
+ * Last regenerated: 2026-08-03 (products, shipping_rates, orders, order_items, order_payments, coupon_redemptions.order_id, reserve_product_stock, release_product_stock).
  */
 export type Json =
   | string
@@ -1132,6 +1132,17 @@ export type Database = {
         }[]
       }
       release_coupon: { Args: { p_coupon_id: string }; Returns: undefined }
+      release_product_stock: {
+        Args: { p_product_id: string; p_quantity: number }
+        Returns: undefined
+      }
+      reserve_product_stock: {
+        Args: { p_product_id: string; p_quantity: number }
+        Returns: {
+          id: string
+          stock_quantity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

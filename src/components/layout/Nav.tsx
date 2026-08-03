@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { useCart } from '@/lib/cart/CartContext'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre',             section: 'sobre' },
@@ -15,6 +16,33 @@ const NAV_LINKS = [
   { href: '#depoimentos', label: 'Depoimentos',       section: 'depoimentos' },
   { href: '#contato',     label: 'Como Chegar',       section: 'contato' },
 ] as const
+
+function CartIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+      <path d="M4 5.5h9l-.8 7.2a1 1 0 0 1-1 .9H5.8a1 1 0 0 1-1-.9L4 5.5Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M6 5.5V4a2.5 2.5 0 0 1 5 0v1.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CartButton({ className }: { className?: string }) {
+  const { itemCount, open } = useCart()
+  return (
+    <button
+      onClick={open}
+      aria-label={`Abrir carrinho${itemCount > 0 ? ` (${itemCount} ${itemCount === 1 ? 'item' : 'itens'})` : ''}`}
+      className={cn('relative text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250', className)}
+    >
+      <CartIcon />
+      {itemCount > 0 && (
+        <span className="absolute -top-[7px] -right-[9px] min-w-[16px] h-[16px] px-[3px] flex items-center justify-center bg-gold text-charcoal-deep font-body font-medium text-[8.5px] leading-none rounded-full">
+          {itemCount}
+        </span>
+      )}
+    </button>
+  )
+}
 
 export function Nav() {
   const router = useRouter()
@@ -66,13 +94,16 @@ export function Nav() {
           <span className={cn('block w-full h-px bg-offwhite/70 transition-transform duration-300 origin-center', menuOpen && '-translate-y-[3.5px] -rotate-45')} />
         </button>
 
-        <button
-          onClick={openBooking}
-          aria-label="Agendar horário"
-          className="font-body font-medium text-2xs tracking-nav uppercase bg-offwhite text-charcoal px-4 py-[6px]"
-        >
-          Agendar
-        </button>
+        <div className="flex items-center gap-4">
+          <CartButton />
+          <button
+            onClick={openBooking}
+            aria-label="Agendar horário"
+            className="font-body font-medium text-2xs tracking-nav uppercase bg-offwhite text-charcoal px-4 py-[6px]"
+          >
+            Agendar
+          </button>
+        </div>
       </nav>
 
       {/* ── Desktop: full nav ── */}
@@ -119,6 +150,7 @@ export function Nav() {
           >
             Produtos
           </Link>
+          <CartButton />
           <Link
             href="/entrar"
             aria-label="Entrar na conta"

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/server'
 import { BRAND } from '@/config/brand'
+import { AddToCartButton } from '@/components/cart/AddToCartButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -87,10 +88,16 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
             </div>
 
             {product.description && (
-              <p className="font-body font-light text-sm leading-[1.75] text-offwhite/55 max-w-[420px]">
+              <p className="font-body font-light text-sm leading-[1.75] text-offwhite/55 max-w-[420px] mb-8">
                 {product.description}
               </p>
             )}
+
+            <AddToCartButton
+              product={{ id: product.id, slug: product.slug, name: product.name, price: product.price, imageUrl: product.image_url, stockQuantity: product.stock_quantity }}
+              showQuantity
+              className="max-w-[360px]"
+            />
           </div>
         </div>
       </div>
