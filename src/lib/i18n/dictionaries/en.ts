@@ -136,6 +136,7 @@ const en: Dictionary = {
     dayOffShort: 'Day off',
     blockedLabel: 'Blocked',
     unblockTitle: 'Click to unblock',
+    dragToReschedule: 'Drag to reschedule',
     unblockConfirm: (start: string, end: string) => `Unblock the time from ${start} to ${end}?`,
     close: 'Close',
     newAppointment: {

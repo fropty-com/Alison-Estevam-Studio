@@ -4,9 +4,9 @@ import { useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
-import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
+import { minutesToPx, HOUR_HEIGHT, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { AppointmentDetailSheet, type DetailAppointment } from './AppointmentDetailSheet'
-import { unblockTimeRange } from '@/app/admin/actions'
+import { unblockTimeRange, rescheduleAppointmentAdmin } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 export interface GridAppointment extends DetailAppointment {
@@ -156,6 +156,8 @@ export function DayGrid({
   const [selected, setSelected] = useState<GridAppointment | null>(null)
   const [, startTransition] = useTransition()
   const touchStartX = useRef<number | null>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [dragOver, setDragOver] = useState(false)
 
   const isToday = date === format(new Date(), 'yyyy-MM-dd')
   const nowMin = useNowMinutes(isToday)
@@ -165,6 +167,40 @@ export function DayGrid({
     if (!ok) return
     startTransition(async () => {
       await unblockTimeRange(date, minutesToHHMM(range.startMin), minutesToHHMM(range.endMin))
+      router.refresh()
+    })
+  }
+
+  const canDrag = (status: string) => status === 'pending' || status === 'confirmed'
+
+  const handleDragStart = (e: React.DragEvent, a: GridAppointment) => {
+    if (!canDrag(a.status)) { e.preventDefault(); return }
+    e.dataTransfer.setData('text/plain', a.id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOver(true)
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const id = e.dataTransfer.getData('text/plain')
+    if (!id || !contentRef.current) return
+
+    const rect = contentRef.current.getBoundingClientRect()
+    const y = e.clientY - rect.top
+    const minutesFromTop = (y / HOUR_HEIGHT) * 60
+    const rawMin = gridStartMin + minutesFromTop
+    const snappedMin = Math.min(gridEndMin, Math.max(gridStartMin, Math.round(rawMin / 60) * 60))
+    const newStartTime = minutesToHHMM(snappedMin)
+
+    startTransition(async () => {
+      const res = await rescheduleAppointmentAdmin(id, date, newStartTime)
+      if (res?.error) window.alert(res.error)
       router.refresh()
     })
   }
@@ -210,7 +246,13 @@ export function DayGrid({
         </div>
 
         {/* Content area */}
-        <div className="relative flex-1">
+        <div
+          ref={contentRef}
+          className={cn('relative flex-1', dragOver && 'bg-gold/[0.04]')}
+          onDragOver={handleDragOver}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+        >
           {marks.map(({ min, isHour }) => (
             <div
               key={min}
@@ -260,10 +302,14 @@ export function DayGrid({
                 return (
                   <button
                     key={a.id}
+                    draggable={canDrag(a.status)}
+                    onDragStart={e => handleDragStart(e, a)}
                     onClick={() => setSelected(a)}
+                    title={canDrag(a.status) ? t.agenda.dragToReschedule : undefined}
                     className={cn(
                       'absolute px-2 py-[3px] border-l-[3px] border-y border-r text-left overflow-hidden transition-all duration-150',
                       'hover:brightness-125',
+                      canDrag(a.status) && 'cursor-grab active:cursor-grabbing',
                       textClass,
                     )}
                     style={{

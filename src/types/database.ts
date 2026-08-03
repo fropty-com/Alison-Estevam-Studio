@@ -3,7 +3,7 @@
  * hand; regenerate after any migration via the Supabase MCP
  * `generate_typescript_types` tool (or `supabase gen types typescript
  * --project-id mgzwmunzvtrwmhykyxcl` if using the CLI locally).
- * Last regenerated: 2026-07-31 (staff_members.avatar_url).
+ * Last regenerated: 2026-08-03 (appointments.reminder_2h_sent, appointments.review_request_sent).
  */
 export type Json =
   | string
@@ -67,7 +67,9 @@ export type Database = {
           id: string
           notes: string | null
           reference_code: string
+          reminder_2h_sent: boolean
           reminder_sent: boolean
+          review_request_sent: boolean
           service_id: string
           service_price: number
           slot_id: string
@@ -89,7 +91,9 @@ export type Database = {
           id?: string
           notes?: string | null
           reference_code: string
+          reminder_2h_sent?: boolean
           reminder_sent?: boolean
+          review_request_sent?: boolean
           service_id: string
           service_price?: number
           slot_id: string
@@ -111,7 +115,9 @@ export type Database = {
           id?: string
           notes?: string | null
           reference_code?: string
+          reminder_2h_sent?: boolean
           reminder_sent?: boolean
+          review_request_sent?: boolean
           service_id?: string
           service_price?: number
           slot_id?: string

@@ -136,6 +136,7 @@ const es: Dictionary = {
     dayOffShort: 'Descanso',
     blockedLabel: 'Bloqueado',
     unblockTitle: 'Clic para desbloquear',
+    dragToReschedule: 'Arrastra para reprogramar',
     unblockConfirm: (start: string, end: string) => `¿Desbloquear el horario de ${start} a ${end}?`,
     close: 'Cerrar',
     newAppointment: {

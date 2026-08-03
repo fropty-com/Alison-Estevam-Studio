@@ -11,20 +11,32 @@ export async function sendReminderEmail(params: {
   date:          string
   startTime:     string
   referenceCode: string
+  /** 'tomorrow' (default, sent ~24h before) or 'soon' (sent ~2h before, same-day copy). */
+  timing?: 'tomorrow' | 'soon'
 }) {
-  const { clientName, clientEmail, serviceName, date, startTime, referenceCode } = params
+  const { clientName, clientEmail, serviceName, date, startTime, referenceCode, timing = 'tomorrow' } = params
   const formattedDate = format(parseISO(date), "EEEE, d 'de' MMMM", { locale: ptBR })
+  const timeLabel = startTime.replace(':', 'h')
+
+  const isSoon = timing === 'soon'
+  const preheader = isSoon ? `Seu horário é daqui a pouco, às ${timeLabel}.` : 'Seu horário é amanhã.'
+  const bodyText = isSoon
+    ? `Oi, ${clientName}! Passando para lembrar que seu horário é hoje, às ${timeLabel}.`
+    : `Oi, ${clientName}! Passando para lembrar do seu horário amanhã, ${formattedDate}.`
+  const subject = isSoon
+    ? `Lembrete: seu horário é daqui a pouco — ${referenceCode}`
+    : `Lembrete: seu horário é amanhã — ${referenceCode}`
 
   const html = emailLayout({
     title: 'Lembrete de agendamento',
     body: [
-      emailHeader('ALISON ESTEVAM STUDIO', 'Seu horário é amanhã.'),
+      emailHeader('ALISON ESTEVAM STUDIO', preheader),
       emailBody([
-        emailText(`Oi, ${clientName}! Passando para lembrar do seu horário amanhã, ${formattedDate}.`),
+        emailText(bodyText),
         emailDetailsBlock('DETALHES', [
           ['Serviço', serviceName],
           ['Data', formattedDate],
-          ['Horário', startTime.replace(':', 'h')],
+          ['Horário', timeLabel],
           ['Código', referenceCode],
         ]),
         emailButtonRow([
@@ -42,7 +54,7 @@ export async function sendReminderEmail(params: {
     const { error } = await resend.emails.send({
       from:    `${BRAND.fullName} <${BRAND.emailFrom}>`,
       to:      clientEmail,
-      subject: `Lembrete: seu horário é amanhã — ${referenceCode}`,
+      subject,
       html,
     })
     if (error) console.error('Failed to send reminder email:', error)

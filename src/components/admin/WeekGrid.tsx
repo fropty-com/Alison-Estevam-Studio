@@ -1,11 +1,21 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { minutesToPx, layoutColumns } from '@/lib/schedule/dayGridLayout'
+import { minutesToPx, HOUR_HEIGHT, layoutColumns } from '@/lib/schedule/dayGridLayout'
 import { useHalfHourMarks, useNowMinutes, appointmentBlockStyle, type GridAppointment } from './DayGrid'
 import { AppointmentDetailSheet } from './AppointmentDetailSheet'
+import { rescheduleAppointmentAdmin } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+
+function minutesToHHMM(minutes: number): string {
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+}
+
+function canDrag(status: string) {
+  return status === 'pending' || status === 'confirmed'
+}
 
 export interface WeekDay {
   date: string
@@ -27,7 +37,11 @@ export function WeekGrid({
   gridEndMin: number
 }) {
   const { t } = useTranslation()
+  const router = useRouter()
   const [selected, setSelected] = useState<GridAppointment | null>(null)
+  const [, startTransition] = useTransition()
+  const [dragOverDate, setDragOverDate] = useState<string | null>(null)
+  const columnRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const marks = useHalfHourMarks(gridStartMin, gridEndMin)
   const totalHeight = minutesToPx(gridEndMin - gridStartMin)
   const todayDate = days.find(d => d.isToday)?.date
@@ -37,6 +51,39 @@ export function WeekGrid({
     () => days.map(d => layoutColumns(d.appointments.map(a => ({ id: a.id, startMin: a.startMin, endMin: a.endMin })))),
     [days],
   )
+
+  const handleDragStart = (e: React.DragEvent, a: GridAppointment) => {
+    if (!canDrag(a.status)) { e.preventDefault(); return }
+    e.dataTransfer.setData('text/plain', a.id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, dayDate: string) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverDate(dayDate)
+  }
+
+  const handleDrop = (e: React.DragEvent, dayDate: string) => {
+    e.preventDefault()
+    setDragOverDate(null)
+    const id = e.dataTransfer.getData('text/plain')
+    const col = columnRefs.current[dayDate]
+    if (!id || !col) return
+
+    const rect = col.getBoundingClientRect()
+    const y = e.clientY - rect.top
+    const minutesFromTop = (y / HOUR_HEIGHT) * 60
+    const rawMin = gridStartMin + minutesFromTop
+    const snappedMin = Math.min(gridEndMin, Math.max(gridStartMin, Math.round(rawMin / 60) * 60))
+    const newStartTime = minutesToHHMM(snappedMin)
+
+    startTransition(async () => {
+      const res = await rescheduleAppointmentAdmin(id, dayDate, newStartTime)
+      if (res?.error) window.alert(res.error)
+      router.refresh()
+    })
+  }
 
   return (
     <div className="border border-offwhite/10 overflow-x-auto">
@@ -83,11 +130,16 @@ export function WeekGrid({
           return (
             <div
               key={d.date}
+              ref={el => { columnRefs.current[d.date] = el }}
               className={cn(
                 'relative flex-1 min-w-[110px] border-r border-offwhite/[0.06] last:border-r-0',
                 d.isToday && 'bg-gold/5',
-                !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
+                !d.isToday && d.isWeekendClosed && 'bg-offwhite/5',
+                dragOverDate === d.date && 'bg-gold/[0.06]'
               )}
+              onDragOver={e => handleDragOver(e, d.date)}
+              onDragLeave={() => setDragOverDate(null)}
+              onDrop={e => handleDrop(e, d.date)}
             >
               {marks.map(({ min, isHour }) => (
                 <div
@@ -122,10 +174,14 @@ export function WeekGrid({
                   return (
                     <button
                       key={a.id}
+                      draggable={canDrag(a.status)}
+                      onDragStart={e => handleDragStart(e, a)}
                       onClick={() => setSelected(a)}
+                      title={canDrag(a.status) ? t.agenda.dragToReschedule : undefined}
                       className={cn(
                         'absolute px-[6px] py-[2px] border-l-[3px] border-y border-r text-left overflow-hidden transition-all duration-150',
                         'hover:brightness-125',
+                        canDrag(a.status) && 'cursor-grab active:cursor-grabbing',
                         textClass,
                       )}
                       style={{

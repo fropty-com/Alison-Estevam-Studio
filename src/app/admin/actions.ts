@@ -9,6 +9,7 @@ import { calculatePaymentBreakdown } from '@/lib/payments'
 import { createManualAppointmentSchema, joinWaitlistSchema } from '@/lib/validations/booking'
 import { formatWhatsApp, isFullName } from '@/lib/utils'
 import { sendConfirmationEmail } from '@/lib/email/confirmation'
+import { sendReviewRequestEmail } from '@/lib/email/reviewRequest'
 import { ensureSlotsForDate } from '@/lib/schedule/ensureSlots'
 import { SLOT_STATUS } from '@/config/booking'
 import { isStaffMember, establishStaffSession } from '@/lib/admin-auth'
@@ -356,7 +357,9 @@ export async function checkOutAppointment(id: string, data: {
       checked_out_at: now,
       discount: data.discount,
       updated_at: now,
-    }).eq('id', id).select('reference_code').single(),
+    }).eq('id', id)
+      .select('reference_code, services(name), clients(name, email, receive_reminder_emails)')
+      .single(),
     db.from('payments').insert({
       appointment_id: id,
       method: data.method,
@@ -377,8 +380,105 @@ export async function checkOutAppointment(id: string, data: {
     { method: data.method, grossAmount: data.grossAmount, discount: data.discount, tipAmount, feeAmount, netAmount }
   )
 
+  // Best-effort "how was your visit?" e-mail — never blocks checkout, and
+  // sendReviewRequestEmail itself swallows send failures internally (same
+  // pattern as sendConfirmationEmail/sendReminderEmail).
+  const client = Array.isArray(apptUpdated?.clients) ? apptUpdated.clients[0] : apptUpdated?.clients
+  const service = Array.isArray(apptUpdated?.services) ? apptUpdated.services[0] : apptUpdated?.services
+  if (client?.email && client.receive_reminder_emails !== false) {
+    await sendReviewRequestEmail({
+      clientName: client.name,
+      clientEmail: client.email,
+      serviceName: service?.name ?? 'atendimento',
+    })
+    await db.from('appointments').update({ review_request_sent: true }).eq('id', id)
+  }
+
   revalidatePath('/admin')
   revalidatePath('/admin/agenda')
+  return { ok: true }
+}
+
+/**
+ * Admin drag-and-drop reschedule (DayGrid/WeekGrid) — deliberately distinct
+ * from the client-facing `/api/appointments/[code]/reschedule` route: that
+ * one resets status to 'pending' because the client changed their own
+ * booking and needs re-confirmation; here the barber is directly managing
+ * the schedule, so the current status (pending or confirmed) is preserved.
+ * Same atomic slot-claim as the client route otherwise (condition the
+ * UPDATE on status='available' so two concurrent drops can't both land on
+ * the same target slot).
+ */
+export async function rescheduleAppointmentAdmin(
+  appointmentId: string,
+  newDate: string,
+  newStartTime: string
+): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+
+  const { data: appt } = await db
+    .from('appointments')
+    .select('id, status, slot_id, reference_code, clients(name)')
+    .eq('id', appointmentId)
+    .maybeSingle()
+
+  if (!appt) return { error: 'Agendamento não encontrado.' }
+  // Allowlist, not a blocklist — matches the client-facing route and the
+  // "block cancel/reschedule once checked_in" rule: only a still-pending
+  // conversation about the appointment (pending/confirmed) can be moved.
+  if (!['pending', 'confirmed'].includes(appt.status)) {
+    return { error: 'Este agendamento não pode ser reagendado.' }
+  }
+
+  await ensureSlotsForDate(db, newDate)
+
+  const { data: targetSlot } = await db
+    .from('time_slots')
+    .select('id, status')
+    .eq('date', newDate)
+    .eq('start_time', `${newStartTime}:00`)
+    .maybeSingle()
+
+  if (!targetSlot) return { error: 'Não há expediente nesse horário.' }
+  if (targetSlot.id === appt.slot_id) return { ok: true }
+
+  const { data: claimedSlot } = await db
+    .from('time_slots')
+    .update({ status: SLOT_STATUS.BOOKED })
+    .eq('id', targetSlot.id)
+    .eq('status', SLOT_STATUS.AVAILABLE)
+    .select('id')
+    .maybeSingle()
+
+  if (!claimedSlot) return { error: 'Este horário já está ocupado.' }
+
+  const [{ error: apptError }] = await Promise.all([
+    db.from('appointments').update({
+      slot_id: targetSlot.id,
+      updated_at: new Date().toISOString(),
+    }).eq('id', appointmentId),
+    db.from('time_slots').update({ status: SLOT_STATUS.AVAILABLE }).eq('id', appt.slot_id),
+  ])
+
+  if (apptError) {
+    // Roll back the claimed slot so it doesn't get stuck 'booked' with no
+    // appointment pointing at it.
+    await db.from('time_slots').update({ status: SLOT_STATUS.AVAILABLE }).eq('id', targetSlot.id)
+    return { error: 'Erro ao reagendar.' }
+  }
+
+  const client = Array.isArray(appt.clients) ? appt.clients[0] : appt.clients
+  await logAction(
+    'appointment.reschedule', 'appointment', appointmentId,
+    `Reagendou #${appt.reference_code} (${client?.name ?? 'cliente'}) para ${newDate} às ${newStartTime}`,
+    { newDate, newStartTime }
+  )
+
+  revalidatePath('/admin/agenda')
+  revalidatePath('/admin')
   return { ok: true }
 }
 

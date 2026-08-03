@@ -134,6 +134,7 @@ const pt = {
     dayOffShort: 'Folga',
     blockedLabel: 'Bloqueado',
     unblockTitle: 'Clique para desbloquear',
+    dragToReschedule: 'Arraste para reagendar',
     unblockConfirm: (start: string, end: string) => `Desbloquear o horário de ${start} a ${end}?`,
     close: 'Fechar',
     newAppointment: {
