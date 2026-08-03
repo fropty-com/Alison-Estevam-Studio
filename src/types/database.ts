@@ -3,7 +3,7 @@
  * hand; regenerate after any migration via the Supabase MCP
  * `generate_typescript_types` tool (or `supabase gen types typescript
  * --project-id mgzwmunzvtrwmhykyxcl` if using the CLI locally).
- * Last regenerated: 2026-08-03 (appointments.reminder_2h_sent, appointments.review_request_sent).
+ * Last regenerated: 2026-08-03 (products, shipping_rates, orders, order_items, order_payments, coupon_redemptions.order_id).
  */
 export type Json =
   | string
@@ -324,25 +324,28 @@ export type Database = {
       }
       coupon_redemptions: {
         Row: {
-          appointment_id: string
+          appointment_id: string | null
           coupon_id: string
           created_at: string
           discount_amount: number
           id: string
+          order_id: string | null
         }
         Insert: {
-          appointment_id: string
+          appointment_id?: string | null
           coupon_id: string
           created_at?: string
           discount_amount: number
           id?: string
+          order_id?: string | null
         }
         Update: {
-          appointment_id?: string
+          appointment_id?: string | null
           coupon_id?: string
           created_at?: string
           discount_amount?: number
           id?: string
+          order_id?: string | null
         }
         Relationships: [
           {
@@ -357,6 +360,13 @@ export type Database = {
             columns: ["coupon_id"]
             isOneToOne: false
             referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupon_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]
@@ -489,6 +499,165 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id: string
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      order_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          method: string
+          order_id: string
+          paid_at: string | null
+          provider: string
+          provider_payment_id: string | null
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          method: string
+          order_id: string
+          paid_at?: string | null
+          provider?: string
+          provider_payment_id?: string | null
+          status: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          method?: string
+          order_id?: string
+          paid_at?: string | null
+          provider?: string
+          provider_payment_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          client_id: string | null
+          coupon_id: string | null
+          created_at: string
+          discount_amount: number
+          fulfillment_method: string
+          id: string
+          reference_code: string
+          shipping_address: Json | null
+          shipping_cost: number
+          shipping_rate_id: string | null
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          client_id?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          fulfillment_method: string
+          id?: string
+          reference_code: string
+          shipping_address?: Json | null
+          shipping_cost?: number
+          shipping_rate_id?: string | null
+          status?: string
+          subtotal: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string | null
+          coupon_id?: string | null
+          created_at?: string
+          discount_amount?: number
+          fulfillment_method?: string
+          id?: string
+          reference_code?: string
+          shipping_address?: Json | null
+          shipping_cost?: number
+          shipping_rate_id?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_shipping_rate_id_fkey"
+            columns: ["shipping_rate_id"]
+            isOneToOne: false
+            referencedRelation: "shipping_rates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       otp_codes: {
         Row: {
           attempts: number
@@ -604,6 +773,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      products: {
+        Row: {
+          active: boolean
+          category: string
+          compare_at_price: number | null
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          price: number
+          slug: string
+          stock_quantity: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          compare_at_price?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          price: number
+          slug: string
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          compare_at_price?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          price?: number
+          slug?: string
+          stock_quantity?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       rate_limits: {
         Row: {
@@ -756,6 +970,33 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_rates: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          label: string
+          price: number
+          state: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          label: string
+          price: number
+          state?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          label?: string
+          price?: number
+          state?: string | null
+        }
+        Relationships: []
+      }
       staff_members: {
         Row: {
           avatar_url: string | null
@@ -882,6 +1123,7 @@ export type Database = {
         Returns: boolean
       }
       next_appointment_reference: { Args: never; Returns: string }
+      next_order_reference: { Args: never; Returns: string }
       redeem_coupon: {
         Args: { p_coupon_id: string }
         Returns: {

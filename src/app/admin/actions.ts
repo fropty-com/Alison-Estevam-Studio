@@ -1365,3 +1365,174 @@ export async function updateStaffAvatar(avatarUrl: string | null): Promise<{ ok?
   revalidatePath('/admin', 'layout')
   return { ok: true }
 }
+
+/* ── Products ─────────────────────────────────── */
+// Gestão de produtos é operacional (estoque, preço, foto), não financeira —
+// diferente de serviços/cupons/despesas, qualquer membro da equipe pode
+// cadastrar/editar, não só o owner (ver spec da loja de produtos).
+
+const PRODUCT_CATEGORIES = ['shampoo', 'condicionador', 'pomada', 'locao', 'pente'] as const
+
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+}
+
+export async function createProduct(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const name        = (formData.get('name') as string)?.trim()
+  const category     = formData.get('category') as string
+  const description  = (formData.get('description') as string)?.trim()
+  const price        = Number(formData.get('price'))
+  const compareAtRaw = (formData.get('compare_at_price') as string)?.trim()
+  const stockQuantity = Number(formData.get('stock_quantity'))
+  const imageUrl      = (formData.get('image_url') as string)?.trim() || null
+
+  if (!name) return { error: 'Nome é obrigatório.' }
+  if (!PRODUCT_CATEGORIES.includes(category as typeof PRODUCT_CATEGORIES[number])) return { error: 'Categoria inválida.' }
+  if (!Number.isFinite(price) || price <= 0) return { error: 'Preço inválido.' }
+  const compareAtPrice = compareAtRaw ? Number(compareAtRaw) : null
+  if (compareAtPrice !== null && (!Number.isFinite(compareAtPrice) || compareAtPrice <= price)) {
+    return { error: 'Preço "de" precisa ser maior que o preço atual.' }
+  }
+  if (!Number.isInteger(stockQuantity) || stockQuantity < 0) return { error: 'Estoque inválido.' }
+
+  const slugBase = slugify(name)
+  const db = await adminDb()
+
+  const { data: existingSlugs } = await db.from('products').select('slug').ilike('slug', `${slugBase}%`)
+  const takenSlugs = new Set(((existingSlugs ?? []) as { slug: string }[]).map(s => s.slug))
+  let slug = slugBase
+  let suffix = 2
+  while (takenSlugs.has(slug)) { slug = `${slugBase}-${suffix}`; suffix++ }
+
+  const { data: created, error } = await db
+    .from('products')
+    .insert({
+      name, slug, category, description: description || '',
+      price, compare_at_price: compareAtPrice, stock_quantity: stockQuantity,
+      image_url: imageUrl, active: true,
+    })
+    .select('id')
+    .single()
+  if (error) return { error: 'Erro ao criar produto.' }
+
+  await logAction('product.create', 'product', created?.id ?? null, `Criou o produto "${name}"`, { name, category, price, stockQuantity })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
+
+export async function updateProduct(id: string, formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const name        = (formData.get('name') as string)?.trim()
+  const category     = formData.get('category') as string
+  const description  = (formData.get('description') as string)?.trim()
+  const price        = Number(formData.get('price'))
+  const compareAtRaw = (formData.get('compare_at_price') as string)?.trim()
+  const stockQuantity = Number(formData.get('stock_quantity'))
+  const imageUrl      = (formData.get('image_url') as string)?.trim() || null
+
+  if (!name) return { error: 'Nome é obrigatório.' }
+  if (!PRODUCT_CATEGORIES.includes(category as typeof PRODUCT_CATEGORIES[number])) return { error: 'Categoria inválida.' }
+  if (!Number.isFinite(price) || price <= 0) return { error: 'Preço inválido.' }
+  const compareAtPrice = compareAtRaw ? Number(compareAtRaw) : null
+  if (compareAtPrice !== null && (!Number.isFinite(compareAtPrice) || compareAtPrice <= price)) {
+    return { error: 'Preço "de" precisa ser maior que o preço atual.' }
+  }
+  if (!Number.isInteger(stockQuantity) || stockQuantity < 0) return { error: 'Estoque inválido.' }
+
+  const db = await adminDb()
+  const { error } = await db
+    .from('products')
+    .update({
+      name, category, description: description || '',
+      price, compare_at_price: compareAtPrice, stock_quantity: stockQuantity,
+      image_url: imageUrl, updated_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+  if (error) return { error: 'Erro ao salvar produto.' }
+
+  await logAction('product.update', 'product', id, `Editou o produto "${name}"`, { name, category, price, stockQuantity })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
+
+export async function toggleProductActive(id: string, active: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { data: product } = await db.from('products').select('name').eq('id', id).maybeSingle()
+  const { error } = await db.from('products').update({ active }).eq('id', id)
+  if (error) return { error: 'Erro ao atualizar produto.' }
+
+  await logAction('product.toggle', 'product', id, `${active ? 'Ativou' : 'Desativou'} o produto "${product?.name ?? id}"`, { active })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
+
+/* ── Shipping rates ───────────────────────────── */
+
+export async function createShippingRate(formData: FormData): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const label = (formData.get('label') as string)?.trim()
+  const state  = (formData.get('state') as string)?.trim().toUpperCase() || null
+  const price  = Number(formData.get('price'))
+
+  if (!label) return { error: 'Rótulo é obrigatório.' }
+  if (!Number.isFinite(price) || price < 0) return { error: 'Valor inválido.' }
+
+  const db = await adminDb()
+  const { data: created, error } = await db
+    .from('shipping_rates')
+    .insert({ label, state, price, active: true })
+    .select('id')
+    .single()
+  if (error) return { error: 'Erro ao criar faixa de frete.' }
+
+  await logAction('shipping_rate.create', 'shipping_rate', created?.id ?? null, `Criou a faixa de frete "${label}"`, { label, state, price })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
+
+export async function updateShippingRate(id: string, data: { label?: string; state?: string | null; price?: number; active?: boolean }): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { error } = await db.from('shipping_rates').update(data).eq('id', id)
+  if (error) return { error: 'Erro ao atualizar faixa de frete.' }
+
+  await logAction('shipping_rate.update', 'shipping_rate', id, 'Editou uma faixa de frete', data)
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
+
+export async function deleteShippingRate(id: string): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { data: rate } = await db.from('shipping_rates').select('label').eq('id', id).maybeSingle()
+  const { error } = await db.from('shipping_rates').delete().eq('id', id)
+  if (error) return { error: 'Erro ao excluir faixa de frete.' }
+
+  await logAction('shipping_rate.delete', 'shipping_rate', id, `Excluiu a faixa de frete "${rate?.label ?? id}"`)
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}

@@ -23,6 +23,15 @@ function ClientsIcon() {
 function ServicesIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="4.5" cy="4.5" r="2" stroke="currentColor" strokeWidth="1.1" /><circle cx="4.5" cy="10.5" r="2" stroke="currentColor" strokeWidth="1.1" /><line x1="12.5" y1="4.5" x2="6" y2="10.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /><line x1="6" y1="4.5" x2="12.5" y2="10.5" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /></svg>
 }
+function ProductsIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <rect x="6" y="1.5" width="3" height="1.8" stroke="currentColor" strokeWidth="1.1" />
+      <path d="M5.5 3.3h4v1.6l1.3 2v6.1a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1V6.9l1.3-2Z" stroke="currentColor" strokeWidth="1.1" strokeLinejoin="round" />
+      <line x1="4.5" y1="9" x2="10.5" y2="9" stroke="currentColor" strokeWidth="1" />
+    </svg>
+  )
+}
 function ReportsIcon() {
   return <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><line x1="2.5" y1="13" x2="12.5" y2="13" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /><rect x="3" y="8" width="2.4" height="5" stroke="currentColor" strokeWidth="1" /><rect x="6.3" y="5" width="2.4" height="8" stroke="currentColor" strokeWidth="1" /><rect x="9.6" y="2" width="2.4" height="11" stroke="currentColor" strokeWidth="1" /></svg>
 }
@@ -77,6 +86,7 @@ function getNav(t: Dictionary) {
     { href: '/admin/espera',        label: t.nav.waitlist,    Icon: WaitlistIcon,  badge: false, ownerOnly: false },
     { href: '/admin/clientes',      label: t.nav.clients,     Icon: ClientsIcon,   badge: false, ownerOnly: false },
     { href: '/admin/servicos',      label: t.nav.services,    Icon: ServicesIcon,  badge: false, ownerOnly: false },
+    { href: '/admin/produtos',      label: t.nav.products,    Icon: ProductsIcon,  badge: false, ownerOnly: false },
     { href: '/admin/faturamento',   label: t.nav.billing,     Icon: ReportsIcon,   badge: false, ownerOnly: true  },
     { href: '/admin/financeiro',    label: t.nav.finance,     Icon: FinanceIcon,   badge: false, ownerOnly: true  },
     { href: '/admin/operacional',   label: t.nav.operational, Icon: OperationalIcon, badge: false, ownerOnly: true },
