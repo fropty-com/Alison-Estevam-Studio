@@ -397,6 +397,7 @@ const pt = {
     tabs: {
       products: 'Produtos',
       shipping: 'Frete',
+      orders: 'Pedidos',
     },
     manage: {
       title: 'Gerenciar produtos',
@@ -451,6 +452,35 @@ const pt = {
       creating: 'Criando…',
       submit: 'Adicionar faixa',
     },
+    orders: {
+      empty: 'Nenhum pedido ainda.',
+      client: 'Cliente',
+      items: 'Itens',
+      total: 'Total',
+      fulfillment: 'Entrega',
+      status: 'Status',
+      date: 'Data',
+      shipping: 'Envio',
+      pickup: 'Retirada',
+      advance: 'Avançar',
+      advancing: 'Avançando…',
+      cantAdvance: 'Sem próxima etapa',
+      statusLabel: {
+        aguardando_pagamento: 'Aguardando pagamento',
+        pago: 'Pago',
+        preparando: 'Preparando',
+        enviado: 'Enviado',
+        pronto_retirada: 'Pronto para retirada',
+        concluido: 'Concluído',
+        cancelado: 'Cancelado',
+      },
+      nextLabel: {
+        preparando: 'Marcar como Preparando',
+        enviado: 'Marcar como Enviado',
+        pronto_retirada: 'Marcar como Pronto para retirada',
+        concluido: 'Marcar como Concluído',
+      },
+    },
   },
   common: {
     restrictedAccess: {
@@ -481,6 +511,8 @@ const pt = {
       payableSub: (n: number) => `${n} conta${n !== 1 ? 's' : ''} pendente${n !== 1 ? 's' : ''}`,
       netRevenue: 'Receita líquida',
       netRevenueSub: (gross: string, disc: string) => `bruta ${gross} · desc ${disc}`,
+      productRevenue: 'Receita de produtos',
+      productRevenueSub: 'pedidos pagos · categoria separada',
     },
     insights: {
       biggestExpense: 'Maior despesa',
@@ -500,6 +532,14 @@ const pt = {
       netRevenue: 'Receita Líquida',
       expenses: (regime: string) => `(−) Despesas (${regime})`,
       result: 'Resultado',
+    },
+    dreProducts: {
+      title: 'DRE de Produtos',
+      subtitle: 'Loja de cosméticos deste mês · categoria separada de serviços',
+      subtotal: 'Subtotal (produtos)',
+      discounts: '(−) Cupons',
+      shipping: '(+) Frete cobrado',
+      total: 'Total',
     },
     charts: {
       trend6mTitle: 'Tendência 6 meses',
@@ -588,6 +628,17 @@ const pt = {
       onAverage: (amount: string) => `${amount} em média`,
       topPaymentMethod: 'Forma de pagamento top',
       received: (amount: string) => `${amount} recebidos`,
+    },
+    products: {
+      title: 'Receita de produtos',
+      subtitle: 'Loja de cosméticos — categoria separada da receita de serviços',
+      grossRevenue: 'Receita de produtos',
+      ordersPaid: 'Pedidos pagos',
+      ordersPaidSub: 'este mês',
+      avgOrderValue: 'Ticket médio do pedido',
+      topProduct: 'Produto mais vendido',
+      unitsSold: (n: number) => `${n} unidade${n !== 1 ? 's' : ''} vendida${n !== 1 ? 's' : ''}`,
+      noData: 'Sem vendas de produto este mês.',
     },
     methods: {
       cash: 'Dinheiro',

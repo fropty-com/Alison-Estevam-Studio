@@ -40,11 +40,17 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
   const lastStart   = format(startOfMonth(subMonths(now, 1)), 'yyyy-MM-dd')
   const lastEnd     = format(endOfMonth(subMonths(now, 1)), 'yyyy-MM-dd')
   const monthStartISO = `${monthStart}T00:00:00`
+  const lastStartISO  = `${lastStart}T00:00:00`
   const nextMonthISO  = `${format(startOfMonth(subMonths(now, -1)), 'yyyy-MM-dd')}T00:00:00`
   const sixMonthsAgoISO = `${format(startOfMonth(subMonths(now, 5)), 'yyyy-MM-dd')}T00:00:00`
   const sixMonthsAgoStart = format(startOfMonth(subMonths(now, 5)), 'yyyy-MM-dd')
 
-  const [thisMonthPayRes, sixMonthPayRes, expensesRes, receivableRes] = await Promise.all([
+  // Pedidos de produto "pagos" — mesma régua de payments.paid_at: só entra
+  // como receita o que efetivamente foi pago (nunca aguardando_pagamento
+  // nem cancelado). Ver migration 045 pro check constraint de status.
+  const PAID_ORDER_STATUSES = ['pago', 'preparando', 'enviado', 'pronto_retirada', 'concluido']
+
+  const [thisMonthPayRes, sixMonthPayRes, expensesRes, receivableRes, thisMonthOrdersRes, lastMonthOrdersRes] = await Promise.all([
     db.from('payments')
       .select('gross_amount, net_amount, paid_at, appointments(discount)')
       .gte('paid_at', monthStartISO)
@@ -70,12 +76,37 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
       .select('id, total_price, time_slots!inner(date)')
       .in('status', ['pending', 'confirmed', 'checked_in', 'in_progress'])
       .gte('time_slots.date', today),
+
+    // pedidos de produto pagos no mês atual
+    db.from('orders')
+      .select('subtotal, discount_amount, shipping_cost, total')
+      .in('status', PAID_ORDER_STATUSES)
+      .gte('created_at', monthStartISO)
+      .lt('created_at', nextMonthISO),
+
+    // pedidos de produto pagos no mês anterior (comparação)
+    db.from('orders')
+      .select('total')
+      .in('status', PAID_ORDER_STATUSES)
+      .gte('created_at', lastStartISO)
+      .lt('created_at', monthStartISO),
   ])
 
   const thisMonthPay = thisMonthPayRes.data ?? []
   const sixMonthPay   = sixMonthPayRes.data  ?? []
   const allExpenses   = expensesRes.data     ?? []
   const receivable    = receivableRes.data   ?? []
+  const thisMonthOrders = thisMonthOrdersRes.data ?? []
+  const lastMonthOrders = lastMonthOrdersRes.data ?? []
+
+  // ── Receita de produtos — categoria própria, separada da receita de
+  // serviços acima (ver DRE de produtos abaixo, exibido lado a lado) ──
+  const productSubtotalThis = thisMonthOrders.reduce((sum, o) => sum + Number(o.subtotal ?? 0), 0)
+  const productDiscountThis = thisMonthOrders.reduce((sum, o) => sum + Number(o.discount_amount ?? 0), 0)
+  const productShippingThis = thisMonthOrders.reduce((sum, o) => sum + Number(o.shipping_cost ?? 0), 0)
+  const productTotalThis    = thisMonthOrders.reduce((sum, o) => sum + Number(o.total ?? 0), 0)
+  const productTotalLast    = lastMonthOrders.reduce((sum, o) => sum + Number(o.total ?? 0), 0)
+  const productRevDiff = productTotalLast > 0 ? ((productTotalThis - productTotalLast) / productTotalLast) * 100 : null
 
   // ── Receita do mês (igual nos dois regimes, já que pagamento e conclusão
   // do serviço acontecem juntos neste negócio — a diferença de regime pesa
@@ -295,6 +326,19 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(receitaLiquida)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.netRevenueSub(fmt(grossThis), fmt(discountsThis))}</p>
         </div>
+
+        {/* Receita de produtos — categoria própria, separada da receita de serviços acima */}
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.finance.cards.productRevenue}</p>
+          <p className="font-data text-[26px] text-gold leading-none mb-2">{fmt(productTotalThis)}</p>
+          {productRevDiff !== null ? (
+            <p className={cn('font-body font-light text-[9px] tracking-[0.12em]', productRevDiff >= 0 ? 'text-sage-light' : 'text-error/60')}>
+              {t.finance.cards.vsLastMonth(productRevDiff >= 0 ? '↑' : '↓', Math.abs(productRevDiff).toFixed(1))}
+            </p>
+          ) : (
+            <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.finance.cards.productRevenueSub}</p>
+          )}
+        </div>
       </div>
 
       {/* Insights */}
@@ -337,32 +381,60 @@ export default async function FinanceiroPage({ searchParams }: { searchParams: {
         </div>
       </div>
 
-      {/* DRE Simplificado */}
-      <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 max-w-[440px]">
-        <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.finance.dre.title}</p>
-        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-5">
-          {t.finance.dre.subtitle(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}
-        </p>
-        <div className="space-y-[10px]">
-          <div className="flex items-center justify-between">
-            <span className="font-body font-light text-[11px] text-offwhite/60">{t.finance.dre.grossRevenue}</span>
-            <span className="font-data text-[13px] text-sage-light">{fmt(grossThis)}</span>
+      {/* DRE Simplificado + DRE de Produtos, lado a lado — receita de
+          produto fica em bloco próprio, nunca somada à de serviços acima */}
+      <div className="flex flex-wrap gap-4">
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 max-w-[440px] flex-1 min-w-[300px]">
+          <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.finance.dre.title}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-5">
+            {t.finance.dre.subtitle(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}
+          </p>
+          <div className="space-y-[10px]">
+            <div className="flex items-center justify-between">
+              <span className="font-body font-light text-[11px] text-offwhite/60">{t.finance.dre.grossRevenue}</span>
+              <span className="font-data text-[13px] text-sage-light">{fmt(grossThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pl-4">
+              <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.discounts}</span>
+              <span className="font-data text-[12px] text-error/60">− {fmt(discountsThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pt-[6px] border-t border-offwhite/[0.07]">
+              <span className="font-body font-light text-[11px] text-offwhite/70">{t.finance.dre.netRevenue}</span>
+              <span className="font-data text-[13px] text-offwhite">{fmt(receitaLiquida)}</span>
+            </div>
+            <div className="flex items-center justify-between pl-4">
+              <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.expenses(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}</span>
+              <span className="font-data text-[12px] text-error/60">− {fmt(despesasThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pt-[10px] border-t border-offwhite/[0.14]">
+              <span className="font-body font-medium text-[12px] text-offwhite">{t.finance.dre.result}</span>
+              <span className={cn('font-data text-[16px]', lucroLiquido >= 0 ? 'text-sage-light' : 'text-error/70')}>{fmt(lucroLiquido)}</span>
+            </div>
           </div>
-          <div className="flex items-center justify-between pl-4">
-            <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.discounts}</span>
-            <span className="font-data text-[12px] text-error/60">− {fmt(discountsThis)}</span>
-          </div>
-          <div className="flex items-center justify-between pt-[6px] border-t border-offwhite/[0.07]">
-            <span className="font-body font-light text-[11px] text-offwhite/70">{t.finance.dre.netRevenue}</span>
-            <span className="font-data text-[13px] text-offwhite">{fmt(receitaLiquida)}</span>
-          </div>
-          <div className="flex items-center justify-between pl-4">
-            <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dre.expenses(regime === 'caixa' ? t.finance.cash.toLowerCase() : t.finance.accrual.toLowerCase())}</span>
-            <span className="font-data text-[12px] text-error/60">− {fmt(despesasThis)}</span>
-          </div>
-          <div className="flex items-center justify-between pt-[10px] border-t border-offwhite/[0.14]">
-            <span className="font-body font-medium text-[12px] text-offwhite">{t.finance.dre.result}</span>
-            <span className={cn('font-data text-[16px]', lucroLiquido >= 0 ? 'text-sage-light' : 'text-error/70')}>{fmt(lucroLiquido)}</span>
+        </div>
+
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 max-w-[440px] flex-1 min-w-[300px]">
+          <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.finance.dreProducts.title}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-5">
+            {t.finance.dreProducts.subtitle}
+          </p>
+          <div className="space-y-[10px]">
+            <div className="flex items-center justify-between">
+              <span className="font-body font-light text-[11px] text-offwhite/60">{t.finance.dreProducts.subtotal}</span>
+              <span className="font-data text-[13px] text-sage-light">{fmt(productSubtotalThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pl-4">
+              <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dreProducts.discounts}</span>
+              <span className="font-data text-[12px] text-error/60">− {fmt(productDiscountThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pl-4">
+              <span className="font-body font-light text-[10px] text-offwhite/35">{t.finance.dreProducts.shipping}</span>
+              <span className="font-data text-[12px] text-sage-light">+ {fmt(productShippingThis)}</span>
+            </div>
+            <div className="flex items-center justify-between pt-[10px] border-t border-offwhite/[0.14]">
+              <span className="font-body font-medium text-[12px] text-offwhite">{t.finance.dreProducts.total}</span>
+              <span className="font-data text-[16px] text-gold">{fmt(productTotalThis)}</span>
+            </div>
           </div>
         </div>
       </div>

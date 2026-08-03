@@ -399,6 +399,7 @@ const es: Dictionary = {
     tabs: {
       products: 'Productos',
       shipping: 'Envío',
+      orders: 'Pedidos',
     },
     manage: {
       title: 'Gestionar productos',
@@ -453,6 +454,35 @@ const es: Dictionary = {
       creating: 'Creando…',
       submit: 'Agregar tarifa',
     },
+    orders: {
+      empty: 'Aún no hay pedidos.',
+      client: 'Cliente',
+      items: 'Artículos',
+      total: 'Total',
+      fulfillment: 'Entrega',
+      status: 'Estado',
+      date: 'Fecha',
+      shipping: 'Envío',
+      pickup: 'Retiro',
+      advance: 'Avanzar',
+      advancing: 'Avanzando…',
+      cantAdvance: 'Sin próxima etapa',
+      statusLabel: {
+        aguardando_pagamento: 'Esperando pago',
+        pago: 'Pagado',
+        preparando: 'Preparando',
+        enviado: 'Enviado',
+        pronto_retirada: 'Listo para retirar',
+        concluido: 'Completado',
+        cancelado: 'Cancelado',
+      },
+      nextLabel: {
+        preparando: 'Marcar como Preparando',
+        enviado: 'Marcar como Enviado',
+        pronto_retirada: 'Marcar como Listo para retirar',
+        concluido: 'Marcar como Completado',
+      },
+    },
   },
   common: {
     restrictedAccess: {
@@ -483,6 +513,8 @@ const es: Dictionary = {
       payableSub: (n: number) => `${n} cuenta${n !== 1 ? 's' : ''} pendiente${n !== 1 ? 's' : ''}`,
       netRevenue: 'Ingresos netos',
       netRevenueSub: (gross: string, disc: string) => `bruto ${gross} · desc ${disc}`,
+      productRevenue: 'Ingresos por productos',
+      productRevenueSub: 'pedidos pagados · categoría separada',
     },
     insights: {
       biggestExpense: 'Mayor gasto',
@@ -502,6 +534,14 @@ const es: Dictionary = {
       netRevenue: 'Ingreso Neto',
       expenses: (regime: string) => `(−) Gastos (${regime})`,
       result: 'Resultado',
+    },
+    dreProducts: {
+      title: 'Estado de resultados de Productos',
+      subtitle: 'Tienda de cosméticos este mes · categoría separada de servicios',
+      subtotal: 'Subtotal (productos)',
+      discounts: '(−) Cupones',
+      shipping: '(+) Envío cobrado',
+      total: 'Total',
     },
     charts: {
       trend6mTitle: 'Tendencia 6 meses',
@@ -590,6 +630,17 @@ const es: Dictionary = {
       onAverage: (amount: string) => `${amount} en promedio`,
       topPaymentMethod: 'Método de pago top',
       received: (amount: string) => `${amount} recibidos`,
+    },
+    products: {
+      title: 'Ingresos por productos',
+      subtitle: 'Tienda de cosméticos — categoría separada de los ingresos por servicios',
+      grossRevenue: 'Ingresos por productos',
+      ordersPaid: 'Pedidos pagados',
+      ordersPaidSub: 'este mes',
+      avgOrderValue: 'Ticket promedio del pedido',
+      topProduct: 'Producto más vendido',
+      unitsSold: (n: number) => `${n} unidad${n !== 1 ? 'es' : ''} vendida${n !== 1 ? 's' : ''}`,
+      noData: 'Sin ventas de productos este mes.',
     },
     methods: {
       cash: 'Efectivo',

@@ -399,6 +399,7 @@ const en: Dictionary = {
     tabs: {
       products: 'Products',
       shipping: 'Shipping',
+      orders: 'Orders',
     },
     manage: {
       title: 'Manage products',
@@ -453,6 +454,35 @@ const en: Dictionary = {
       creating: 'Creating…',
       submit: 'Add rate',
     },
+    orders: {
+      empty: 'No orders yet.',
+      client: 'Client',
+      items: 'Items',
+      total: 'Total',
+      fulfillment: 'Fulfillment',
+      status: 'Status',
+      date: 'Date',
+      shipping: 'Shipping',
+      pickup: 'Pickup',
+      advance: 'Advance',
+      advancing: 'Advancing…',
+      cantAdvance: 'No next step',
+      statusLabel: {
+        aguardando_pagamento: 'Awaiting payment',
+        pago: 'Paid',
+        preparando: 'Preparing',
+        enviado: 'Shipped',
+        pronto_retirada: 'Ready for pickup',
+        concluido: 'Completed',
+        cancelado: 'Cancelled',
+      },
+      nextLabel: {
+        preparando: 'Mark as Preparing',
+        enviado: 'Mark as Shipped',
+        pronto_retirada: 'Mark as Ready for pickup',
+        concluido: 'Mark as Completed',
+      },
+    },
   },
   common: {
     restrictedAccess: {
@@ -483,6 +513,8 @@ const en: Dictionary = {
       payableSub: (n: number) => `${n} pending bill${n !== 1 ? 's' : ''}`,
       netRevenue: 'Net revenue',
       netRevenueSub: (gross: string, disc: string) => `gross ${gross} · disc ${disc}`,
+      productRevenue: 'Product revenue',
+      productRevenueSub: 'paid orders · separate category',
     },
     insights: {
       biggestExpense: 'Biggest expense',
@@ -502,6 +534,14 @@ const en: Dictionary = {
       netRevenue: 'Net Revenue',
       expenses: (regime: string) => `(−) Expenses (${regime})`,
       result: 'Result',
+    },
+    dreProducts: {
+      title: 'Product P&L',
+      subtitle: 'Cosmetics store this month · separate category from services',
+      subtotal: 'Subtotal (products)',
+      discounts: '(−) Coupons',
+      shipping: '(+) Shipping charged',
+      total: 'Total',
     },
     charts: {
       trend6mTitle: '6-month trend',
@@ -590,6 +630,17 @@ const en: Dictionary = {
       onAverage: (amount: string) => `${amount} on average`,
       topPaymentMethod: 'Top payment method',
       received: (amount: string) => `${amount} received`,
+    },
+    products: {
+      title: 'Product revenue',
+      subtitle: 'Cosmetics store — separate category from service revenue',
+      grossRevenue: 'Product revenue',
+      ordersPaid: 'Paid orders',
+      ordersPaidSub: 'this month',
+      avgOrderValue: 'Average order value',
+      topProduct: 'Best-selling product',
+      unitsSold: (n: number) => `${n} unit${n !== 1 ? 's' : ''} sold`,
+      noData: 'No product sales this month.',
     },
     methods: {
       cash: 'Cash',

@@ -4,14 +4,16 @@ import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
-export function ProductsPageTabs({ productsSlot, shippingSlot }: { productsSlot: React.ReactNode; shippingSlot: React.ReactNode }) {
+export function ProductsPageTabs({ productsSlot, shippingSlot, ordersSlot }: { productsSlot: React.ReactNode; shippingSlot: React.ReactNode; ordersSlot: React.ReactNode }) {
   const { t } = useTranslation()
-  const [tab, setTab] = useState<'produtos' | 'frete'>('produtos')
+  const [tab, setTab] = useState<'produtos' | 'frete' | 'pedidos'>('produtos')
+
+  const TAB_LABEL = { produtos: t.products.tabs.products, frete: t.products.tabs.shipping, pedidos: t.products.tabs.orders }
 
   return (
     <div>
       <div className="flex gap-2 mb-6">
-        {(['produtos', 'frete'] as const).map(tabKey => (
+        {(['produtos', 'frete', 'pedidos'] as const).map(tabKey => (
           <button
             key={tabKey}
             onClick={() => setTab(tabKey)}
@@ -22,13 +24,14 @@ export function ProductsPageTabs({ productsSlot, shippingSlot }: { productsSlot:
                 : 'border border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
             )}
           >
-            {tabKey === 'produtos' ? t.products.tabs.products : t.products.tabs.shipping}
+            {TAB_LABEL[tabKey]}
           </button>
         ))}
       </div>
 
       <div className={cn(tab !== 'produtos' && 'hidden')}>{productsSlot}</div>
       <div className={cn(tab !== 'frete' && 'hidden')}>{shippingSlot}</div>
+      <div className={cn(tab !== 'pedidos' && 'hidden')}>{ordersSlot}</div>
     </div>
   )
 }

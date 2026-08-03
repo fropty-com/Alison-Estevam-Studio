@@ -1536,3 +1536,36 @@ export async function deleteShippingRate(id: string): Promise<{ ok?: boolean; er
   revalidatePath('/admin/produtos')
   return { ok: true }
 }
+
+/* ── Orders ───────────────────────────────────── */
+
+// Cada status só pode avançar para o próximo passo do fluxo — a rota de
+// "pronto" depende do método de entrega, o resto é linear. Não permite pular
+// etapas nem voltar, e nunca sai de 'aguardando_pagamento'/'cancelado' por
+// aqui (isso é responsabilidade do webhook do Mercado Pago, ver orderLifecycle.ts).
+function nextOrderStatus(current: string, fulfillmentMethod: string): string | null {
+  if (current === 'pago') return 'preparando'
+  if (current === 'preparando') return fulfillmentMethod === 'retirada' ? 'pronto_retirada' : 'enviado'
+  if (current === 'enviado' || current === 'pronto_retirada') return 'concluido'
+  return null
+}
+
+export async function advanceOrderStatus(id: string): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { data: order } = await db.from('orders').select('status, fulfillment_method, reference_code').eq('id', id).maybeSingle()
+  if (!order) return { error: 'Pedido não encontrado.' }
+
+  const next = nextOrderStatus(order.status, order.fulfillment_method)
+  if (!next) return { error: 'Este pedido não pode avançar de status.' }
+
+  const { error } = await db.from('orders').update({ status: next, updated_at: new Date().toISOString() }).eq('id', id)
+  if (error) return { error: 'Erro ao atualizar status do pedido.' }
+
+  await logAction('order.advance_status', 'order', id, `Avançou o pedido #${order.reference_code} para "${next}"`, { from: order.status, to: next })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}
