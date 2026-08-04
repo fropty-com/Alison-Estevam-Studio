@@ -59,6 +59,7 @@ export default async function ProdutosPage() {
   const activeProducts = products.filter(p => p.active)
   const totalStockUnits = activeProducts.reduce((sum, p) => sum + p.stock_quantity, 0)
   const totalStockValue = activeProducts.reduce((sum, p) => sum + p.stock_quantity * Number(p.price), 0)
+  const lowStockCount = activeProducts.filter(p => p.stock_quantity <= 3).length
 
   return (
     <div className="px-6 py-8 space-y-10">
@@ -68,7 +69,7 @@ export default async function ProdutosPage() {
       </div>
 
       {/* Cards do mês */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.active}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{activeProducts.length}</p>
@@ -83,6 +84,11 @@ export default async function ProdutosPage() {
           <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.stockValue}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(totalStockValue)}</p>
           <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.stockValueSub}</p>
+        </div>
+        <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.lowStock}</p>
+          <p className={`font-data text-[26px] leading-none mb-2 ${lowStockCount > 0 ? 'text-error/80' : 'text-offwhite'}`}>{lowStockCount}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.lowStockSub}</p>
         </div>
       </div>
 

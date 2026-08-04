@@ -1569,3 +1569,46 @@ export async function advanceOrderStatus(id: string): Promise<{ ok?: boolean; er
   revalidatePath('/admin/produtos')
   return { ok: true }
 }
+
+/**
+ * Cancels an already-paid order: releases the reserved stock and coupon use
+ * (same RPCs as releaseOrderStockAndCoupon in orderLifecycle.ts, which only
+ * handles the pre-payment path) and marks it cancelado. Owner-only, like
+ * refundPayment for appointments — this reverses a completed sale, it's not
+ * routine fulfillment work. Never touches order_payments or calls Mercado
+ * Pago's refund API: returning the customer's money is a decision the owner
+ * makes and executes themselves in the Mercado Pago dashboard.
+ */
+export async function cancelOrder(id: string, reason: string): Promise<{ ok?: boolean; error?: string }> {
+  const user = await getSessionUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const db = await adminDb()
+  const { data: staff } = await db.from('staff_members').select('role').eq('id', user.id).maybeSingle()
+  if (staff?.role !== 'owner') return { error: 'Apenas o proprietário pode cancelar pedidos.' }
+
+  const trimmedReason = reason.trim()
+  if (!trimmedReason) return { error: 'Informe o motivo do cancelamento.' }
+
+  const { data: order } = await db.from('orders').select('status, reference_code, coupon_id').eq('id', id).maybeSingle()
+  if (!order) return { error: 'Pedido não encontrado.' }
+  if (order.status === 'cancelado') return { error: 'Este pedido já está cancelado.' }
+  if (order.status === 'concluido') return { error: 'Pedidos concluídos não podem ser cancelados.' }
+  if (order.status === 'aguardando_pagamento') return { error: 'Pedido ainda não foi pago.' }
+
+  const { data: items } = await db.from('order_items').select('product_id, quantity').eq('order_id', id)
+  for (const item of items ?? []) {
+    await db.rpc('release_product_stock', { p_product_id: item.product_id, p_quantity: item.quantity })
+  }
+  if (order.coupon_id) {
+    await db.rpc('release_coupon', { p_coupon_id: order.coupon_id })
+  }
+
+  const { error } = await db.from('orders').update({ status: 'cancelado', updated_at: new Date().toISOString() }).eq('id', id)
+  if (error) return { error: 'Erro ao cancelar pedido.' }
+
+  await logAction('order.cancel', 'order', id, `Cancelou o pedido #${order.reference_code} (${trimmedReason})`, { reason: trimmedReason })
+
+  revalidatePath('/admin/produtos')
+  return { ok: true }
+}

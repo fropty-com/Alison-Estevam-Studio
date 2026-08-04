@@ -53,6 +53,7 @@ export default async function PerfilPage() {
           <MenuRow href="/perfil/conta" icon="◻" label="Detalhes da conta" />
           <MenuRow href="/perfil/avaliacoes" icon="★" label="Avaliações" />
           <MenuRow href="/perfil/pagamentos" icon="▤" label="Pagamentos" />
+          <MenuRow href="/perfil/pedidos" icon="▣" label="Meus Pedidos" />
           <MenuRow href="/perfil/sobre" icon="○" label="Sobre" />
         </div>
       </div>

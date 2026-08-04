@@ -386,6 +386,8 @@ const pt = {
       stockUnitsSub: 'somando todos os produtos ativos',
       stockValue: 'Valor em estoque',
       stockValueSub: 'preço × quantidade, produtos ativos',
+      lowStock: 'Estoque baixo',
+      lowStockSub: '3 unidades ou menos',
     },
     categories: {
       shampoo: 'Shampoo',
@@ -465,6 +467,10 @@ const pt = {
       advance: 'Avançar',
       advancing: 'Avançando…',
       cantAdvance: 'Sem próxima etapa',
+      cancel: 'Cancelar pedido',
+      cancelReasonPlaceholder: 'Motivo do cancelamento',
+      cancelConfirm: 'Confirmar',
+      cancelling: 'Cancelando…',
       statusLabel: {
         aguardando_pagamento: 'Aguardando pagamento',
         pago: 'Pago',

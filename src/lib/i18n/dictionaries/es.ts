@@ -388,6 +388,8 @@ const es: Dictionary = {
       stockUnitsSub: 'sumando todos los productos activos',
       stockValue: 'Valor en stock',
       stockValueSub: 'precio × cantidad, productos activos',
+      lowStock: 'Stock bajo',
+      lowStockSub: '3 unidades o menos',
     },
     categories: {
       shampoo: 'Champú',
@@ -467,6 +469,10 @@ const es: Dictionary = {
       advance: 'Avanzar',
       advancing: 'Avanzando…',
       cantAdvance: 'Sin próxima etapa',
+      cancel: 'Cancelar pedido',
+      cancelReasonPlaceholder: 'Motivo de la cancelación',
+      cancelConfirm: 'Confirmar',
+      cancelling: 'Cancelando…',
       statusLabel: {
         aguardando_pagamento: 'Esperando pago',
         pago: 'Pagado',

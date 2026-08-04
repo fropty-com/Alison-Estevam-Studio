@@ -1,4 +1,5 @@
 import { sendOrderConfirmationEmail } from '@/lib/email/orderConfirmation'
+import { sendNewOrderAdminEmail } from '@/lib/email/newOrderAdmin'
 
 type Db = any // eslint-disable-line
 
@@ -19,7 +20,6 @@ export async function markOrderPaid(db: Db, orderId: string): Promise<void> {
   if (!order) return
 
   const client = Array.isArray(order.clients) ? order.clients[0] : order.clients
-  if (!client?.email || client.receive_reminder_emails === false) return
 
   const { data: items } = await db
     .from('order_items')
@@ -30,17 +30,54 @@ export async function markOrderPaid(db: Db, orderId: string): Promise<void> {
     return { name: product?.name ?? 'Produto', quantity: item.quantity, unitPrice: Number(item.unit_price) }
   })
 
-  await sendOrderConfirmationEmail({
-    clientName: client.name,
-    clientEmail: client.email,
+  if (client?.email && client.receive_reminder_emails !== false) {
+    await sendOrderConfirmationEmail({
+      clientName: client.name,
+      clientEmail: client.email,
+      referenceCode: order.reference_code,
+      items: orderItems,
+      subtotal: Number(order.subtotal),
+      shippingCost: Number(order.shipping_cost),
+      discountAmount: Number(order.discount_amount),
+      total: Number(order.total),
+      fulfillmentMethod: order.fulfillment_method as 'envio' | 'retirada',
+    })
+  }
+
+  await notifyOwnersOfNewOrder(db, {
     referenceCode: order.reference_code,
+    clientName: client?.name ?? 'Cliente',
     items: orderItems,
-    subtotal: Number(order.subtotal),
-    shippingCost: Number(order.shipping_cost),
-    discountAmount: Number(order.discount_amount),
     total: Number(order.total),
     fulfillmentMethod: order.fulfillment_method as 'envio' | 'retirada',
   })
+}
+
+/**
+ * Best-effort owner notification — the owner needs to know a paid order came
+ * in so they can prepare/ship it, but a failure here (e.g. an owner's auth
+ * row is unreachable) must never break the payment flow itself. Uses
+ * getUserById per owner instead of listUsers(), which is known to 500 on a
+ * corrupted legacy auth.users row unrelated to this feature.
+ */
+async function notifyOwnersOfNewOrder(db: Db, order: {
+  referenceCode: string
+  clientName: string
+  items: { name: string; quantity: number; unitPrice: number }[]
+  total: number
+  fulfillmentMethod: 'envio' | 'retirada'
+}): Promise<void> {
+  try {
+    const { data: owners } = await db.from('staff_members').select('id').eq('role', 'owner')
+    const emails: string[] = []
+    for (const owner of owners ?? []) {
+      const { data } = await db.auth.admin.getUserById(owner.id)
+      if (data?.user?.email) emails.push(data.user.email)
+    }
+    await sendNewOrderAdminEmail({ ownerEmails: emails, ...order })
+  } catch (err) {
+    console.error('Failed to notify owners of new order:', err)
+  }
 }
 
 /**

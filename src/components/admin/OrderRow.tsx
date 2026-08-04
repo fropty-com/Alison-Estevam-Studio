@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { advanceOrderStatus } from '@/app/admin/actions'
+import { advanceOrderStatus, cancelOrder } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
@@ -37,18 +37,32 @@ function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }
 
+const CANCELLABLE_STATUSES = ['pago', 'preparando', 'enviado', 'pronto_retirada']
+
 export function OrderRow({ order }: { order: OrderListItem }) {
   const { t } = useTranslation()
   const [pending, startTransition] = useTransition()
   const [feedback, setFeedback] = useState<string | null>(null)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
 
   const next = nextStatusFor(order.status, order.fulfillmentMethod)
+  const canCancel = CANCELLABLE_STATUSES.includes(order.status)
 
   const handleAdvance = () => {
     startTransition(async () => {
       const res = await advanceOrderStatus(order.id)
       if (res?.error) setFeedback(res.error)
       else setFeedback(null)
+    })
+  }
+
+  const handleCancel = () => {
+    if (!cancelReason.trim()) return
+    startTransition(async () => {
+      const res = await cancelOrder(order.id, cancelReason)
+      if (res?.error) setFeedback(res.error)
+      else { setFeedback(null); setCancelling(false); setCancelReason('') }
     })
   }
 
@@ -78,7 +92,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
         </span>
       </div>
 
-      <div className="w-[190px] shrink-0 text-right">
+      <div className="w-[190px] shrink-0 flex flex-col items-end gap-1">
         {next ? (
           <button
             disabled={pending}
@@ -90,7 +104,40 @@ export function OrderRow({ order }: { order: OrderListItem }) {
         ) : (
           <span className="font-body font-light text-[9px] text-offwhite/[0.18] italic">{t.products.orders.cantAdvance}</span>
         )}
+        {canCancel && !cancelling && (
+          <button
+            onClick={() => setCancelling(true)}
+            className="font-body font-light text-[8px] tracking-[0.15em] uppercase text-error/40 hover:text-error/70 transition-colors"
+          >
+            {t.products.orders.cancel}
+          </button>
+        )}
       </div>
+
+      {cancelling && (
+        <div className="w-full flex items-center gap-2 pt-1">
+          <input
+            type="text"
+            value={cancelReason}
+            onChange={e => setCancelReason(e.target.value)}
+            placeholder={t.products.orders.cancelReasonPlaceholder}
+            className="flex-1 min-w-[140px] bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-[11px] px-2 py-[6px] outline-none focus:border-error/40 transition-colors placeholder:text-offwhite/[0.2]"
+          />
+          <button
+            disabled={pending || !cancelReason.trim()}
+            onClick={handleCancel}
+            className="px-2 py-1 font-body font-light text-[8px] tracking-[0.18em] uppercase bg-error/15 border border-error/30 text-error hover:bg-error/25 transition-all disabled:opacity-40 whitespace-nowrap"
+          >
+            {pending ? t.products.orders.cancelling : t.products.orders.cancelConfirm}
+          </button>
+          <button
+            onClick={() => { setCancelling(false); setCancelReason('') }}
+            className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {feedback && <p className="w-full font-body font-light text-[8.5px] tracking-[0.18em] text-error/70">{feedback}</p>}
     </div>
