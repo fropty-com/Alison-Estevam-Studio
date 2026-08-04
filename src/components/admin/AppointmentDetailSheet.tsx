@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { AppointmentActions } from './AppointmentActions'
+import { ClientAvatar } from './ClientsTable'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
@@ -15,6 +16,7 @@ export interface DetailAppointment {
   durationLabel: string
   clientName: string
   clientWhatsapp: string
+  clientAvatarUrl: string | null
   clientVip: boolean
   serviceName: string
   servicePrice: number | null
@@ -64,19 +66,24 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
         </div>
 
         <div className="px-6 py-5">
-          <div className="flex items-center gap-2 mb-[3px]">
-            <p className="font-body font-light text-[16px] text-offwhite">{appt.clientName}</p>
-            {appt.clientVip && (
-              <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70">{t.agenda.detail.vip}</span>
-            )}
+          <div className="flex items-center gap-3 mb-3">
+            <ClientAvatar name={appt.clientName} avatarUrl={appt.clientAvatarUrl} size={38} />
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-[3px]">
+                <p className="font-body font-light text-[16px] text-offwhite truncate">{appt.clientName}</p>
+                {appt.clientVip && (
+                  <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">{t.agenda.detail.vip}</span>
+                )}
+              </div>
+              <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.15em] mb-[2px]">
+                {appt.serviceName}{appt.servicePrice ? ` · R$ ${appt.servicePrice}` : ''}
+              </p>
+              <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.1em]">
+                {appt.clientWhatsapp} · #{appt.referenceCode}
+                {appt.checkedInAt && t.agenda.detail.checkedInAt(appt.checkedInAt)}
+              </p>
+            </div>
           </div>
-          <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.15em] mb-[2px]">
-            {appt.serviceName}{appt.servicePrice ? ` · R$ ${appt.servicePrice}` : ''}
-          </p>
-          <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.1em]">
-            {appt.clientWhatsapp} · #{appt.referenceCode}
-            {appt.checkedInAt && t.agenda.detail.checkedInAt(appt.checkedInAt)}
-          </p>
 
           <AppointmentActions
             id={appt.id}

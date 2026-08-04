@@ -28,7 +28,7 @@ export default async function AdminPerfilPage() {
     : '—'
 
   return (
-    <div className="px-6 py-8 max-w-[560px] mx-auto">
+    <div className="px-6 pt-3 pb-8 max-w-[560px] mx-auto">
       <div className="mb-8">
         <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Meu perfil</h1>

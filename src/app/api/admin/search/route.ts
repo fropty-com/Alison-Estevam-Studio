@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   const [clientsRes, appointmentsRes] = await Promise.all([
     db
       .from('clients')
-      .select('id, name, whatsapp, email')
+      .select('id, name, whatsapp, email, avatar_url')
       .or(`name.ilike.%${q}%,whatsapp.ilike.%${q}%,email.ilike.%${q}%`)
       .limit(5),
     db

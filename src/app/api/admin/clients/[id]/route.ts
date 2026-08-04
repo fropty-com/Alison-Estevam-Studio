@@ -47,6 +47,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
       whatsapp: client.whatsapp,
       email: client.email,
       birthDate: client.birth_date,
+      avatarUrl: client.avatar_url,
       vip: client.vip,
       notes: client.notes,
       createdAt: client.created_at,

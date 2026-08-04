@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { advanceOrderStatus, cancelOrder } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { ClientAvatar } from './ClientsTable'
 
 export interface OrderListItem {
   id: string
@@ -13,6 +14,7 @@ export interface OrderListItem {
   total: number
   createdAt: string
   clientName: string
+  clientAvatarUrl: string | null
   itemsSummary: string
 }
 
@@ -68,11 +70,14 @@ export function OrderRow({ order }: { order: OrderListItem }) {
 
   return (
     <div className="px-5 py-4 flex items-center gap-4 flex-wrap">
-      <div className="min-w-0 flex-1">
-        <p className="font-body font-medium text-[12px] text-offwhite truncate">{order.clientName}</p>
-        <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.05em] truncate">
-          #{order.referenceCode} · {order.itemsSummary}
-        </p>
+      <div className="min-w-0 flex-1 flex items-center gap-3">
+        <ClientAvatar name={order.clientName} avatarUrl={order.clientAvatarUrl} size={26} />
+        <div className="min-w-0">
+          <p className="font-body font-medium text-[12px] text-offwhite truncate">{order.clientName}</p>
+          <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.05em] truncate">
+            #{order.referenceCode} · {order.itemsSummary}
+          </p>
+        </div>
       </div>
 
       <span className="font-body font-light text-[9px] tracking-[0.15em] uppercase text-offwhite/40 w-[70px] shrink-0">

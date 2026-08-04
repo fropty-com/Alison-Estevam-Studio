@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { ClientAvatar } from './ClientsTable'
 
 interface ClientResult {
   id: string
   name: string
   whatsapp: string
   email: string | null
+  avatar_url: string | null
 }
 
 interface AppointmentResult {
@@ -142,10 +144,13 @@ export function AdminGlobalSearch() {
                 <button
                   key={c.id}
                   onClick={() => goToClient(c.id)}
-                  className="w-full text-left px-4 py-[9px] hover:bg-offwhite/5 transition-colors"
+                  className="w-full flex items-center gap-3 text-left px-4 py-[9px] hover:bg-offwhite/5 transition-colors"
                 >
-                  <p className="font-body font-light text-[11.5px] text-offwhite/80 truncate">{c.name}</p>
-                  <p className="font-data text-[9.5px] text-offwhite/35 mt-[1px]">{c.whatsapp}</p>
+                  <ClientAvatar name={c.name} avatarUrl={c.avatar_url} size={24} />
+                  <div className="min-w-0">
+                    <p className="font-body font-light text-[11.5px] text-offwhite/80 truncate">{c.name}</p>
+                    <p className="font-data text-[9.5px] text-offwhite/35 mt-[1px]">{c.whatsapp}</p>
+                  </div>
                 </button>
               ))}
             </div>

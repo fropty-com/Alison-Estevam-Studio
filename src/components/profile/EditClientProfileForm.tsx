@@ -146,7 +146,7 @@ export function EditClientProfileForm({
           <label className={labelCls}>Nome completo</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
         </div>
-        <div>
+        <div className="min-w-0">
           <label className={labelCls}>WhatsApp</label>
           <input
             type="tel"
@@ -156,7 +156,7 @@ export function EditClientProfileForm({
             className={inputCls}
           />
         </div>
-        <div>
+        <div className="min-w-0">
           <label className={labelCls}>Data de nascimento (opcional)</label>
           <input
             type="date"

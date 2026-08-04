@@ -4,10 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { ClientAvatar } from './ClientsTable'
 
 interface Absence {
   id: string
   name: string
+  avatarUrl: string | null
   daysSinceLast: number
   avgGap: number
 }
@@ -54,10 +56,13 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
             <Link
               key={c.id}
               href={`/admin/clientes/${c.id}`}
-              className="flex items-center justify-between px-6 py-3 hover:bg-offwhite/5 transition-colors"
+              className="flex items-center justify-between gap-3 px-6 py-3 hover:bg-offwhite/5 transition-colors"
             >
-              <span className="font-body font-light text-[12px] text-offwhite/70">{c.name}</span>
-              <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+              <span className="flex items-center gap-3 min-w-0">
+                <ClientAvatar name={c.name} avatarUrl={c.avatarUrl} size={26} />
+                <span className="font-body font-light text-[12px] text-offwhite/70 truncate">{c.name}</span>
+              </span>
+              <span className="shrink-0 font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
                 {t.clients.absent.daysSinceLast(c.daysSinceLast)} <span className="text-offwhite/[0.18]">{t.clients.absent.usuallyReturns(c.avgGap)}</span>
               </span>
             </Link>

@@ -103,6 +103,7 @@ function mapAppointmentRow(a: any): GridAppointment {
     durationLabel: svc?.duration ? `${svc.duration}min` : '',
     clientName: cli?.name ?? '—',
     clientWhatsapp: cli?.whatsapp ?? '',
+    clientAvatarUrl: cli?.avatar_url ?? null,
     clientVip: !!cli?.vip,
     serviceName: svc?.name ?? '—',
     servicePrice: svc?.price ?? null,
@@ -110,7 +111,7 @@ function mapAppointmentRow(a: any): GridAppointment {
   }
 }
 
-const APPOINTMENT_SELECT = 'id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip), time_slots!inner(date, start_time, end_time)'
+const APPOINTMENT_SELECT = 'id, reference_code, status, notes, total_price, checked_in_at, services(name, price, duration), clients(id, name, whatsapp, vip, avatar_url), time_slots!inner(date, start_time, end_time)'
 
 export default async function AgendaPage({
   searchParams,

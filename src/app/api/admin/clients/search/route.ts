@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
   const db = await createServiceClient()
   const { data } = await db
     .from('clients')
-    .select('id, name, whatsapp, email')
+    .select('id, name, whatsapp, email, avatar_url')
     .or(`name.ilike.%${q}%,whatsapp.ilike.%${q}%`)
     .limit(8)
 

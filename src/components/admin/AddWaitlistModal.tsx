@@ -6,9 +6,10 @@ import { cn, maskPhoneInput, isFullName, isValidWhatsApp } from '@/lib/utils'
 import { createManualWaitlistEntry } from '@/app/admin/actions'
 import { todayInSaoPaulo } from '@/lib/timezone'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { ClientAvatar } from './ClientsTable'
 
 interface Service { id: string; name: string; is_whatsapp_only: boolean }
-interface ClientHit { id: string; name: string; whatsapp: string; email: string | null }
+interface ClientHit { id: string; name: string; whatsapp: string; email: string | null; avatar_url: string | null }
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
@@ -112,10 +113,11 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
                   key={c.id}
                   type="button"
                   onClick={() => pickClient(c)}
-                  className="w-full flex items-center justify-between gap-3 px-3 py-[8px] text-left hover:bg-offwhite/5 transition-colors"
+                  className="w-full flex items-center gap-3 px-3 py-[8px] text-left hover:bg-offwhite/5 transition-colors"
                 >
-                  <span className="font-body font-light text-[11px] text-offwhite/80">{c.name}</span>
-                  <span className="font-data text-[10px] text-offwhite/35">{c.whatsapp}</span>
+                  <ClientAvatar name={c.name} avatarUrl={c.avatar_url} size={22} />
+                  <span className="flex-1 min-w-0 font-body font-light text-[11px] text-offwhite/80 truncate">{c.name}</span>
+                  <span className="shrink-0 font-data text-[10px] text-offwhite/35">{c.whatsapp}</span>
                 </button>
               ))}
             </div>

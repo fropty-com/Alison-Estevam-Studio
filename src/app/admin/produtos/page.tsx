@@ -26,7 +26,7 @@ export default async function ProdutosPage() {
       .select('id, label, state, price, active')
       .order('created_at', { ascending: true }),
     db.from('orders')
-      .select('id, reference_code, status, fulfillment_method, total, created_at, clients(name), order_items(quantity, products(name))')
+      .select('id, reference_code, status, fulfillment_method, total, created_at, clients(name, avatar_url), order_items(quantity, products(name))')
       .neq('status', 'aguardando_pagamento')
       .order('created_at', { ascending: false })
       .limit(100),
@@ -52,6 +52,7 @@ export default async function ProdutosPage() {
       total: Number(o.total),
       createdAt: o.created_at,
       clientName: client?.name ?? '—',
+      clientAvatarUrl: client?.avatar_url ?? null,
       itemsSummary: itemsSummary || '—',
     }
   })

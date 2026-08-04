@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { ptBR, enUS, es } from 'date-fns/locale'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { ClientAvatar } from '@/components/admin/ClientsTable'
 import { todayInSaoPaulo, startOfWeekInSaoPaulo, endOfWeekInSaoPaulo, startOfMonthInSaoPaulo } from '@/lib/timezone'
 import { getLocale } from '@/lib/i18n/getLocale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
@@ -128,7 +129,7 @@ export default async function AdminDashboard() {
 
   const [todayRes, weekRes, clientsRes, monthPayRes, newClientsRes, openRes, activeServicesRes] = await Promise.all([
     db.from('appointments')
-      .select('id, reference_code, status, services(name, price), clients(name, whatsapp), time_slots!inner(date, start_time)')
+      .select('id, reference_code, status, services(name, price), clients(name, whatsapp, avatar_url), time_slots!inner(date, start_time)')
       .eq('time_slots.date', today)
       .not('status', 'in', '("cancelled","no_show")')
       .order('time_slots(start_time)', { ascending: true }),
@@ -224,6 +225,7 @@ export default async function AdminDashboard() {
                   <span className="font-data text-[20px] text-offwhite/60 w-12 shrink-0">
                     {slot?.start_time?.substring(0, 5) ?? '--'}
                   </span>
+                  <ClientAvatar name={cli?.name ?? '—'} avatarUrl={cli?.avatar_url} size={32} />
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-light text-[13px] text-offwhite truncate">{cli?.name ?? '—'}</p>
                     <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.15em]">

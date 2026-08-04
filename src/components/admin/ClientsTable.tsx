@@ -16,6 +16,7 @@ export interface ClientRow {
   whatsapp: string
   email: string | null
   birthDate: string | null
+  avatarUrl: string | null
   vip: boolean
   createdAt: string
 }
@@ -29,11 +30,17 @@ function SearchIcon() {
   )
 }
 
-export function ClientAvatar({ name }: { name: string }) {
+export function ClientAvatar({ name, avatarUrl, size = 28 }: { name: string; avatarUrl?: string | null; size?: number }) {
   const initial = name.trim().charAt(0).toUpperCase() || '?'
   return (
-    <span className="w-[28px] h-[28px] shrink-0 flex items-center justify-center bg-gold/15 border border-gold/25 text-gold font-body font-light text-[11px]">
-      {initial}
+    <span
+      className="shrink-0 overflow-hidden flex items-center justify-center bg-gold/15 border border-gold/25 text-gold font-body font-light"
+      style={{ width: size, height: size, fontSize: Math.max(9, Math.round(size * 0.4)) }}
+    >
+      {avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+      ) : initial}
     </span>
   )
 }
@@ -131,7 +138,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                   <tr key={c.id} className="border-b border-offwhite/[0.05] last:border-b-0 hover:bg-offwhite/5 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <ClientAvatar name={c.name} />
+                        <ClientAvatar name={c.name} avatarUrl={c.avatarUrl} />
                         <span className="font-body font-light text-[12.5px] text-offwhite truncate">{c.name}</span>
                       </div>
                     </td>

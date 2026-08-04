@@ -18,6 +18,7 @@ interface ClientRecord {
   created_at: string
   notes: string | null
   birth_date: string | null
+  avatar_url: string | null
 }
 
 export const dynamic = 'force-dynamic'
@@ -55,7 +56,7 @@ export default async function ClientesPage() {
 
   const [clientsRes, completedRes, monthPayRes] = await Promise.all([
     db.from('clients')
-      .select('id, name, whatsapp, email, vip, created_at, notes, birth_date')
+      .select('id, name, whatsapp, email, vip, created_at, notes, birth_date, avatar_url')
       .order('name', { ascending: true }),
 
     // histórico completo de atendimentos concluídos, por cliente — base para
@@ -81,6 +82,7 @@ export default async function ClientesPage() {
     whatsapp: c.whatsapp,
     email: c.email,
     birthDate: c.birth_date,
+    avatarUrl: c.avatar_url,
     vip: c.vip,
     createdAt: c.created_at,
   }))
@@ -90,7 +92,7 @@ export default async function ClientesPage() {
   const currentMonth = format(now, 'MM')
   const birthdaysThisMonth = list
     .filter(c => c.birth_date && c.birth_date.slice(5, 7) === currentMonth)
-    .map(c => ({ id: c.id, name: c.name, birthDate: c.birth_date as string }))
+    .map(c => ({ id: c.id, name: c.name, birthDate: c.birth_date as string, avatarUrl: c.avatar_url }))
     .sort((a, b) => a.birthDate.slice(8, 10).localeCompare(b.birthDate.slice(8, 10)))
 
   // Histórico por cliente, ordenado — base de tudo abaixo
@@ -127,7 +129,9 @@ export default async function ClientesPage() {
   const recurringClients = clientsWithHistory.filter(c => c.dates.length >= 2)
   const retentionRate = clientsWithHistory.length > 0 ? (recurringClients.length / clientsWithHistory.length) * 100 : 0
 
-  const absences: { id: string; name: string; daysSinceLast: number; avgGap: number }[] = []
+  const avatarById = new Map(list.map(c => [c.id, c.avatar_url]))
+
+  const absences: { id: string; name: string; avatarUrl: string | null; daysSinceLast: number; avgGap: number }[] = []
   for (const c of recurringClients) {
     const gaps: number[] = []
     for (let i = 1; i < c.dates.length; i++) {
@@ -135,7 +139,7 @@ export default async function ClientesPage() {
     }
     const avgGap = gaps.reduce((sum, g) => sum + g, 0) / gaps.length
     const daysSinceLast = differenceInDays(now, parseISO(c.dates[c.dates.length - 1]))
-    absences.push({ id: c.id, name: c.name, daysSinceLast, avgGap: Math.round(avgGap) })
+    absences.push({ id: c.id, name: c.name, avatarUrl: avatarById.get(c.id) ?? null, daysSinceLast, avgGap: Math.round(avgGap) })
   }
   absences.sort((a, b) => b.daysSinceLast - a.daysSinceLast)
 
@@ -195,7 +199,7 @@ export default async function ClientesPage() {
             {birthdaysThisMonth.map(b => (
               <div key={b.id} className="flex items-center justify-between gap-3 px-6 py-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <ClientAvatar name={b.name} />
+                  <ClientAvatar name={b.name} avatarUrl={b.avatarUrl} />
                   <span className="font-body font-light text-[12px] text-offwhite/70 truncate">{b.name}</span>
                 </div>
                 <span className="shrink-0 font-body font-light text-[9px] text-gold tracking-[0.1em] uppercase bg-gold/10 border border-gold/25 px-2 py-1">

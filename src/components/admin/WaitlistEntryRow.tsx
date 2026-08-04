@@ -4,11 +4,13 @@ import { useTransition } from 'react'
 import { updateWaitlistStatus } from '@/app/admin/actions'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { ClientAvatar } from './ClientsTable'
 
 export function WaitlistEntryRow({
   id,
   clientName,
   clientWhatsapp,
+  clientAvatarUrl,
   serviceName,
   note,
   status,
@@ -17,6 +19,7 @@ export function WaitlistEntryRow({
   id: string
   clientName: string
   clientWhatsapp: string
+  clientAvatarUrl: string | null
   serviceName: string
   note: string | null
   status: 'waiting' | 'notified'
@@ -31,6 +34,7 @@ export function WaitlistEntryRow({
 
   return (
     <div className="flex items-start gap-4 px-5 py-4">
+      <ClientAvatar name={clientName} avatarUrl={clientAvatarUrl} size={30} />
       <div className="flex-1 min-w-0">
         <p className="font-body font-light text-[12.5px] text-offwhite/80">
           {clientName} <span className="text-offwhite/30">· {clientWhatsapp}</span>

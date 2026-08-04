@@ -27,7 +27,7 @@ export default async function EsperaPage() {
 
   const { data: raw } = await db
     .from('waitlist_entries')
-    .select('id, preferred_date, note, status, clients(name, whatsapp), services(name)')
+    .select('id, preferred_date, note, status, clients(name, whatsapp, avatar_url), services(name)')
     .in('status', ['waiting', 'notified'])
     .order('preferred_date', { ascending: true })
     .order('created_at', { ascending: true })
@@ -74,6 +74,7 @@ export default async function EsperaPage() {
                     id={entry.id}
                     clientName={entry.clients?.name ?? '—'}
                     clientWhatsapp={entry.clients?.whatsapp ?? ''}
+                    clientAvatarUrl={entry.clients?.avatar_url ?? null}
                     serviceName={entry.services?.name ?? '—'}
                     note={entry.note}
                     status={entry.status as 'waiting' | 'notified'}

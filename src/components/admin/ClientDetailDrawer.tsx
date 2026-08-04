@@ -8,6 +8,7 @@ import { refundPayment } from '@/app/admin/actions'
 import { ClientActions } from './ClientActions'
 import { EditClientButton } from './EditClientButton'
 import { LoyaltyCard } from './LoyaltyCard'
+import { ClientAvatar } from './ClientsTable'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
@@ -18,6 +19,7 @@ interface ClientDetail {
   whatsapp: string
   email: string | null
   birthDate: string | null
+  avatarUrl: string | null
   vip: boolean
   notes: string | null
   createdAt: string
@@ -138,11 +140,14 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
           ) : (
             <>
               <div className="flex items-center justify-between gap-2 mb-5">
-                <div className="flex items-center gap-2 min-w-0">
-                  <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] truncate">{client.name}</h2>
-                  {client.vip && (
-                    <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">VIP</span>
-                  )}
+                <div className="flex items-center gap-3 min-w-0">
+                  <ClientAvatar name={client.name} avatarUrl={client.avatarUrl} size={44} />
+                  <div className="flex items-center gap-2 min-w-0">
+                    <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] truncate">{client.name}</h2>
+                    {client.vip && (
+                      <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">VIP</span>
+                    )}
+                  </div>
                 </div>
                 <EditClientButton
                   id={client.id}
