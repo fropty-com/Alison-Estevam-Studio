@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { updateStaffProfile, updateStaffAvatar } from '@/app/admin/actions'
 import { cn, maskPhoneInput, isFullName } from '@/lib/utils'
+import { AvatarCropModal } from '@/components/ui/AvatarCropModal'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
@@ -41,6 +42,7 @@ export function EditStaffProfileForm({
   const [email, setEmail] = useState(initialEmail)
   const [birthDate, setBirthDate] = useState(initialBirthDate)
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl)
+  const [cropFile, setCropFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const canSubmit = isFullName(name) && email.trim().length > 0
@@ -57,7 +59,7 @@ export function EditStaffProfileForm({
 
   const handleAvatarPick = () => fileInputRef.current?.click()
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
@@ -72,16 +74,22 @@ export function EditStaffProfileForm({
     }
 
     setError(null)
+    setCropFile(file)
+  }
+
+  const handleCropConfirm = async (blob: Blob) => {
+    setCropFile(null)
+    setError(null)
     setUploading(true)
     try {
       const supabase = createClient()
       const folder = `staff/${userId}`
-      const ext = file.name.split('.').pop() || 'jpg'
-      const path = `${folder}/${Date.now()}.${ext}`
+      const path = `${folder}/${Date.now()}.jpg`
 
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, file, {
+      const { error: uploadError } = await supabase.storage.from('avatars').upload(path, blob, {
         cacheControl: '3600',
         upsert: true,
+        contentType: 'image/jpeg',
       })
       if (uploadError) {
         setError('Erro ao enviar a foto.')
@@ -218,6 +226,10 @@ export function EditStaffProfileForm({
       >
         {pending ? 'Salvando…' : 'Salvar alterações'}
       </button>
+
+      {cropFile && (
+        <AvatarCropModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={handleCropConfirm} />
+      )}
     </div>
   )
 }

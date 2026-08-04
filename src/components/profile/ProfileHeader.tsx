@@ -41,6 +41,7 @@ export async function ProfileHeader({ title, backHref = '/perfil' }: { title: st
   return (
     <LanguageProvider initialLocale={locale}>
       <ClientHeader
+        fullWidth
         backHref={backHref}
         title={title}
         search={<ClientSearchBox />}

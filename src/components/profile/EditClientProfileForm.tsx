@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateAccountDetails, uploadClientAvatar, removeClientAvatar } from '@/app/perfil/actions'
 import { maskPhoneInput } from '@/lib/utils'
+import { AvatarCropModal } from '@/components/ui/AvatarCropModal'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
@@ -34,6 +35,7 @@ export function EditClientProfileForm({
   const [phone, setPhone] = useState(initialPhone)
   const [email, setEmail] = useState(initialEmail)
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl)
+  const [cropFile, setCropFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const canSubmit = name.trim().split(/\s+/).filter(Boolean).length >= 2
@@ -50,7 +52,7 @@ export function EditClientProfileForm({
 
   const handleAvatarPick = () => fileInputRef.current?.click()
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
@@ -65,10 +67,16 @@ export function EditClientProfileForm({
     }
 
     setError(null)
+    setCropFile(file)
+  }
+
+  const handleCropConfirm = async (blob: Blob) => {
+    setCropFile(null)
+    setError(null)
     setUploading(true)
     try {
       const formData = new FormData()
-      formData.set('file', file)
+      formData.set('file', blob, 'avatar.jpg')
       const res = await uploadClientAvatar(formData)
       if (res?.error) { setError(res.error); return }
       setAvatarUrl(res.avatarUrl ?? null)
@@ -169,6 +177,10 @@ export function EditClientProfileForm({
       >
         {pending ? 'Salvando…' : 'Salvar alterações'}
       </button>
+
+      {cropFile && (
+        <AvatarCropModal file={cropFile} onCancel={() => setCropFile(null)} onConfirm={handleCropConfirm} />
+      )}
     </div>
   )
 }

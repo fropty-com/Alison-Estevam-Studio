@@ -93,6 +93,7 @@ export default async function ContaPage() {
     <div className="min-h-screen bg-charcoal">
       <LanguageProvider initialLocale={locale}>
         <ClientHeader
+          fullWidth
           search={<ClientSearchBox />}
           right={
             <ClientAccountMenu

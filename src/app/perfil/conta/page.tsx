@@ -5,9 +5,7 @@ import type { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { DeleteAccountButton } from '@/components/profile/DeleteAccountButton'
-import { WhatsappConsentToggle } from '@/components/profile/WhatsappConsentToggle'
-import { ReminderEmailToggle } from '@/components/profile/ReminderEmailToggle'
+import { AccountSettingsSection } from '@/components/profile/AccountSettingsSection'
 
 export const metadata: Metadata = { title: 'Detalhes da conta — Alison Estevam Studio' }
 export const dynamic = 'force-dynamic'
@@ -37,16 +35,11 @@ export default async function ContaDetalhesPage() {
           <a href="/perfil" className="text-offwhite/45 hover:text-offwhite/70 underline underline-offset-2 transition-colors">Meu perfil</a>.
         </p>
 
-        <WhatsappConsentToggle initialConsent={client.consent_whatsapp} />
-        <ReminderEmailToggle initialConsent={client.receive_reminder_emails} />
-
-        <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.08em] mb-[36px]">
-          Cliente desde {memberSince}.
-        </p>
-
-        <div className="pt-[26px] border-t border-offwhite/[0.08]">
-          <DeleteAccountButton />
-        </div>
+        <AccountSettingsSection
+          consentWhatsapp={client.consent_whatsapp}
+          receiveReminderEmails={client.receive_reminder_emails}
+          memberSince={memberSince}
+        />
       </div>
     </div>
   )

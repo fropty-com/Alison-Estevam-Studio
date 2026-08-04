@@ -30,7 +30,7 @@ export function ClientProfileMenu({ name, avatarUrl }: { name: string; avatarUrl
         onClick={() => setOpen(o => !o)}
         className="flex items-center gap-2 pl-[3px] pr-2 h-[36px] hover:bg-offwhite/5 transition-all duration-200"
       >
-        <span className="w-[28px] h-[28px] shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-gold/15 text-gold font-body font-light text-[11px]">
+        <span className="w-[28px] h-[28px] shrink-0 overflow-hidden flex items-center justify-center bg-gold/15 text-gold font-body font-light text-[11px]">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />

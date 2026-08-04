@@ -127,7 +127,7 @@ export function AdminTopBar({
             onClick={() => { setProfileOpen(o => !o); setNotifOpen(false) }}
             className="flex items-center gap-2 pl-[3px] pr-2 h-[36px] hover:bg-offwhite/5 transition-all duration-200"
           >
-            <span className="w-[28px] h-[28px] shrink-0 rounded-full overflow-hidden flex items-center justify-center bg-gold/15 text-gold font-body font-light text-[11px]">
+            <span className="w-[28px] h-[28px] shrink-0 overflow-hidden flex items-center justify-center bg-gold/15 text-gold font-body font-light text-[11px]">
               {staffAvatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={staffAvatarUrl} alt={staffName} className="w-full h-full object-cover" />
