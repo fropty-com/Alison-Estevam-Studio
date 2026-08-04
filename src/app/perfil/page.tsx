@@ -112,7 +112,7 @@ export default async function PerfilPage() {
           </div>
         </section>
 
-        <div className="border border-offwhite/[0.07]">
+        <div className="flex flex-col gap-2">
           <AccordionSection icon="◆" label="Cartão Fidelidade">
             <LoyaltyCard loyalty={loyalty} />
           </AccordionSection>
