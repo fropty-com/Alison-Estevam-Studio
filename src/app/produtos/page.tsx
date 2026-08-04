@@ -40,7 +40,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
   const products = data ?? []
 
   return (
-    <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+    <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[1200px] mx-auto">
         <div className="section-tag" aria-hidden="true">Produtos</div>
         <h1 className="font-display font-normal text-3xl md:text-4xl tracking-[0.1em] uppercase text-offwhite mb-8">

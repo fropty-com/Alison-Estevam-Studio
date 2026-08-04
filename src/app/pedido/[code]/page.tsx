@@ -51,7 +51,7 @@ export default async function PedidoPage({ params }: { params: Promise<{ code: s
   const client = Array.isArray(order.clients) ? order.clients[0] : order.clients
 
   return (
-    <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+    <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[480px] mx-auto text-center">
         <p className="section-tag justify-center" aria-hidden="true">Pedido {order.reference_code}</p>
         <h1 className="font-display font-normal text-3xl tracking-[0.05em] uppercase text-offwhite mb-2">

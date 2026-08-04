@@ -104,7 +104,7 @@ export default async function ContaPage() {
         />
       </LanguageProvider>
 
-      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
         {/* Greeting */}
         <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
           Área do Cliente

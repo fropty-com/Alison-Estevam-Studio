@@ -47,7 +47,7 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
   const categoryLabel = CATEGORY_LABELS[product.category] ?? product.category
 
   return (
-    <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+    <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[960px] mx-auto">
         <p className="font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/25 mb-8">
           <Link href="/produtos" className="hover:text-offwhite/50 transition-colors">Produtos</Link>

@@ -6,8 +6,10 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle'
 /**
  * Header for client-area screens (/conta, /perfil/*, /agendar, /entrar) —
  * deliberately mirrors Nav's desktop bar exactly (same fixed full-width
- * container, same padding, same logo classes) so the brand mark and theme
- * toggle land at the identical position/height as the public landing page.
+ * container, same h-[56px], same logo classes) so the brand mark and theme
+ * toggle land at the identical position/height as the public landing page —
+ * and both match AdminTopBar's h-[56px], so the barber and client areas of
+ * the site read as the same system.
  */
 export function ClientHeader({
   backHref,
@@ -24,9 +26,9 @@ export function ClientHeader({
     <nav
       role="navigation"
       aria-label="Navegação da área do cliente"
-      className="fixed top-0 left-0 right-0 z-[200] bg-charcoal border-b border-offwhite/[0.08]"
+      className="fixed top-0 left-0 right-0 z-[200] h-[56px] bg-charcoal border-b border-offwhite/[0.08]"
     >
-    <div className="max-w-[1400px] mx-auto flex items-center gap-6 px-8 xl:px-[60px] py-6">
+    <div className="h-full max-w-[1400px] mx-auto flex items-center gap-6 px-8 xl:px-[60px]">
       <div className="flex items-center gap-6 min-w-0">
         {backHref ? (
           <div className="flex items-center gap-4 min-w-0">

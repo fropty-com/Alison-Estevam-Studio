@@ -19,7 +19,7 @@ const LIBRARIES: { name: string; license: string }[] = [
 
 export default function LicencasPage() {
   return (
-    <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+    <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[680px] mx-auto">
         <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-2">
           {BRAND.fullName}

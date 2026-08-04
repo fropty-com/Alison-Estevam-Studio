@@ -37,7 +37,7 @@ export default async function ConfirmarPage({ params }: { params: { code: string
     <div className="min-h-screen bg-charcoal">
       <ClientHeader />
       <div className="max-w-[480px] mx-auto">
-        <div className="px-8 pt-[122px] pb-16">
+        <div className="px-8 pt-[65px] pb-16">
           <BackLink href="/conta">← Voltar à conta</BackLink>
 
           <StepHeader

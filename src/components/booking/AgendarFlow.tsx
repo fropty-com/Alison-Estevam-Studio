@@ -858,7 +858,7 @@ function Confirmation({
   result: NonNullable<BookingState['result']>
 }) {
   return (
-    <div className="animate-fade-up min-h-[calc(100vh-122px)] pt-[122px] flex flex-col items-center justify-center text-center px-8">
+    <div className="animate-fade-up min-h-[calc(100vh-65px)] pt-[65px] flex flex-col items-center justify-center text-center px-8">
       <div className="relative w-[72px] h-[72px] mb-[26px]">
         <div className="relative w-full h-full rounded-full overflow-hidden border-[1.5px] border-gold">
           <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="72px" priority className="object-cover object-top" />
@@ -1151,7 +1151,7 @@ export function AgendarFlow({ initialClient = null }: { initialClient?: ClientDa
   return (
     <>
     <ClientHeader />
-    <div className="px-8 lg:px-[60px] pt-[122px] pb-16 lg:grid lg:grid-cols-[260px_1fr] lg:gap-[48px] lg:items-start">
+    <div className="px-8 lg:px-[60px] pt-[65px] pb-16 lg:grid lg:grid-cols-[260px_1fr] lg:gap-[48px] lg:items-start">
       <BookingSidebar
         service={state.selectedService}
         complements={complements}

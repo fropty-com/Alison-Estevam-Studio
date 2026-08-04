@@ -134,7 +134,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
 
   if (items.length === 0 && step === 'form') {
     return (
-      <div className="px-6 pt-[110px] pb-24 lg:pt-[152px] text-center">
+      <div className="px-6 pt-[110px] pb-24 lg:pt-[95px] text-center">
         <p className="font-body font-light text-sm text-offwhite/40 mb-6">Seu carrinho está vazio.</p>
         <Link href="/produtos" className="font-body font-medium text-[10px] tracking-[0.3em] uppercase bg-gold text-charcoal-deep px-6 py-[12px] inline-block hover:bg-gold-light transition-colors">
           Ver produtos
@@ -145,7 +145,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
 
   if (step === 'pix' && pixData && order) {
     return (
-      <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+      <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
         <div className="max-w-[420px] mx-auto text-center">
           <p className="section-tag justify-center" aria-hidden="true">Pedido {order.referenceCode}</p>
           <h1 className="font-display font-normal text-2xl tracking-[0.05em] uppercase text-offwhite mb-4">Pague com Pix</h1>
@@ -170,7 +170,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
   }
 
   return (
-    <div className="px-6 pt-[110px] pb-24 lg:pt-[152px]">
+    <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[880px] mx-auto grid lg:grid-cols-[1fr_320px] gap-10">
         <div>
           <p className="section-tag" aria-hidden="true">Finalizar compra</p>

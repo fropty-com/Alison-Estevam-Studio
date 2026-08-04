@@ -50,7 +50,7 @@ export default async function PedidosPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Meus Pedidos" />
 
-      <div className="max-w-[560px] mx-auto px-8 pt-[122px] pb-10">
+      <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
         {orders.length === 0 ? (
           <div className="border border-offwhite/[0.08] px-8 py-16 text-center">
             <p className="font-body font-light text-[13px] text-offwhite/40">
