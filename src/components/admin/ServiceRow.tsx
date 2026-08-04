@@ -76,7 +76,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
 
         {!editing ? (
           <div className="flex items-start gap-5 shrink-0">
-            <div className="text-right">
+            <div className="w-[62px] text-right shrink-0">
               <p className="font-data text-[16px] text-offwhite/70 leading-none">R$ {service.price}</p>
               <p className="font-body font-light text-[8.5px] text-offwhite/25 tracking-[0.12em] mt-[3px]">{service.duration}min</p>
             </div>
