@@ -37,14 +37,14 @@ export function ServiceRow({ service, appointmentCount }: { service: {
   }
 
   return (
-    <div className={cn('bg-offwhite/5 border border-offwhite/[0.07] px-5 py-4 transition-all duration-200', !service.active && 'opacity-45')}>
-      <div className="flex items-center gap-4">
+    <div className={cn('h-full bg-offwhite/5 border border-offwhite/[0.07] px-5 py-4 transition-all duration-200', !service.active && 'opacity-45')}>
+      <div className="flex items-start gap-4">
         {/* Active toggle */}
         <button
           disabled={pending}
           onClick={() => act(() => updateService(service.id, { active: !service.active }))}
           className={cn(
-            'w-[34px] h-[20px] rounded-full border transition-all duration-300 relative shrink-0 disabled:opacity-40',
+            'mt-[2px] w-[34px] h-[20px] rounded-full border transition-all duration-300 relative shrink-0 disabled:opacity-40',
             service.active ? 'bg-sage/25 border-sage/40' : 'bg-offwhite/5 border-offwhite/15'
           )}
           aria-label={service.active ? t.services.row.deactivate : t.services.row.activate}
@@ -75,10 +75,10 @@ export function ServiceRow({ service, appointmentCount }: { service: {
         </div>
 
         {!editing ? (
-          <div className="flex items-center gap-5 shrink-0">
+          <div className="flex items-start gap-5 shrink-0">
             <div className="text-right">
-              <p className="font-data text-[16px] text-offwhite/70">R$ {service.price}</p>
-              <p className="font-body font-light text-[8.5px] text-offwhite/25 tracking-[0.12em]">{service.duration}min</p>
+              <p className="font-data text-[16px] text-offwhite/70 leading-none">R$ {service.price}</p>
+              <p className="font-body font-light text-[8.5px] text-offwhite/25 tracking-[0.12em] mt-[3px]">{service.duration}min</p>
             </div>
             <button
               onClick={() => setEditing(true)}
