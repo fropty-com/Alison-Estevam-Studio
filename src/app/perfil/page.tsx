@@ -90,7 +90,7 @@ export default async function PerfilPage() {
     <div className="min-h-screen bg-charcoal">
       <ProfileHeader title="Perfil" backHref="/conta" />
 
-      <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
+      <div className="max-w-[640px] mx-auto px-8 pt-[65px] pb-10">
         <div className="mb-8">
           <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Cliente</p>
           <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Meu perfil</h1>
@@ -101,7 +101,7 @@ export default async function PerfilPage() {
 
         <section className="mb-5">
           <h2 className={h2Cls}>Dados do perfil</h2>
-          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
+          <div className="bg-offwhite/5 border border-offwhite/[0.07] p-5">
             <EditClientProfileForm
               initialName={client.name}
               initialPhone={initialPhone}

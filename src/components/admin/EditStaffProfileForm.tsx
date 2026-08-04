@@ -174,31 +174,33 @@ export function EditStaffProfileForm({
       </div>
 
       {/* Name / phone / email / birth date */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="col-span-2">
+      <div className="mb-4">
+        <div className="mb-3">
           <label className={labelCls}>Nome completo</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
         </div>
-        <div className="min-w-0">
-          <label className={labelCls}>WhatsApp (opcional)</label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={e => setPhone(maskPhoneInput(e.target.value))}
-            placeholder="(00) 00000-0000"
-            className={inputCls}
-          />
+        <div className="grid grid-cols-[2fr_3fr] gap-2 mb-3">
+          <div className="min-w-0">
+            <label className={labelCls}>WhatsApp (opcional)</label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={e => setPhone(maskPhoneInput(e.target.value))}
+              placeholder="(00) 00000-0000"
+              className={inputCls}
+            />
+          </div>
+          <div className="min-w-0">
+            <label className={labelCls}>Data de nascimento (opcional)</label>
+            <input
+              type="date"
+              value={birthDate}
+              onChange={e => setBirthDate(e.target.value)}
+              className={inputCls}
+            />
+          </div>
         </div>
-        <div className="min-w-0">
-          <label className={labelCls}>Data de nascimento (opcional)</label>
-          <input
-            type="date"
-            value={birthDate}
-            onChange={e => setBirthDate(e.target.value)}
-            className={inputCls}
-          />
-        </div>
-        <div className="col-span-2">
+        <div>
           <label className={labelCls}>E-mail</label>
           <input
             type="email"
