@@ -7,7 +7,7 @@ import { getVerifiedClientSession, destroyClientSession } from '@/lib/client-aut
 import { sendReceiptEmail } from '@/lib/email/receipt'
 import { isFullName, formatWhatsApp } from '@/lib/utils'
 
-export async function updateAccountDetails(data: { name: string; email: string; phone?: string }): Promise<{ ok?: boolean; error?: string }> {
+export async function updateAccountDetails(data: { name: string; email: string; phone?: string; birthDate?: string }): Promise<{ ok?: boolean; error?: string }> {
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada.' }
 
@@ -16,7 +16,8 @@ export async function updateAccountDetails(data: { name: string; email: string; 
   if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
-  const update: { name: string; email: string | null; whatsapp?: string } = { name, email: email || null }
+  const update: { name: string; email: string | null; whatsapp?: string; birth_date?: string | null } = { name, email: email || null }
+  if (data.birthDate !== undefined) update.birth_date = data.birthDate.trim() || null
 
   const db = await createServiceClient()
 

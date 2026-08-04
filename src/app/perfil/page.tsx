@@ -28,7 +28,7 @@ export default async function PerfilPage() {
 
   const [{ data: client }, { data: reviewsRaw }, { data: completedRaw }, { data: paymentsRaw }, { data: ordersRaw }, loyalty] = await Promise.all([
     db.from('clients')
-      .select('name, whatsapp, email, avatar_url, created_at, consent_whatsapp, receive_reminder_emails')
+      .select('name, whatsapp, email, avatar_url, birth_date, created_at, consent_whatsapp, receive_reminder_emails')
       .eq('id', session.clientId)
       .single(),
     db.from('reviews')
@@ -93,19 +93,20 @@ export default async function PerfilPage() {
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
         <div className="mb-8">
           <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Cliente</p>
-          <h1 className="font-display font-light text-[26px] text-offwhite tracking-[0.03em]">Meu perfil</h1>
+          <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Meu perfil</h1>
           <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
             Seus dados de cadastro e informações da conta.
           </p>
         </div>
 
-        <section className="mb-8">
+        <section className="mb-5">
           <h2 className={h2Cls}>Dados do perfil</h2>
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
             <EditClientProfileForm
               initialName={client.name}
               initialPhone={initialPhone}
               initialEmail={client.email ?? ''}
+              initialBirthDate={client.birth_date ?? ''}
               initialAvatarUrl={client.avatar_url}
             />
           </div>

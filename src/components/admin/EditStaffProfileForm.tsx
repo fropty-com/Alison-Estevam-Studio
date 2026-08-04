@@ -136,7 +136,7 @@ export function EditStaffProfileForm({
     <div>
       {/* Avatar */}
       <div className="flex items-center gap-5 mb-7">
-        <div className="w-[72px] h-[72px] rounded-full bg-offwhite/5 border border-offwhite/10 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-[72px] h-[72px] bg-offwhite/5 border border-offwhite/10 flex items-center justify-center shrink-0 overflow-hidden">
           {avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />

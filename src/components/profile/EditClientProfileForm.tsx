@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateAccountDetails, uploadClientAvatar, removeClientAvatar } from '@/app/perfil/actions'
-import { maskPhoneInput } from '@/lib/utils'
+import { maskPhoneInput, isFullName } from '@/lib/utils'
 import { AvatarCropModal } from '@/components/ui/AvatarCropModal'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
@@ -19,11 +19,13 @@ export function EditClientProfileForm({
   initialName,
   initialPhone,
   initialEmail,
+  initialBirthDate,
   initialAvatarUrl,
 }: {
   initialName: string
   initialPhone: string
   initialEmail: string
+  initialBirthDate: string
   initialAvatarUrl: string | null
 }) {
   const router = useRouter()
@@ -34,17 +36,18 @@ export function EditClientProfileForm({
   const [name, setName] = useState(initialName)
   const [phone, setPhone] = useState(initialPhone)
   const [email, setEmail] = useState(initialEmail)
+  const [birthDate, setBirthDate] = useState(initialBirthDate)
   const [avatarUrl, setAvatarUrl] = useState(initialAvatarUrl)
   const [cropFile, setCropFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const canSubmit = name.trim().split(/\s+/).filter(Boolean).length >= 2
+  const canSubmit = isFullName(name)
 
   const handleSave = () => {
     if (!canSubmit) return
     setError(null)
     startTransition(async () => {
-      const res = await updateAccountDetails({ name, phone, email })
+      const res = await updateAccountDetails({ name, phone, email, birthDate })
       if (res?.error) setError(res.error)
       else router.refresh()
     })
@@ -98,7 +101,7 @@ export function EditClientProfileForm({
 
   return (
     <div>
-      {/* Avatar — square, matching the site's geometric edges (not the rounded staff-portal look) */}
+      {/* Avatar */}
       <div className="flex items-center gap-5 mb-7">
         <div className="w-[72px] h-[72px] bg-offwhite/5 border border-offwhite/10 flex items-center justify-center shrink-0 overflow-hidden">
           {avatarUrl ? (
@@ -137,13 +140,13 @@ export function EditClientProfileForm({
         </div>
       </div>
 
-      {/* Name / phone / email */}
+      {/* Name / phone / birth date / email */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="col-span-2">
           <label className={labelCls}>Nome completo</label>
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Nome e sobrenome" className={inputCls} />
         </div>
-        <div className="col-span-2 sm:col-span-1">
+        <div>
           <label className={labelCls}>WhatsApp</label>
           <input
             type="tel"
@@ -153,7 +156,16 @@ export function EditClientProfileForm({
             className={inputCls}
           />
         </div>
-        <div className="col-span-2 sm:col-span-1">
+        <div>
+          <label className={labelCls}>Data de nascimento (opcional)</label>
+          <input
+            type="date"
+            value={birthDate}
+            onChange={e => setBirthDate(e.target.value)}
+            className={inputCls}
+          />
+        </div>
+        <div className="col-span-2">
           <label className={labelCls}>E-mail (opcional)</label>
           <input
             type="email"
