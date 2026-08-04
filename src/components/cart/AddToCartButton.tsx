@@ -60,7 +60,7 @@ export function AddToCartButton({
         type="button"
         onClick={handleAdd}
         disabled={outOfStock}
-        className="flex-1 px-6 py-[12px] font-body font-medium text-[10px] tracking-[0.28em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed"
+        className="flex-1 min-w-0 px-6 py-[12px] font-body font-medium text-[10px] tracking-[0.28em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light disabled:opacity-30 disabled:cursor-not-allowed"
       >
         {outOfStock ? 'Esgotado' : 'Adicionar ao carrinho'}
       </button>

@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useCart } from '@/lib/cart/CartContext'
 import { maskPhoneInput } from '@/lib/utils'
 import { PaymentBrick, type PaymentBrickSubmitResult } from '@/components/checkout/PaymentBrick'
+import { ShippingRateSelect } from '@/components/checkout/ShippingRateSelect'
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -23,7 +24,13 @@ const labelCls = 'block font-body font-light text-[8px] tracking-[0.25em] upperc
 
 type Step = 'form' | 'payment' | 'pix' | 'error'
 
-export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippingRates: ShippingRate[]; mercadoPagoPublicKey: string | null }) {
+export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialName = '', initialWhatsapp = '', initialEmail = '' }: {
+  shippingRates: ShippingRate[]
+  mercadoPagoPublicKey: string | null
+  initialName?: string
+  initialWhatsapp?: string
+  initialEmail?: string
+}) {
   const { items, subtotal, clear } = useCart()
   const router = useRouter()
 
@@ -31,9 +38,9 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [name, setName] = useState('')
-  const [whatsapp, setWhatsapp] = useState('')
-  const [email, setEmail] = useState('')
+  const [name, setName] = useState(initialName)
+  const [whatsapp, setWhatsapp] = useState(initialWhatsapp)
+  const [email, setEmail] = useState(initialEmail)
   const [fulfillment, setFulfillment] = useState<'retirada' | 'envio'>('retirada')
   const [shippingRateId, setShippingRateId] = useState('')
   const [street, setStreet] = useState('')
@@ -213,12 +220,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey }: { shippi
                 <div className="space-y-4 border-l-2 border-offwhite/[0.08] pl-5">
                   <div>
                     <label className={labelCls}>Faixa de frete</label>
-                    <select value={shippingRateId} onChange={e => setShippingRateId(e.target.value)} className={`${inputCls} [color-scheme:var(--form-scheme)]`}>
-                      <option value="">Selecione…</option>
-                      {shippingRates.map(r => (
-                        <option key={r.id} value={r.id}>{r.label}{r.state ? ` (${r.state})` : ''} — {fmt(r.price)}</option>
-                      ))}
-                    </select>
+                    <ShippingRateSelect rates={shippingRates} value={shippingRateId} onChange={setShippingRateId} />
                   </div>
                   <div className="grid sm:grid-cols-[1fr_120px] gap-4">
                     <div><label className={labelCls}>Rua</label><input type="text" value={street} onChange={e => setStreet(e.target.value)} className={inputCls} /></div>

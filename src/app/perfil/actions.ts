@@ -5,9 +5,9 @@ import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession, destroyClientSession } from '@/lib/client-auth/session'
 import { sendReceiptEmail } from '@/lib/email/receipt'
-import { isFullName } from '@/lib/utils'
+import { isFullName, formatWhatsApp } from '@/lib/utils'
 
-export async function updateAccountDetails(data: { name: string; email: string }): Promise<{ ok?: boolean; error?: string }> {
+export async function updateAccountDetails(data: { name: string; email: string; phone?: string }): Promise<{ ok?: boolean; error?: string }> {
   const session = await getVerifiedClientSession()
   if (!session) return { error: 'Sessão expirada.' }
 
@@ -16,15 +16,102 @@ export async function updateAccountDetails(data: { name: string; email: string }
   if (!isFullName(name)) return { error: 'Informe nome e sobrenome.' }
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'E-mail inválido.' }
 
+  const update: { name: string; email: string | null; whatsapp?: string } = { name, email: email || null }
+
   const db = await createServiceClient()
+
+  if (data.phone !== undefined) {
+    let phone: string
+    try {
+      phone = formatWhatsApp(data.phone)
+    } catch {
+      return { error: 'Informe um telefone válido (DDD + 9 dígitos).' }
+    }
+
+    // whatsapp is also the login identifier — a collision here would let one
+    // client take over another's account (same lookup used by /entrar), so
+    // this has to be checked, not just assumed unique like name/email.
+    const { data: existing } = await db
+      .from('clients')
+      .select('id')
+      .eq('whatsapp', phone)
+      .neq('id', session.clientId)
+      .maybeSingle()
+    if (existing) return { error: 'Este telefone já está em uso por outra conta.' }
+
+    update.whatsapp = phone
+  }
+
   const { error } = await db
     .from('clients')
-    .update({ name, email: email || null })
+    .update(update)
     .eq('id', session.clientId)
 
   if (error) return { error: 'Erro ao salvar. Tente novamente.' }
 
   revalidatePath('/perfil/conta')
+  revalidatePath('/perfil')
+  revalidatePath('/conta')
+  return { ok: true }
+}
+
+const MAX_AVATAR_BYTES = 3 * 1024 * 1024
+const ACCEPTED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+
+/**
+ * Uploaded server-side (not directly from the browser to Storage like the
+ * staff equivalent) because client sessions are a custom HMAC cookie, not
+ * Supabase Auth — clients never get the `authenticated` Postgres role that
+ * the avatars bucket's client-side write policies require. The service-role
+ * client here bypasses RLS entirely, so no client-facing storage policy is
+ * needed at all.
+ */
+export async function uploadClientAvatar(formData: FormData): Promise<{ ok?: boolean; error?: string; avatarUrl?: string }> {
+  const session = await getVerifiedClientSession()
+  if (!session) return { error: 'Sessão expirada.' }
+
+  const file = formData.get('file')
+  if (!(file instanceof File)) return { error: 'Nenhum arquivo enviado.' }
+  if (!ACCEPTED_AVATAR_TYPES.includes(file.type)) return { error: 'Formato inválido. Envie uma imagem JPG, PNG ou WEBP.' }
+  if (file.size > MAX_AVATAR_BYTES) return { error: 'Imagem muito grande. Envie um arquivo de até 3MB.' }
+
+  const db = await createServiceClient()
+  const folder = `clients/${session.clientId}`
+  const ext = file.name.split('.').pop() || 'jpg'
+  const path = `${folder}/${Date.now()}.${ext}`
+
+  const { error: uploadError } = await db.storage.from('avatars').upload(path, file, { cacheControl: '3600', upsert: true })
+  if (uploadError) return { error: 'Erro ao enviar a foto.' }
+
+  const { data: publicUrlData } = db.storage.from('avatars').getPublicUrl(path)
+
+  const { error } = await db.from('clients').update({ avatar_url: publicUrlData.publicUrl }).eq('id', session.clientId)
+  if (error) return { error: 'Erro ao salvar a foto.' }
+
+  // Every upload uses a fresh timestamped filename, so old photos never get
+  // overwritten — clean them up or they'd pile up in the bucket forever.
+  const { data: files } = await db.storage.from('avatars').list(folder)
+  const toRemove = (files ?? []).map(f => `${folder}/${f.name}`).filter(p => p !== path)
+  if (toRemove.length > 0) await db.storage.from('avatars').remove(toRemove)
+
+  revalidatePath('/perfil')
+  revalidatePath('/conta')
+  return { ok: true, avatarUrl: publicUrlData.publicUrl }
+}
+
+export async function removeClientAvatar(): Promise<{ ok?: boolean; error?: string }> {
+  const session = await getVerifiedClientSession()
+  if (!session) return { error: 'Sessão expirada.' }
+
+  const db = await createServiceClient()
+  const { error } = await db.from('clients').update({ avatar_url: null }).eq('id', session.clientId)
+  if (error) return { error: 'Erro ao remover a foto.' }
+
+  const folder = `clients/${session.clientId}`
+  const { data: files } = await db.storage.from('avatars').list(folder)
+  const toRemove = (files ?? []).map(f => `${folder}/${f.name}`)
+  if (toRemove.length > 0) await db.storage.from('avatars').remove(toRemove)
+
   revalidatePath('/perfil')
   revalidatePath('/conta')
   return { ok: true }

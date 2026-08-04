@@ -5,7 +5,6 @@ import type { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { AccountForm } from '@/components/profile/AccountForm'
 import { DeleteAccountButton } from '@/components/profile/DeleteAccountButton'
 import { WhatsappConsentToggle } from '@/components/profile/WhatsappConsentToggle'
 import { ReminderEmailToggle } from '@/components/profile/ReminderEmailToggle'
@@ -20,7 +19,7 @@ export default async function ContaDetalhesPage() {
   const db = await createServiceClient()
   const { data: client } = await db
     .from('clients')
-    .select('name, whatsapp, email, consent_whatsapp, receive_reminder_emails, created_at')
+    .select('consent_whatsapp, receive_reminder_emails, created_at')
     .eq('id', session.clientId)
     .single()
 
@@ -33,15 +32,10 @@ export default async function ContaDetalhesPage() {
       <ProfileHeader title="Detalhes da conta" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
-        <AccountForm initialName={client.name} initialEmail={client.email ?? ''} />
-
-        <div className="mb-[26px] pt-[6px]">
-          <p className="font-body font-light text-xs tracking-[0.28em] uppercase text-offwhite/40 mb-[6px]">Telefone</p>
-          <p className="font-data text-[14px] text-offwhite/60">{client.whatsapp}</p>
-          <p className="font-body font-light text-[10px] text-offwhite/25 mt-[4px]">
-            Vinculado ao seu login — para trocar, fale com a gente pelo WhatsApp.
-          </p>
-        </div>
+        <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.08em] mb-[26px]">
+          Nome, telefone, e-mail e foto ficam em{' '}
+          <a href="/perfil" className="text-offwhite/45 hover:text-offwhite/70 underline underline-offset-2 transition-colors">Meu perfil</a>.
+        </p>
 
         <WhatsappConsentToggle initialConsent={client.consent_whatsapp} />
         <ReminderEmailToggle initialConsent={client.receive_reminder_emails} />
