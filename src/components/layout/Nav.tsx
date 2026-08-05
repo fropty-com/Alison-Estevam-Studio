@@ -79,7 +79,7 @@ export function Nav() {
       <nav
         role="navigation"
         aria-label="Navegação principal"
-        className="lg:hidden sticky top-0 z-[200] mx-3 mt-3 flex items-center justify-between
+        className="xl:hidden sticky top-0 z-[200] mx-3 mt-3 flex items-center justify-between
                    border border-offwhite/[0.18] bg-charcoal/95 backdrop-blur-brand px-4 py-[8px]"
       >
         <button
@@ -108,9 +108,9 @@ export function Nav() {
       <nav
         role="navigation"
         aria-label="Navegação principal (desktop)"
-        className="hidden lg:block fixed top-0 left-0 right-0 z-[200] h-[56px] bg-charcoal border-b border-offwhite/[0.08]"
+        className="hidden xl:block fixed top-0 left-0 right-0 z-[200] h-[56px] bg-charcoal border-b border-offwhite/[0.08]"
       >
-      <div className="h-full max-w-[1400px] mx-auto grid grid-cols-[1fr_auto_1fr] gap-6 items-center px-8 xl:px-[60px]">
+      <div className="h-full max-w-[1400px] mx-auto grid grid-cols-[1fr_auto_1fr] gap-6 items-center px-8 2xl:px-[60px]">
         <Link
           href="/"
           aria-label={`${BRAND.name} — Início`}
@@ -119,7 +119,7 @@ export function Nav() {
           Alison Estevam
         </Link>
 
-        <ul className="flex gap-5 xl:gap-8 list-none whitespace-nowrap" role="list">
+        <ul className="flex gap-5 2xl:gap-8 list-none whitespace-nowrap" role="list">
           {NAV_LINKS.map(({ href, label, section }) => (
             <li key={section}>
               <a
@@ -171,7 +171,7 @@ export function Nav() {
         aria-label="Menu"
         tabIndex={-1}
         className={cn(
-          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-4 outline-none',
+          'xl:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-4 outline-none',
           'bg-charcoal/95 backdrop-blur-[20px]',
           'transition-opacity duration-400 ease-brand-out',
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

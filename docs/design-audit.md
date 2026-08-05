@@ -178,6 +178,32 @@ Execução completa após aprovação do relatório. Cada item abaixo foi commit
 - **Skeletons de loading**: `ServicePicker`, `CarePicker` (agendamento) e `PaymentBrick` (checkout) trocaram o texto "Carregando…" por placeholders visuais pulsantes (`Skeleton`, `ServiceListSkeleton`), com `role="status"` para leitor de tela.
 - **Badge de status**: `OrdersListSection` e `pedido/[code]/page.tsx` duplicavam o mesmo mapa de label/cor de status de pedido byte a byte — extraído para `src/lib/orders.ts`. O padrão do admin (`OrderRow.tsx`, dot + i18n) foi mantido separado por ser um tratamento visual genuinamente diferente, não duplicação.
 
+## 11. Auditoria de tablet (768-1024px) — feita em rodada posterior
+
+O PDF pede explicitamente para não tratar tablet como "mobile ampliado". Verificação: os breakpoints deste projeto são `sm 480 / md 768 / lg 1024 / xl 1280 / 2xl 1440` (`tailwind.config.ts`), ou seja, a faixa de tablet do PDF (768-1024px) corresponde exatamente a `md`→`lg-1` no sistema de tokens já existente.
+
+### Achado crítico confirmado e corrigido
+
+**`Nav.tsx` (topbar pública) — CTA "Agendar" e link "Entrar" inacessíveis em 1024-1279px.** A barra desktop virava visível em `lg:` (1024px), mas seu conteúdo real (logo + 6 links + cluster de ações) precisa de ~1219px para caber — medido ao vivo no browser (`getBoundingClientRect`), o cluster de ações (tema, Produtos, carrinho, Entrar, botão Agendar) renderizava com a borda direita em **x=1219 dentro de um viewport de apenas 1024px**, ou seja, ficava fisicamente fora da tela. Como o projeto usa `overflow-x: hidden` no body, isso não virava nem uma barra de rolagem — o CTA principal do site ficava **impossível de clicar** em qualquer tablet-paisagem ou notebook pequeno nessa faixa (achado de maior severidade desta sessão inteira: bloqueava a ação mais importante do site).
+
+Causa raiz: o breakpoint de troca (`lg:hidden`/`hidden lg:block`) estava um nível abaixo do necessário, e o espaçamento "extra" que o próprio nav ganhava em telas grandes (`xl:gap-8` entre os links, `xl:px-[60px]` no container) piorava ainda mais a matemática exatamente na faixa 1280-1439px depois de mover ingenuamente o breakpoint para `xl`.
+
+Corrigido em duas partes:
+1. Barra mobile/desktop trocam em `xl:` (1280px) em vez de `lg:` — dá margem real ao conteúdo medido (1219px).
+2. O espaçamento extra (`gap-8`, `px-[60px]`) passa a ativar só em `2xl:` (1440px) em vez de `xl:` — sem isso, a própria folga "premium" reintroduzia o overflow na faixa 1280-1439px.
+
+Testado ao vivo no browser em 1024 (mostra a barra compacta, sem overflow), 1280, 1440 e 1600px — nenhum elemento fica fora do viewport em nenhuma dessas larguras.
+
+### Verificado e confirmado correto (não precisa de ação)
+
+- **`/produtos`** — grid já é `grid-cols-2 md:grid-cols-3 lg:grid-cols-4`: 3 colunas dedicadas para tablet, não reaproveita nem o layout de 2 colunas do mobile nem o de 4 do desktop.
+- **`AgendarFlow` (sidebar de resumo)** — só aparece em `lg:` (1024px+). Verificado que em 768px (tablet retrato) não há largura confortável para sidebar (260px) + conteúdo principal lado a lado; a decisão de manter o resumo condensado abaixo do formulário nessa faixa é correta, não um "mobile esticado" por negligência.
+- **`AdminTopBar`** (corrigido nesta mesma sessão, rodada de mobile) — cluster de ícones (~302px) cabe com folga em qualquer largura ≥768px; sem risco de overflow no tablet.
+
+### Achado de menor severidade, não corrigido nesta rodada
+
+- **`AdminNav`** — a barra lateral do admin só vira "sticky" persistente em `lg:` (1024px); entre 768-1023px (ex.: iPad retrato numa recepção de barbearia) o barbeiro ainda usa o drawer hambúrguer de mobile em vez de uma versão compacta (64px, só ícones) da sidebar, que já existe como estado (`collapsed`) mas hoje só é alcançável manualmente em telas ≥1024px. Não é um bug (nada quebra ou fica inacessível) — é uma oportunidade real de melhoria específica de tablet que ficou de fora por exigir mudança de estado/JS que não pôde ser testada ao vivo (login admin fora do escopo desta sessão). Recomendação futura: tornar `md:` o breakpoint em que a sidebar physical assume o modo compacto por padrão, liberando o hambúrguer só abaixo de `md`.
+
 ### O que ficou de fora (limitação do ambiente, não de escopo)
 Nenhuma das telas alteradas pôde ser clicada até um estado com dados reais nesta sessão: o ambiente local não tem `availability_rules` semeadas (todo dia do calendário aparece "indisponível") e o login administrativo não pôde ser automatizado (fora do escopo de segurança desta sessão). Todo o trabalho foi validado por:
 1. `tsc`/`lint`/`build`/`test` a cada commit (sempre verde);
