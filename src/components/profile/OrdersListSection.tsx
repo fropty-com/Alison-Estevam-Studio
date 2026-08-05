@@ -1,28 +1,9 @@
 import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
+import { ORDER_STATUS_LABEL, ORDER_STATUS_COLOR } from '@/lib/orders'
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  aguardando_pagamento: 'Aguardando pagamento',
-  pago: 'Pago',
-  preparando: 'Preparando',
-  enviado: 'Enviado',
-  pronto_retirada: 'Pronto para retirada',
-  concluido: 'Concluído',
-  cancelado: 'Cancelado',
-}
-
-const STATUS_COLOR: Record<string, string> = {
-  aguardando_pagamento: 'text-gold',
-  pago: 'text-sage-light',
-  preparando: 'text-sage-light',
-  enviado: 'text-sage-light',
-  pronto_retirada: 'text-sage-light',
-  concluido: 'text-offwhite/55',
-  cancelado: 'text-error/60',
 }
 
 interface Order {
@@ -63,8 +44,8 @@ export function OrdersListSection({ orders }: { orders: Order[] }) {
             <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.06em] mt-[3px] truncate">
               {o.itemsSummary || '—'}
             </p>
-            <p className={`font-body font-medium text-[9px] tracking-[0.15em] uppercase mt-1 ${STATUS_COLOR[o.status] ?? 'text-offwhite/55'}`}>
-              {STATUS_LABEL[o.status] ?? o.status}
+            <p className={`font-body font-medium text-[9px] tracking-[0.15em] uppercase mt-1 ${ORDER_STATUS_COLOR[o.status] ?? 'text-offwhite/55'}`}>
+              {ORDER_STATUS_LABEL[o.status] ?? o.status}
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">

@@ -3,32 +3,13 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
 import { BRAND } from '@/config/brand'
+import { ORDER_STATUS_LABEL, ORDER_STATUS_COLOR } from '@/lib/orders'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: `Seu pedido — ${BRAND.fullName}` }
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-}
-
-const STATUS_LABEL: Record<string, string> = {
-  aguardando_pagamento: 'Aguardando pagamento',
-  pago: 'Pago',
-  preparando: 'Preparando',
-  enviado: 'Enviado',
-  pronto_retirada: 'Pronto para retirada',
-  concluido: 'Concluído',
-  cancelado: 'Cancelado',
-}
-
-const STATUS_COLOR: Record<string, string> = {
-  aguardando_pagamento: 'text-gold',
-  pago: 'text-sage-light',
-  preparando: 'text-sage-light',
-  enviado: 'text-sage-light',
-  pronto_retirada: 'text-sage-light',
-  concluido: 'text-offwhite/55',
-  cancelado: 'text-error/60',
 }
 
 export default async function PedidoPage({ params }: { params: Promise<{ code: string }> }) {
@@ -57,8 +38,8 @@ export default async function PedidoPage({ params }: { params: Promise<{ code: s
         <h1 className="font-display font-normal text-3xl tracking-[0.05em] uppercase text-offwhite mb-2">
           Obrigado{client?.name ? `, ${client.name.split(' ')[0]}` : ''}!
         </h1>
-        <p className={`font-body font-medium text-[10px] tracking-[0.2em] uppercase mb-8 ${STATUS_COLOR[order.status] ?? 'text-offwhite/55'}`}>
-          {STATUS_LABEL[order.status] ?? order.status}
+        <p className={`font-body font-medium text-[10px] tracking-[0.2em] uppercase mb-8 ${ORDER_STATUS_COLOR[order.status] ?? 'text-offwhite/55'}`}>
+          {ORDER_STATUS_LABEL[order.status] ?? order.status}
         </p>
 
         <div className="border border-offwhite/[0.08] p-6 text-left mb-8">
