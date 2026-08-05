@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { createProduct, updateProduct } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
 const selectCls = `${inputCls} appearance-none pr-8`
@@ -33,6 +34,7 @@ export function ProductFormModal({ product, onClose }: { product?: ProductFormVa
   const [error, setError] = useState<string | null>(null)
   const [imageUrl, setImageUrl] = useState(product?.image_url ?? null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const panelRef = useModalA11y(onClose)
 
   const isEditing = !!product
 
@@ -88,7 +90,7 @@ export function ProductFormModal({ product, onClose }: { product?: ProductFormVa
       className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-charcoal-deep/60"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="relative w-full max-w-[440px] bg-charcoal border border-offwhite/[0.14] p-6 max-h-[90vh] overflow-y-auto">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-label={t.products.eyebrow} tabIndex={-1} className="relative w-full max-w-[440px] bg-charcoal border border-offwhite/[0.14] p-6 max-h-[90vh] overflow-y-auto outline-none">
         <button
           onClick={onClose}
           aria-label={t.agenda.close}

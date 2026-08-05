@@ -6,6 +6,7 @@ import { cn, maskPhoneInput, isFullName, isValidWhatsApp } from '@/lib/utils'
 import { createManualWaitlistEntry } from '@/app/admin/actions'
 import { todayInSaoPaulo } from '@/lib/timezone'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 import { ClientAvatar } from './ClientsTable'
 
 interface Service { id: string; name: string; is_whatsapp_only: boolean }
@@ -28,6 +29,7 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const panelRef = useModalA11y(onClose)
 
   const [query, setQuery] = useState('')
   const [hits, setHits] = useState<ClientHit[]>([])
@@ -79,7 +81,7 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-start sm:items-center justify-center p-4 bg-charcoal-deep/60 overflow-y-auto" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="relative w-full max-w-[480px] my-8 bg-charcoal border border-offwhite/[0.14] p-6">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-label={t.waitlist.modal.title} tabIndex={-1} className="relative w-full max-w-[480px] my-8 bg-charcoal border border-offwhite/[0.14] p-6 outline-none">
         <button
           onClick={onClose}
           aria-label={t.waitlist.modal.close}

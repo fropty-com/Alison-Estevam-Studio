@@ -7,6 +7,7 @@ import { createManualAppointment } from '@/app/admin/actions'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 import { startOfMonth, format } from 'date-fns'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 import { ClientAvatar } from './ClientsTable'
 
 interface Service { id: string; name: string; price: number; duration: number; is_whatsapp_only: boolean }
@@ -21,6 +22,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const panelRef = useModalA11y(onClose)
 
   // Service + complements
   const [services, setServices] = useState<Service[]>([])
@@ -126,7 +128,7 @@ export function NewAppointmentModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-40 flex items-start sm:items-center justify-center p-4 bg-charcoal-deep/60 overflow-y-auto" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="relative w-full max-w-[560px] my-8 bg-charcoal border border-offwhite/[0.14] p-6">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-label={t.agenda.newAppointment.title} tabIndex={-1} className="relative w-full max-w-[560px] my-8 bg-charcoal border border-offwhite/[0.14] p-6 outline-none">
         <button
           onClick={onClose}
           aria-label={t.agenda.close}

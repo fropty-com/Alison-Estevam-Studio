@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateClientProfile } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
 const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
@@ -27,6 +28,7 @@ export function EditClientModal({
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const panelRef = useModalA11y(onClose)
 
   const [name, setName] = useState(initialName)
   const [whatsapp, setWhatsapp] = useState(initialWhatsapp)
@@ -50,7 +52,7 @@ export function EditClientModal({
       className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-charcoal-deep/60"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="relative w-full max-w-[380px] bg-charcoal border border-offwhite/[0.14] p-6">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-label={t.clients.edit.title} tabIndex={-1} className="relative w-full max-w-[380px] bg-charcoal border border-offwhite/[0.14] p-6 outline-none">
         <button
           onClick={onClose}
           aria-label={t.clients.detail.close}

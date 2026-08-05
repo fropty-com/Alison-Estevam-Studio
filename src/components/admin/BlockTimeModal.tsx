@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { blockTimeRange } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
 const selectCls = `${inputCls} appearance-none pr-8`
@@ -41,6 +42,7 @@ export function BlockTimeModal({
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const panelRef = useModalA11y(onClose)
 
   const allOptions = hourOptions(gridStartMin, gridEndMin)
   const startOptions = allOptions.slice(0, -1)
@@ -72,7 +74,7 @@ export function BlockTimeModal({
       className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-charcoal-deep/60"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="relative w-full max-w-[380px] bg-charcoal border border-offwhite/[0.14] p-6">
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-label={t.agenda.blockTime.title} tabIndex={-1} className="relative w-full max-w-[380px] bg-charcoal border border-offwhite/[0.14] p-6 outline-none">
         <button
           onClick={onClose}
           aria-label={t.agenda.close}
