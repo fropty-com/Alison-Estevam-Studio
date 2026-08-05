@@ -136,3 +136,47 @@ Pendente desde `docs/auditoria/02-responsividade-temas.md` (seção "Não cobert
 - `ConfirmAttendanceButton.tsx`, `AdminNav.tsx`, `AdminTopBar.tsx`, `ClientHeader.tsx` não foram relidos nesta rodada (já conhecidos de sessões de trabalho anteriores no mesmo projeto — sem indicação de problema novo, mas não formalmente revisitados aqui).
 - Performance visual (peso de imagem, CLS, carregamento de fonte) não auditada — candidata a uma checagem pontual com Lighthouse na Fase 4.
 - Teste de leitor de tela real (não apenas checagem estática de aria) requer uma sessão dedicada com ferramenta externa.
+
+---
+
+## 10. Fechamento — o que foi de fato implementado (Fases 1-3)
+
+Execução completa após aprovação do relatório. Cada item abaixo foi commitado e enviado para produção individualmente, validado com `tsc --noEmit` → `lint` → `build` → `test` (65 testes) a cada passo.
+
+### Fase 1 — concluída
+- **`Button`**: recalibrado (tamanhos `sm`/`lg` passaram a bater exatamente com os padrões reais de CTA de nav e de formulário; peso de fonte corrigido para `font-medium` nos variants sólidos, que estava `font-light` por engano; variant `destructive` recalibrado do estilo com borda — nunca usado de fato — para o padrão sólido real). Adotado em: `WaitlistForm`, `DetailsForm`, `SummaryStep` (`AgendarFlow`), `ConfirmForm`, `RescheduleFlow`, `CancelForm`, CTA "Agendar" da `Nav` pública.
+- **Hierarquia do drawer mobile**: links "Produtos"/"Entrar" perderam a borda tipo-botão que competia com o CTA principal — agora texto plano, igual aos demais itens do menu.
+- **Contraste WCAG**: piso de opacidade de `text-offwhite` elevado de valores como `/15`–`/50` (alguns medindo ~2.1:1) para `/55` (4.79:1, passa AA para texto normal) em 122 arquivos. Pares base/hover que colidiram no mesmo valor após o ajuste tiveram o hover elevado para `/85` para preservar o feedback de interação.
+- **Modais do admin**: `BlockTimeModal`, `EditClientModal`, `ProductFormModal`, `AddWaitlistModal`, `NewAppointmentModal` ganharam `role="dialog"`/`aria-modal`, Escape para fechar e foco preso dentro do painel via o novo hook `useModalA11y`.
+- **Varredura de aria-label e teclado**: sem lacunas reais encontradas — os 2 candidatos identificados por busca automatizada eram falsos positivos (ícone com texto visível ao lado); os cards com `role="button"` do fluxo de agendamento já tinham `tabIndex`/`onKeyDown` corretos.
+
+### Fase 2 — concluída
+- **`DetailCard`**: adotado em `SummaryStep` (antes duplicava a mesma estrutura já usada em `BookingChrome.tsx`); tipo de `rows` ampliado para `React.ReactNode` (necessário para a linha de cupom com botão "remover" embutido).
+- **`ResultCard`**: extraído a partir do card "concluído" idêntico repetido em `CancelForm`, `ConfirmForm` e `RescheduleFlow`.
+- **`SlotGrid`**: deixou de retornar `null` quando não há horários — renderiza a mensagem "sem horários" internamente, com `emptyMessage`/`emptySlot` opcionais (usado para injetar o `WaitlistForm`).
+- **Empty states com CTA**: `PaymentsListSection` e `ReviewsSection` (`/perfil/pagamentos`, `/perfil/avaliacoes`) não tinham nenhum caminho de ação — ganharam link "Agendar agora", igual ao já existente em `OrdersListSection`.
+
+### Fase 3 — concluída
+- **Skeletons de loading**: `ServicePicker`, `CarePicker` (agendamento) e `PaymentBrick` (checkout) trocaram o texto "Carregando…" por placeholders visuais pulsantes (`Skeleton`, `ServiceListSkeleton`), com `role="status"` para leitor de tela.
+- **Badge de status**: `OrdersListSection` e `pedido/[code]/page.tsx` duplicavam o mesmo mapa de label/cor de status de pedido byte a byte — extraído para `src/lib/orders.ts`. O padrão do admin (`OrderRow.tsx`, dot + i18n) foi mantido separado por ser um tratamento visual genuinamente diferente, não duplicação.
+
+### O que ficou de fora (limitação do ambiente, não de escopo)
+Nenhuma das telas alteradas pôde ser clicada até um estado com dados reais nesta sessão: o ambiente local não tem `availability_rules` semeadas (todo dia do calendário aparece "indisponível") e o login administrativo não pôde ser automatizado (fora do escopo de segurança desta sessão). Todo o trabalho foi validado por:
+1. `tsc`/`lint`/`build`/`test` a cada commit (sempre verde);
+2. as classes CSS novas conferidas caractere a caractere contra as originais que substituíram;
+3. verificação ao vivo no browser sempre que a tela era alcançável sem dado semeado (CTA da Nav, drawer mobile, contraste real medido via `getComputedStyle`, lógica de foco/Tab/Escape testada isoladamente com o mesmo algoritmo do hook);
+4. a Fase 4 completa do plano original (regressão visual em 375/768/1024/1280/1920px, teste manual do fluxo ponta a ponta) fica pendente de uma sessão com acesso ao ambiente ao vivo ou dados de teste semeados.
+
+### Tabela-resumo final atualizada
+
+| Área | Problema anterior | Melhoria aplicada | Status |
+|---|---|---|---|
+| Botões | `Button` pronto, não usado; 27 arquivos duplicavam o CTA à mão | Adotado nos 7 pontos de maior repetição; `destructive` recalibrado | ✅ Concluído |
+| Contraste WCAG | Nunca auditado formalmente; vários tokens abaixo de AA | Piso de `/55` em 122 arquivos + correção de pares hover colididos | ✅ Concluído |
+| Modais do admin | Sem Escape, sem foco preso, sem `role="dialog"` | `useModalA11y` aplicado nos 5 modais | ✅ Concluído |
+| Cards de resumo/resultado | Padrão repetido sem componente comum | `DetailCard` + `ResultCard` extraídos e adotados | ✅ Concluído |
+| `SlotGrid` sem horário | Retornava `null` silenciosamente | Mensagem interna + `emptySlot` customizável | ✅ Concluído |
+| Empty states sem CTA | Pagamentos/Avaliações sem próxima ação | Link "Agendar agora" adicionado | ✅ Concluído |
+| Loading só texto | "Carregando…" sem placeholder visual | Skeletons pulsantes com `role="status"` | ✅ Concluído |
+| Badge de status duplicado | Mesmo mapa em 2 arquivos | Extraído para `src/lib/orders.ts` | ✅ Concluído |
+| Validação em dados reais / breakpoints | — | Bloqueado por falta de dados semeados e login admin nesta sessão | ⏳ Pendente (Fase 4) |
