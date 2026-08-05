@@ -38,8 +38,9 @@ const variants: Record<ButtonVariant, string> = {
     'hover:bg-sage-light hover:-translate-y-0.5'
   ),
   destructive: cn(
-    'font-light bg-error/10 border border-error/25 text-[#C97070]',
-    'hover:bg-error/15'
+    'font-medium bg-error text-offwhite',
+    'hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]',
+    'active:translate-y-0'
   ),
 }
 

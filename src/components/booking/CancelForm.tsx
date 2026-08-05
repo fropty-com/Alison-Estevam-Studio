@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
 
 export function CancelForm({ code }: { code: string }) {
   const [pending,  startTransition] = useTransition()
@@ -47,16 +47,9 @@ export function CancelForm({ code }: { code: string }) {
   return (
     <div className="space-y-4">
       {!confirm ? (
-        <button
-          onClick={() => setConfirm(true)}
-          className={cn(
-            'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-            'bg-error text-offwhite transition-all duration-300',
-            'hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]',
-          )}
-        >
+        <Button variant="destructive" size="lg" className="w-full" onClick={() => setConfirm(true)}>
           Cancelar agendamento
-        </button>
+        </Button>
       ) : (
         <>
           <div>
@@ -77,18 +70,9 @@ export function CancelForm({ code }: { code: string }) {
           )}
 
           <div className="flex gap-3">
-            <button
-              onClick={handleCancel}
-              disabled={pending}
-              className={cn(
-                'flex-1 py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-                'bg-error text-offwhite transition-all duration-300',
-                'hover:-translate-y-px hover:shadow-[0_8px_20px_rgba(139,58,58,0.35)]',
-                'disabled:opacity-40 disabled:cursor-not-allowed'
-              )}
-            >
-              {pending ? 'Cancelando…' : 'Confirmar cancelamento'}
-            </button>
+            <Button variant="destructive" size="lg" className="flex-1" onClick={handleCancel} loading={pending} loadingText="Cancelando">
+              Confirmar cancelamento
+            </Button>
             <button
               onClick={() => setConfirm(false)}
               disabled={pending}
