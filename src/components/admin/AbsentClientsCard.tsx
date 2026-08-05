@@ -56,7 +56,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
             <Link
               key={c.id}
               href={`/admin/clientes/${c.id}`}
-              className="flex items-center justify-between gap-3 px-6 py-3 hover:bg-offwhite/5 transition-colors"
+              className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-6 py-3 hover:bg-offwhite/5 transition-colors"
             >
               <span className="flex items-center gap-3 min-w-0">
                 <ClientAvatar name={c.name} avatarUrl={c.avatarUrl} size={26} />

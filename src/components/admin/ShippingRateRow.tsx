@@ -40,7 +40,7 @@ export function ShippingRateRow({ rate }: { rate: ShippingRate }) {
 
   return (
     <div className={cn('px-5 py-4', !rate.active && 'opacity-45')}>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           disabled={pending}
           onClick={() => act(() => updateShippingRate(rate.id, { active: !rate.active }))}

@@ -60,7 +60,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             isOwner={isOwner}
             pending={pendingList}
           />
-          <main className="flex-1 min-w-0 pt-8 lg:pt-0">
+          <main className="flex-1 min-w-0">
             {children}
           </main>
         </div>

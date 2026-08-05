@@ -25,7 +25,7 @@ export function CouponRow({ coupon }: {
 
   return (
     <div className={cn('px-5 py-4', !coupon.active && 'opacity-45')}>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           disabled={pending}
           onClick={() => startTransition(async () => {

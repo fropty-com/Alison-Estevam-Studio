@@ -26,8 +26,8 @@ export function StaffMemberRow({ member, isSelf }: {
 
   return (
     <div className="px-5 py-4">
-      <div className="flex items-center gap-4">
-        <span className="font-body font-light text-[12px] text-offwhite/70 flex-1">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="font-body font-light text-[12px] text-offwhite/70 flex-1 min-w-[100px] truncate">
           {member.name}
           {isSelf && <span className="text-offwhite/55">{t.settings.staff.you}</span>}
         </span>

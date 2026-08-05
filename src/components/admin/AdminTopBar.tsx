@@ -60,14 +60,21 @@ export function AdminTopBar({
   const initial = staffName.trim().charAt(0).toUpperCase() || 'A'
 
   return (
-    <header className="hidden lg:flex items-center justify-between h-[56px] px-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0 print:hidden">
-      <AdminGlobalSearch />
+    <header className="flex items-center justify-end lg:justify-between h-[56px] pl-[60px] pr-4 lg:pl-6 lg:pr-6 border-b border-offwhite/[0.06] bg-charcoal-mid shrink-0 print:hidden">
+      {/* Busca fica reservada para telas largas — no mobile o hamburguer
+          (fixed, top-4 left-4) já ocupa esse canto, e o cluster de ícones
+          à direita (com o logout) é o que precisa estar sempre alcançável. */}
+      <div className="hidden lg:block">
+        <AdminGlobalSearch />
+      </div>
 
       {/* Right cluster */}
-      <div className="flex items-center gap-3 shrink-0">
-        <LanguageSelector />
-        <HelpMenu />
-        <ThemeToggle />
+      <div className="flex items-center gap-2 lg:gap-3 shrink-0">
+        <div className="hidden sm:flex items-center gap-2 lg:gap-3">
+          <LanguageSelector />
+          <HelpMenu />
+          <ThemeToggle />
+        </div>
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>

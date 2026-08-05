@@ -19,9 +19,13 @@ function ThemeInit() {
 }
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
-  const pathname  = usePathname()
-  const isAdmin   = pathname.startsWith('/admin')
-  const isFocused = ['/agendar', '/entrar', '/conta', '/perfil', '/reagendar', '/cancelar', '/confirmar', '/checkout', '/pedido'].some(p => pathname.startsWith(p))
+  const pathname    = usePathname()
+  const isAdmin     = pathname.startsWith('/admin')
+  const isFocused   = ['/agendar', '/entrar', '/conta', '/perfil', '/reagendar', '/cancelar', '/confirmar', '/checkout', '/pedido'].some(p => pathname.startsWith(p))
+  // Área logada do cliente (dashboard + perfil) já tem seus próprios canais
+  // de contato/ajuda na topbar — o botão flutuante de WhatsApp só faz
+  // sentido nos fluxos de agendamento/checkout, onde ainda não há chrome.
+  const isClientArea = pathname.startsWith('/conta') || pathname.startsWith('/perfil')
 
   if (isAdmin) return <>{children}</>
 
@@ -32,7 +36,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       <CartProvider>
         <ThemeInit />
         <main>{children}</main>
-        <FloatingWhatsapp />
+        {!isClientArea && <FloatingWhatsapp />}
       </CartProvider>
     )
   }

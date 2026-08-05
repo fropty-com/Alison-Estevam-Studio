@@ -28,7 +28,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
 
   return (
     <div className={cn('px-5 py-4 transition-opacity duration-200', !setting.active && 'opacity-45')}>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           disabled={pending}
           onClick={() => act(() => updatePaymentFeeSetting(setting.id, { active: !setting.active }))}
@@ -84,7 +84,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
       </div>
 
       {setting.method === 'pix' && (
-        <div className="flex items-center gap-4 mt-3 pl-[50px]">
+        <div className="flex flex-wrap items-center gap-3 mt-3 sm:pl-[50px]">
           <span className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 shrink-0">
             {t.settings.fees.pixKey}
           </span>

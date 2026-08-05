@@ -32,7 +32,7 @@ export function DetailCard({ rows, footer }: { rows: { label: React.ReactNode; v
   return (
     <div className="border border-offwhite/10 mb-[26px]">
       {rows.map((row, i) => (
-        <div key={i} className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
+        <div key={i} className="flex items-start justify-between gap-3 px-[18px] py-[13px] border-b border-offwhite/[0.08]">
           <span className="font-body font-light text-[12px] text-offwhite/55">{row.label}</span>
           <span className="font-body font-light text-[12px] text-offwhite text-right">{row.value}</span>
         </div>

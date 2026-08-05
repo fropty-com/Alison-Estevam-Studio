@@ -33,7 +33,7 @@ export function WaitlistEntryRow({
   }
 
   return (
-    <div className="flex items-start gap-4 px-5 py-4">
+    <div className="flex flex-wrap items-start gap-3 px-5 py-4">
       <ClientAvatar name={clientName} avatarUrl={clientAvatarUrl} size={30} />
       <div className="flex-1 min-w-0">
         <p className="font-body font-light text-[12.5px] text-offwhite/80">

@@ -56,7 +56,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
         const paid = !!e.paidDate
         const overdue = !paid && e.dueDate < new Date().toISOString().slice(0, 10)
         return (
-          <div key={e.id} className="flex items-center gap-4 px-6 py-3">
+          <div key={e.id} className="flex flex-wrap items-center gap-3 px-6 py-3">
             <div className="flex-1 min-w-0">
               <p className="font-body font-light text-[12px] text-offwhite/75 truncate">{e.description}</p>
               <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
