@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 /** Matches the prototype's per-step "← ..." back link exactly — used on every booking-flow screen. */
 export function BackLink({ children, ...props }: { children: React.ReactNode; href?: string; onClick?: () => void }) {
@@ -37,6 +38,23 @@ export function DetailCard({ rows, footer }: { rows: { label: React.ReactNode; v
         </div>
       ))}
       {footer && <div className="px-[18px] py-[13px]">{footer}</div>}
+    </div>
+  )
+}
+
+/** Placeholder rows matching the service/cuidado card shape — shown while the list is still loading, instead of a plain "Carregando…" line. */
+export function ServiceListSkeleton({ count = 4 }: { count?: number }) {
+  return (
+    <div role="status" aria-label="Carregando" className="flex flex-col gap-[10px]">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} aria-hidden="true" className="border border-offwhite/[0.14] px-[18px] py-[16px] flex items-center justify-between gap-4">
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-[18px] w-2/3" />
+            <Skeleton className="h-[9px] w-1/3" />
+          </div>
+          <Skeleton className="h-[18px] w-14 shrink-0" />
+        </div>
+      ))}
     </div>
   )
 }

@@ -13,7 +13,7 @@ import { BRAND } from '@/config/brand'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
-import { BackLink, StepHeader, DetailCard } from '@/components/booking/BookingChrome'
+import { BackLink, StepHeader, DetailCard, ServiceListSkeleton } from '@/components/booking/BookingChrome'
 import { Button } from '@/components/ui/Button'
 
 /* ── Types ─────────────────────────────────────── */
@@ -133,11 +133,7 @@ function ServicePicker({
   onContinue: () => void
 }) {
   if (services.length === 0) {
-    return (
-      <p className="font-body font-light text-[11px] text-offwhite/55 italic">
-        Carregando serviços…
-      </p>
-    )
+    return <ServiceListSkeleton />
   }
 
   return (
@@ -294,11 +290,7 @@ function CarePicker({
   onContinue: () => void
 }) {
   if (items.length === 0) {
-    return (
-      <p className="font-body font-light text-[11px] text-offwhite/55 italic">
-        Carregando cuidados…
-      </p>
-    )
+    return <ServiceListSkeleton count={5} />
   }
 
   return (

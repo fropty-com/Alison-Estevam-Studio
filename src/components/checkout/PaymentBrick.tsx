@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { Skeleton } from '@/components/ui/Skeleton'
 
 const SDK_URL = 'https://sdk.mercadopago.com/js/v2'
 const CONTAINER_ID = 'mp-payment-brick-container'
@@ -122,9 +123,14 @@ export function PaymentBrick({
   return (
     <div>
       {loading && (
-        <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
-          Carregando formulário de pagamento…
-        </p>
+        <div role="status" aria-label="Carregando formulário de pagamento" className="space-y-3 py-2">
+          <Skeleton className="h-[42px] w-full" />
+          <div className="flex gap-3">
+            <Skeleton className="h-[42px] flex-1" />
+            <Skeleton className="h-[42px] flex-1" />
+          </div>
+          <Skeleton className="h-[42px] w-2/3" />
+        </div>
       )}
       <div id={CONTAINER_ID} />
     </div>
