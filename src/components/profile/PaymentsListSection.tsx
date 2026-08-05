@@ -23,9 +23,12 @@ export function PaymentsListSection({ payments }: { payments: Payment[] }) {
   if (payments.length === 0) {
     return (
       <div className="border border-offwhite/[0.08] px-8 py-12 text-center">
-        <p className="font-body font-light text-[13px] text-offwhite/55">
+        <p className="font-body font-light text-[13px] text-offwhite/55 mb-[10px]">
           Você ainda não possui pagamentos registrados.
         </p>
+        <Link href="/agendar" className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors inline-block">
+          Agendar agora
+        </Link>
       </div>
     )
   }

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ReviewForm } from '@/components/profile/ReviewForm'
@@ -41,9 +42,12 @@ export function ReviewsSection({ pending, reviews }: { pending: PendingReview[];
             <p className="font-body font-light text-[13px] text-offwhite/55 mb-[6px]">
               Você ainda não fez avaliações.
             </p>
-            <p className="font-body font-light text-[11px] text-offwhite/55">
+            <p className="font-body font-light text-[11px] text-offwhite/55 mb-[10px]">
               Após concluir um atendimento, você poderá avaliar sua experiência aqui.
             </p>
+            <Link href="/agendar" className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors inline-block">
+              Agendar agora
+            </Link>
           </div>
         ) : (
           <div className="border border-offwhite/[0.07] divide-y divide-offwhite/6">
