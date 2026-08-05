@@ -88,9 +88,9 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             disabled={pending}
             onClick={() => setCancelModal(true)}
             className={cn(
-              'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-              'bg-error/5 border border-error/20 text-error/60',
-              'hover:bg-error/10 transition-all duration-200 disabled:opacity-40'
+              'px-3 py-[7px] font-body font-medium text-[8px] tracking-[0.28em] uppercase',
+              'bg-error text-offwhite',
+              'hover:brightness-110 transition-all duration-200 disabled:opacity-40'
             )}
           >
             {t.agenda.actions.cancel}
@@ -219,7 +219,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
                 setCancelModal(false)
                 act(() => updateAppointmentStatus(id, 'cancelled', cancelReason || undefined))
               }}
-              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all duration-200 disabled:opacity-40"
+              className="px-3 py-[6px] font-body font-medium text-[8px] tracking-[0.28em] uppercase bg-error text-offwhite hover:brightness-110 transition-all duration-200 disabled:opacity-40"
             >
               {t.agenda.actions.confirmCancel}
             </button>

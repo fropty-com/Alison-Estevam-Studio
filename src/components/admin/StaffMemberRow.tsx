@@ -48,7 +48,7 @@ export function StaffMemberRow({ member, isSelf }: {
         {!confirmRemove ? (
           <button
             onClick={() => setConfirmRemove(true)}
-            className="font-body font-light text-[8px] tracking-[0.22em] uppercase text-error/45 hover:text-error/70 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
+            className="font-body font-medium text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all px-2 py-1"
           >
             {t.settings.staff.remove}
           </button>
@@ -57,7 +57,7 @@ export function StaffMemberRow({ member, isSelf }: {
             <button
               disabled={pending}
               onClick={() => act(() => removeStaffMember(member.id))}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error/15 border border-error/25 text-error/70 hover:bg-error/50 transition-all disabled:opacity-40"
+              className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-40"
             >
               {pending ? '…' : t.settings.staff.confirm}
             </button>

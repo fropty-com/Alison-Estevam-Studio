@@ -71,7 +71,7 @@ export function WaitlistEntryRow({
         <button
           disabled={pending}
           onClick={() => act('cancelled')}
-          className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase bg-error/5 border border-error/20 text-error/60 hover:bg-error/10 transition-all duration-200 disabled:opacity-40"
+          className="px-3 py-[7px] font-body font-medium text-[8px] tracking-[0.28em] uppercase bg-error text-offwhite hover:brightness-110 transition-all duration-200 disabled:opacity-40"
         >
           {t.waitlist.remove}
         </button>

@@ -112,7 +112,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
         {canCancel && !cancelling && (
           <button
             onClick={() => setCancelling(true)}
-            className="font-body font-light text-[8px] tracking-[0.15em] uppercase text-error/40 hover:text-error/70 transition-colors"
+            className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.15em] uppercase bg-error text-offwhite hover:brightness-110 transition-all"
           >
             {t.products.orders.cancel}
           </button>
@@ -131,7 +131,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
           <button
             disabled={pending || !cancelReason.trim()}
             onClick={handleCancel}
-            className="px-2 py-1 font-body font-light text-[8px] tracking-[0.18em] uppercase bg-error/15 border border-error/30 text-error hover:bg-error/25 transition-all disabled:opacity-40 whitespace-nowrap"
+            className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.18em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-40 whitespace-nowrap"
           >
             {pending ? t.products.orders.cancelling : t.products.orders.cancelConfirm}
           </button>

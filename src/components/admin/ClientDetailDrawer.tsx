@@ -237,7 +237,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                               <button
                                 disabled={refunding}
                                 onClick={() => handleRefund(h.paymentId!)}
-                                className="px-2 py-1 font-body font-light text-[8px] tracking-[0.2em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50 shrink-0"
+                                className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.2em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50 shrink-0"
                               >
                                 {refunding ? '…' : t.clients.detail.confirm}
                               </button>
@@ -251,7 +251,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
                           ) : (
                             <button
                               onClick={() => setRefundingPaymentId(h.paymentId)}
-                              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors"
+                              className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.28em] uppercase bg-error text-offwhite hover:brightness-110 transition-all"
                             >
                               {t.clients.detail.refundPayment}
                             </button>

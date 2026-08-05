@@ -175,7 +175,7 @@ export default async function ConfiguracoesPage() {
                 <form action={async () => { 'use server'; await removeBlockedPeriod(b.id) }}>
                   <button
                     type="submit"
-                    className="font-body font-light text-[8px] tracking-[0.22em] uppercase text-error/45 hover:text-error/70 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
+                    className="font-body font-medium text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all px-2 py-1"
                   >
                     {t.settings.blocked.remove}
                   </button>

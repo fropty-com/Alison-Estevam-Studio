@@ -90,7 +90,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
               !confirmDelete ? (
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-error/35 hover:text-error/65 transition-colors px-2 py-1 border border-transparent hover:border-error/20"
+                  className="font-body font-medium text-[8px] tracking-[0.28em] uppercase bg-error text-offwhite hover:brightness-110 transition-all px-2 py-1"
                 >
                   {t.services.row.delete}
                 </button>
@@ -99,7 +99,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
                   <button
                     disabled={pending}
                     onClick={handleDelete}
-                    className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50"
+                    className="px-2 py-1 font-body font-medium text-[8px] tracking-[0.22em] uppercase bg-error text-offwhite hover:brightness-110 transition-all disabled:opacity-50"
                   >
                     {pending ? '…' : t.services.row.confirm}
                   </button>
