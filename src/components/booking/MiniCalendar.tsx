@@ -131,20 +131,37 @@ export function MiniCalendar({
   )
 }
 
-/** The gold 3-column time grid for a selected day — renders nothing when the day has no available slots. */
+/** The gold 3-column time grid for a selected day — shows a "sem horários" message (and, optionally, a fallback slot such as a waitlist form) when the day has no available slots. */
 export function SlotGrid({
   date,
   slots,
   selected,
   onSelect,
+  emptyMessage = 'Nenhum horário disponível para esta data.',
+  emptySlot,
 }: {
   date:      Date
   slots:     CalendarSlot[]
   selected:  CalendarSlot | null
   onSelect:  (slot: CalendarSlot) => void
+  emptyMessage?: string
+  emptySlot?: React.ReactNode
 }) {
   const available = slots.filter(s => s.available)
-  if (available.length === 0) return null
+
+  if (available.length === 0) {
+    return (
+      <div className="mt-[18px]">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[10px]">
+          {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
+        </p>
+        <p className="font-body font-light text-[11px] text-offwhite/55 italic mb-[16px]">
+          {emptyMessage}
+        </p>
+        {emptySlot}
+      </div>
+    )
+  }
 
   return (
     <div className="mt-[18px]">

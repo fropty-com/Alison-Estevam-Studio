@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect, useTransition, useCallback } from 'react'
-import Link from 'next/link'
 import { format, parseISO, addMonths, subMonths, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 import { Button } from '@/components/ui/Button'
+import { ResultCard } from '@/components/booking/BookingChrome'
 
 export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 60 }: { code: string; serviceName?: string; duration?: number }) {
   const today      = new Date()
@@ -60,10 +60,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
   if (done) {
     const dateLabel = format(parseISO(done.date), "EEEE, d 'de' MMMM 'de' yyyy", { locale: ptBR })
     return (
-      <div className="bg-offwhite/5 border border-offwhite/10 p-8 text-center">
-        <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-3">
-          Agendamento reagendado.
-        </p>
+      <ResultCard title="Agendamento reagendado.">
         <p className="font-body font-light text-[11px] text-offwhite/55 tracking-[0.12em] capitalize mb-1">{dateLabel}</p>
         <p className="font-data text-[22px] text-offwhite/55">{done.startTime.replace(':', 'h')}</p>
         <a
@@ -81,13 +78,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
         <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.15em] mt-4">
           Confirme pelo WhatsApp se necessário.
         </p>
-        <Link
-          href="/conta"
-          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 py-[6px] cursor-pointer hover:text-offwhite/85 transition-colors underline underline-offset-4 decoration-offwhite/10"
-        >
-          Voltar ao início
-        </Link>
-      </div>
+      </ResultCard>
     )
   }
 
@@ -106,18 +97,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
       />
 
       {selDate && (
-        slots.some(s => s.available) ? (
-          <SlotGrid date={selDate} slots={slots} selected={selSlot} onSelect={setSelSlot} />
-        ) : (
-          <div className="mt-[18px]">
-            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[10px]">
-              {format(selDate, "d 'de' MMMM", { locale: ptBR })} — sem horários
-            </p>
-            <p className="font-body font-light text-[11px] text-offwhite/55 italic">
-              Nenhum horário disponível para esta data.
-            </p>
-          </div>
-        )
+        <SlotGrid date={selDate} slots={slots} selected={selSlot} onSelect={setSelSlot} />
       )}
 
       {/* Confirm */}

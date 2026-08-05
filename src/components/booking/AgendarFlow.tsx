@@ -13,7 +13,7 @@ import { BRAND } from '@/config/brand'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
-import { BackLink, StepHeader } from '@/components/booking/BookingChrome'
+import { BackLink, StepHeader, DetailCard } from '@/components/booking/BookingChrome'
 import { Button } from '@/components/ui/Button'
 
 /* ── Types ─────────────────────────────────────── */
@@ -435,21 +435,16 @@ function SlotPicker({
   selected:  Slot | null
   onSelect:  (slot: Slot) => void
 }) {
-  if (!slots.some(s => s.available)) {
-    return (
-      <div className="mt-[18px]">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[10px]">
-          {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
-        </p>
-        <p className="font-body font-light text-[11px] text-offwhite/55 italic mb-[16px]">
-          Nenhum horário disponível para esta data com este serviço.
-        </p>
-        <WaitlistForm date={date} serviceId={serviceId} />
-      </div>
-    )
-  }
-
-  return <SlotGrid date={date} slots={slots} selected={selected} onSelect={onSelect} />
+  return (
+    <SlotGrid
+      date={date}
+      slots={slots}
+      selected={selected}
+      onSelect={onSelect}
+      emptyMessage="Nenhum horário disponível para esta data com este serviço."
+      emptySlot={<WaitlistForm date={date} serviceId={serviceId} />}
+    />
+  )
 }
 
 /* ── Waitlist — shown when there are no slots for the chosen date ── */
@@ -740,48 +735,34 @@ function SummaryStep({
 
   return (
     <div>
-      <div className="border border-offwhite/10 mb-[26px]">
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/55">Serviço</span>
-          <span className="font-body font-light text-[12px] text-offwhite">{service.name}</span>
-        </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/55">Complementos</span>
-          <span className="font-body font-light text-[12px] text-offwhite text-right">
-            {chosen.length > 0 ? chosen.map(c => c.name).join(', ') : 'Nenhum'}
-          </span>
-        </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/55">Data</span>
-          <span className="font-body font-light text-[12px] text-offwhite">{dateLabel}</span>
-        </div>
-        <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/55">Horário</span>
-          <span className="font-body font-light text-[12px] text-offwhite">
-            {selectedSlot.startTime} – {addMinutesToTime(selectedSlot.startTime, service.duration)}
-          </span>
-        </div>
-
-        {appliedCoupon && (
-          <div className="flex justify-between items-center px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-            <span className="font-body font-light text-[12px] text-sage-light">
-              Cupom {appliedCoupon.code}
-              <button
-                onClick={() => { setAppliedCoupon(null); setCouponInput(''); setCouponError(null) }}
-                className="ml-2 text-offwhite/55 hover:text-offwhite/60 underline underline-offset-2 text-[10px]"
-              >
-                remover
-              </button>
-            </span>
-            <span className="font-body font-light text-[12px] text-sage-light">−{formatCurrency(appliedCoupon.discountAmount)}</span>
+      <DetailCard
+        rows={[
+          { label: 'Serviço', value: service.name },
+          { label: 'Complementos', value: chosen.length > 0 ? chosen.map(c => c.name).join(', ') : 'Nenhum' },
+          { label: 'Data', value: dateLabel },
+          { label: 'Horário', value: `${selectedSlot.startTime} – ${addMinutesToTime(selectedSlot.startTime, service.duration)}` },
+          ...(appliedCoupon ? [{
+            label: (
+              <span className="text-sage-light">
+                Cupom {appliedCoupon.code}
+                <button
+                  onClick={() => { setAppliedCoupon(null); setCouponInput(''); setCouponError(null) }}
+                  className="ml-2 text-offwhite/55 hover:text-offwhite/60 underline underline-offset-2 text-[10px]"
+                >
+                  remover
+                </button>
+              </span>
+            ),
+            value: <span className="text-sage-light">−{formatCurrency(appliedCoupon.discountAmount)}</span>,
+          }] : []),
+        ]}
+        footer={
+          <div className="flex justify-between">
+            <span className="font-body font-normal text-[12px] text-gold uppercase tracking-[0.1em]">Valor</span>
+            <span className="font-data text-lg text-gold">{formatCurrency(totalPrice)}</span>
           </div>
-        )}
-
-        <div className="flex justify-between px-[18px] py-[13px]">
-          <span className="font-body font-normal text-[12px] text-gold uppercase tracking-[0.1em]">Valor</span>
-          <span className="font-data text-lg text-gold">{formatCurrency(totalPrice)}</span>
-        </div>
-      </div>
+        }
+      />
 
       {!appliedCoupon && (
         <div className="mb-[16px]">
