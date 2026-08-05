@@ -7,6 +7,7 @@ interface BaseProps {
   variant?: ButtonVariant
   size?: 'sm' | 'md' | 'lg'
   loading?: boolean
+  loadingText?: string
   arrow?: boolean
 }
 
@@ -14,41 +15,44 @@ type ButtonProps = BaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { as?: 
 type AnchorProps = BaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & { as: 'a' }
 type Props = ButtonProps | AnchorProps
 
+// Filled/solid buttons read heavier (font-medium) than outline/text ones
+// (font-light) — matches the weight already used by every hand-rolled CTA
+// in the app (solid gold/sage buttons vs. bordered or underlined ones).
 const variants: Record<ButtonVariant, string> = {
   primary: cn(
-    'bg-gold text-charcoal-deep',
-    'hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_14px_36px_rgba(201,169,110,0.26)]',
+    'font-medium bg-gold text-charcoal-deep',
+    'hover:bg-gold-light hover:-translate-y-px hover:shadow-[0_10px_28px_rgba(203,163,57,0.30)]',
     'active:translate-y-0'
   ),
   secondary: cn(
-    'bg-transparent border border-offwhite/20 text-offwhite/60',
+    'font-light bg-transparent border border-offwhite/20 text-offwhite/60',
     'hover:border-offwhite/[0.6] hover:text-offwhite'
   ),
   ghost: cn(
-    'bg-transparent text-offwhite/40',
+    'font-light bg-transparent text-offwhite/40',
     'hover:text-offwhite/80',
     'underline underline-offset-4 decoration-offwhite/10 hover:decoration-offwhite/30'
   ),
   sage: cn(
-    'bg-sage text-charcoal-deep',
+    'font-medium bg-sage text-charcoal-deep',
     'hover:bg-sage-light hover:-translate-y-0.5'
   ),
   destructive: cn(
-    'bg-error/10 border border-error/25 text-[#C97070]',
+    'font-light bg-error/10 border border-error/25 text-[#C97070]',
     'hover:bg-error/15'
   ),
 }
 
 const sizes = {
-  sm: 'text-xs tracking-nav px-5 py-[11px]',
+  sm: 'text-2xs tracking-nav px-6 py-[11px]',
   md: 'text-xs tracking-nav px-8 py-[14px]',
-  lg: 'text-sm tracking-nav px-10 py-[17px]',
+  lg: 'text-xs px-10 py-4',
 }
 
-export function Button({ variant = 'primary', size = 'md', loading, arrow, children, className, ...props }: Props) {
+export function Button({ variant = 'primary', size = 'md', loading, loadingText = 'Aguarde', arrow, children, className, ...props }: Props) {
   const classes = cn(
     'inline-flex items-center justify-center gap-4',
-    'font-body font-light uppercase transition-all duration-300 ease-brand-out',
+    'font-body uppercase transition-all duration-300 ease-brand-out',
     'relative overflow-hidden',
     'disabled:opacity-45 disabled:cursor-not-allowed disabled:pointer-events-none',
     variants[variant],
@@ -69,7 +73,7 @@ export function Button({ variant = 'primary', size = 'md', loading, arrow, child
               />
             ))}
           </span>
-          <span className="text-xs tracking-nav">Aguarde</span>
+          <span className="text-xs tracking-nav">{loadingText}</span>
         </span>
       ) : (
         <>

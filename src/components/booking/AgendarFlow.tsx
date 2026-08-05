@@ -14,6 +14,7 @@ import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
 import { BackLink, StepHeader } from '@/components/booking/BookingChrome'
+import { Button } from '@/components/ui/Button'
 
 /* ── Types ─────────────────────────────────────── */
 interface Service {
@@ -534,13 +535,9 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
         />
         {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="w-full py-[12px] font-body font-medium text-[9px] tracking-[0.3em] uppercase bg-gold text-charcoal-deep hover:bg-gold-light transition-all duration-300 disabled:opacity-50"
-        >
-          {loading ? 'Enviando…' : 'Entrar na fila'}
-        </button>
+        <Button onClick={handleSubmit} loading={loading} loadingText="Enviando" className="w-full">
+          Entrar na fila
+        </Button>
       </div>
     </div>
   )
@@ -638,16 +635,9 @@ function DetailsForm({
         {errors.email && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.email}</p>}
       </div>
 
-      <button
-        onClick={handleContinue}
-        className={cn(
-          'w-full mt-[10px] py-[16px]',
-          'font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-          'bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light',
-        )}
-      >
+      <Button onClick={handleContinue} size="lg" className="w-full mt-[10px]">
         Continuar
-      </button>
+      </Button>
     </div>
   )
 }
@@ -823,30 +813,9 @@ function SummaryStep({
         </div>
       )}
 
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className={cn(
-          'w-full py-[17px]',
-          'font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-          'bg-gold text-charcoal-deep',
-          'transition-all duration-300',
-          'hover:bg-gold-light hover:-translate-y-px hover:shadow-[0_12px_32px_rgba(203,163,57,0.30)]',
-          'active:translate-y-0',
-          'disabled:opacity-45 disabled:cursor-not-allowed',
-        )}
-      >
-        {loading ? (
-          <span className="flex items-center justify-center gap-[10px]">
-            <span className="flex gap-1">
-              {[0, 200, 400].map(d => (
-                <span key={d} className="w-1 h-1 rounded-full bg-current animate-dot-loading" style={{ animationDelay: `${d}ms` }} />
-              ))}
-            </span>
-            <span>Confirmando</span>
-          </span>
-        ) : 'Confirmar agendamento'}
-      </button>
+      <Button onClick={handleSubmit} loading={loading} loadingText="Confirmando" size="lg" className="w-full">
+        Confirmar agendamento
+      </Button>
     </div>
   )
 }

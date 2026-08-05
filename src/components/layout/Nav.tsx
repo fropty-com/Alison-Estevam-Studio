@@ -7,6 +7,7 @@ import { BRAND } from '@/config/brand'
 import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useCart } from '@/lib/cart/CartContext'
+import { Button } from '@/components/ui/Button'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre',             section: 'sobre' },
@@ -158,13 +159,9 @@ export function Nav() {
           >
             Entrar
           </Link>
-          <button
-            onClick={openBooking}
-            aria-label="Agendar horário"
-            className="font-body font-medium text-2xs tracking-nav uppercase text-charcoal-deep bg-gold px-6 py-[11px] transition-all duration-300 ease-brand-out hover:bg-gold-light hover:shadow-[0_8px_24px_rgba(203,163,57,0.32)] hover:-translate-y-px active:translate-y-0"
-          >
+          <Button onClick={openBooking} aria-label="Agendar horário" size="sm">
             Agendar
-          </button>
+          </Button>
         </div>
       </div>
       </nav>
@@ -202,14 +199,14 @@ export function Nav() {
         <Link
           href="/produtos"
           onClick={() => setMenuOpen(false)}
-          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/[0.18] px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
+          className="font-body font-light text-sm tracking-[0.4em] uppercase text-offwhite/55 hover:text-offwhite transition-colors duration-300"
         >
           Produtos
         </Link>
         <Link
           href="/entrar"
           onClick={() => setMenuOpen(false)}
-          className="font-body font-light text-2xs tracking-[0.4em] uppercase text-offwhite/50 border border-offwhite/[0.18] px-10 py-[13px] hover:text-offwhite hover:border-offwhite/40 transition-colors duration-300 text-center"
+          className="font-body font-light text-sm tracking-[0.4em] uppercase text-offwhite/55 hover:text-offwhite transition-colors duration-300"
         >
           Entrar
         </Link>

@@ -4,9 +4,9 @@ import { useState, useEffect, useTransition, useCallback } from 'react'
 import Link from 'next/link'
 import { format, parseISO, addMonths, subMonths, startOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { cn } from '@/lib/utils'
 import { buildIcsDataUrl } from '@/lib/calendar/ics'
 import { MiniCalendar, SlotGrid, type CalendarSlot, type AvailabilityMap } from '@/components/booking/MiniCalendar'
+import { Button } from '@/components/ui/Button'
 
 export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 60 }: { code: string; serviceName?: string; duration?: number }) {
   const today      = new Date()
@@ -126,17 +126,9 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
           {error && (
             <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
           )}
-          <button
-            onClick={handleConfirm}
-            disabled={pending}
-            className={cn(
-              'w-full py-[16px] font-body font-medium text-[9.5px] tracking-[0.38em] uppercase',
-              'bg-gold text-charcoal-deep transition-all duration-300',
-              'hover:bg-gold-light disabled:opacity-40 disabled:cursor-not-allowed',
-            )}
-          >
-            {pending ? 'Reagendando…' : `Confirmar — ${selSlot.startTime.substring(0, 5).replace(':', 'h')}`}
-          </button>
+          <Button onClick={handleConfirm} loading={pending} loadingText="Reagendando" size="lg" className="w-full">
+            {`Confirmar — ${selSlot.startTime.substring(0, 5).replace(':', 'h')}`}
+          </Button>
         </div>
       )}
     </div>
