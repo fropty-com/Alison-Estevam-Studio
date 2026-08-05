@@ -75,7 +75,7 @@ export function CartDrawer() {
                   <div className="w-[64px] h-[80px] shrink-0 bg-offwhite/[0.03] overflow-hidden">
                     {item.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                      <img src={item.imageUrl} alt={item.name} loading="lazy" className="w-full h-full object-cover" />
                     ) : null}
                   </div>
                   <div className="flex-1 min-w-0">

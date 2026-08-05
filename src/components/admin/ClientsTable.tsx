@@ -39,7 +39,7 @@ export function ClientAvatar({ name, avatarUrl, size = 28 }: { name: string; ava
     >
       {avatarUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+        <img src={avatarUrl} alt={name} loading="lazy" className="w-full h-full object-cover" />
       ) : initial}
     </span>
   )

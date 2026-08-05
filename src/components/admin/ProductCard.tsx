@@ -24,7 +24,7 @@ export function ProductCard({ product, onEdit }: { product: Product; onEdit: (p:
       <div className="relative w-full aspect-[3/4] bg-offwhite/[0.03] overflow-hidden">
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+          <img src={product.image_url} alt={product.name} loading="lazy" className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <span className="font-display font-light text-[13px] text-offwhite/55">{t.products.categories[product.category as keyof typeof t.products.categories]}</span>

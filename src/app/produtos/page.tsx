@@ -92,6 +92,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
                       <img
                         src={p.image_url}
                         alt={p.name}
+                        loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (

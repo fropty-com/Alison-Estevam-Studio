@@ -204,6 +204,25 @@ Testado ao vivo no browser em 1024 (mostra a barra compacta, sem overflow), 1280
 
 - **`AdminNav`** — a barra lateral do admin só vira "sticky" persistente em `lg:` (1024px); entre 768-1023px (ex.: iPad retrato numa recepção de barbearia) o barbeiro ainda usa o drawer hambúrguer de mobile em vez de uma versão compacta (64px, só ícones) da sidebar, que já existe como estado (`collapsed`) mas hoje só é alcançável manualmente em telas ≥1024px. Não é um bug (nada quebra ou fica inacessível) — é uma oportunidade real de melhoria específica de tablet que ficou de fora por exigir mudança de estado/JS que não pôde ser testada ao vivo (login admin fora do escopo desta sessão). Recomendação futura: tornar `md:` o breakpoint em que a sidebar physical assume o modo compacto por padrão, liberando o hambúrguer só abaixo de `md`.
 
+## 12. Performance visual (§21 do PDF)
+
+Sem Lighthouse disponível nesta sessão (sem binário de Chrome no ambiente de shell, só o browser do harness) — auditoria feita por leitura de código, verificando os pontos concretos que o PDF pede.
+
+### Já corretos, sem ação necessária
+- **Fontes** — `next/font/google` (self-hosted, sem requisição a fonts.googleapis.com em runtime, sem FOIT/FOUT, métricas de fallback automáticas). É exatamente o padrão recomendado; nada a mudar.
+- **Imagem do hero** — `HeroSection` já usa `priority` no `<Image>` (evita o hero ser tratado como lazy, o que penalizaria o LCP).
+- **CLS nas imagens de produto/avatar** — todos os contêineres já reservam o espaço antes da imagem carregar (`aspect-[3/4]` nos cards de produto, `width`/`height` inline no `ClientAvatar` compartilhado) — zero risco de layout shift medido nesses pontos.
+
+### Corrigido
+- **`loading="lazy"` ausente em imagens de lista/grade** — `ClientAvatar` (componente compartilhado, usado em ~10 lugares incluindo a tabela de clientes que pode ter dezenas de linhas), grade pública de `/produtos`, grade de produtos do admin (`ProductCard`) e itens do `CartDrawer` carregavam a imagem imediatamente mesmo fora da tela. Adicionado `loading="lazy"` nos 4 pontos — sem risco (atributo nativo do HTML, navegador ignora automaticamente se o elemento já está visível). Imagens únicas acima da dobra (foto do produto individual, avatares em formulários de edição) foram deixadas como estão de propósito — não há ganho em adiar o que já é a primeira coisa visível na tela.
+
+### Recomendação futura (não implementada — decisão de infraestrutura/custo)
+`next.config.mjs` tem `images.remotePatterns: []`, o que impede o componente `<Image>` de otimizar (redimensionar, converter para AVIF/WebP, gerar srcset) qualquer imagem hospedada fora do domínio do próprio site — é por isso que avatares e fotos de produto (armazenados no Supabase Storage) usam `<img>` puro em vez de `<Image>` em todo o projeto. Ativar isso traria ganho real de performance (menos bytes transferidos, formato moderno automático), mas cada imagem otimizada passa a consumir uma invocação da função de otimização de imagem da Vercel — uma mudança de custo/infraestrutura que não deve ser feita sem o dono do projeto estar ciente e de acordo.
+
+## 13. Inventário formal de páginas/componentes (§27 do PDF)
+
+Ver `docs/auditoria/03-inventario-rotas.md` — tabela completa com as ~37 rotas do projeto (nome, rota, objetivo, componentes principais, status).
+
 ### O que ficou de fora (limitação do ambiente, não de escopo)
 Nenhuma das telas alteradas pôde ser clicada até um estado com dados reais nesta sessão: o ambiente local não tem `availability_rules` semeadas (todo dia do calendário aparece "indisponível") e o login administrativo não pôde ser automatizado (fora do escopo de segurança desta sessão). Todo o trabalho foi validado por:
 1. `tsc`/`lint`/`build`/`test` a cada commit (sempre verde);
