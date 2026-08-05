@@ -24,7 +24,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
       <div className="flex items-center justify-between mb-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55">
           {t.clients.absent.title}
         </p>
         <div className="flex gap-[6px]">
@@ -37,7 +37,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
                 'px-3 py-[5px] font-body font-light text-[9px] tracking-[0.1em] transition-all duration-150',
                 threshold === th
                   ? 'bg-error text-offwhite'
-                  : 'border border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
+                  : 'border border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'
               )}
             >
               {t.clients.absent.daysSuffix(th)}
@@ -47,7 +47,7 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+        <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
           {t.clients.absent.none(threshold)}
         </p>
       ) : (
@@ -62,8 +62,8 @@ export function AbsentClientsCard({ absences }: { absences: Absence[] }) {
                 <ClientAvatar name={c.name} avatarUrl={c.avatarUrl} size={26} />
                 <span className="font-body font-light text-[12px] text-offwhite/70 truncate">{c.name}</span>
               </span>
-              <span className="shrink-0 font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
-                {t.clients.absent.daysSinceLast(c.daysSinceLast)} <span className="text-offwhite/[0.18]">{t.clients.absent.usuallyReturns(c.avgGap)}</span>
+              <span className="shrink-0 font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
+                {t.clients.absent.daysSinceLast(c.daysSinceLast)} <span className="text-offwhite/55">{t.clients.absent.usuallyReturns(c.avgGap)}</span>
               </span>
             </Link>
           ))}

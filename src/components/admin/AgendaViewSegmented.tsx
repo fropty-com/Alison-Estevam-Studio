@@ -24,7 +24,7 @@ export function AgendaViewSegmented({ view, dateStr }: { view: AgendaView; dateS
             'flex items-center justify-center h-full px-3 font-body font-light text-[8.5px] tracking-[0.18em] uppercase whitespace-nowrap transition-all duration-150',
             v.key === view
               ? 'bg-gold text-charcoal-deep'
-              : 'text-offwhite/50 hover:text-offwhite'
+              : 'text-offwhite/55 hover:text-offwhite'
           )}
         >
           {v.label}

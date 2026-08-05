@@ -51,7 +51,7 @@ export function ClientHeader({
             <Link
               href={backHref}
               aria-label="Voltar"
-              className="font-body font-light text-lg text-offwhite/40 hover:text-offwhite/70 transition-colors shrink-0"
+              className="font-body font-light text-lg text-offwhite/55 hover:text-offwhite/70 transition-colors shrink-0"
             >
               ←
             </Link>
@@ -76,4 +76,4 @@ export function ClientHeader({
 }
 
 export const clientHeaderLinkCls =
-  'font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1'
+  'font-body font-light text-2xs tracking-nav uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors duration-250 px-1'

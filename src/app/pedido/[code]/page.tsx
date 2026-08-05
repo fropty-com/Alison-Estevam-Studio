@@ -27,7 +27,7 @@ const STATUS_COLOR: Record<string, string> = {
   preparando: 'text-sage-light',
   enviado: 'text-sage-light',
   pronto_retirada: 'text-sage-light',
-  concluido: 'text-offwhite/50',
+  concluido: 'text-offwhite/55',
   cancelado: 'text-error/60',
 }
 
@@ -57,7 +57,7 @@ export default async function PedidoPage({ params }: { params: Promise<{ code: s
         <h1 className="font-display font-normal text-3xl tracking-[0.05em] uppercase text-offwhite mb-2">
           Obrigado{client?.name ? `, ${client.name.split(' ')[0]}` : ''}!
         </h1>
-        <p className={`font-body font-medium text-[10px] tracking-[0.2em] uppercase mb-8 ${STATUS_COLOR[order.status] ?? 'text-offwhite/50'}`}>
+        <p className={`font-body font-medium text-[10px] tracking-[0.2em] uppercase mb-8 ${STATUS_COLOR[order.status] ?? 'text-offwhite/55'}`}>
           {STATUS_LABEL[order.status] ?? order.status}
         </p>
 
@@ -76,24 +76,24 @@ export default async function PedidoPage({ params }: { params: Promise<{ code: s
             </div>
           )}
           <div className="space-y-1 text-[12px]">
-            <div className="flex justify-between font-body font-light text-offwhite/50"><span>Subtotal</span><span>{fmt(Number(order.subtotal))}</span></div>
+            <div className="flex justify-between font-body font-light text-offwhite/55"><span>Subtotal</span><span>{fmt(Number(order.subtotal))}</span></div>
             {Number(order.shipping_cost) > 0 && (
-              <div className="flex justify-between font-body font-light text-offwhite/50"><span>Frete</span><span>{fmt(Number(order.shipping_cost))}</span></div>
+              <div className="flex justify-between font-body font-light text-offwhite/55"><span>Frete</span><span>{fmt(Number(order.shipping_cost))}</span></div>
             )}
             {Number(order.discount_amount) > 0 && (
               <div className="flex justify-between font-body font-light text-sage-light"><span>Desconto</span><span>− {fmt(Number(order.discount_amount))}</span></div>
             )}
           </div>
           <div className="flex justify-between items-center mt-4 pt-4 border-t border-offwhite/[0.08]">
-            <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/40">Total</span>
+            <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/55">Total</span>
             <span className="font-data italic text-xl text-gold">{fmt(Number(order.total))}</span>
           </div>
-          <p className="font-body font-light text-[11px] text-offwhite/40 mt-4">
+          <p className="font-body font-light text-[11px] text-offwhite/55 mt-4">
             {order.fulfillment_method === 'retirada' ? 'Retirada na loja.' : 'Envio para o endereço informado.'}
           </p>
         </div>
 
-        <Link href="/produtos" className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/40 hover:text-offwhite/70 transition-colors">
+        <Link href="/produtos" className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/70 transition-colors">
           Continuar comprando
         </Link>
       </div>

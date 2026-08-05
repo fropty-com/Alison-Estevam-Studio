@@ -50,16 +50,16 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
       >
         <div className="flex items-start justify-between px-6 py-5 border-b border-offwhite/[0.08]">
           <div>
-            <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/[0.28] mb-1">
+            <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 mb-1">
               {t.dashboard.status[appt.status as keyof typeof t.dashboard.status] ?? appt.status}
             </p>
             <p className="font-data text-[22px] text-offwhite/80 leading-none">{appt.timeLabel}</p>
-            <p className="font-body font-light text-[8px] text-offwhite/25 mt-1 tracking-[0.15em]">{appt.durationLabel}</p>
+            <p className="font-body font-light text-[8px] text-offwhite/55 mt-1 tracking-[0.15em]">{appt.durationLabel}</p>
           </div>
           <button
             onClick={onClose}
             aria-label={t.agenda.close}
-            className="w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+            className="w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/55 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
           >
             ✕
           </button>
@@ -75,10 +75,10 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
                   <span className="font-body font-light text-[7.5px] tracking-[0.3em] uppercase px-[7px] py-[3px] bg-gold/10 border border-gold/25 text-gold/70 shrink-0">{t.agenda.detail.vip}</span>
                 )}
               </div>
-              <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.15em] mb-[2px]">
+              <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.15em] mb-[2px]">
                 {appt.serviceName}{appt.servicePrice ? ` · R$ ${appt.servicePrice}` : ''}
               </p>
-              <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.1em]">
+              <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.1em]">
                 {appt.clientWhatsapp} · #{appt.referenceCode}
                 {appt.checkedInAt && t.agenda.detail.checkedInAt(appt.checkedInAt)}
               </p>

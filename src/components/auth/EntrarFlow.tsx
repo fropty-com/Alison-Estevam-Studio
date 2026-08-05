@@ -10,7 +10,7 @@ type Step = 'phone' | 'code'
 const inputCls = (hasError: boolean) => cn(
   'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
   'outline-none transition-all duration-250 rounded-none',
-  'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
+  'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
   hasError ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5',
 )
 
@@ -77,26 +77,26 @@ export function EntrarFlow() {
   return (
     <div className="px-8 pt-[65px] pb-16">
       {step === 'phone' ? (
-        <Link href="/" className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors inline-block">
+        <Link href="/" className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/60 transition-colors inline-block">
           ← Voltar ao início
         </Link>
       ) : (
         <button
           onClick={() => { setStep('phone'); setChecked(false); setCode(''); setError(null) }}
-          className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+          className="mb-[18px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/60 transition-colors"
         >
           ← Trocar número
         </button>
       )}
 
       <div className="mb-[22px]">
-        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
+        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]">
           Área do Cliente
         </p>
         <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
           {step === 'phone' ? 'Entrar' : 'Confirme o código'}
         </h2>
-        <p className="font-body font-light text-[12px] text-offwhite/40">
+        <p className="font-body font-light text-[12px] text-offwhite/55">
           {step === 'phone'
             ? 'Informe seu telefone para entrar ou criar sua conta.'
             : `Enviamos um código de 6 dígitos para ${phone}.`}
@@ -144,7 +144,7 @@ export function EntrarFlow() {
                     onChange={e => setConsentWhatsapp(e.target.checked)}
                     className="mt-[3px] accent-gold"
                   />
-                  <span className="font-body font-light text-[11px] text-offwhite/50 leading-[1.5]">
+                  <span className="font-body font-light text-[11px] text-offwhite/55 leading-[1.5]">
                     Aceito receber confirmações e lembretes de agendamento por WhatsApp.
                   </span>
                 </label>
@@ -156,7 +156,7 @@ export function EntrarFlow() {
                     onChange={e => setConsentTerms(e.target.checked)}
                     className="mt-[3px] accent-gold"
                   />
-                  <span className="font-body font-light text-[11px] text-offwhite/50 leading-[1.5]">
+                  <span className="font-body font-light text-[11px] text-offwhite/55 leading-[1.5]">
                     Li e aceito os{' '}
                     <Link href="/termos" target="_blank" className="text-gold/80 hover:text-gold underline underline-offset-2">
                       termos de uso
@@ -220,7 +220,7 @@ export function EntrarFlow() {
             <button
               onClick={sendCode}
               disabled={pending}
-              className="w-full mt-[14px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+              className="w-full mt-[14px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/60 transition-colors"
             >
               Reenviar código
             </button>

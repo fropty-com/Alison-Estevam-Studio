@@ -61,14 +61,14 @@ export function ServiceRow({ service, appointmentCount }: { service: {
             {service.hidden_from_list && (
               <span
                 title={t.services.row.careBadgeTitle}
-                className="font-body font-light text-[7px] tracking-[0.25em] uppercase px-[6px] py-[2px] border border-offwhite/15 text-offwhite/35 shrink-0"
+                className="font-body font-light text-[7px] tracking-[0.25em] uppercase px-[6px] py-[2px] border border-offwhite/15 text-offwhite/55 shrink-0"
               >
                 {t.services.row.careBadge}
               </span>
             )}
           </div>
           {service.description && (
-            <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[2px]">
+            <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em] mt-[2px]">
               {service.description}
             </p>
           )}
@@ -78,11 +78,11 @@ export function ServiceRow({ service, appointmentCount }: { service: {
           <div className="flex items-start gap-5 shrink-0">
             <div className="w-[62px] text-right shrink-0">
               <p className="font-data text-[16px] text-offwhite/70 leading-none">R$ {service.price}</p>
-              <p className="font-body font-light text-[8.5px] text-offwhite/25 tracking-[0.12em] mt-[3px]">{service.duration}min</p>
+              <p className="font-body font-light text-[8.5px] text-offwhite/55 tracking-[0.12em] mt-[3px]">{service.duration}min</p>
             </div>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               {t.services.row.edit}
             </button>
@@ -105,7 +105,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
                   </button>
                   <button
                     onClick={() => setConfirmDelete(false)}
-                    className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+                    className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
                   >
                     ✕
                   </button>
@@ -116,7 +116,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
         ) : (
           <div className="flex items-center gap-2 shrink-0">
             <div className="flex items-center gap-1">
-              <span className="font-body font-light text-[8px] text-offwhite/30">R$</span>
+              <span className="font-body font-light text-[8px] text-offwhite/55">R$</span>
               <input
                 type="number"
                 value={price}
@@ -131,7 +131,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
                 onChange={e => setDuration(e.target.value)}
                 className="w-14 bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors"
               />
-              <span className="font-body font-light text-[8px] text-offwhite/30">min</span>
+              <span className="font-body font-light text-[8px] text-offwhite/55">min</span>
             </div>
             <button
               disabled={pending}
@@ -142,7 +142,7 @@ export function ServiceRow({ service, appointmentCount }: { service: {
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
             >
               ✕
             </button>

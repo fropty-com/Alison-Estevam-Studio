@@ -7,8 +7,8 @@ import { updateStaffProfile, updateStaffAvatar } from '@/app/admin/actions'
 import { cn, maskPhoneInput, isFullName } from '@/lib/utils'
 import { AvatarCropModal } from '@/components/ui/AvatarCropModal'
 
-const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
-const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
+const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
 
 const MAX_AVATAR_BYTES = 3 * 1024 * 1024
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -165,7 +165,7 @@ export function EditStaffProfileForm({
               type="button"
               disabled={pending || uploading}
               onClick={handleRemoveAvatar}
-              className="px-4 py-[7px] font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 hover:text-error/70 transition-colors disabled:opacity-40"
+              className="px-4 py-[7px] font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 hover:text-error/70 transition-colors disabled:opacity-40"
             >
               Remover foto
             </button>

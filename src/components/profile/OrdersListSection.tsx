@@ -21,7 +21,7 @@ const STATUS_COLOR: Record<string, string> = {
   preparando: 'text-sage-light',
   enviado: 'text-sage-light',
   pronto_retirada: 'text-sage-light',
-  concluido: 'text-offwhite/50',
+  concluido: 'text-offwhite/55',
   cancelado: 'text-error/60',
 }
 
@@ -38,7 +38,7 @@ export function OrdersListSection({ orders }: { orders: Order[] }) {
   if (orders.length === 0) {
     return (
       <div className="border border-offwhite/[0.08] px-8 py-12 text-center">
-        <p className="font-body font-light text-[13px] text-offwhite/40 mb-[10px]">
+        <p className="font-body font-light text-[13px] text-offwhite/55 mb-[10px]">
           Você ainda não fez nenhum pedido.
         </p>
         <Link href="/produtos" className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors inline-block">
@@ -60,16 +60,16 @@ export function OrdersListSection({ orders }: { orders: Order[] }) {
             <p className="font-body font-light text-[12.5px] text-offwhite/75">
               {format(parseISO(o.createdAt), 'dd/MM/yyyy')} · #{o.referenceCode}
             </p>
-            <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.06em] mt-[3px] truncate">
+            <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.06em] mt-[3px] truncate">
               {o.itemsSummary || '—'}
             </p>
-            <p className={`font-body font-medium text-[9px] tracking-[0.15em] uppercase mt-1 ${STATUS_COLOR[o.status] ?? 'text-offwhite/50'}`}>
+            <p className={`font-body font-medium text-[9px] tracking-[0.15em] uppercase mt-1 ${STATUS_COLOR[o.status] ?? 'text-offwhite/55'}`}>
               {STATUS_LABEL[o.status] ?? o.status}
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="font-data text-[14px] text-gold">{fmt(o.total)}</span>
-            <span className="font-body font-light text-offwhite/25">→</span>
+            <span className="font-body font-light text-offwhite/55">→</span>
           </div>
         </Link>
       ))}

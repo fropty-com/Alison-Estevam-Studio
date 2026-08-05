@@ -34,12 +34,12 @@ export function ExpenseForm() {
     })
   }
 
-  const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
-  const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+  const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
+  const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
 
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
+      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-4">
         {t.finance.form.title}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -63,11 +63,11 @@ export function ExpenseForm() {
           <input type="date" name="due_date" required className={inputCls} />
         </div>
         <div className="flex items-end gap-4 col-span-2 sm:col-span-1">
-          <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/50 cursor-pointer">
+          <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/55 cursor-pointer">
             <input type="checkbox" checked={isFixed} onChange={e => setIsFixed(e.target.checked)} className="accent-gold" />
             {t.finance.form.fixed}
           </label>
-          <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/50 cursor-pointer">
+          <label className="flex items-center gap-2 font-body font-light text-[10px] text-offwhite/55 cursor-pointer">
             <input type="checkbox" checked={paidNow} onChange={e => setPaidNow(e.target.checked)} className="accent-gold" />
             {t.finance.form.alreadyPaid}
           </label>

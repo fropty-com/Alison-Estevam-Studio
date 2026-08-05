@@ -359,7 +359,7 @@ export default async function AgendaPage({
           <div className="grid grid-cols-7 gap-[1px] bg-offwhite/5 border border-offwhite/[0.07] border-b-0">
             {WEEKDAY.map(w => (
               <div key={w} className="bg-charcoal-mid px-3 py-2">
-                <p className="font-body font-light text-[7.5px] tracking-[0.25em] uppercase text-offwhite/30">{w}</p>
+                <p className="font-body font-light text-[7.5px] tracking-[0.25em] uppercase text-offwhite/55">{w}</p>
               </div>
             ))}
           </div>
@@ -406,7 +406,7 @@ export default async function AgendaPage({
                       )
                     })}
                     {overflow > 0 && (
-                      <p className="font-body font-light text-[8px] text-offwhite/25 pl-[6px]">{t.agenda.monthMore(overflow)}</p>
+                      <p className="font-body font-light text-[8px] text-offwhite/55 pl-[6px]">{t.agenda.monthMore(overflow)}</p>
                     )}
                   </div>
                 </Link>

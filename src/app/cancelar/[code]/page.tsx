@@ -63,22 +63,22 @@ export default async function CancelarPage({ params }: { params: { code: string 
 
           {alreadyCancelled ? (
             <div className="border border-offwhite/10 p-6 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+              <p className="font-display font-light text-[18px] text-offwhite/55 italic">
                 Este agendamento já foi cancelado.
               </p>
             </div>
           ) : cannotCancel ? (
             <div className="border border-offwhite/10 p-6 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+              <p className="font-display font-light text-[18px] text-offwhite/55 italic">
                 Este agendamento não pode mais ser cancelado.
               </p>
             </div>
           ) : outsideCancelWindow ? (
             <div className="border border-offwhite/10 p-6 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/45 italic mb-2">
+              <p className="font-display font-light text-[18px] text-offwhite/55 italic mb-2">
                 Prazo de cancelamento encerrado.
               </p>
-              <p className="font-body font-light text-[12px] text-offwhite/40">
+              <p className="font-body font-light text-[12px] text-offwhite/55">
                 Cancelamentos só podem ser feitos com pelo menos {BOOKING.cancellationWindowHours}h de antecedência. Entre em contato pelo WhatsApp.
               </p>
             </div>

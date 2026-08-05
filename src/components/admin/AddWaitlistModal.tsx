@@ -11,8 +11,8 @@ import { ClientAvatar } from './ClientsTable'
 interface Service { id: string; name: string; is_whatsapp_only: boolean }
 interface ClientHit { id: string; name: string; whatsapp: string; email: string | null; avatar_url: string | null }
 
-const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
-const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
+const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
 
 function SearchIcon() {
   return (
@@ -83,19 +83,19 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
         <button
           onClick={onClose}
           aria-label={t.waitlist.modal.close}
-          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/55 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.waitlist.modal.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-1">{t.waitlist.modal.eyebrow}</p>
         <h2 className="font-display font-light text-[22px] text-offwhite tracking-[0.02em] mb-5">{t.waitlist.modal.title}</h2>
 
         {/* Client search */}
         <div className="mb-5">
           <label className={labelCls}>{t.waitlist.modal.searchExisting}</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/30 pointer-events-none">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/55 pointer-events-none">
               <SearchIcon />
             </span>
             <input
@@ -117,7 +117,7 @@ export function AddWaitlistModal({ onClose }: { onClose: () => void }) {
                 >
                   <ClientAvatar name={c.name} avatarUrl={c.avatar_url} size={22} />
                   <span className="flex-1 min-w-0 font-body font-light text-[11px] text-offwhite/80 truncate">{c.name}</span>
-                  <span className="shrink-0 font-data text-[10px] text-offwhite/35">{c.whatsapp}</span>
+                  <span className="shrink-0 font-data text-[10px] text-offwhite/55">{c.whatsapp}</span>
                 </button>
               ))}
             </div>

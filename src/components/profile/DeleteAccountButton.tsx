@@ -24,7 +24,7 @@ export function DeleteAccountButton() {
       <p className="font-body font-light text-[9px] tracking-[0.22em] uppercase text-error/75 mb-[8px]">
         Excluir sua conta
       </p>
-      <p className="font-body font-light text-[12px] text-offwhite/50 leading-[1.7] mb-[16px]">
+      <p className="font-body font-light text-[12px] text-offwhite/55 leading-[1.7] mb-[16px]">
         Seus dados pessoais (nome, telefone, e-mail) serão removidos. O histórico de atendimentos é mantido de
         forma anônima, conforme nossa política de retenção. Essa ação não pode ser desfeita e você será
         desconectado imediatamente.
@@ -43,7 +43,7 @@ export function DeleteAccountButton() {
         </button>
         <button
           onClick={() => setOpen(false)}
-          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase border border-offwhite/[0.12] text-offwhite/40 hover:bg-offwhite/5 hover:text-offwhite/65 transition-all duration-200"
+          className="flex-1 py-[12px] font-body font-light text-[8.5px] tracking-[0.24em] uppercase border border-offwhite/[0.12] text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite/65 transition-all duration-200"
         >
           Cancelar
         </button>

@@ -21,7 +21,7 @@ export function ProductsPageTabs({ productsSlot, shippingSlot, ordersSlot }: { p
               'px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase transition-all duration-150',
               tab === tabKey
                 ? 'bg-gold/15 border border-gold/30 text-gold'
-                : 'border border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
+                : 'border border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'
             )}
           >
             {TAB_LABEL[tabKey]}

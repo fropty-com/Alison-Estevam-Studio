@@ -25,12 +25,12 @@ export function ConfirmForm({ code }: { code: string }) {
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-2">
           Presença confirmada.
         </p>
-        <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.15em]">
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.15em]">
           Te esperamos no horário combinado.
         </p>
         <Link
           href="/conta"
-          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 py-[6px] cursor-pointer hover:text-offwhite/85 transition-colors underline underline-offset-4 decoration-offwhite/10"
         >
           Voltar ao início
         </Link>

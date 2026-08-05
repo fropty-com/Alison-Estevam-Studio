@@ -46,13 +46,13 @@ export function CartDrawer() {
         )}
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-offwhite/[0.07]">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55">
             Carrinho {items.length > 0 && `(${items.length})`}
           </p>
           <button
             onClick={close}
             aria-label="Fechar carrinho"
-            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/40 hover:text-offwhite transition-colors border border-offwhite/[0.12] hover:border-offwhite/30"
+            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/55 hover:text-offwhite transition-colors border border-offwhite/[0.12] hover:border-offwhite/30"
           >
             <CloseIcon />
           </button>
@@ -60,7 +60,7 @@ export function CartDrawer() {
 
         <div className="flex-1 overflow-y-auto">
           {items.length === 0 ? (
-            <p className="font-body font-light text-[12px] text-offwhite/25 italic text-center py-16">
+            <p className="font-body font-light text-[12px] text-offwhite/55 italic text-center py-16">
               Seu carrinho está vazio.
             </p>
           ) : (
@@ -81,7 +81,7 @@ export function CartDrawer() {
                         <button
                           onClick={() => setQuantity(item.productId, item.quantity - 1)}
                           disabled={item.quantity <= 1}
-                          className="w-[26px] h-[26px] flex items-center justify-center text-offwhite/50 hover:text-offwhite disabled:opacity-30 transition-colors"
+                          className="w-[26px] h-[26px] flex items-center justify-center text-offwhite/55 hover:text-offwhite disabled:opacity-30 transition-colors"
                           aria-label="Diminuir quantidade"
                         >
                           −
@@ -90,7 +90,7 @@ export function CartDrawer() {
                         <button
                           onClick={() => setQuantity(item.productId, item.quantity + 1)}
                           disabled={item.quantity >= item.stockQuantity}
-                          className="w-[26px] h-[26px] flex items-center justify-center text-offwhite/50 hover:text-offwhite disabled:opacity-30 transition-colors"
+                          className="w-[26px] h-[26px] flex items-center justify-center text-offwhite/55 hover:text-offwhite disabled:opacity-30 transition-colors"
                           aria-label="Aumentar quantidade"
                         >
                           +
@@ -98,7 +98,7 @@ export function CartDrawer() {
                       </div>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="font-body font-light text-[9px] tracking-[0.15em] uppercase text-offwhite/25 hover:text-error/70 transition-colors"
+                        className="font-body font-light text-[9px] tracking-[0.15em] uppercase text-offwhite/55 hover:text-error/70 transition-colors"
                       >
                         Remover
                       </button>
@@ -113,7 +113,7 @@ export function CartDrawer() {
         {items.length > 0 && (
           <div className="border-t border-offwhite/[0.07] px-6 py-5">
             <div className="flex items-center justify-between mb-4">
-              <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/40">Subtotal</span>
+              <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/55">Subtotal</span>
               <span className="font-data italic text-lg text-gold">{fmt(subtotal)}</span>
             </div>
             <button

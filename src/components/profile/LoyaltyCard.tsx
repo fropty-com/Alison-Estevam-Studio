@@ -8,7 +8,7 @@ export function LoyaltyCard({ loyalty }: { loyalty: LoyaltyProgress }) {
     return (
       <div className="border border-offwhite/[0.08] px-8 py-14 text-center">
         <p className="font-display font-light text-[18px] text-offwhite/70 mb-[8px]">Ainda não há cartões</p>
-        <p className="font-body font-light text-[12px] text-offwhite/35 leading-[1.7] max-w-[320px] mx-auto">
+        <p className="font-body font-light text-[12px] text-offwhite/55 leading-[1.7] max-w-[320px] mx-auto">
           Quando você concluir seu primeiro atendimento, seu cartão de fidelidade aparece aqui.
         </p>
       </div>
@@ -26,7 +26,7 @@ export function LoyaltyCard({ loyalty }: { loyalty: LoyaltyProgress }) {
           <p className="font-display font-light text-[24px] text-gold mb-[6px]">
             {loyalty.availableRewards > 1 ? `${loyalty.availableRewards} recompensas disponíveis` : 'Recompensa disponível'}
           </p>
-          <p className="font-body font-light text-[12px] text-offwhite/45">
+          <p className="font-body font-light text-[12px] text-offwhite/55">
             Resgate no seu próximo atendimento.
           </p>
         </>
@@ -34,13 +34,13 @@ export function LoyaltyCard({ loyalty }: { loyalty: LoyaltyProgress }) {
         <>
           <div className="flex items-baseline justify-between mb-[12px]">
             <p className="font-display font-light text-[22px] text-offwhite">
-              {loyalty.progress} <span className="text-offwhite/30 text-[16px]">de {loyalty.visitsRequired} cortes concluídos</span>
+              {loyalty.progress} <span className="text-offwhite/55 text-[16px]">de {loyalty.visitsRequired} cortes concluídos</span>
             </p>
           </div>
           <div className="w-full h-[6px] bg-offwhite/5 rounded-none mb-[12px]">
             <div className="h-full bg-gold/60 transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
-          <p className="font-body font-light text-[12px] text-offwhite/45">
+          <p className="font-body font-light text-[12px] text-offwhite/55">
             Faltam {loyalty.visitsRequired - loyalty.progress} para ganhar: <span className="text-offwhite/70">{loyalty.rewardDescription}</span>
           </p>
         </>

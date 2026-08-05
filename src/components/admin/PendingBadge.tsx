@@ -93,7 +93,7 @@ export function PendingBadge() {
               Novo agendamento
             </p>
             <p className="font-body font-light text-[13px] text-offwhite">{t.name}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.12em] mt-[2px]">{t.service}</p>
+            <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em] mt-[2px]">{t.service}</p>
           </div>
         ))}
       </div>

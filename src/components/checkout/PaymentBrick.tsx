@@ -122,7 +122,7 @@ export function PaymentBrick({
   return (
     <div>
       {loading && (
-        <p className="font-body font-light text-[11px] text-offwhite/30 italic text-center py-6">
+        <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
           Carregando formulário de pagamento…
         </p>
       )}

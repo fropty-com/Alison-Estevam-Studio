@@ -60,11 +60,11 @@ export default async function ReciboPage({ params }: { params: { id: string } })
       <div className="max-w-[480px] mx-auto px-8 pt-[65px] pb-10">
         <div className="border border-offwhite/10 bg-offwhite/[0.02]">
           <div className="px-7 pt-7 pb-5 border-b border-offwhite/[0.08]">
-            <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/25 mb-[10px]">
+            <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/55 mb-[10px]">
               ID {payment.id.slice(0, 8).toUpperCase()} · Recibo Nº {payment.receipt_number}
             </p>
             <p className="font-display font-light text-[19px] text-offwhite tracking-[0.01em]">{BRAND.fullName}</p>
-            <p className="font-body font-light text-[11px] text-offwhite/35 mt-[4px]">
+            <p className="font-body font-light text-[11px] text-offwhite/55 mt-[4px]">
               {BRAND.address.street}, {BRAND.address.neighborhood} — {BRAND.address.city}/{BRAND.address.state}
             </p>
           </div>
@@ -72,22 +72,22 @@ export default async function ReciboPage({ params }: { params: { id: string } })
           <div className="px-7 py-5 border-b border-offwhite/[0.08] flex items-center justify-between">
             <div>
               <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-sage-light mb-[3px]">Pago</p>
-              <p className="font-body font-light text-[12px] text-offwhite/50">
+              <p className="font-body font-light text-[12px] text-offwhite/55">
                 {format(paidDateAnchor, "d 'de' MMM. 'de' yyyy", { locale: ptBR })}
               </p>
             </div>
             <div className="text-right">
               <p className="font-body font-light text-[12px] text-offwhite/70">{client?.name}</p>
-              <p className="font-body font-light text-[10px] text-offwhite/30 mt-[2px]">{client?.whatsapp}</p>
+              <p className="font-body font-light text-[10px] text-offwhite/55 mt-[2px]">{client?.whatsapp}</p>
             </div>
           </div>
 
           <div className="px-7 py-5 border-b border-offwhite/[0.08]">
-            <p className="font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/25 mb-[10px]">Item</p>
+            <p className="font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55 mb-[10px]">Item</p>
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-body font-light text-[13px] text-offwhite/80">{service?.name ?? '—'}</p>
-                <p className="font-body font-light text-[10px] text-offwhite/30 mt-[2px] capitalize">
+                <p className="font-body font-light text-[10px] text-offwhite/55 mt-[2px] capitalize">
                   {serviceDateLabel}{slot?.start_time ? ` às ${slot.start_time.slice(0, 5)}` : ''}
                 </p>
               </div>
@@ -100,13 +100,13 @@ export default async function ReciboPage({ params }: { params: { id: string } })
             <Row label="Desconto" value={`- ${formatCurrency(discount)}`} />
             {fee > 0 && <Row label="Taxa" value={formatCurrency(fee)} />}
             <div className="flex items-center justify-between pt-[10px] mt-[10px] border-t border-offwhite/10">
-              <span className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/40">Total</span>
+              <span className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/55">Total</span>
               <span className="font-data text-[22px] text-gold">{formatCurrency(total)}</span>
             </div>
           </div>
 
           <div className="px-7 py-5">
-            <p className="font-body font-light text-[10.5px] text-offwhite/35">
+            <p className="font-body font-light text-[10.5px] text-offwhite/55">
               PAGO · {METHOD_LABEL[payment.method] ?? payment.method} · {formatTimeInSaoPaulo(paidAtDate)}, {format(paidDateAnchor, 'dd/MM/yyyy')}
             </p>
           </div>
@@ -123,7 +123,7 @@ export default async function ReciboPage({ params }: { params: { id: string } })
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="font-body font-light text-[11.5px] text-offwhite/35">{label}</span>
+      <span className="font-body font-light text-[11.5px] text-offwhite/55">{label}</span>
       <span className="font-body font-light text-[11.5px] text-offwhite/55">{value}</span>
     </div>
   )

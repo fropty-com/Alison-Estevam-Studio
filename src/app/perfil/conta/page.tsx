@@ -30,9 +30,9 @@ export default async function ContaDetalhesPage() {
       <ProfileHeader title="Detalhes da conta" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
-        <p className="font-body font-light text-[10px] text-offwhite/25 tracking-[0.08em] mb-[26px]">
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.08em] mb-[26px]">
           Nome, telefone, e-mail e foto ficam em{' '}
-          <a href="/perfil" className="text-offwhite/45 hover:text-offwhite/70 underline underline-offset-2 transition-colors">Meu perfil</a>.
+          <a href="/perfil" className="text-offwhite/55 hover:text-offwhite/70 underline underline-offset-2 transition-colors">Meu perfil</a>.
         </p>
 
         <AccountSettingsSection

@@ -57,7 +57,7 @@ export default async function ReagendarPage({ params }: { params: { code: string
 
           {cannotReschedule ? (
             <div className="border border-offwhite/10 p-6 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/45 italic">
+              <p className="font-display font-light text-[18px] text-offwhite/55 italic">
                 Este agendamento não pode ser reagendado.
               </p>
             </div>

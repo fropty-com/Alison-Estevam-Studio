@@ -99,7 +99,7 @@ export function WeekGrid({
               !d.isToday && d.isWeekendClosed && 'bg-offwhite/5'
             )}
           >
-            <p className="font-body font-light text-[7.5px] tracking-[0.2em] uppercase text-offwhite/30 capitalize">{d.label}</p>
+            <p className="font-body font-light text-[7.5px] tracking-[0.2em] uppercase text-offwhite/55 capitalize">{d.label}</p>
             <p className={cn('font-data text-[15px] leading-none mt-1', d.isToday ? 'text-gold' : 'text-offwhite/65')}>
               {d.dayNumber}
             </p>
@@ -116,7 +116,7 @@ export function WeekGrid({
               key={min}
               className={cn(
                 'absolute right-2 -translate-y-1/2 font-body font-light tracking-[0.05em]',
-                isHour ? 'text-[8px] text-offwhite/[0.32]' : 'text-[7px] text-offwhite/[0.16]'
+                isHour ? 'text-[8px] text-offwhite/55' : 'text-[7px] text-offwhite/55'
               )}
               style={{ top: minutesToPx(min - gridStartMin) }}
             >
@@ -161,7 +161,7 @@ export function WeekGrid({
 
               {d.blockedAllDay ? (
                 <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgba(241,241,241,0.03),rgba(241,241,241,0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
-                  <p className="font-body font-light text-[9px] text-offwhite/25 italic">{t.agenda.dayOffShort}</p>
+                  <p className="font-body font-light text-[9px] text-offwhite/55 italic">{t.agenda.dayOffShort}</p>
                 </div>
               ) : (
                 d.appointments.map(a => {

@@ -32,7 +32,7 @@ export function BlockTimeButton({
         type="button"
         disabled={!hasRule}
         onClick={() => setOpen(true)}
-        className="shrink-0 whitespace-nowrap flex items-center gap-[7px] px-4 h-[36px] border border-offwhite/[0.18] font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/50 transition-all duration-200 hover:border-offwhite/40 hover:text-offwhite disabled:opacity-30 disabled:cursor-not-allowed"
+        className="shrink-0 whitespace-nowrap flex items-center gap-[7px] px-4 h-[36px] border border-offwhite/[0.18] font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 transition-all duration-200 hover:border-offwhite/40 hover:text-offwhite disabled:opacity-30 disabled:cursor-not-allowed"
       >
         <LockIcon />
         {t.agenda.blockTime.button}

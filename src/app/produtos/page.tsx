@@ -52,7 +52,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
             href="/produtos"
             className={cn(
               'font-body font-light text-2xs tracking-[0.2em] uppercase px-4 py-[9px] border transition-colors',
-              !activeCategory ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
+              !activeCategory ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'
             )}
           >
             Todos
@@ -63,7 +63,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
               href={`/produtos?categoria=${c}`}
               className={cn(
                 'font-body font-light text-2xs tracking-[0.2em] uppercase px-4 py-[9px] border transition-colors',
-                activeCategory === c ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
+                activeCategory === c ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'
               )}
             >
               {CATEGORY_LABELS[c]}
@@ -72,7 +72,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
         </div>
 
         {products.length === 0 ? (
-          <p className="font-body font-light text-sm text-offwhite/35 italic text-center py-16">
+          <p className="font-body font-light text-sm text-offwhite/55 italic text-center py-16">
             Nenhum produto disponível nessa categoria no momento.
           </p>
         ) : (
@@ -96,7 +96,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-display font-light text-sm text-offwhite/15">{CATEGORY_LABELS[p.category as typeof CATEGORIES[number]]}</span>
+                        <span className="font-display font-light text-sm text-offwhite/55">{CATEGORY_LABELS[p.category as typeof CATEGORIES[number]]}</span>
                       </div>
                     )}
                     {(lowStock || outOfStock) && (
@@ -109,7 +109,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/30 mb-1">
+                    <p className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 mb-1">
                       {CATEGORY_LABELS[p.category as typeof CATEGORIES[number]]}
                     </p>
                     <h3 className="font-display font-normal text-base tracking-[0.03em] text-offwhite leading-tight mb-2 truncate">
@@ -117,7 +117,7 @@ export default async function ProdutosPage({ searchParams }: { searchParams: Pro
                     </h3>
                     <div className="flex items-center gap-2 mb-3">
                       {p.compare_at_price && (
-                        <span className="font-data italic text-xs text-offwhite/25 line-through">{fmt(p.compare_at_price)}</span>
+                        <span className="font-data italic text-xs text-offwhite/55 line-through">{fmt(p.compare_at_price)}</span>
                       )}
                       <span className="font-data italic text-base text-gold">{fmt(p.price)}</span>
                     </div>

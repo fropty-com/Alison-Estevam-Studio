@@ -39,7 +39,7 @@ export function ReviewForm({ appointmentId, serviceName }: { appointmentId: stri
             type="button"
             onClick={() => setRating(n)}
             aria-label={`${n} estrela${n > 1 ? 's' : ''}`}
-            className={cn('text-[22px] leading-none transition-colors', n <= rating ? 'text-gold' : 'text-offwhite/15')}
+            className={cn('text-[22px] leading-none transition-colors', n <= rating ? 'text-gold' : 'text-offwhite/55')}
           >
             ★
           </button>
@@ -50,7 +50,7 @@ export function ReviewForm({ appointmentId, serviceName }: { appointmentId: stri
         onChange={e => setComment(e.target.value)}
         rows={2}
         placeholder="Conte como foi (opcional)"
-        className="w-full mb-[10px] bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-[12px] px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none resize-none placeholder:text-offwhite/30"
+        className="w-full mb-[10px] bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-[12px] px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none resize-none placeholder:text-offwhite/55"
       />
       {error && <p className="font-body font-light text-[10px] text-error/70 mb-[10px]">{error}</p>}
       <button

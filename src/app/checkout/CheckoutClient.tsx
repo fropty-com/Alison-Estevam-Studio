@@ -19,8 +19,8 @@ interface ShippingRate {
   price: number
 }
 
-const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-base px-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.2]'
-const labelCls = 'block font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/35 mb-[6px]'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-base px-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
+const labelCls = 'block font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 mb-[6px]'
 
 type Step = 'form' | 'payment' | 'pix' | 'error'
 
@@ -142,7 +142,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
   if (items.length === 0 && step === 'form') {
     return (
       <div className="px-6 pt-[110px] pb-24 lg:pt-[95px] text-center">
-        <p className="font-body font-light text-sm text-offwhite/40 mb-6">Seu carrinho está vazio.</p>
+        <p className="font-body font-light text-sm text-offwhite/55 mb-6">Seu carrinho está vazio.</p>
         <Link href="/produtos" className="font-body font-medium text-[10px] tracking-[0.3em] uppercase bg-gold text-charcoal-deep px-6 py-[12px] inline-block hover:bg-gold-light transition-colors">
           Ver produtos
         </Link>
@@ -156,7 +156,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
         <div className="max-w-[420px] mx-auto text-center">
           <p className="section-tag justify-center" aria-hidden="true">Pedido {order.referenceCode}</p>
           <h1 className="font-display font-normal text-2xl tracking-[0.05em] uppercase text-offwhite mb-4">Pague com Pix</h1>
-          <p className="font-body font-light text-[12px] text-offwhite/45 mb-6">
+          <p className="font-body font-light text-[12px] text-offwhite/55 mb-6">
             Escaneie o QR code ou copie o código abaixo no app do seu banco. Assim que o pagamento for confirmado, você recebe um e-mail.
           </p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -168,7 +168,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
             rows={3}
             className="w-full bg-offwhite/5 border border-offwhite/[0.12] text-offwhite/70 font-data text-[10px] p-3 mb-4 resize-none"
           />
-          <Link href={`/pedido/${order.referenceCode}`} className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/40 hover:text-offwhite/70 transition-colors">
+          <Link href={`/pedido/${order.referenceCode}`} className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/70 transition-colors">
             Ver status do pedido
           </Link>
         </div>
@@ -208,7 +208,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
                       key={f}
                       type="button"
                       onClick={() => setFulfillment(f)}
-                      className={`flex-1 px-4 py-[11px] font-body font-light text-[10px] tracking-[0.2em] uppercase border transition-colors ${fulfillment === f ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'}`}
+                      className={`flex-1 px-4 py-[11px] font-body font-light text-[10px] tracking-[0.2em] uppercase border transition-colors ${fulfillment === f ? 'border-gold/40 bg-gold/10 text-gold' : 'border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'}`}
                     >
                       {f === 'retirada' ? 'Retirar na loja' : 'Receber em casa'}
                     </button>
@@ -244,7 +244,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
                     type="button"
                     onClick={applyCoupon}
                     disabled={couponApplying || !couponCode.trim()}
-                    className="px-5 font-body font-light text-[9px] tracking-[0.2em] uppercase border border-offwhite/[0.14] text-offwhite/50 hover:border-offwhite/30 transition-colors disabled:opacity-40"
+                    className="px-5 font-body font-light text-[9px] tracking-[0.2em] uppercase border border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30 transition-colors disabled:opacity-40"
                   >
                     {couponApplying ? '…' : 'Aplicar'}
                   </button>
@@ -269,7 +269,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
           {step === 'payment' && order && (
             mercadoPagoPublicKey ? (
               <div>
-                <p className="font-body font-light text-[11px] text-offwhite/40 mb-4">
+                <p className="font-body font-light text-[11px] text-offwhite/55 mb-4">
                   Pedido {order.referenceCode} — {fmt(order.total)}
                 </p>
                 {error && <p className="font-body font-light text-[11px] text-error/70 mb-4">{error}</p>}
@@ -291,7 +291,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
         </div>
 
         <div className="border border-offwhite/[0.08] p-6 h-fit">
-          <p className="font-body font-light text-[8.5px] tracking-[0.3em] uppercase text-offwhite/35 mb-4">Resumo</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-4">Resumo</p>
           <div className="divide-y divide-offwhite/[0.07] mb-4">
             {items.map(item => (
               <div key={item.productId} className="flex justify-between py-2 gap-2">
@@ -301,12 +301,12 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
             ))}
           </div>
           <div className="space-y-1 text-[11px]">
-            <div className="flex justify-between font-body font-light text-offwhite/50"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>
-            {shippingCost > 0 && <div className="flex justify-between font-body font-light text-offwhite/50"><span>Frete</span><span>{fmt(shippingCost)}</span></div>}
+            <div className="flex justify-between font-body font-light text-offwhite/55"><span>Subtotal</span><span>{fmt(subtotal)}</span></div>
+            {shippingCost > 0 && <div className="flex justify-between font-body font-light text-offwhite/55"><span>Frete</span><span>{fmt(shippingCost)}</span></div>}
             {discountAmount > 0 && <div className="flex justify-between font-body font-light text-sage-light"><span>Desconto</span><span>− {fmt(discountAmount)}</span></div>}
           </div>
           <div className="flex justify-between items-center mt-4 pt-4 border-t border-offwhite/[0.08]">
-            <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/40">Total</span>
+            <span className="font-body font-light text-[10px] tracking-[0.15em] uppercase text-offwhite/55">Total</span>
             <span className="font-data italic text-xl text-gold">{fmt(total)}</span>
           </div>
         </div>

@@ -70,7 +70,7 @@ export function ThemeToggle() {
       aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}
       className={cn(
         'w-7 h-7 flex items-center justify-center',
-        'text-offwhite/40 hover:text-offwhite/75',
+        'text-offwhite/55 hover:text-offwhite/75',
         'transition-colors duration-250',
         'animate-theme-in'
       )}

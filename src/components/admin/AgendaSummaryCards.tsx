@@ -53,28 +53,28 @@ export function AgendaSummaryCards({
 
       <div className="border border-offwhite/[0.14] px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">{t.agenda.summary.open}</p>
-          <span className="text-offwhite/30 text-[13px]" aria-hidden="true">↗</span>
+          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/55">{t.agenda.summary.open}</p>
+          <span className="text-offwhite/55 text-[13px]" aria-hidden="true">↗</span>
         </div>
         <p className="font-data text-[26px] text-offwhite leading-none">{openCount}</p>
       </div>
 
       <div className="border border-offwhite/[0.14] px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">{t.agenda.summary.completed}</p>
-          <span className="text-offwhite/30 text-[13px]" aria-hidden="true">↗</span>
+          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/55">{t.agenda.summary.completed}</p>
+          <span className="text-offwhite/55 text-[13px]" aria-hidden="true">↗</span>
         </div>
         <p className="font-data text-[26px] text-offwhite leading-none">{completedCount}</p>
       </div>
 
       <div className="border border-offwhite/[0.14] px-5 py-4 flex flex-col justify-between min-h-[86px]">
         <div className="flex items-center justify-between">
-          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/45">{revenueLabel}</p>
+          <p className="font-body font-light text-[9px] tracking-[0.14em] text-offwhite/55">{revenueLabel}</p>
           <button
             type="button"
             onClick={() => setRevenueHidden(v => !v)}
             aria-label={revenueHidden ? t.agenda.summary.showValue : t.agenda.summary.hideValue}
-            className="text-offwhite/30 hover:text-offwhite/60 transition-colors"
+            className="text-offwhite/55 hover:text-offwhite/60 transition-colors"
           >
             <EyeIcon hidden={revenueHidden} />
           </button>

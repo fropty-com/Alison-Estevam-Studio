@@ -46,10 +46,10 @@ export function CouponRow({ coupon }: {
 
         <span className="font-data text-[13px] text-offwhite/80 w-[100px] shrink-0">{coupon.code}</span>
         <span className="font-body font-light text-[12px] text-gold w-[70px] shrink-0">{discountLabel}</span>
-        <span className="font-body font-light text-[11px] text-offwhite/40 flex-1">{usageLabel}</span>
+        <span className="font-body font-light text-[11px] text-offwhite/55 flex-1">{usageLabel}</span>
 
         {coupon.expires_at && (
-          <span className={cn('font-body font-light text-[10px] tracking-[0.1em] shrink-0', expired ? 'text-error/60' : 'text-offwhite/30')}>
+          <span className={cn('font-body font-light text-[10px] tracking-[0.1em] shrink-0', expired ? 'text-error/60' : 'text-offwhite/55')}>
             {expired ? t.settings.coupons.expired : t.settings.coupons.until(coupon.expires_at.split('-').reverse().join('/'))}
           </span>
         )}

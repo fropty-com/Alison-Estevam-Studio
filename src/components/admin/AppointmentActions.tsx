@@ -101,7 +101,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
           onClick={() => setShowNote(v => !v)}
           className={cn(
             'px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase',
-            'border border-offwhite/10 text-offwhite/30',
+            'border border-offwhite/10 text-offwhite/55',
             'hover:border-offwhite/25 hover:text-offwhite/55 transition-all duration-200'
           )}
         >
@@ -127,7 +127,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
                   'border transition-all duration-200',
                   method === m.value
                     ? 'border-gold bg-gold/15 text-gold'
-                    : 'border-offwhite/[0.12] text-offwhite/45 hover:border-offwhite/25'
+                    : 'border-offwhite/[0.12] text-offwhite/55 hover:border-offwhite/25'
                 )}
               >
                 {m.label}
@@ -136,7 +136,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
+            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/55 shrink-0">
               {t.agenda.actions.discount}
             </label>
             <input
@@ -149,7 +149,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/35 shrink-0">
+            <label className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/55 shrink-0">
               {t.agenda.actions.tip}
             </label>
             <input
@@ -186,7 +186,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             className={cn(
               'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80',
               'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
-              'focus:border-gold/50 transition-colors placeholder:text-offwhite/20'
+              'focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
             )}
           />
           <button
@@ -210,7 +210,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
             placeholder={t.agenda.actions.cancelReasonPlaceholder}
-            className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/20"
+            className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/80 font-body font-light text-lg px-3 py-2 outline-none rounded-none focus:border-error/40 transition-colors placeholder:text-offwhite/55"
           />
           <div className="flex gap-2">
             <button
@@ -225,7 +225,7 @@ export function AppointmentActions({ id, status, notes, totalPrice }: { id: stri
             </button>
             <button
               onClick={() => setCancelModal(false)}
-              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:text-offwhite/55 transition-colors"
+              className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
             >
               {t.agenda.actions.back}
             </button>

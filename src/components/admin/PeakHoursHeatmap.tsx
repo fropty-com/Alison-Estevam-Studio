@@ -12,10 +12,10 @@ export function PeakHoursHeatmap({ cells, hours }: { cells: Cell[]; hours: numbe
 
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">
+      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-1">
         {t.operational.heatmap.title}
       </p>
-      <p className="font-body font-light text-[8px] text-offwhite/[0.22] tracking-[0.1em] mb-6">
+      <p className="font-body font-light text-[8px] text-offwhite/55 tracking-[0.1em] mb-6">
         {t.operational.heatmap.subtitle}
       </p>
 
@@ -24,7 +24,7 @@ export function PeakHoursHeatmap({ cells, hours }: { cells: Cell[]; hours: numbe
           <div className="grid gap-[3px] mb-[3px]" style={{ gridTemplateColumns: `40px repeat(${hours.length}, 1fr)` }}>
             <span />
             {hours.map(h => (
-              <span key={h} className="text-center font-body font-light text-[8px] text-offwhite/30 tracking-[0.05em]">
+              <span key={h} className="text-center font-body font-light text-[8px] text-offwhite/55 tracking-[0.05em]">
                 {String(h).padStart(2, '0')}h
               </span>
             ))}
@@ -32,7 +32,7 @@ export function PeakHoursHeatmap({ cells, hours }: { cells: Cell[]; hours: numbe
 
           {WEEKDAY_LABELS.map((label, weekday) => (
             <div key={weekday} className="grid gap-[3px] mb-[3px]" style={{ gridTemplateColumns: `40px repeat(${hours.length}, 1fr)` }}>
-              <span className="flex items-center font-body font-light text-[9px] text-offwhite/35">{label}</span>
+              <span className="flex items-center font-body font-light text-[9px] text-offwhite/55">{label}</span>
               {hours.map(h => {
                 const count = byKey.get(`${weekday + 1}-${h}`) ?? 0
                 const intensity = count / maxCount

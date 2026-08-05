@@ -29,7 +29,7 @@ const variants: Record<ButtonVariant, string> = {
     'hover:border-offwhite/[0.6] hover:text-offwhite'
   ),
   ghost: cn(
-    'font-light bg-transparent text-offwhite/40',
+    'font-light bg-transparent text-offwhite/55',
     'hover:text-offwhite/80',
     'underline underline-offset-4 decoration-offwhite/10 hover:decoration-offwhite/30'
   ),

@@ -65,31 +65,31 @@ export default async function ProdutosPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.products.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.products.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.products.title}</h1>
       </div>
 
       {/* Cards do mês */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.active}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.products.cards.active}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{activeProducts.length}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.activeSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.products.cards.activeSub}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.stockUnits}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.products.cards.stockUnits}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{totalStockUnits}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.stockUnitsSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.products.cards.stockUnitsSub}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.stockValue}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.products.cards.stockValue}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(totalStockValue)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.stockValueSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.products.cards.stockValueSub}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.products.cards.lowStock}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.products.cards.lowStock}</p>
           <p className={`font-data text-[26px] leading-none mb-2 ${lowStockCount > 0 ? 'text-error/80' : 'text-offwhite'}`}>{lowStockCount}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.products.cards.lowStockSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.products.cards.lowStockSub}</p>
         </div>
       </div>
 
@@ -99,7 +99,7 @@ export default async function ProdutosPage() {
           <section className="space-y-4">
             <AddShippingRateForm />
             {shippingRates.length === 0 ? (
-              <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+              <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
                 {t.products.shipping.empty}
               </p>
             ) : (
@@ -113,7 +113,7 @@ export default async function ProdutosPage() {
         }
         ordersSlot={
           orders.length === 0 ? (
-            <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+            <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
               {t.products.orders.empty}
             </p>
           ) : (

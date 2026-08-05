@@ -31,12 +31,12 @@ export function CancelForm({ code }: { code: string }) {
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-2">
           Agendamento cancelado.
         </p>
-        <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.15em]">
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.15em]">
           O horário foi liberado. Esperamos vê-lo em breve.
         </p>
         <Link
           href="/conta"
-          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 py-[6px] cursor-pointer hover:text-offwhite/85 transition-colors underline underline-offset-4 decoration-offwhite/10"
         >
           Voltar ao início
         </Link>
@@ -53,7 +53,7 @@ export function CancelForm({ code }: { code: string }) {
       ) : (
         <>
           <div>
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[6px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[6px]">
               Motivo (opcional)
             </label>
             <textarea
@@ -61,7 +61,7 @@ export function CancelForm({ code }: { code: string }) {
               onChange={e => setReason(e.target.value)}
               rows={3}
               placeholder="Ex: Imprevisto, viagem…"
-              className="w-full bg-offwhite/5 border border-offwhite/10 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/25 transition-colors placeholder:text-offwhite/[0.18]"
+              className="w-full bg-offwhite/5 border border-offwhite/10 text-offwhite font-body font-light text-[12px] px-3 py-[10px] outline-none resize-none focus:border-offwhite/25 transition-colors placeholder:text-offwhite/55"
             />
           </div>
 
@@ -76,7 +76,7 @@ export function CancelForm({ code }: { code: string }) {
             <button
               onClick={() => setConfirm(false)}
               disabled={pending}
-              className="px-6 py-[16px] font-body font-light text-[9px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:text-offwhite/55 transition-colors disabled:opacity-40"
+              className="px-6 py-[16px] font-body font-light text-[9px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors disabled:opacity-40"
             >
               Voltar
             </button>

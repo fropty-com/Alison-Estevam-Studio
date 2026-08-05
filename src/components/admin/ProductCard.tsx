@@ -27,7 +27,7 @@ export function ProductCard({ product, onEdit }: { product: Product; onEdit: (p:
           <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <span className="font-display font-light text-[13px] text-offwhite/15">{t.products.categories[product.category as keyof typeof t.products.categories]}</span>
+            <span className="font-display font-light text-[13px] text-offwhite/55">{t.products.categories[product.category as keyof typeof t.products.categories]}</span>
           </div>
         )}
         {(lowStock || outOfStock) && (
@@ -41,19 +41,19 @@ export function ProductCard({ product, onEdit }: { product: Product; onEdit: (p:
       </div>
 
       <div className="p-4">
-        <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/25 mb-1">
+        <p className="font-body font-light text-[8px] tracking-[0.2em] uppercase text-offwhite/55 mb-1">
           {t.products.categories[product.category as keyof typeof t.products.categories]}
         </p>
         <p className="font-display font-light text-[15px] text-offwhite leading-tight mb-2 truncate">{product.name}</p>
 
         <div className="flex items-center gap-2 mb-3">
           {product.compare_at_price && (
-            <span className="font-data italic text-[11px] text-offwhite/25 line-through">{fmt(product.compare_at_price)}</span>
+            <span className="font-data italic text-[11px] text-offwhite/55 line-through">{fmt(product.compare_at_price)}</span>
           )}
           <span className="font-data italic text-[15px] text-gold">{fmt(product.price)}</span>
         </div>
 
-        <p className="font-body font-light text-[8.5px] text-offwhite/30 tracking-[0.1em] mb-3">
+        <p className="font-body font-light text-[8.5px] text-offwhite/55 tracking-[0.1em] mb-3">
           {t.products.card.stock(product.stock_quantity)}
         </p>
 
@@ -74,7 +74,7 @@ export function ProductCard({ product, onEdit }: { product: Product; onEdit: (p:
           </button>
           <button
             onClick={() => onEdit(product)}
-            className="flex-1 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
+            className="flex-1 font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
           >
             {t.products.card.edit}
           </button>

@@ -43,7 +43,7 @@ export function LoyaltySettingsForm({ settings }: {
           </div>
           <button
             onClick={() => setEditing(true)}
-            className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
+            className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
           >
             {t.settings.loyalty.edit}
           </button>
@@ -51,7 +51,7 @@ export function LoyaltySettingsForm({ settings }: {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]">
               {t.settings.loyalty.visitsRequired}
             </label>
             <input
@@ -63,7 +63,7 @@ export function LoyaltySettingsForm({ settings }: {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
+            <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]">
               {t.settings.loyalty.reward}
             </label>
             <input
@@ -84,7 +84,7 @@ export function LoyaltySettingsForm({ settings }: {
             </button>
             <button
               onClick={() => { setEditing(false); setVisits(String(settings.visits_required)); setReward(settings.reward_description) }}
-              className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/25 hover:text-offwhite/50 transition-colors"
+              className="font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors"
             >
               {t.settings.loyalty.cancel}
             </button>

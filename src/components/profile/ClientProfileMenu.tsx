@@ -42,7 +42,7 @@ export function ClientProfileMenu({ name, avatarUrl }: { name: string; avatarUrl
         <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[180px] bg-charcoal border border-offwhite/[0.14] py-1">
           <div className="px-4 py-3 border-b border-offwhite/[0.06]">
             <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{name}</p>
-            <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 mt-[2px]">
+            <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 mt-[2px]">
               {t.client.role}
             </p>
           </div>
@@ -58,7 +58,7 @@ export function ClientProfileMenu({ name, avatarUrl }: { name: string; avatarUrl
             onClick={() => startTransition(() => logoutClientAction())}
             className={cn(
               'w-full text-left px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase',
-              'text-offwhite/40 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
+              'text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
             )}
           >
             {pending ? t.topbar.signingOut : t.topbar.signOut}

@@ -7,12 +7,12 @@ import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
 const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors'
 const selectCls = `${inputCls} appearance-none pr-8`
-const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
 const optionStyle = { backgroundColor: 'rgb(var(--c-charcoal))', color: 'rgb(var(--c-offwhite))' }
 
 function ChevronIcon() {
   return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-offwhite/35">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-offwhite/55">
       <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
@@ -76,12 +76,12 @@ export function BlockTimeModal({
         <button
           onClick={onClose}
           aria-label={t.agenda.close}
-          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/55 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.agenda.blockTime.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-1">{t.agenda.blockTime.eyebrow}</p>
         <h2 className="font-display font-light text-[20px] text-offwhite tracking-[0.02em] mb-5">{t.agenda.blockTime.title}</h2>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
@@ -120,7 +120,7 @@ export function BlockTimeModal({
           <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70 mb-3">{error}</p>
         )}
         {!canSubmit && (
-          <p className="font-body font-light text-[9px] tracking-[0.1em] text-offwhite/30 mb-3">
+          <p className="font-body font-light text-[9px] tracking-[0.1em] text-offwhite/55 mb-3">
             {t.agenda.blockTime.startBeforeEnd}
           </p>
         )}

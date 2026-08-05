@@ -116,17 +116,17 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="max-w-[1100px] mx-auto mt-[52px] pt-6 border-t border-offwhite/[0.08] flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-        <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30">
+        <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/55">
           © {year} {BRAND.name}. Todos os direitos reservados.
         </p>
         <div className="flex items-center gap-4">
-          <Link href="/termos" className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30 hover:text-offwhite/60 transition-colors">
+          <Link href="/termos" className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/55 hover:text-offwhite/60 transition-colors">
             Termos de Uso
           </Link>
-          <Link href="/privacidade" className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30 hover:text-offwhite/60 transition-colors">
+          <Link href="/privacidade" className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/55 hover:text-offwhite/60 transition-colors">
             Política de Privacidade
           </Link>
-          <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/30">
+          <p className="font-body font-light text-2xs tracking-[0.1em] text-offwhite/55">
             Crafted with intention.
           </p>
         </div>

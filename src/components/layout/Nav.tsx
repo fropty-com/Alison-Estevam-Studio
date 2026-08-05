@@ -33,7 +33,7 @@ function CartButton({ className }: { className?: string }) {
     <button
       onClick={open}
       aria-label={`Abrir carrinho${itemCount > 0 ? ` (${itemCount} ${itemCount === 1 ? 'item' : 'itens'})` : ''}`}
-      className={cn('relative text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250', className)}
+      className={cn('relative text-offwhite/55 hover:text-offwhite/85 transition-colors duration-250', className)}
     >
       <CartIcon />
       {itemCount > 0 && (
@@ -133,7 +133,7 @@ export function Nav() {
                   'after:transition-[width] after:duration-300 after:ease-brand-out',
                   activeSection === section
                     ? 'text-offwhite after:w-full'
-                    : 'text-offwhite/[0.52] after:w-0 hover:text-offwhite hover:after:w-full'
+                    : 'text-offwhite/55 after:w-0 hover:text-offwhite hover:after:w-full'
                 )}
               >
                 {label}
@@ -147,7 +147,7 @@ export function Nav() {
           <Link
             href="/produtos"
             aria-label="Ver produtos"
-            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors duration-250 px-1"
           >
             Produtos
           </Link>
@@ -155,7 +155,7 @@ export function Nav() {
           <Link
             href="/entrar"
             aria-label="Entrar na conta"
-            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/50 hover:text-offwhite/85 transition-colors duration-250 px-1"
+            className="font-body font-light text-2xs tracking-nav uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors duration-250 px-1"
           >
             Entrar
           </Link>

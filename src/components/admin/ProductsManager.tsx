@@ -12,7 +12,7 @@ export function ProductsManager({ products }: { products: Product[] }) {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
+        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55">
           {t.products.manage.title}
         </h2>
         <button
@@ -24,7 +24,7 @@ export function ProductsManager({ products }: { products: Product[] }) {
       </div>
 
       {products.length === 0 ? (
-        <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+        <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
           {t.products.manage.empty}
         </p>
       ) : (

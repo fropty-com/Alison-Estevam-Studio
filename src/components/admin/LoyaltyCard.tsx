@@ -28,7 +28,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
 
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-      <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-3">
+      <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">
         {t.clients.loyalty.title}
       </p>
 
@@ -37,7 +37,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
           <p className="font-body font-light text-[13px] text-gold mb-1">
             {t.clients.loyalty.rewardsAvailable(availableRewards)}
           </p>
-          <p className="font-body font-light text-[11px] text-offwhite/45 mb-4">{rewardDescription}</p>
+          <p className="font-body font-light text-[11px] text-offwhite/55 mb-4">{rewardDescription}</p>
           {!confirmOpen ? (
             <button
               onClick={() => setConfirmOpen(true)}
@@ -56,7 +56,7 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
               </button>
               <button
                 onClick={() => setConfirmOpen(false)}
-                className="px-3 py-[9px] font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+                className="px-3 py-[9px] font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
               >
                 ✕
               </button>
@@ -66,15 +66,15 @@ export function LoyaltyCard({ clientId, progress, visitsRequired, rewardDescript
       ) : (
         <div>
           <div className="flex items-baseline justify-between mb-2">
-            <span className="font-data text-[18px] text-offwhite/70">{progress}<span className="text-offwhite/30 text-[12px]"> / {visitsRequired}</span></span>
-            <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+            <span className="font-data text-[18px] text-offwhite/70">{progress}<span className="text-offwhite/55 text-[12px]"> / {visitsRequired}</span></span>
+            <span className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
               {t.clients.loyalty.remaining(visitsRequired - progress)}
             </span>
           </div>
           <div className="w-full h-[4px] bg-offwhite/5 rounded-none mb-3">
             <div className="h-full bg-sage/45 transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
-          <p className="font-body font-light text-[10.5px] text-offwhite/35">
+          <p className="font-body font-light text-[10.5px] text-offwhite/55">
             {t.clients.loyalty.nextReward} <span className="text-offwhite/55">{rewardDescription}</span>
           </p>
         </div>

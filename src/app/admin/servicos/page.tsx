@@ -183,42 +183,42 @@ export default async function ServicosPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.services.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.services.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.services.title}</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
       {/* Cards do mês */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.revenue}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.revenue}</p>
           <p className="font-data text-[26px] text-sage-light leading-none mb-2">{fmt(receitaServicos)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.thisMonth}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.thisMonth}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.performed}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.performed}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{servicosRealizados}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.periodThisMonth}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.periodThisMonth}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.registered}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.registered}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{totalCadastrados}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.activeServices}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.activeServices}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.avgTicket}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.avgTicket}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(ticketMedio)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.perTicketWithService}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.perTicketWithService}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.avgDuration}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.avgDuration}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{Math.round(duracaoMedia)} min</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.perServicePerformed}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.perServicePerformed}</p>
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.services.cards.standaloneCare}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.services.cards.standaloneCare}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{cuidadosAvulsos}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.services.cards.bookedAloneThisMonth}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.services.cards.bookedAloneThisMonth}</p>
         </div>
       </div>
 
@@ -229,27 +229,27 @@ export default async function ServicosPage() {
           {campeaoVendas ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{campeaoVendas.name}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{t.services.insights.timesThisMonth(campeaoVendas.count)}</p>
+              <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">{t.services.insights.timesThisMonth(campeaoVendas.count)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noServicesThisMonth}</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/55 italic">{t.services.insights.noServicesThisMonth}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.highestRevenue}</p>
           {maiorReceita ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{maiorReceita.name}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(maiorReceita.revenue)}</p>
+              <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">{fmt(maiorReceita.revenue)}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noServicesThisMonth}</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/55 italic">{t.services.insights.noServicesThisMonth}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.mostEfficient}</p>
           {maisEficiente ? (
             <>
               <p className="font-display font-light text-[17px] text-offwhite leading-tight mb-1 truncate">{maisEficiente.name}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">{fmt(maisEficiente.perHour)}{t.services.insights.perHour}</p>
+              <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">{fmt(maisEficiente.perHour)}{t.services.insights.perHour}</p>
             </>
-          ) : <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.services.insights.noDurationData}</p>}
+          ) : <p className="font-body font-light text-[11px] text-offwhite/55 italic">{t.services.insights.noDurationData}</p>}
         </div>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
           <p className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-gold/60 mb-3">{t.services.insights.longestStale}</p>
@@ -275,7 +275,7 @@ export default async function ServicosPage() {
 
       {/* Gestão de serviços */}
       <section className="space-y-4">
-        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
+        <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55">
           {t.services.manage.title}
         </h2>
         <AddServiceForm />

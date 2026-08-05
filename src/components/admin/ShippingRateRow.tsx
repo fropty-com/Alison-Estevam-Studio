@@ -59,13 +59,13 @@ export function ShippingRateRow({ rate }: { rate: ShippingRate }) {
         {!editing ? (
           <>
             <span className="font-body font-light text-[13px] text-offwhite flex-1 min-w-0 truncate">{rate.label}</span>
-            <span className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.1em] w-[40px] shrink-0">{rate.state ?? '—'}</span>
+            <span className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.1em] w-[40px] shrink-0">{rate.state ?? '—'}</span>
             <span className="font-data text-[14px] text-gold w-[80px] shrink-0 text-right">
               {rate.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
             </span>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               {t.products.shipping.edit}
             </button>
@@ -87,7 +87,7 @@ export function ShippingRateRow({ rate }: { rate: ShippingRate }) {
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
-                  className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+                  className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
                 >
                   ✕
                 </button>
@@ -125,7 +125,7 @@ export function ShippingRateRow({ rate }: { rate: ShippingRate }) {
             </button>
             <button
               onClick={() => setEditing(false)}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
             >
               ✕
             </button>

@@ -49,10 +49,10 @@ export function ShippingRateSelect({
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between bg-offwhite/5 border border-offwhite/[0.12] text-left px-3 py-[10px] outline-none focus:border-gold/50 transition-colors"
       >
-        <span className={`font-body font-light text-base ${selected ? 'text-offwhite' : 'text-offwhite/[0.35]'}`}>
+        <span className={`font-body font-light text-base ${selected ? 'text-offwhite' : 'text-offwhite/55'}`}>
           {selected ? `${selected.label}${selected.state ? ` (${selected.state})` : ''} — ${fmt(selected.price)}` : 'Selecione…'}
         </span>
-        <span className={`text-offwhite/40 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden="true">▾</span>
+        <span className={`text-offwhite/55 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} aria-hidden="true">▾</span>
       </button>
 
       {open && (

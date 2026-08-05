@@ -45,9 +45,9 @@ export default async function EsperaPage() {
     <div className="px-6 py-8">
       <div className="flex items-start justify-between gap-4 mb-8">
         <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.waitlist.eyebrow}</p>
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.waitlist.eyebrow}</p>
           <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.waitlist.title}</h1>
-          <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
+          <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.1em] mt-1">
             {t.waitlist.subtitle(entries.length)}
           </p>
         </div>
@@ -56,7 +56,7 @@ export default async function EsperaPage() {
 
       {groups.length === 0 ? (
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
-          <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
+          <p className="font-display font-light text-[20px] text-offwhite/55 italic">
             {t.waitlist.empty}
           </p>
         </div>
@@ -64,7 +64,7 @@ export default async function EsperaPage() {
         <div className="space-y-8">
           {groups.map(({ day, items }) => (
             <div key={day}>
-              <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
+              <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/55 mb-3">
                 {dayLabel(day, locale, t)}
               </p>
               <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">

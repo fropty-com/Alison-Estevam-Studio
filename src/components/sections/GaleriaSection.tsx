@@ -31,7 +31,7 @@ export function GaleriaSection() {
         Trabalhos<br />Selecionados
       </h2>
 
-      <p className="reveal reveal-d1 font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/45 mb-[42px] max-w-[380px]">
+      <p className="reveal reveal-d1 font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/55 mb-[42px] max-w-[380px]">
         Uma seleção de cortes realizados recentemente.
       </p>
 

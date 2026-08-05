@@ -108,9 +108,9 @@ export default async function ConfiguracoesPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.settings.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.settings.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.settings.title}</h1>
-        <p className="font-body font-light text-[11px] text-offwhite/35 tracking-[0.05em] mt-2 max-w-[560px]">
+        <p className="font-body font-light text-[11px] text-offwhite/55 tracking-[0.05em] mt-2 max-w-[560px]">
           {t.settings.subtitle}
         </p>
       </div>
@@ -129,9 +129,9 @@ export default async function ConfiguracoesPage() {
             <div className="min-w-0">
               <p className="font-body font-light text-[11px] text-offwhite/80 flex items-center gap-1">
                 {label}
-                <span className="text-offwhite/20 group-hover:text-gold/60 transition-colors"><ArrowIcon /></span>
+                <span className="text-offwhite/55 group-hover:text-gold/60 transition-colors"><ArrowIcon /></span>
               </p>
-              <p className="font-body font-light text-[8.5px] text-offwhite/30 mt-[2px] leading-[1.4]">{desc}</p>
+              <p className="font-body font-light text-[8.5px] text-offwhite/55 mt-[2px] leading-[1.4]">{desc}</p>
             </div>
           </Link>
         ))}
@@ -148,7 +148,7 @@ export default async function ConfiguracoesPage() {
             />
           ))}
           {rules.length === 0 && (
-            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
+            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/55 italic">
               {t.settings.hours.noRules}
             </p>
           )}
@@ -169,7 +169,7 @@ export default async function ConfiguracoesPage() {
                     )}
                   </p>
                   {b.reason && (
-                    <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em] mt-[2px]">{b.reason}</p>
+                    <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em] mt-[2px]">{b.reason}</p>
                   )}
                 </div>
                 <form action={async () => { 'use server'; await removeBlockedPeriod(b.id) }}>
@@ -198,7 +198,7 @@ export default async function ConfiguracoesPage() {
             />
           ))}
           {fees.length === 0 && (
-            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
+            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/55 italic">
               {t.settings.fees.noFees}
             </p>
           )}
@@ -210,7 +210,7 @@ export default async function ConfiguracoesPage() {
         {loyalty ? (
           <LoyaltySettingsForm settings={loyalty} />
         ) : (
-          <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic bg-offwhite/5 border border-offwhite/[0.07]">
+          <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/55 italic bg-offwhite/5 border border-offwhite/[0.07]">
             {t.settings.loyalty.notFound}
           </p>
         )}
@@ -223,7 +223,7 @@ export default async function ConfiguracoesPage() {
             <CouponRow key={c.id} coupon={{ ...c, discount_type: c.discount_type as 'percentage' | 'fixed' }} />
           ))}
           {coupons.length === 0 && (
-            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
+            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/55 italic">
               {t.settings.coupons.noCoupons}
             </p>
           )}
@@ -233,7 +233,7 @@ export default async function ConfiguracoesPage() {
 
       {/* Team / roles */}
       <SectionCard id="equipe" icon={<TeamIcon />} title={t.settings.staff.title}>
-        <p className="font-body font-light text-[11px] text-offwhite/35 leading-[1.6] mb-4 max-w-[520px]">
+        <p className="font-body font-light text-[11px] text-offwhite/55 leading-[1.6] mb-4 max-w-[520px]">
           {t.settings.staff.description}
         </p>
         <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6 mb-4">
@@ -245,7 +245,7 @@ export default async function ConfiguracoesPage() {
             />
           ))}
           {staff.length === 0 && (
-            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/25 italic">
+            <p className="px-5 py-6 font-body font-light text-[11px] text-offwhite/55 italic">
               {t.settings.staff.noMembers}
             </p>
           )}

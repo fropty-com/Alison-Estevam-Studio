@@ -85,16 +85,16 @@ export default async function AtividadePage() {
   return (
     <div className="px-6 py-8 space-y-6">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.activity.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.activity.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.activity.title}</h1>
       </div>
 
       {/* Top serviços do mês */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
         <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.activity.topServices.title}</p>
-        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">{t.activity.topServices.subtitle}</p>
+        <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em] mb-6">{t.activity.topServices.subtitle}</p>
         {topServices.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
             {t.activity.topServices.empty}
           </p>
         ) : (
@@ -117,13 +117,13 @@ export default async function AtividadePage() {
       {/* Atividade recente */}
       <div>
         <p className="font-display font-light text-[17px] text-offwhite mb-1">{t.activity.recent.title}</p>
-        <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mb-6">
+        <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em] mb-6">
           {t.activity.recent.subtitle(entries.length)}
         </p>
 
         {groups.length === 0 ? (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
-            <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
+            <p className="font-display font-light text-[20px] text-offwhite/55 italic">
               {t.activity.recent.empty}
             </p>
           </div>
@@ -131,7 +131,7 @@ export default async function AtividadePage() {
           <div className="space-y-8">
             {groups.map(({ day, items }) => (
               <div key={day}>
-                <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/30 mb-3">
+                <p className="font-body font-light text-[8px] tracking-[0.32em] uppercase text-offwhite/55 mb-3">
                   {dayLabel(day, locale, t)}
                 </p>
                 <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
@@ -144,7 +144,7 @@ export default async function AtividadePage() {
                           <p className="font-body font-light text-[12.5px] text-offwhite/80">
                             {entry.summary}
                           </p>
-                          <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[3px]">
+                          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em] mt-[3px]">
                             {entry.actor_name} · {formatTimeInSaoPaulo(parseISO(entry.created_at))}
                           </p>
                         </div>

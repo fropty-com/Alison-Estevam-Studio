@@ -146,34 +146,34 @@ export default async function ClientesPage() {
   return (
     <div className="px-6 py-8 space-y-10">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.clients.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.clients.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">
-          {t.clients.title} <span className="text-offwhite/25 text-[22px]">{list.length}</span>
+          {t.clients.title} <span className="text-offwhite/55 text-[22px]">{list.length}</span>
         </h1>
       </div>
 
       {/* Cards do mês */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.cardNewVsReturning}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.clients.cardNewVsReturning}</p>
           <p className="font-data text-[26px] leading-none mb-2">
             <span className="text-sage-light">{novosThisMonth}</span>
-            <span className="text-offwhite/25"> / </span>
+            <span className="text-offwhite/55"> / </span>
             <span className="text-offwhite">{recorrentesThisMonth}</span>
           </p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.newReturningSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.clients.newReturningSub}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.avgFrequency}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.clients.avgFrequency}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{frequenciaMedia.toFixed(1)}x</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.avgFrequencySub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.clients.avgFrequencySub}</p>
         </div>
 
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-3">{t.clients.avgTicket}</p>
+          <p className="font-body font-light text-[8px] tracking-[0.38em] uppercase text-offwhite/55 mb-3">{t.clients.avgTicket}</p>
           <p className="font-data text-[26px] text-offwhite leading-none mb-2">{fmt(ticketMedioCliente)}</p>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.12em]">{t.clients.avgTicketSub}</p>
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">{t.clients.avgTicketSub}</p>
         </div>
       </div>
 
@@ -182,16 +182,16 @@ export default async function ClientesPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 text-gold/70">
             <CakeIcon />
-            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55">
               {t.clients.birthdaysTitle}
             </p>
           </div>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
             {t.clients.birthdaysSub(birthdaysThisMonth.length)}
           </p>
         </div>
         {birthdaysThisMonth.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
             {t.clients.noBirthdays}
           </p>
         ) : (
@@ -216,10 +216,10 @@ export default async function ClientesPage() {
       {/* Retenção / clientes ausentes */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/40">
+          <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55">
             {t.clients.retention}
           </h2>
-          <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.1em]">
+          <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
             {t.clients.retentionSub(recurringClients.length, clientsWithHistory.length, retentionRate.toFixed(1))}
           </p>
         </div>

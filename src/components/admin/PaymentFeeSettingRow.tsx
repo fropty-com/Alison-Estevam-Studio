@@ -51,7 +51,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
             <span className="font-data text-[14px] text-offwhite/60">{setting.fee_percentage.toFixed(2)}%</span>
             <button
               onClick={() => setEditing(true)}
-              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
+              className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12]"
             >
               {t.settings.fees.edit}
             </button>
@@ -67,7 +67,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
               onChange={e => setFee(e.target.value)}
               className="w-[70px] bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-data text-lg px-2 py-1 outline-none rounded-none focus:border-gold/50 transition-colors text-right"
             />
-            <span className="text-offwhite/25 font-body font-light text-[10px]">%</span>
+            <span className="text-offwhite/55 font-body font-light text-[10px]">%</span>
             <button
               disabled={pending}
               onClick={() => act(() => updatePaymentFeeSetting(setting.id, { fee_percentage: parseFloat(fee) }))}
@@ -76,7 +76,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
               {pending ? '…' : t.settings.fees.ok}
             </button>
             <button onClick={() => { setEditing(false); setFee(String(setting.fee_percentage)) }}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors">
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors">
               ✕
             </button>
           </div>
@@ -85,17 +85,17 @@ export function PaymentFeeSettingRow({ setting, label }: {
 
       {setting.method === 'pix' && (
         <div className="flex items-center gap-4 mt-3 pl-[50px]">
-          <span className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 shrink-0">
+          <span className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 shrink-0">
             {t.settings.fees.pixKey}
           </span>
           {!editingPix ? (
             <>
-              <span className="font-data text-[11px] text-offwhite/50 truncate flex-1">
+              <span className="font-data text-[11px] text-offwhite/55 truncate flex-1">
                 {setting.pix_key || '—'}
               </span>
               <button
                 onClick={() => setEditingPix(true)}
-                className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/25 hover:text-offwhite/55 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
+                className="font-body font-light text-[8px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors px-2 py-1 border border-transparent hover:border-offwhite/[0.12] shrink-0"
               >
                 {t.settings.fees.edit}
               </button>
@@ -117,7 +117,7 @@ export function PaymentFeeSettingRow({ setting, label }: {
                 {pending ? '…' : t.settings.fees.ok}
               </button>
               <button onClick={() => { setEditingPix(false); setPixKey(setting.pix_key ?? '') }}
-                className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors shrink-0">
+                className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors shrink-0">
                 ✕
               </button>
             </div>

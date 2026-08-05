@@ -6,9 +6,9 @@ import { createClient } from '@/lib/supabase/client'
 import { createProduct, updateProduct } from '@/app/admin/actions'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
 
-const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
+const inputCls = 'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
 const selectCls = `${inputCls} appearance-none pr-8`
-const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]'
+const labelCls = 'block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]'
 const optionStyle = { backgroundColor: 'rgb(var(--c-charcoal))', color: 'rgb(var(--c-offwhite))' }
 
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024
@@ -92,12 +92,12 @@ export function ProductFormModal({ product, onClose }: { product?: ProductFormVa
         <button
           onClick={onClose}
           aria-label={t.agenda.close}
-          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/45 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
+          className="absolute top-5 right-5 w-[36px] h-[36px] border border-offwhite/[0.18] text-offwhite/55 text-[12px] flex items-center justify-center transition-colors hover:border-offwhite/40 hover:text-offwhite"
         >
           ✕
         </button>
 
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-1">{t.products.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-1">{t.products.eyebrow}</p>
         <h2 className="font-display font-light text-[20px] text-offwhite tracking-[0.02em] mb-5">
           {isEditing ? t.products.form.editTitle : t.products.form.newTitle}
         </h2>
@@ -110,7 +110,7 @@ export function ProductFormModal({ product, onClose }: { product?: ProductFormVa
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={imageUrl} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="font-body font-light text-[9px] text-offwhite/20">—</span>
+                <span className="font-body font-light text-[9px] text-offwhite/55">—</span>
               )}
             </div>
             <div>
@@ -172,7 +172,7 @@ export function ProductFormModal({ product, onClose }: { product?: ProductFormVa
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-[11px] font-body font-light text-[9px] tracking-[0.3em] uppercase border border-offwhite/10 text-offwhite/40 hover:text-offwhite/70 transition-colors"
+              className="flex-1 px-4 py-[11px] font-body font-light text-[9px] tracking-[0.3em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/70 transition-colors"
             >
               {t.products.form.cancel}
             </button>

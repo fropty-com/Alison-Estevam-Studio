@@ -8,13 +8,13 @@ import { cn, maskPhoneInput } from '@/lib/utils'
 type Method = 'email' | 'phone'
 type PhoneStep = 'phone' | 'code'
 
-const inputCls = 'w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-display text-lg px-[15px] py-[13px] outline-none rounded-none focus:border-gold focus:bg-gold/5 transition-all duration-250 placeholder:text-offwhite/[0.18] placeholder:text-sm placeholder:font-body placeholder:font-light'
-const labelCls = 'block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.32] mb-[6px]'
+const inputCls = 'w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-display text-lg px-[15px] py-[13px] outline-none rounded-none focus:border-gold focus:bg-gold/5 transition-all duration-250 placeholder:text-offwhite/55 placeholder:text-sm placeholder:font-body placeholder:font-light'
+const labelCls = 'block font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]'
 const buttonCls = 'w-full mt-2 py-[15px] font-body font-medium text-[9px] tracking-[0.38em] uppercase bg-gold text-charcoal-deep transition-all duration-300 hover:bg-gold-light disabled:opacity-45 disabled:cursor-not-allowed'
 const tabCls = (active: boolean) => cn(
   'flex-1 pb-[10px] font-body font-light text-[9px] tracking-[0.3em] uppercase transition-colors duration-250 relative',
   'after:content-[\'\'] after:absolute after:bottom-0 after:left-0 after:h-px after:bg-gold after:transition-[width] after:duration-300',
-  active ? 'text-offwhite after:w-full' : 'text-offwhite/40 hover:text-offwhite/70 after:w-0'
+  active ? 'text-offwhite after:w-full' : 'text-offwhite/55 hover:text-offwhite/70 after:w-0'
 )
 
 export default function LoginPage() {
@@ -74,7 +74,7 @@ export default function LoginPage() {
       <div className="w-full max-w-[380px]">
         {/* Brand */}
         <div className="mb-10 text-center">
-          <p className="font-body font-light text-[8.5px] tracking-[0.5em] uppercase text-offwhite/[0.28] mb-2">
+          <p className="font-body font-light text-[8.5px] tracking-[0.5em] uppercase text-offwhite/55 mb-2">
             Alison Estevam Studio
           </p>
           <h1 className="font-display font-light text-[32px] text-offwhite tracking-[0.05em]">
@@ -162,12 +162,12 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => { setPhoneStep('phone'); setCode(''); setError(null); setDevCode(null) }}
-                  className="mb-[6px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+                  className="mb-[6px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/60 transition-colors"
                 >
                   ← Trocar número
                 </button>
 
-                <p className="font-body font-light text-[12px] text-offwhite/40 mb-[13px]">
+                <p className="font-body font-light text-[12px] text-offwhite/55 mb-[13px]">
                   Enviamos um código de 6 dígitos para {phone}.
                 </p>
 
@@ -206,7 +206,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleSendCode}
                   disabled={pending}
-                  className="w-full mt-[14px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/30 hover:text-offwhite/60 transition-colors"
+                  className="w-full mt-[14px] font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/60 transition-colors"
                 >
                   Reenviar código
                 </button>

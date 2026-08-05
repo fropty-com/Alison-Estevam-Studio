@@ -39,7 +39,7 @@ export function HelpMenu() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label={t.topbar.help}
-        className="w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
+        className="w-[36px] h-[36px] flex items-center justify-center text-offwhite/55 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
       >
         <HelpIcon />
       </button>

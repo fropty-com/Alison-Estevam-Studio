@@ -47,9 +47,9 @@ export default async function RelatoriosPage() {
   return (
     <div className="px-6 py-8">
       <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.reports.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.reports.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.reports.title}</h1>
-        <p className="font-body font-light text-[11px] text-offwhite/35 tracking-[0.05em] mt-2 max-w-[520px]">
+        <p className="font-body font-light text-[11px] text-offwhite/55 tracking-[0.05em] mt-2 max-w-[520px]">
           {t.reports.subtitle}
         </p>
       </div>
@@ -58,7 +58,7 @@ export default async function RelatoriosPage() {
         {REPORTS.map(r => (
           <div key={r.slug} className="bg-offwhite/5 border border-offwhite/[0.07] p-6 flex flex-col">
             <p className="font-display font-light text-[19px] text-offwhite mb-2">{r.title}</p>
-            <p className="font-body font-light text-[11px] text-offwhite/40 leading-[1.6] mb-5 flex-1">
+            <p className="font-body font-light text-[11px] text-offwhite/55 leading-[1.6] mb-5 flex-1">
               {r.description}
             </p>
             <div className="flex gap-[10px]">

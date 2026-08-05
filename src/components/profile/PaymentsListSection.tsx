@@ -23,7 +23,7 @@ export function PaymentsListSection({ payments }: { payments: Payment[] }) {
   if (payments.length === 0) {
     return (
       <div className="border border-offwhite/[0.08] px-8 py-12 text-center">
-        <p className="font-body font-light text-[13px] text-offwhite/40">
+        <p className="font-body font-light text-[13px] text-offwhite/55">
           Você ainda não possui pagamentos registrados.
         </p>
       </div>
@@ -42,13 +42,13 @@ export function PaymentsListSection({ payments }: { payments: Payment[] }) {
             <p className="font-body font-light text-[12.5px] text-offwhite/75">
               {format(dateAnchorInSaoPaulo(parseISO(p.paidAt)), 'dd/MM/yyyy')} {formatTimeInSaoPaulo(parseISO(p.paidAt))}
             </p>
-            <p className="font-body font-light text-[10px] text-offwhite/30 tracking-[0.06em] mt-[3px]">
+            <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.06em] mt-[3px]">
               {METHOD_LABEL[p.method] ?? p.method} · {BRAND.fullName}
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <span className="font-data text-[14px] text-gold">{formatCurrency(p.grossAmount)}</span>
-            <span className="font-body font-light text-offwhite/25">→</span>
+            <span className="font-body font-light text-offwhite/55">→</span>
           </div>
         </Link>
       ))}

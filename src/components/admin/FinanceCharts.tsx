@@ -12,7 +12,7 @@ function fmt(value: number) {
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
-    <span className="inline-flex items-center gap-[6px] font-body font-light text-[9px] text-offwhite/40 tracking-[0.08em]">
+    <span className="inline-flex items-center gap-[6px] font-body font-light text-[9px] text-offwhite/55 tracking-[0.08em]">
       <span className={`w-[6px] h-[6px] rounded-full ${color}`} />
       {label}
     </span>
@@ -46,7 +46,7 @@ export function FinanceCharts({
       {/* Tendência 6 meses */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55">
             {t.finance.charts.trend6mTitle}
           </p>
           <div className="flex gap-4">
@@ -69,7 +69,7 @@ export function FinanceCharts({
                   <div className={`w-full transition-all duration-500 ${m.profit >= 0 ? 'bg-gold/60' : 'bg-error/70'}`} style={{ height: `${Math.max((Math.abs(m.profit) / maxTrend) * 100, 2)}%` }} />
                 </div>
               </div>
-              <span className="font-body font-light text-[8px] text-offwhite/25 tracking-[0.08em] capitalize">{m.label}</span>
+              <span className="font-body font-light text-[8px] text-offwhite/55 tracking-[0.08em] capitalize">{m.label}</span>
             </div>
           ))}
         </div>
@@ -78,7 +78,7 @@ export function FinanceCharts({
       {/* Fluxo de caixa diário */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
-          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35">
+          <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55">
             {t.finance.charts.dailyCashFlowTitle}
           </p>
           <div className="flex gap-4">
@@ -87,7 +87,7 @@ export function FinanceCharts({
           </div>
         </div>
         {!hasCashMovement ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-8">
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-8">
             {t.finance.charts.noMovement}
           </p>
         ) : (
@@ -102,7 +102,7 @@ export function FinanceCharts({
                     <div className="w-full bg-error/50" style={{ height: `${Math.max((d.out / maxDay) * 100, d.out > 0 ? 2 : 0)}%` }} />
                   </div>
                 </div>
-                <span className="font-body font-light text-[6.5px] text-offwhite/[0.22]">{d.label}</span>
+                <span className="font-body font-light text-[6.5px] text-offwhite/55">{d.label}</span>
               </div>
             ))}
           </div>
@@ -111,11 +111,11 @@ export function FinanceCharts({
 
       {/* Despesas por categoria */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-6">
           {t.finance.charts.byCategoryTitle}
         </p>
         {categoryBreakdown.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.charts.noExpensesThisMonth}</p>
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic">{t.finance.charts.noExpensesThisMonth}</p>
         ) : (
           <div className="space-y-[14px]">
             {categoryBreakdown.map(c => {
@@ -138,18 +138,18 @@ export function FinanceCharts({
 
       {/* Fixas vs Variáveis */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-6">
           {t.finance.charts.fixedVsVariableTitle}
         </p>
         {fixedVariableTotal === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">{t.finance.charts.noExpensesToClassify}</p>
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic">{t.finance.charts.noExpensesToClassify}</p>
         ) : (
           <div className="space-y-[14px]">
             <div>
               <div className="flex items-center justify-between mb-[5px]">
                 <span className="font-body font-light text-[11px] text-offwhite/70">{t.finance.charts.fixed}</span>
                 <span className="font-data text-[12px] text-offwhite/55">
-                  {fmt(fixedTotal)} <span className="text-offwhite/30">({((fixedTotal / fixedVariableTotal) * 100).toFixed(0)}%)</span>
+                  {fmt(fixedTotal)} <span className="text-offwhite/55">({((fixedTotal / fixedVariableTotal) * 100).toFixed(0)}%)</span>
                 </span>
               </div>
               <div className="w-full h-[3px] bg-offwhite/5">
@@ -160,7 +160,7 @@ export function FinanceCharts({
               <div className="flex items-center justify-between mb-[5px]">
                 <span className="font-body font-light text-[11px] text-offwhite/70">{t.finance.charts.variable}</span>
                 <span className="font-data text-[12px] text-offwhite/55">
-                  {fmt(variableTotal)} <span className="text-offwhite/30">({((variableTotal / fixedVariableTotal) * 100).toFixed(0)}%)</span>
+                  {fmt(variableTotal)} <span className="text-offwhite/55">({((variableTotal / fixedVariableTotal) * 100).toFixed(0)}%)</span>
                 </span>
               </div>
               <div className="w-full h-[3px] bg-offwhite/5">

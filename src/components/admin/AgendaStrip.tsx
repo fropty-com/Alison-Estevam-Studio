@@ -82,7 +82,7 @@ export function AgendaStrip({ selectedDate, view }: { selectedDate: string; view
               ? 'bg-gold border-gold text-charcoal-deep'
               : c.today
                 ? 'border-gold/40 text-offwhite/70 hover:border-gold/60'
-                : 'border-offwhite/10 text-offwhite/45 hover:border-offwhite/25 hover:text-offwhite/70'
+                : 'border-offwhite/10 text-offwhite/55 hover:border-offwhite/25 hover:text-offwhite/70'
           )}
         >
           <span className="font-body font-light text-[7.5px] tracking-[0.15em]">{c.top}</span>

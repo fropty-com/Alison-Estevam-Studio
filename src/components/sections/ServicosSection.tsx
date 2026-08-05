@@ -75,7 +75,7 @@ export function ServicosSection() {
                 )}
               </h3>
 
-              <p className="font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/50 mb-[16px] max-w-[420px]">
+              <p className="font-body font-light text-sm tracking-[0.07em] leading-[1.3] text-offwhite/55 mb-[16px] max-w-[420px]">
                 {s.description}
               </p>
 

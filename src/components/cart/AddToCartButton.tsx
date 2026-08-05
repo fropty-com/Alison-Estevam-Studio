@@ -39,7 +39,7 @@ export function AddToCartButton({
             type="button"
             onClick={e => { e.preventDefault(); setQuantity(q => Math.max(1, q - 1)) }}
             disabled={quantity <= 1}
-            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/50 hover:text-offwhite disabled:opacity-30 transition-colors"
+            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/55 hover:text-offwhite disabled:opacity-30 transition-colors"
             aria-label="Diminuir quantidade"
           >
             −
@@ -49,7 +49,7 @@ export function AddToCartButton({
             type="button"
             onClick={e => { e.preventDefault(); setQuantity(q => Math.min(product.stockQuantity, q + 1)) }}
             disabled={quantity >= product.stockQuantity}
-            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/50 hover:text-offwhite disabled:opacity-30 transition-colors"
+            className="w-[32px] h-[32px] flex items-center justify-center text-offwhite/55 hover:text-offwhite disabled:opacity-30 transition-colors"
             aria-label="Aumentar quantidade"
           >
             +

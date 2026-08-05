@@ -44,7 +44,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
 
   if (expenses.length === 0) {
     return (
-      <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic text-center py-6">
+      <p className="font-body font-light text-[11px] text-offwhite/55 italic text-center py-6">
         {t.finance.list.none}
       </p>
     )
@@ -59,7 +59,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
           <div key={e.id} className="flex items-center gap-4 px-6 py-3">
             <div className="flex-1 min-w-0">
               <p className="font-body font-light text-[12px] text-offwhite/75 truncate">{e.description}</p>
-              <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+              <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
                 {e.category} · {e.isFixed ? t.finance.list.fixed : t.finance.list.variable} · {t.finance.list.dueLabel(e.dueLabel)}
               </p>
             </div>
@@ -74,7 +74,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
                   ? 'border-sage/30 bg-sage/15 text-sage-light hover:bg-sage/25'
                   : overdue
                     ? 'border-error/40 text-error/70 hover:bg-error/10'
-                    : 'border-offwhite/[0.14] text-offwhite/45 hover:border-offwhite/30'
+                    : 'border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30'
               )}
             >
               {paid ? t.finance.list.paid : overdue ? t.finance.list.overdue : t.finance.list.markPaid}
@@ -84,7 +84,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
               disabled={pending}
               onClick={() => remove(e.id, e.description)}
               aria-label={t.finance.list.deleteLabel}
-              className="shrink-0 text-offwhite/25 hover:text-error/70 transition-colors text-[13px] disabled:opacity-40"
+              className="shrink-0 text-offwhite/55 hover:text-error/70 transition-colors text-[13px] disabled:opacity-40"
             >
               ✕
             </button>

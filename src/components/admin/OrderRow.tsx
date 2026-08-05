@@ -74,19 +74,19 @@ export function OrderRow({ order }: { order: OrderListItem }) {
         <ClientAvatar name={order.clientName} avatarUrl={order.clientAvatarUrl} size={26} />
         <div className="min-w-0">
           <p className="font-body font-medium text-[12px] text-offwhite truncate">{order.clientName}</p>
-          <p className="font-body font-light text-[10px] text-offwhite/35 tracking-[0.05em] truncate">
+          <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.05em] truncate">
             #{order.referenceCode} · {order.itemsSummary}
           </p>
         </div>
       </div>
 
-      <span className="font-body font-light text-[9px] tracking-[0.15em] uppercase text-offwhite/40 w-[70px] shrink-0">
+      <span className="font-body font-light text-[9px] tracking-[0.15em] uppercase text-offwhite/55 w-[70px] shrink-0">
         {order.fulfillmentMethod === 'retirada' ? t.products.orders.pickup : t.products.orders.shipping}
       </span>
 
       <span className="font-data text-[13px] text-gold w-[90px] shrink-0 text-right">{fmt(order.total)}</span>
 
-      <span className="font-body font-light text-[9px] text-offwhite/30 w-[76px] shrink-0">
+      <span className="font-body font-light text-[9px] text-offwhite/55 w-[76px] shrink-0">
         {new Date(order.createdAt).toLocaleDateString('pt-BR')}
       </span>
 
@@ -107,7 +107,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
             {pending ? t.products.orders.advancing : t.products.orders.nextLabel[next as keyof typeof t.products.orders.nextLabel]}
           </button>
         ) : (
-          <span className="font-body font-light text-[9px] text-offwhite/[0.18] italic">{t.products.orders.cantAdvance}</span>
+          <span className="font-body font-light text-[9px] text-offwhite/55 italic">{t.products.orders.cantAdvance}</span>
         )}
         {canCancel && !cancelling && (
           <button
@@ -126,7 +126,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
             value={cancelReason}
             onChange={e => setCancelReason(e.target.value)}
             placeholder={t.products.orders.cancelReasonPlaceholder}
-            className="flex-1 min-w-[140px] bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-[11px] px-2 py-[6px] outline-none focus:border-error/40 transition-colors placeholder:text-offwhite/[0.2]"
+            className="flex-1 min-w-[140px] bg-offwhite/5 border border-offwhite/[0.12] text-offwhite font-body font-light text-[11px] px-2 py-[6px] outline-none focus:border-error/40 transition-colors placeholder:text-offwhite/55"
           />
           <button
             disabled={pending || !cancelReason.trim()}
@@ -137,7 +137,7 @@ export function OrderRow({ order }: { order: OrderListItem }) {
           </button>
           <button
             onClick={() => { setCancelling(false); setCancelReason('') }}
-            className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+            className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
           >
             ✕
           </button>

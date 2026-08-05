@@ -32,7 +32,7 @@ export const STATUS_BLOCK: Record<string, string> = {
   confirmed:   'border-sage/60 text-sage-light bg-sage/20',
   checked_in:  'border-gold text-gold bg-gold/30',
   in_progress: 'border-gold text-gold bg-gold/30',
-  completed:   'border-offwhite/30 text-offwhite/50 bg-offwhite/5',
+  completed:   'border-offwhite/30 text-offwhite/55 bg-offwhite/5',
   cancelled:   'border-error/50 text-error/70 bg-error/15',
   no_show:     'border-error/40 text-error/55 bg-error/10',
 }
@@ -79,7 +79,7 @@ export function appointmentBlockStyle(status: string, serviceName: string): { st
     const [r, g, b] = OFFWHITE_RGB
     return {
       style: { backgroundColor: `rgba(${r},${g},${b},0.05)`, borderColor: `rgba(${r},${g},${b},0.3)`, borderStyle: 'solid' },
-      textClass: 'text-offwhite/50',
+      textClass: 'text-offwhite/55',
     }
   }
   if (status === 'cancelled' || status === 'no_show') {
@@ -236,7 +236,7 @@ export function DayGrid({
               key={min}
               className={cn(
                 'absolute right-2 -translate-y-1/2 font-body font-light tracking-[0.05em]',
-                isHour ? 'text-[8px] text-offwhite/[0.32]' : 'text-[7px] text-offwhite/[0.16]'
+                isHour ? 'text-[8px] text-offwhite/55' : 'text-[7px] text-offwhite/55'
               )}
               style={{ top: minutesToPx(min - gridStartMin) }}
             >
@@ -273,7 +273,7 @@ export function DayGrid({
 
           {blockedAllDay ? (
             <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.03),rgb(var(--c-offwhite)/0.03)_8px,transparent_8px,transparent_16px)] flex items-center justify-center">
-              <p className="font-display font-light text-[16px] text-offwhite/25 italic">{t.agenda.dayOffClosed}</p>
+              <p className="font-display font-light text-[16px] text-offwhite/55 italic">{t.agenda.dayOffClosed}</p>
             </div>
           ) : (
             <>
@@ -288,7 +288,7 @@ export function DayGrid({
                     className="absolute inset-x-0 bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.04),rgb(var(--c-offwhite)/0.04)_8px,transparent_8px,transparent_16px)] border-y border-offwhite/10 flex items-center justify-center hover:bg-[repeating-linear-gradient(135deg,rgb(var(--c-offwhite)/0.07),rgb(var(--c-offwhite)/0.07)_8px,transparent_8px,transparent_16px)] transition-all duration-150"
                     style={{ top, height }}
                   >
-                    <p className="font-body font-light text-[9px] text-offwhite/30 uppercase tracking-[0.15em]">{t.agenda.blockedLabel}</p>
+                    <p className="font-body font-light text-[9px] text-offwhite/55 uppercase tracking-[0.15em]">{t.agenda.blockedLabel}</p>
                   </button>
                 )
               })}

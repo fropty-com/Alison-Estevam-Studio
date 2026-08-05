@@ -109,7 +109,7 @@ export function AdminGlobalSearch() {
 
   return (
     <div ref={rootRef} className="relative w-full max-w-[320px]">
-      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/30 pointer-events-none">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/55 pointer-events-none">
         <SearchIcon />
       </span>
       <input
@@ -119,25 +119,25 @@ export function AdminGlobalSearch() {
         onChange={e => setQuery(e.target.value)}
         onFocus={() => setOpen(true)}
         placeholder={t.topbar.searchPlaceholder}
-        className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-[12px] pl-[34px] pr-[52px] py-[8px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
+        className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-[12px] pl-[34px] pr-[52px] py-[8px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55"
       />
-      <kbd className="absolute right-2 top-1/2 -translate-y-1/2 px-[6px] py-[2px] font-body font-light text-[8.5px] tracking-[0.08em] text-offwhite/25 border border-offwhite/[0.12] pointer-events-none">
+      <kbd className="absolute right-2 top-1/2 -translate-y-1/2 px-[6px] py-[2px] font-body font-light text-[8.5px] tracking-[0.08em] text-offwhite/55 border border-offwhite/[0.12] pointer-events-none">
         ⌘K
       </kbd>
 
       {showPanel && (
         <div className="absolute left-0 top-[calc(100%+8px)] z-30 w-[360px] bg-charcoal border border-offwhite/[0.14] py-2 max-h-[420px] overflow-y-auto">
           {loading && (
-            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.searching}</p>
+            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/55 italic">{t.topbar.searching}</p>
           )}
 
           {!loading && !hasResults && (
-            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.noResults(query.trim())}</p>
+            <p className="px-4 py-3 font-body font-light text-[11px] text-offwhite/55 italic">{t.topbar.noResults(query.trim())}</p>
           )}
 
           {!loading && clients.length > 0 && (
             <div className="mb-1">
-              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30">
+              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55">
                 {t.topbar.clients}
               </p>
               {clients.map(c => (
@@ -149,7 +149,7 @@ export function AdminGlobalSearch() {
                   <ClientAvatar name={c.name} avatarUrl={c.avatar_url} size={24} />
                   <div className="min-w-0">
                     <p className="font-body font-light text-[11.5px] text-offwhite/80 truncate">{c.name}</p>
-                    <p className="font-data text-[9.5px] text-offwhite/35 mt-[1px]">{c.whatsapp}</p>
+                    <p className="font-data text-[9.5px] text-offwhite/55 mt-[1px]">{c.whatsapp}</p>
                   </div>
                 </button>
               ))}
@@ -158,7 +158,7 @@ export function AdminGlobalSearch() {
 
           {!loading && appointments.length > 0 && (
             <div className={clients.length > 0 ? 'pt-2 border-t border-offwhite/[0.06]' : ''}>
-              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30">
+              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55">
                 {t.topbar.appointments}
               </p>
               {appointments.map(a => (
@@ -170,7 +170,7 @@ export function AdminGlobalSearch() {
                   <p className="font-body font-light text-[11.5px] text-offwhite/80 truncate">
                     {a.clientName} · {a.serviceName}
                   </p>
-                  <p className="font-data text-[9.5px] text-offwhite/35 mt-[1px]">
+                  <p className="font-data text-[9.5px] text-offwhite/55 mt-[1px]">
                     {a.referenceCode}
                     {a.date && <> · {format(parseISO(a.date), "d MMM", { locale: ptBR })}</>}
                     {' · '}{t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status}

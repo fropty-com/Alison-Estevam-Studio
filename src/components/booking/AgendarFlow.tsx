@@ -134,7 +134,7 @@ function ServicePicker({
 }) {
   if (services.length === 0) {
     return (
-      <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+      <p className="font-body font-light text-[11px] text-offwhite/55 italic">
         Carregando serviços…
       </p>
     )
@@ -166,7 +166,7 @@ function ServicePicker({
                     ? <>Atendimento <span className="text-gold">Exclusivo</span></>
                     : s.name}
                 </p>
-                <p className="font-body font-light text-2xs tracking-[0.18em] uppercase text-offwhite/35 mt-1">
+                <p className="font-body font-light text-2xs tracking-[0.18em] uppercase text-offwhite/55 mt-1">
                   {s.is_whatsapp_only ? 'Combinado via WhatsApp' : `${s.duration >= 60 ? `${Math.floor(s.duration / 60)}h${s.duration % 60 ? s.duration % 60 : ''}` : `${s.duration} min`}`}
                 </p>
               </div>
@@ -227,7 +227,7 @@ function CuidadoCard({
     >
       <div>
         <p className="font-body font-normal text-sm text-offwhite">{name}</p>
-        <p className="font-body font-light text-2xs text-offwhite/35 mt-[2px]">{description}</p>
+        <p className="font-body font-light text-2xs text-offwhite/55 mt-[2px]">{description}</p>
       </div>
       <span className="font-data text-sm text-gold shrink-0 whitespace-nowrap">
         {price === null ? 'A combinar' : formatCurrency(price)}
@@ -251,7 +251,7 @@ function ComplementsStep({
   return (
     <div>
       {complements.length === 0 ? (
-        <p className="font-body font-light text-[12px] text-offwhite/35 italic mb-[22px]">
+        <p className="font-body font-light text-[12px] text-offwhite/55 italic mb-[22px]">
           Nenhum complemento disponível para este serviço.
         </p>
       ) : (
@@ -295,7 +295,7 @@ function CarePicker({
 }) {
   if (items.length === 0) {
     return (
-      <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+      <p className="font-body font-light text-[11px] text-offwhite/55 italic">
         Carregando cuidados…
       </p>
     )
@@ -337,7 +337,7 @@ function CareLink({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="mt-[18px] block font-body font-light text-[10.5px] tracking-[0.1em] text-offwhite/40 hover:text-gold transition-colors duration-200 underline underline-offset-4 decoration-offwhite/15"
+      className="mt-[18px] block font-body font-light text-[10.5px] tracking-[0.1em] text-offwhite/55 hover:text-gold transition-colors duration-200 underline underline-offset-4 decoration-offwhite/15"
     >
       Quer reservar só um cuidado avulso? →
     </button>
@@ -366,10 +366,10 @@ function RunningSummary({
         <p className="font-body font-normal text-[12px] text-offwhite truncate">
           {service.name}
           {chosen.length > 0 && (
-            <span className="text-offwhite/40"> + {chosen.length} {chosen.length === 1 ? 'complemento' : 'complementos'}</span>
+            <span className="text-offwhite/55"> + {chosen.length} {chosen.length === 1 ? 'complemento' : 'complementos'}</span>
           )}
         </p>
-        <p className="font-body font-light text-2xs tracking-[0.12em] uppercase text-offwhite/30 mt-[2px]">
+        <p className="font-body font-light text-2xs tracking-[0.12em] uppercase text-offwhite/55 mt-[2px]">
           {service.is_whatsapp_only ? 'Combinado via WhatsApp' : `${service.duration} min`}
         </p>
       </div>
@@ -400,7 +400,7 @@ function BookingSidebar({
         <Image src="/images/alison4.png" alt="Alison Estevam" fill sizes="64px" className="object-cover object-top" />
       </div>
       <div>
-        <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/30 mb-[4px]">
+        <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/55 mb-[4px]">
           Alison Estevam Studio
         </p>
         <p className="font-display font-light text-lg text-offwhite leading-[1.2]">
@@ -412,7 +412,7 @@ function BookingSidebar({
         {service ? (
           <RunningSummary service={service} complements={complements} selectedComplementIds={selectedComplementIds} />
         ) : (
-          <p className="font-body font-light text-[12px] text-offwhite/35 italic">
+          <p className="font-body font-light text-[12px] text-offwhite/55 italic">
             Escolha um serviço para ver o resumo aqui.
           </p>
         )}
@@ -438,10 +438,10 @@ function SlotPicker({
   if (!slots.some(s => s.available)) {
     return (
       <div className="mt-[18px]">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.22] mb-[10px]">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[10px]">
           {format(date, "d 'de' MMMM", { locale: ptBR })} — sem horários
         </p>
-        <p className="font-body font-light text-[11px] text-offwhite/30 italic mb-[16px]">
+        <p className="font-body font-light text-[11px] text-offwhite/55 italic mb-[16px]">
           Nenhum horário disponível para esta data com este serviço.
         </p>
         <WaitlistForm date={date} serviceId={serviceId} />
@@ -512,7 +512,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
 
   return (
     <div className="border border-offwhite/10 p-4">
-      <p className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/50 mb-3">
+      <p className="font-body font-light text-[10px] tracking-[0.2em] uppercase text-offwhite/55 mb-3">
         Entrar na fila de espera
       </p>
       <div className="flex flex-col gap-[10px]">
@@ -522,7 +522,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           placeholder="Nome e sobrenome"
           value={name}
           onChange={e => setName(e.target.value)}
-          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/55"
         />
         <input
           type="tel"
@@ -532,7 +532,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           maxLength={15}
           value={whatsapp}
           onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
-          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/35"
+          className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/55"
         />
         {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
         <Button onClick={handleSubmit} loading={loading} loadingText="Enviando" className="w-full">
@@ -583,7 +583,7 @@ function DetailsForm({
           className={cn(
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
-            'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
+            'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
             errors.name ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
@@ -606,7 +606,7 @@ function DetailsForm({
           className={cn(
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
-            'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
+            'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
             errors.whatsapp ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
@@ -615,7 +615,7 @@ function DetailsForm({
 
       <div className="mb-[13px]">
         <label className="block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]" htmlFor="f-email">
-          E-mail <span className="text-offwhite/20">(opcional)</span>
+          E-mail <span className="text-offwhite/55">(opcional)</span>
         </label>
         <input
           id="f-email"
@@ -628,7 +628,7 @@ function DetailsForm({
           className={cn(
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
-            'placeholder:text-offwhite/35 placeholder:font-body placeholder:font-light',
+            'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
             errors.email ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
@@ -742,21 +742,21 @@ function SummaryStep({
     <div>
       <div className="border border-offwhite/10 mb-[26px]">
         <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/45">Serviço</span>
+          <span className="font-body font-light text-[12px] text-offwhite/55">Serviço</span>
           <span className="font-body font-light text-[12px] text-offwhite">{service.name}</span>
         </div>
         <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/45">Complementos</span>
+          <span className="font-body font-light text-[12px] text-offwhite/55">Complementos</span>
           <span className="font-body font-light text-[12px] text-offwhite text-right">
             {chosen.length > 0 ? chosen.map(c => c.name).join(', ') : 'Nenhum'}
           </span>
         </div>
         <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/45">Data</span>
+          <span className="font-body font-light text-[12px] text-offwhite/55">Data</span>
           <span className="font-body font-light text-[12px] text-offwhite">{dateLabel}</span>
         </div>
         <div className="flex justify-between px-[18px] py-[13px] border-b border-offwhite/[0.08]">
-          <span className="font-body font-light text-[12px] text-offwhite/45">Horário</span>
+          <span className="font-body font-light text-[12px] text-offwhite/55">Horário</span>
           <span className="font-body font-light text-[12px] text-offwhite">
             {selectedSlot.startTime} – {addMinutesToTime(selectedSlot.startTime, service.duration)}
           </span>
@@ -768,7 +768,7 @@ function SummaryStep({
               Cupom {appliedCoupon.code}
               <button
                 onClick={() => { setAppliedCoupon(null); setCouponInput(''); setCouponError(null) }}
-                className="ml-2 text-offwhite/30 hover:text-offwhite/60 underline underline-offset-2 text-[10px]"
+                className="ml-2 text-offwhite/55 hover:text-offwhite/60 underline underline-offset-2 text-[10px]"
               >
                 remover
               </button>
@@ -791,7 +791,7 @@ function SummaryStep({
               value={couponInput}
               onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(null) }}
               placeholder="Cupom de desconto (opcional)"
-              className="flex-1 bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[15px] py-[12px] outline-none rounded-none placeholder:text-offwhite/35 focus:border-gold focus:bg-gold/5 transition-all duration-250"
+              className="flex-1 bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[15px] py-[12px] outline-none rounded-none placeholder:text-offwhite/55 focus:border-gold focus:bg-gold/5 transition-all duration-250"
             />
             <button
               onClick={handleApplyCoupon}
@@ -839,7 +839,7 @@ function Confirmation({
       <h2 className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[12px]">
         Agendamento confirmado
       </h2>
-      <p className="font-body font-light text-[13px] text-offwhite/45 mb-[30px] leading-[1.7] max-w-[300px]">
+      <p className="font-body font-light text-[13px] text-offwhite/55 mb-[30px] leading-[1.7] max-w-[300px]">
         Você vai receber a confirmação pelo WhatsApp informado. Até breve.
       </p>
 
@@ -866,14 +866,14 @@ function Confirmation({
           durationMinutes: result.duration,
         })}
         download="agendamento-alison-estevam.ics"
-        className="mt-[14px] font-body font-light text-[9px] tracking-[0.25em] uppercase text-offwhite/40 hover:text-offwhite/70 transition-colors underline underline-offset-4 decoration-offwhite/15"
+        className="mt-[14px] font-body font-light text-[9px] tracking-[0.25em] uppercase text-offwhite/55 hover:text-offwhite/70 transition-colors underline underline-offset-4 decoration-offwhite/15"
       >
         Adicionar ao calendário
       </a>
 
       <Link
         href="/conta"
-        className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+        className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 py-[6px] cursor-pointer hover:text-offwhite/85 transition-colors underline underline-offset-4 decoration-offwhite/10"
       >
         Voltar ao início
       </Link>

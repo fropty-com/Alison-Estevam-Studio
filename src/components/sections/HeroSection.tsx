@@ -91,7 +91,7 @@ export function HeroSection({ onScheduleClick }: HeroSectionProps) {
 
         {/* Sub-actions */}
         <div className="mt-6 flex items-center justify-between px-1">
-          <span className="font-body font-light text-2xs tracking-[0.05em] text-offwhite/45">
+          <span className="font-body font-light text-2xs tracking-[0.05em] text-offwhite/55">
             Prefere conversar antes?
           </span>
           <a

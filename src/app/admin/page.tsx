@@ -17,7 +17,7 @@ const STATUS_COLOR: Record<string, string> = {
   confirmed:   'text-sage-light border-sage/30 bg-sage/10',
   checked_in:  'text-gold border-gold/30 bg-gold/10',
   in_progress: 'text-gold border-gold/30 bg-gold/10',
-  completed:   'text-offwhite/40 border-offwhite/[0.12] bg-offwhite/5',
+  completed:   'text-offwhite/55 border-offwhite/[0.12] bg-offwhite/5',
   cancelled:   'text-error/60 border-error/20 bg-error/5',
   no_show:     'text-error/45 border-error/15 bg-error/5',
 }
@@ -105,11 +105,11 @@ function DashboardCard({
         <span className={cn('w-[36px] h-[36px] rounded-full flex items-center justify-center', t.badge)}>
           {icon}
         </span>
-        {href && <span className="text-offwhite/25 text-[12px]" aria-hidden="true">↗</span>}
+        {href && <span className="text-offwhite/55 text-[12px]" aria-hidden="true">↗</span>}
       </div>
       <p className={cn('font-data text-[24px] leading-none mb-1', t.value)}>{value}</p>
-      <p className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/40 mt-1">{label}</p>
-      <p className="font-body font-light text-[9px] text-offwhite/[0.28] mt-auto pt-2">{sub}</p>
+      <p className="font-body font-light text-[9px] tracking-[0.18em] uppercase text-offwhite/55 mt-1">{label}</p>
+      <p className="font-body font-light text-[9px] text-offwhite/55 mt-auto pt-2">{sub}</p>
     </div>
   )
   return href ? <Link href={href}>{content}</Link> : content
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
     <div className="px-6 py-8">
       {/* Header */}
       <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">
           {todayLabel}
         </p>
         <h1 className="font-display font-light text-[34px] text-offwhite tracking-[0.03em]">
@@ -195,7 +195,7 @@ export default async function AdminDashboard() {
       {/* Today's agenda */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/45">
+          <h2 className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55">
             {t.dashboard.todayAgenda}
           </h2>
           <Link
@@ -208,7 +208,7 @@ export default async function AdminDashboard() {
 
         {todayAppts.length === 0 ? (
           <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
-            <p className="font-display font-light text-[18px] text-offwhite/[0.22] italic">
+            <p className="font-display font-light text-[18px] text-offwhite/55 italic">
               {t.dashboard.noAppointmentsToday}
             </p>
           </div>
@@ -228,7 +228,7 @@ export default async function AdminDashboard() {
                   <ClientAvatar name={cli?.name ?? '—'} avatarUrl={cli?.avatar_url} size={32} />
                   <div className="flex-1 min-w-0">
                     <p className="font-body font-light text-[13px] text-offwhite truncate">{cli?.name ?? '—'}</p>
-                    <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.15em]">
+                    <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.15em]">
                       {svc?.name ?? '—'}
                     </p>
                   </div>

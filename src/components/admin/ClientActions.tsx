@@ -30,7 +30,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           'border transition-all duration-200 disabled:opacity-40',
           vip
             ? 'border-gold/30 bg-gold/10 text-gold/70 hover:bg-gold/15'
-            : 'border-offwhite/10 text-offwhite/30 hover:border-gold/25 hover:text-gold/60'
+            : 'border-offwhite/10 text-offwhite/55 hover:border-gold/25 hover:text-gold/60'
         )}
       >
         {vip ? t.clients.actions.vipMember : t.clients.actions.markVip}
@@ -38,7 +38,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
 
       {/* Notes */}
       <div>
-        <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[6px]">{t.clients.actions.internalNotes}</p>
+        <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]">{t.clients.actions.internalNotes}</p>
         <textarea
           value={noteText}
           onChange={e => setNoteText(e.target.value)}
@@ -47,7 +47,7 @@ export function ClientActions({ id, vip, notes }: { id: string; vip: boolean; no
           className={cn(
             'w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite/70',
             'font-body font-light text-lg px-3 py-2 outline-none rounded-none resize-none',
-            'focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]'
+            'focus:border-gold/50 transition-colors placeholder:text-offwhite/55'
           )}
         />
         <button

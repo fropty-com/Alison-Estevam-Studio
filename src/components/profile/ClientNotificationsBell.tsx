@@ -40,7 +40,7 @@ export function ClientNotificationsBell({ upcoming }: { upcoming: UpcomingItem[]
       <button
         onClick={() => setOpen(o => !o)}
         aria-label={t.topbar.notifications}
-        className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
+        className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/55 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
       >
         <BellIcon />
         {upcoming.length > 0 && (
@@ -51,11 +51,11 @@ export function ClientNotificationsBell({ upcoming }: { upcoming: UpcomingItem[]
       </button>
       {open && (
         <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[260px] bg-charcoal border border-offwhite/[0.14] py-2">
-          <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/[0.06]">
+          <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55 border-b border-offwhite/[0.06]">
             {t.topbar.pendingAppointments}
           </p>
           {upcoming.length === 0 ? (
-            <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.nothingPending}</p>
+            <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/55 italic">{t.topbar.nothingPending}</p>
           ) : (
             <div className="max-h-[280px] overflow-y-auto">
               {upcoming.map(u => (
@@ -67,7 +67,7 @@ export function ClientNotificationsBell({ upcoming }: { upcoming: UpcomingItem[]
                 >
                   <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{u.serviceName}</p>
                   {u.date && u.startTime && (
-                    <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.08em] mt-[2px]">
+                    <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.08em] mt-[2px]">
                       {format(parseISO(u.date), "d MMM", { locale: ptBR })} às {u.startTime}
                     </p>
                   )}

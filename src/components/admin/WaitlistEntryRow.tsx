@@ -37,13 +37,13 @@ export function WaitlistEntryRow({
       <ClientAvatar name={clientName} avatarUrl={clientAvatarUrl} size={30} />
       <div className="flex-1 min-w-0">
         <p className="font-body font-light text-[12.5px] text-offwhite/80">
-          {clientName} <span className="text-offwhite/30">· {clientWhatsapp}</span>
+          {clientName} <span className="text-offwhite/55">· {clientWhatsapp}</span>
         </p>
-        <p className="font-body font-light text-[10px] text-offwhite/40 tracking-[0.08em] mt-[3px]">
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.08em] mt-[3px]">
           {serviceName}
         </p>
         {note && (
-          <p className="font-body font-light text-[10px] text-offwhite/30 italic mt-[3px]">{note}</p>
+          <p className="font-body font-light text-[10px] text-offwhite/55 italic mt-[3px]">{note}</p>
         )}
       </div>
 
@@ -64,7 +64,7 @@ export function WaitlistEntryRow({
         <button
           disabled={pending}
           onClick={() => act('resolved')}
-          className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/30 hover:border-offwhite/25 hover:text-offwhite/55 transition-all duration-200 disabled:opacity-40"
+          className="px-3 py-[7px] font-body font-light text-[8px] tracking-[0.28em] uppercase border border-offwhite/10 text-offwhite/55 hover:border-offwhite/25 hover:text-offwhite/85 transition-all duration-200 disabled:opacity-40"
         >
           {t.waitlist.scheduled}
         </button>

@@ -31,7 +31,7 @@ export function ReportCharts({
 
       {/* Agendamentos por semana */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-6">
           {t.billing.charts.weeklyTitle}
         </p>
         <div className="flex items-end gap-[10px] h-[140px]">
@@ -39,7 +39,7 @@ export function ReportCharts({
             const pct = maxCount > 0 ? (w.count / maxCount) * 100 : 0
             return (
               <div key={i} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                <span className="font-data text-[11px] text-offwhite/45 leading-none">
+                <span className="font-data text-[11px] text-offwhite/55 leading-none">
                   {w.count > 0 ? w.count : ''}
                 </span>
                 <div className="w-full relative" style={{ height: `${Math.max(pct, 4)}%` }}>
@@ -50,7 +50,7 @@ export function ReportCharts({
                     )}
                   />
                 </div>
-                <span className="font-body font-light text-[8px] text-offwhite/25 tracking-[0.08em]">
+                <span className="font-body font-light text-[8px] text-offwhite/55 tracking-[0.08em]">
                   {w.label}
                 </span>
               </div>
@@ -61,12 +61,12 @@ export function ReportCharts({
 
       {/* Ranking de serviços */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-6">
           {t.billing.charts.svcRankingTitle}
         </p>
 
         {svcRanking.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic">
             {t.billing.charts.noData}
           </p>
         ) : (
@@ -80,7 +80,7 @@ export function ReportCharts({
                       {s.name}
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+                      <span className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
                         {fmt(s.revenue)}
                       </span>
                       <span className="font-data text-[13px] text-offwhite/55 w-5 text-right">
@@ -103,12 +103,12 @@ export function ReportCharts({
 
       {/* Faturamento por forma de pagamento */}
       <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6 lg:col-span-2">
-        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-6">
+        <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-6">
           {t.billing.charts.paymentBreakdownTitle}
         </p>
 
         {paymentBreakdown.length === 0 ? (
-          <p className="font-body font-light text-[11px] text-offwhite/[0.22] italic">
+          <p className="font-body font-light text-[11px] text-offwhite/55 italic">
             {t.billing.charts.noPayments}
           </p>
         ) : (
@@ -121,16 +121,16 @@ export function ReportCharts({
                   <div className="flex items-center justify-between mb-[5px]">
                     <span className="font-body font-light text-[11px] text-offwhite/70 truncate pr-3">
                       {p.label}
-                      <span className="text-offwhite/30 ml-2">{share.toFixed(0)}%</span>
+                      <span className="text-offwhite/55 ml-2">{share.toFixed(0)}%</span>
                     </span>
                     <div className="flex items-center gap-3 shrink-0">
-                      <span className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em]">
+                      <span className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em]">
                         {t.billing.charts.net} {fmt(p.net)}
                       </span>
                       <span className="font-data text-[13px] text-offwhite/55">
                         {fmt(p.gross)}
                       </span>
-                      <span className="font-data text-[11px] text-offwhite/35 w-6 text-right">
+                      <span className="font-data text-[11px] text-offwhite/55 w-6 text-right">
                         {p.count}×
                       </span>
                     </div>

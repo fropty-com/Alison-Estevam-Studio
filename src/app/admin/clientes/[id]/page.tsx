@@ -18,7 +18,7 @@ const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 const STATUS_COLOR: Record<string, string> = {
   pending:   'text-gold',
   confirmed: 'text-sage-light',
-  completed: 'text-offwhite/40',
+  completed: 'text-offwhite/55',
   cancelled: 'text-error/50',
   no_show:   'text-error/40',
 }
@@ -49,7 +49,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
   return (
     <div className="px-6 py-8">
       {/* Back */}
-      <Link href="/admin/clientes" className="inline-flex items-center gap-2 font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/[0.28] hover:text-offwhite/55 transition-colors mb-6">
+      <Link href="/admin/clientes" className="inline-flex items-center gap-2 font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 hover:text-offwhite/85 transition-colors mb-6">
         {t.clients.backToClients}
       </Link>
 
@@ -77,7 +77,7 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
                 { label: t.clients.detail.since,    value: format(parseISO(client.created_at), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) },
               ].map(({ label, value }) => (
                 <div key={label}>
-                  <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/25 mb-[2px]">{label}</p>
+                  <p className="font-body font-light text-[7.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[2px]">{label}</p>
                   <p className="font-body font-light text-[12px] text-offwhite/70">{value}</p>
                 </div>
               ))}
@@ -100,13 +100,13 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
 
         {/* History */}
         <div className="lg:col-span-2">
-          <h2 className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
+          <h2 className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-4">
             {t.clients.detail.historyTitle}
           </h2>
 
           {appts.length === 0 ? (
             <div className="bg-offwhite/5 border border-offwhite/[0.07] p-8 text-center">
-              <p className="font-display font-light text-[18px] text-offwhite/[0.18] italic">{t.clients.detail.noHistory}</p>
+              <p className="font-display font-light text-[18px] text-offwhite/55 italic">{t.clients.detail.noHistory}</p>
             </div>
           ) : (
             <div className="bg-offwhite/5 border border-offwhite/[0.07] divide-y divide-offwhite/6">
@@ -117,17 +117,17 @@ export default async function ClienteDetailPage({ params }: { params: { id: stri
                   <div key={a.id} className="flex items-center gap-4 px-5 py-4">
                     <div className="flex-1 min-w-0">
                       <p className="font-body font-light text-[12px] text-offwhite mb-[2px]">{svc?.name ?? '—'}</p>
-                      <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.12em]">
+                      <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.12em]">
                         {slot?.date ? format(parseISO(slot.date), locale === 'pt' ? "d 'de' MMMM 'de' yyyy" : 'MMMM d, yyyy', { locale: dateLocale }) : '—'}
                         {slot?.start_time ? t.clients.detail.at(slot.start_time.substring(0, 5)) : ''}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[a.status] ?? 'text-offwhite/35')}>
+                      <p className={cn('font-body font-light text-[8.5px] tracking-[0.2em] uppercase', STATUS_COLOR[a.status] ?? 'text-offwhite/55')}>
                         {t.dashboard.status[a.status as keyof typeof t.dashboard.status] ?? a.status}
                       </p>
                       {svc?.price && (
-                        <p className="font-data text-[12px] text-offwhite/40 mt-[2px]">R$ {svc.price}</p>
+                        <p className="font-data text-[12px] text-offwhite/55 mt-[2px]">R$ {svc.price}</p>
                       )}
                     </div>
                   </div>

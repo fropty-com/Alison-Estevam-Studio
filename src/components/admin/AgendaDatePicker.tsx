@@ -74,13 +74,13 @@ export function AgendaDatePicker({ selectedDate, view }: { selectedDate: string;
               {format(viewingMonth, 'MMMM yyyy', { locale: dateLocale })}
             </p>
             <div className="flex gap-1">
-              <button onClick={() => setViewingMonth(m => subMonths(m, 1))} aria-label={t.agenda.datePicker.prevMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">‹</button>
-              <button onClick={() => setViewingMonth(m => addMonths(m, 1))} aria-label={t.agenda.datePicker.nextMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/35 hover:text-gold transition-colors">›</button>
+              <button onClick={() => setViewingMonth(m => subMonths(m, 1))} aria-label={t.agenda.datePicker.prevMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/55 hover:text-gold transition-colors">‹</button>
+              <button onClick={() => setViewingMonth(m => addMonths(m, 1))} aria-label={t.agenda.datePicker.nextMonth} className="w-6 h-6 flex items-center justify-center text-offwhite/55 hover:text-gold transition-colors">›</button>
             </div>
           </div>
           <div className="grid grid-cols-7 gap-y-[2px]">
             {WEEKDAY.map((w, i) => (
-              <span key={i} className="font-body font-light text-[8px] text-offwhite/25 text-center py-[2px]">{w}</span>
+              <span key={i} className="font-body font-light text-[8px] text-offwhite/55 text-center py-[2px]">{w}</span>
             ))}
             {leading.map((_, i) => <span key={`l${i}`} />)}
             {days.map(d => {

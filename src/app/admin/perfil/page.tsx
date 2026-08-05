@@ -7,8 +7,8 @@ import { maskPhoneInput } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 
-const h2Cls = 'font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/45 mb-4'
-const labelCls = 'font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[3px]'
+const h2Cls = 'font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-4'
+const labelCls = 'font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[3px]'
 const valueCls = 'font-body font-light text-[13px] text-offwhite/75'
 
 export default async function AdminPerfilPage() {
@@ -30,9 +30,9 @@ export default async function AdminPerfilPage() {
   return (
     <div className="px-6 pt-3 pb-8 max-w-[640px] mx-auto">
       <div className="mb-8">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">Admin</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">Admin</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">Meu perfil</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.1em] mt-1">
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.1em] mt-1">
           Seus dados de cadastro e informações da conta.
         </p>
       </div>

@@ -64,7 +64,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
         <p className="font-display font-light text-[22px] text-offwhite/60 italic mb-3">
           Agendamento reagendado.
         </p>
-        <p className="font-body font-light text-[11px] text-offwhite/40 tracking-[0.12em] capitalize mb-1">{dateLabel}</p>
+        <p className="font-body font-light text-[11px] text-offwhite/55 tracking-[0.12em] capitalize mb-1">{dateLabel}</p>
         <p className="font-data text-[22px] text-offwhite/55">{done.startTime.replace(':', 'h')}</p>
         <a
           href={buildIcsDataUrl({
@@ -74,16 +74,16 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
             durationMinutes: duration,
           })}
           download="agendamento-alison-estevam.ics"
-          className="inline-block mt-4 font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/35 hover:text-offwhite/65 transition-colors underline underline-offset-4 decoration-offwhite/15"
+          className="inline-block mt-4 font-body font-light text-[9px] tracking-[0.2em] uppercase text-offwhite/55 hover:text-offwhite/65 transition-colors underline underline-offset-4 decoration-offwhite/15"
         >
           Adicionar ao calendário
         </a>
-        <p className="font-body font-light text-[9px] text-offwhite/25 tracking-[0.15em] mt-4">
+        <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.15em] mt-4">
           Confirme pelo WhatsApp se necessário.
         </p>
         <Link
           href="/conta"
-          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/30 py-[6px] cursor-pointer hover:text-offwhite/55 transition-colors underline underline-offset-4 decoration-offwhite/10"
+          className="block mt-[16px] mx-auto bg-transparent border-none text-center font-body font-light text-[8.5px] tracking-[0.28em] uppercase text-offwhite/55 py-[6px] cursor-pointer hover:text-offwhite/85 transition-colors underline underline-offset-4 decoration-offwhite/10"
         >
           Voltar ao início
         </Link>
@@ -110,10 +110,10 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
           <SlotGrid date={selDate} slots={slots} selected={selSlot} onSelect={setSelSlot} />
         ) : (
           <div className="mt-[18px]">
-            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/[0.22] mb-[10px]">
+            <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-[10px]">
               {format(selDate, "d 'de' MMMM", { locale: ptBR })} — sem horários
             </p>
-            <p className="font-body font-light text-[11px] text-offwhite/30 italic">
+            <p className="font-body font-light text-[11px] text-offwhite/55 italic">
               Nenhum horário disponível para esta data.
             </p>
           </div>

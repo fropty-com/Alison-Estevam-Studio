@@ -10,7 +10,7 @@ export default function SobrePage() {
   return (
     <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[680px] mx-auto">
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-2">
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-2">
           {BRAND.fullName}
         </p>
         <h1 className="font-display font-light text-[34px] text-offwhite tracking-[0.02em] leading-tight mb-2">

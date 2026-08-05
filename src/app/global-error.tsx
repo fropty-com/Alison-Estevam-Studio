@@ -19,13 +19,13 @@ export default function GlobalError({
       <body>
         <div className="min-h-screen flex items-center justify-center px-6">
           <div className="max-w-[420px] text-center">
-            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-3">
+            <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-3">
               Alison Estevam Studio
             </p>
             <h1 className="font-display font-light text-[28px] text-offwhite tracking-[0.02em] leading-tight mb-3">
               Algo não saiu como esperado
             </h1>
-            <p className="font-body font-light text-[13px] leading-[1.75] text-offwhite/50 mb-8">
+            <p className="font-body font-light text-[13px] leading-[1.75] text-offwhite/55 mb-8">
               Encontramos um erro inesperado. Tente novamente em instantes.
             </p>
             <button

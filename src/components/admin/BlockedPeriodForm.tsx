@@ -27,12 +27,12 @@ export function BlockedPeriodForm() {
 
   return (
     <div className="bg-offwhite/5 border border-offwhite/[0.07] p-6">
-      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/35 mb-4">
+      <p className="font-body font-light text-[8.5px] tracking-[0.38em] uppercase text-offwhite/55 mb-4">
         {t.settings.blocked.formTitle}
       </p>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div>
-          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
+          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]">
             {t.settings.blocked.dateStart}
           </label>
           <input
@@ -44,7 +44,7 @@ export function BlockedPeriodForm() {
           />
         </div>
         <div>
-          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
+          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]">
             {t.settings.blocked.dateEnd}
           </label>
           <input
@@ -56,14 +56,14 @@ export function BlockedPeriodForm() {
           />
         </div>
         <div>
-          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/[0.28] mb-[5px]">
+          <label className="block font-body font-light text-[7.5px] tracking-[0.3em] uppercase text-offwhite/55 mb-[5px]">
             {t.settings.blocked.reasonOptional}
           </label>
           <input
             type="text"
             name="reason"
             placeholder={t.settings.blocked.reasonPlaceholder}
-            className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/[0.18]"
+            className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg px-3 py-[9px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55"
           />
         </div>
         <div className="sm:col-span-3 flex items-center gap-3">

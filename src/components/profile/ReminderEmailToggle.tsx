@@ -34,7 +34,7 @@ export function ReminderEmailToggle({ initialConsent }: { initialConsent: boolea
       >
         <div className="text-left">
           <p className="font-body font-light text-[12px] text-offwhite/65">Lembretes por e-mail</p>
-          <p className="font-body font-light text-[9.5px] text-offwhite/30 mt-[2px]">
+          <p className="font-body font-light text-[9.5px] text-offwhite/55 mt-[2px]">
             {consent ? 'Ativado' : 'Desativado'}
           </p>
         </div>

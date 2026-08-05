@@ -49,8 +49,8 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
   return (
     <div className="px-6 pt-[110px] pb-24 lg:pt-[95px]">
       <div className="max-w-[960px] mx-auto">
-        <p className="font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/25 mb-8">
-          <Link href="/produtos" className="hover:text-offwhite/50 transition-colors">Produtos</Link>
+        <p className="font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/55 mb-8">
+          <Link href="/produtos" className="hover:text-offwhite/55 transition-colors">Produtos</Link>
           <span className="mx-2">/</span>
           {product.name}
         </p>
@@ -62,7 +62,7 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
               <img src={product.image_url} alt={product.name} className="absolute inset-0 w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <span className="font-display font-light text-lg text-offwhite/15">{categoryLabel}</span>
+                <span className="font-display font-light text-lg text-offwhite/55">{categoryLabel}</span>
               </div>
             )}
             {(lowStock || outOfStock) && (
@@ -73,7 +73,7 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
           </div>
 
           <div>
-            <p className="font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/30 mb-2">
+            <p className="font-body font-light text-2xs tracking-[0.2em] uppercase text-offwhite/55 mb-2">
               {categoryLabel}
             </p>
             <h1 className="font-display font-normal text-3xl tracking-[0.03em] text-offwhite leading-tight mb-4">
@@ -82,7 +82,7 @@ export default async function ProdutoDetalhePage({ params }: { params: Promise<{
 
             <div className="flex items-center gap-3 mb-6">
               {product.compare_at_price && (
-                <span className="font-data italic text-base text-offwhite/25 line-through">{fmt(product.compare_at_price)}</span>
+                <span className="font-data italic text-base text-offwhite/55 line-through">{fmt(product.compare_at_price)}</span>
               )}
               <span className="font-data italic text-2xl text-gold">{fmt(product.price)}</span>
             </div>

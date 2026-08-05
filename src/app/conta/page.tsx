@@ -107,7 +107,7 @@ export default async function ContaPage() {
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
         {/* Greeting */}
-        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/[0.28] mb-[6px]">
+        <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]">
           Área do Cliente
         </p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.02em] mb-[26px]">
@@ -122,22 +122,22 @@ export default async function ContaPage() {
               <p className="font-body font-light text-[14px] text-gold">
                 {loyalty.availableRewards > 1 ? `Você tem ${loyalty.availableRewards} recompensas disponíveis!` : 'Você tem uma recompensa disponível!'}
               </p>
-              <p className="font-body font-light text-[11px] text-offwhite/45 mt-[4px]">
+              <p className="font-body font-light text-[11px] text-offwhite/55 mt-[4px]">
                 {loyalty.rewardDescription} — resgate no seu próximo atendimento.
               </p>
             </>
           ) : (
             <>
               <div className="flex items-baseline justify-between mb-[10px]">
-                <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40">Fidelidade</p>
+                <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/55">Fidelidade</p>
                 <span className="font-data text-[13px] text-offwhite/60">
-                  {loyalty.progress} <span className="text-offwhite/25">/ {loyalty.visitsRequired}</span>
+                  {loyalty.progress} <span className="text-offwhite/55">/ {loyalty.visitsRequired}</span>
                 </span>
               </div>
               <div className="w-full h-[4px] bg-offwhite/5 rounded-none mb-[10px]">
                 <div className="h-full bg-gold/50 transition-all duration-500" style={{ width: `${loyaltyPct}%` }} />
               </div>
-              <p className="font-body font-light text-[11px] text-offwhite/40">
+              <p className="font-body font-light text-[11px] text-offwhite/55">
                 Faltam {loyalty.visitsRequired - loyalty.progress} atendimento{loyalty.visitsRequired - loyalty.progress !== 1 ? 's' : ''} para: <span className="text-offwhite/60">{loyalty.rewardDescription}</span>
               </p>
             </>
@@ -146,7 +146,7 @@ export default async function ContaPage() {
 
         {/* Next appointment */}
         <div className="mb-[34px]">
-          <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40 mb-[12px]">
+          <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/55 mb-[12px]">
             Próximo agendamento
           </p>
 
@@ -154,7 +154,7 @@ export default async function ContaPage() {
             <AppointmentCard appt={next} />
           ) : (
             <div className="border border-offwhite/[0.14] px-6 py-8 text-center">
-              <p className="font-body font-light text-[13px] text-offwhite/40 mb-[16px]">
+              <p className="font-body font-light text-[13px] text-offwhite/55 mb-[16px]">
                 Você não tem agendamentos futuros.
               </p>
               <Link
@@ -179,7 +179,7 @@ export default async function ContaPage() {
         {/* Other upcoming */}
         {upcoming.length > 1 && (
           <div className="mb-[34px]">
-            <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40 mb-[12px]">
+            <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/55 mb-[12px]">
               Outros agendamentos
             </p>
             <div className="flex flex-col gap-[10px]">
@@ -190,11 +190,11 @@ export default async function ContaPage() {
 
         {/* History */}
         <div>
-          <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/40 mb-[12px]">
+          <p className="font-body font-light text-[9px] tracking-[0.28em] uppercase text-offwhite/55 mb-[12px]">
             Histórico recente
           </p>
           {history.length === 0 ? (
-            <p className="font-body font-light text-[12px] text-offwhite/30 italic">
+            <p className="font-body font-light text-[12px] text-offwhite/55 italic">
               Nenhum atendimento concluído ainda.
             </p>
           ) : (
@@ -207,7 +207,7 @@ export default async function ContaPage() {
                   <div key={a.id} className="flex items-center justify-between border border-offwhite/[0.14] px-5 py-4">
                     <div>
                       <p className="font-body font-light text-[13px] text-offwhite/70">{svc?.name ?? '—'}</p>
-                      <p className="font-body font-light text-[9px] text-offwhite/30 tracking-[0.1em] mt-[2px] capitalize">{dateLabel}</p>
+                      <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.1em] mt-[2px] capitalize">{dateLabel}</p>
                     </div>
                     <span className="font-data text-sm text-gold">{formatCurrency(Number(a.total_price))}</span>
                   </div>
@@ -237,25 +237,25 @@ function AppointmentCard({ appt }: { appt: any }) {
         <div className="flex-1 min-w-0">
           <span className={cn(
             'inline-block mb-[10px] px-3 py-[4px] border rounded-full font-body font-light text-[7.5px] tracking-[0.2em] uppercase',
-            STATUS_STYLE[appt.status] ?? 'border-offwhite/20 text-offwhite/40'
+            STATUS_STYLE[appt.status] ?? 'border-offwhite/20 text-offwhite/55'
           )}>
             {STATUS_LABEL[appt.status] ?? appt.status}
           </span>
           <p className="font-display font-light text-xl text-offwhite tracking-[0.02em] mb-[3px] truncate">{svc?.name ?? '—'}</p>
-          <p className="font-body font-light text-[11.5px] text-offwhite/40 mb-[4px]">com {BRAND.name}</p>
+          <p className="font-body font-light text-[11.5px] text-offwhite/55 mb-[4px]">com {BRAND.name}</p>
           <p className="font-data text-[13px] text-gold">{formatCurrency(Number(appt.total_price))}</p>
         </div>
 
         <div className="flex items-stretch shrink-0">
           <div className="w-px bg-offwhite/20 mr-5" />
           <div className="flex flex-col items-center justify-center text-center min-w-[50px]">
-            <span className="font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 mb-[2px]">
+            <span className="font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/55 mb-[2px]">
               {monthLabel}
             </span>
             <span className="font-display font-light text-[27px] text-offwhite leading-none mb-[3px]">
               {dayLabel}
             </span>
-            <span className="font-data text-[11px] text-offwhite/50">{timeLabel}</span>
+            <span className="font-data text-[11px] text-offwhite/55">{timeLabel}</span>
           </div>
         </div>
       </div>

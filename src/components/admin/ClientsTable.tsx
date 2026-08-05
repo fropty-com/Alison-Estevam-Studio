@@ -99,7 +99,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
   return (
     <div>
       <div className="relative mb-5 max-w-[360px]">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/30">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-offwhite/55">
           <SearchIcon />
         </span>
         <input
@@ -107,13 +107,13 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder={t.clients.table.searchPlaceholder}
-          className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/25"
+          className="w-full bg-offwhite/5 border border-offwhite/[0.09] text-offwhite font-body font-light text-lg pl-[36px] pr-3 py-[10px] outline-none rounded-none focus:border-gold/50 transition-colors placeholder:text-offwhite/55"
         />
       </div>
 
       {filtered.length === 0 ? (
         <div className="bg-offwhite/5 border border-offwhite/[0.07] p-10 text-center">
-          <p className="font-display font-light text-[20px] text-offwhite/[0.18] italic">
+          <p className="font-display font-light text-[20px] text-offwhite/55 italic">
             {query ? t.clients.table.noneFound : t.clients.table.noneRegistered}
           </p>
         </div>
@@ -127,7 +127,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
               <thead>
                 <tr className="bg-offwhite/5 border-b border-offwhite/[0.07]">
                   {[t.clients.table.colName, t.clients.table.colPhone, t.clients.table.colBirthDate, t.clients.table.colEmail, t.clients.table.colVip, t.clients.table.colSince, ''].map(h => (
-                    <th key={h} className="px-4 py-3 font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/35 whitespace-nowrap">
+                    <th key={h} className="px-4 py-3 font-body font-light text-[8px] tracking-[0.18em] uppercase text-offwhite/55 whitespace-nowrap">
                       {h}
                     </th>
                   ))}
@@ -146,25 +146,25 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                       <span className="font-data text-[11.5px] text-offwhite/60 whitespace-nowrap">{c.whatsapp}</span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-body font-light text-[11px] text-offwhite/45 whitespace-nowrap">
+                      <span className="font-body font-light text-[11px] text-offwhite/55 whitespace-nowrap">
                         {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: dateLocale }) : '—'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-body font-light text-[11px] text-offwhite/45 truncate">{c.email ?? '—'}</span>
+                      <span className="font-body font-light text-[11px] text-offwhite/55 truncate">{c.email ?? '—'}</span>
                     </td>
                     <td className="px-4 py-3">
                       <VipToggle id={c.id} vip={c.vip} />
                     </td>
                     <td className="px-4 py-3">
-                      <span className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
+                      <span className="font-body font-light text-[10.5px] text-offwhite/55 whitespace-nowrap">
                         {format(parseISO(c.createdAt), 'MMM yyyy', { locale: dateLocale })}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         onClick={() => setOpenId(c.id)}
-                        className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/35 border border-offwhite/[0.12] hover:border-gold/35 hover:text-gold/[0.75] transition-all duration-200"
+                        className="px-3 py-[6px] font-body font-light text-[8px] tracking-[0.24em] uppercase text-offwhite/55 border border-offwhite/[0.12] hover:border-gold/35 hover:text-gold/[0.75] transition-all duration-200"
                       >
                         {t.clients.table.edit}
                       </button>
@@ -187,7 +187,7 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                   <ClientAvatar name={c.name} />
                   <div className="min-w-0 flex-1">
                     <p className="font-body font-light text-[13px] text-offwhite truncate">{c.name}</p>
-                    <p className="font-data text-[10.5px] text-offwhite/45">{c.whatsapp}</p>
+                    <p className="font-data text-[10.5px] text-offwhite/55">{c.whatsapp}</p>
                   </div>
                   <div onClick={e => e.stopPropagation()} className="shrink-0">
                     <VipToggle id={c.id} vip={c.vip} />
@@ -195,18 +195,18 @@ export function ClientsTable({ clients }: { clients: ClientRow[] }) {
                 </div>
                 <div className="flex items-center gap-4 mt-[10px] pt-[10px] border-t border-offwhite/[0.05]">
                   <div className="min-w-0 flex-1">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.emailLabel}</p>
-                    <p className="font-body font-light text-[10.5px] text-offwhite/45 truncate">{c.email ?? '—'}</p>
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/55 mb-[2px]">{t.clients.table.emailLabel}</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/55 truncate">{c.email ?? '—'}</p>
                   </div>
                   <div className="shrink-0">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.birthLabel}</p>
-                    <p className="font-body font-light text-[10.5px] text-offwhite/45 whitespace-nowrap">
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/55 mb-[2px]">{t.clients.table.birthLabel}</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/55 whitespace-nowrap">
                       {c.birthDate ? format(parseISO(c.birthDate), 'd MMM', { locale: dateLocale }) : '—'}
                     </p>
                   </div>
                   <div className="shrink-0">
-                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/25 mb-[2px]">{t.clients.table.sinceLabel}</p>
-                    <p className="font-body font-light text-[10.5px] text-offwhite/30 whitespace-nowrap">
+                    <p className="font-body font-light text-[7.5px] tracking-[0.24em] uppercase text-offwhite/55 mb-[2px]">{t.clients.table.sinceLabel}</p>
+                    <p className="font-body font-light text-[10.5px] text-offwhite/55 whitespace-nowrap">
                       {format(parseISO(c.createdAt), 'MMM yyyy', { locale: dateLocale })}
                     </p>
                   </div>

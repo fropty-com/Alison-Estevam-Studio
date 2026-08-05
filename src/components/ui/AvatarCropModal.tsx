@@ -102,7 +102,7 @@ export function AvatarCropModal({
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center bg-charcoal-deep/80 backdrop-blur-sm px-6">
       <div className="w-full max-w-[360px] bg-charcoal border border-offwhite/[0.14] p-6">
-        <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/40 mb-4">Ajustar foto</p>
+        <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/55 mb-4">Ajustar foto</p>
 
         <div
           className="relative mx-auto overflow-hidden bg-charcoal-mid cursor-move touch-none select-none"
@@ -142,7 +142,7 @@ export function AvatarCropModal({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 px-4 py-[10px] font-body font-light text-[9px] tracking-[0.25em] uppercase border border-offwhite/[0.14] text-offwhite/50 hover:border-offwhite/30 transition-colors"
+            className="flex-1 px-4 py-[10px] font-body font-light text-[9px] tracking-[0.25em] uppercase border border-offwhite/[0.14] text-offwhite/55 hover:border-offwhite/30 transition-colors"
           >
             Cancelar
           </button>

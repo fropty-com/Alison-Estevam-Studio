@@ -42,13 +42,13 @@ export function LanguageSelector() {
       <button
         onClick={() => setOpen(o => !o)}
         aria-label={t.topbar.language}
-        className="w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
+        className="w-[36px] h-[36px] flex items-center justify-center text-offwhite/55 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
       >
         <GlobeIcon />
       </button>
       {open && (
         <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[160px] bg-charcoal border border-offwhite/[0.14] py-2">
-          <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/[0.06]">
+          <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55 border-b border-offwhite/[0.06]">
             {t.topbar.language}
           </p>
           {LOCALES.map(l => (

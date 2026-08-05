@@ -74,7 +74,7 @@ export function AdminTopBar({
           <button
             onClick={() => { setNotifOpen(o => !o); setProfileOpen(false) }}
             aria-label={t.topbar.notifications}
-            className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/40 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
+            className="relative w-[36px] h-[36px] flex items-center justify-center text-offwhite/55 hover:bg-offwhite/5 hover:text-gold/80 transition-all duration-200"
           >
             <BellIcon />
             {pending.length > 0 && (
@@ -85,11 +85,11 @@ export function AdminTopBar({
           </button>
           {notifOpen && (
             <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[280px] bg-charcoal border border-offwhite/[0.14] py-2">
-              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/30 border-b border-offwhite/[0.06]">
+              <p className="px-4 pb-2 font-body font-light text-[8px] tracking-[0.3em] uppercase text-offwhite/55 border-b border-offwhite/[0.06]">
                 {t.topbar.pendingAppointments}
               </p>
               {pending.length === 0 ? (
-                <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/35 italic">{t.topbar.nothingPending}</p>
+                <p className="px-4 py-4 font-body font-light text-[11px] text-offwhite/55 italic">{t.topbar.nothingPending}</p>
               ) : (
                 <div className="max-h-[280px] overflow-y-auto">
                   {pending.map(p => (
@@ -100,7 +100,7 @@ export function AdminTopBar({
                       className="block px-4 py-[10px] hover:bg-offwhite/5 transition-colors border-b border-offwhite/4 last:border-0"
                     >
                       <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{p.clientName}</p>
-                      <p className="font-body font-light text-[9px] text-offwhite/35 tracking-[0.08em] mt-[2px]">
+                      <p className="font-body font-light text-[9px] text-offwhite/55 tracking-[0.08em] mt-[2px]">
                         {p.serviceName}
                         {p.date && p.startTime && (
                           <> · {format(parseISO(p.date), "d MMM", { locale: ptBR })} às {p.startTime}</>
@@ -139,7 +139,7 @@ export function AdminTopBar({
             <div className="absolute right-0 top-[calc(100%+8px)] z-30 w-[200px] bg-charcoal border border-offwhite/[0.14] py-1">
               <div className="px-4 py-3 border-b border-offwhite/[0.06]">
                 <p className="font-body font-light text-[11px] text-offwhite/80 truncate">{staffName}</p>
-                <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/30 mt-[2px]">
+                <p className="font-body font-light text-[8px] tracking-[0.25em] uppercase text-offwhite/55 mt-[2px]">
                   {isOwner ? t.topbar.owner : t.topbar.staff}
                 </p>
               </div>
@@ -164,7 +164,7 @@ export function AdminTopBar({
                 onClick={() => startTransition(() => logoutAction())}
                 className={cn(
                   'w-full text-left px-4 py-[9px] font-body font-light text-[9px] tracking-[0.2em] uppercase',
-                  'text-offwhite/40 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
+                  'text-offwhite/55 hover:bg-offwhite/5 hover:text-offwhite transition-colors disabled:opacity-40'
                 )}
               >
                 {pending_ ? t.topbar.signingOut : t.topbar.signOut}

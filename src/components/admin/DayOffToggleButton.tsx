@@ -49,7 +49,7 @@ export function DayOffToggleButton({
         'shrink-0 whitespace-nowrap px-4 h-[36px] border font-body font-light text-[8px] tracking-[0.28em] uppercase transition-all duration-200 disabled:opacity-40',
         blocked
           ? 'border-error/35 text-error/70 hover:bg-error/10 hover:border-error/55'
-          : 'border-offwhite/[0.18] text-offwhite/45 hover:border-offwhite/40 hover:text-offwhite'
+          : 'border-offwhite/[0.18] text-offwhite/55 hover:border-offwhite/40 hover:text-offwhite'
       )}
     >
       {pending ? t.agenda.dayOff.saving : blocked ? t.agenda.dayOff.remove : t.agenda.dayOff.mark}

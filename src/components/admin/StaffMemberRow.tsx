@@ -29,7 +29,7 @@ export function StaffMemberRow({ member, isSelf }: {
       <div className="flex items-center gap-4">
         <span className="font-body font-light text-[12px] text-offwhite/70 flex-1">
           {member.name}
-          {isSelf && <span className="text-offwhite/25">{t.settings.staff.you}</span>}
+          {isSelf && <span className="text-offwhite/55">{t.settings.staff.you}</span>}
         </span>
 
         <button
@@ -39,7 +39,7 @@ export function StaffMemberRow({ member, isSelf }: {
             'px-3 py-[6px] font-body font-light text-[8px] tracking-[0.22em] uppercase border transition-all duration-200 disabled:opacity-40',
             isOwner
               ? 'bg-gold/15 border-gold/30 text-gold hover:bg-gold/20'
-              : 'border-offwhite/[0.12] text-offwhite/45 hover:border-offwhite/25'
+              : 'border-offwhite/[0.12] text-offwhite/55 hover:border-offwhite/25'
           )}
         >
           {isOwner ? t.settings.staff.owner : t.settings.staff.staffRole}
@@ -63,7 +63,7 @@ export function StaffMemberRow({ member, isSelf }: {
             </button>
             <button
               onClick={() => setConfirmRemove(false)}
-              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/25 hover:text-offwhite/50 transition-colors"
+              className="px-2 py-1 font-body font-light text-[8px] tracking-[0.22em] uppercase border border-offwhite/10 text-offwhite/55 hover:text-offwhite/85 transition-colors"
             >
               ✕
             </button>

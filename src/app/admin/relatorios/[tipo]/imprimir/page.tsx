@@ -146,11 +146,11 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
     <div className="px-6 py-8 print:bg-white print:text-black print:px-0 print:py-0">
       <div className="flex items-center justify-between mb-6 print:mb-4">
         <div>
-          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] print:text-black/50 mb-1">
+          <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 print:text-black/50 mb-1">
             Alison Estevam Studio
           </p>
           <h1 className="font-display font-light text-[26px] text-offwhite print:text-black tracking-[0.02em]">{title}</h1>
-          <p className="font-body font-light text-[9px] text-offwhite/30 print:text-black/50 tracking-[0.1em] mt-1">
+          <p className="font-body font-light text-[9px] text-offwhite/55 print:text-black/50 tracking-[0.1em] mt-1">
             {t.reports.print.generatedAt(generatedAt)}
           </p>
         </div>
@@ -162,7 +162,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
           <thead>
             <tr className="border-b border-offwhite/[0.1] print:border-black/20">
               {headers.map(h => (
-                <th key={h} className="px-3 py-2 font-body font-light text-[8px] tracking-[0.15em] uppercase text-offwhite/40 print:text-black/60 whitespace-nowrap">
+                <th key={h} className="px-3 py-2 font-body font-light text-[8px] tracking-[0.15em] uppercase text-offwhite/55 print:text-black/60 whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -171,7 +171,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: { tipo
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={headers.length} className="px-3 py-6 text-center font-body font-light text-[11px] text-offwhite/[0.22] print:text-black/40 italic">
+                <td colSpan={headers.length} className="px-3 py-6 text-center font-body font-light text-[11px] text-offwhite/55 print:text-black/40 italic">
                   {t.reports.print.noData}
                 </td>
               </tr>

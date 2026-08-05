@@ -126,9 +126,9 @@ export default async function OperacionalPage() {
   return (
     <div className="px-6 py-8 space-y-8">
       <div>
-        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/[0.28] mb-1">{t.operational.eyebrow}</p>
+        <p className="font-body font-light text-[8.5px] tracking-[0.45em] uppercase text-offwhite/55 mb-1">{t.operational.eyebrow}</p>
         <h1 className="font-display font-light text-[30px] text-offwhite tracking-[0.03em]">{t.operational.title}</h1>
-        <p className="font-body font-light text-[10px] text-offwhite/[0.28] tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
+        <p className="font-body font-light text-[10px] text-offwhite/55 tracking-[0.15em] mt-1 capitalize">{monthLabel}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -137,9 +137,9 @@ export default async function OperacionalPage() {
             <CancelIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.cancelRate.title}</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/55 mb-2">{t.operational.cancelRate.title}</p>
             <p className={cn('font-data text-[22px] leading-none mb-1', cancelRate > 20 ? 'text-error/75' : 'text-offwhite')}>{fmtPct(cancelRate)}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.cancelRate.sub(cancelledMonth, totalMonth)}</p>
+            <p className="font-body font-light text-[9px] text-offwhite/55">{t.operational.cancelRate.sub(cancelledMonth, totalMonth)}</p>
           </div>
         </div>
 
@@ -148,9 +148,9 @@ export default async function OperacionalPage() {
             <ChannelIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.channel.title}</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/55 mb-2">{t.operational.channel.title}</p>
             <p className="font-data text-[22px] text-gold leading-none mb-1">{t.operational.channel.onlinePct(fmtPct(onlinePct))}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.channel.sub(onlineCount, presencialCount)}</p>
+            <p className="font-body font-light text-[9px] text-offwhite/55">{t.operational.channel.sub(onlineCount, presencialCount)}</p>
           </div>
         </div>
 
@@ -159,9 +159,9 @@ export default async function OperacionalPage() {
             <MarginIcon />
           </span>
           <div>
-            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/40 mb-2">{t.operational.margin.title}</p>
+            <p className="font-body font-light text-[9px] tracking-[0.14em] uppercase text-offwhite/55 mb-2">{t.operational.margin.title}</p>
             <p className={cn('font-data text-[22px] leading-none mb-1', margemOperacional >= 0 ? 'text-sage-light' : 'text-error/75')}>{fmtPct(margemOperacional)}</p>
-            <p className="font-body font-light text-[9px] text-offwhite/25">{t.operational.margin.sub}</p>
+            <p className="font-body font-light text-[9px] text-offwhite/55">{t.operational.margin.sub}</p>
           </div>
         </div>
       </div>
