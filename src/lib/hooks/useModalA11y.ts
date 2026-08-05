@@ -8,13 +8,19 @@ const FOCUSABLE = 'a[href], button:not([disabled]), textarea, input:not([disable
  * Escape-to-close + focus trap + initial focus for a modal/dialog panel.
  * Attach the returned ref to the dialog panel element (also give that
  * element `role="dialog"` `aria-modal="true"` `tabIndex={-1}`).
+ *
+ * `active` lets this be used on panels that stay mounted permanently and
+ * only toggle visibility via CSS (drawers that animate closed instead of
+ * unmounting) — pass the same open/closed flag so focus isn't stolen and
+ * Escape/Tab aren't captured while the panel is actually hidden. Modals
+ * that mount/unmount conditionally (`{open && <Modal/>}`) can omit it.
  */
-export function useModalA11y(onClose: () => void) {
+export function useModalA11y(onClose: () => void, active = true) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const panel = ref.current
-    if (!panel) return
+    if (!panel || !active) return
 
     const focusables = () => Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE))
     ;(focusables()[0] ?? panel).focus()
@@ -32,7 +38,7 @@ export function useModalA11y(onClose: () => void) {
 
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [onClose])
+  }, [onClose, active])
 
   return ref
 }

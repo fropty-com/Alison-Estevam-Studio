@@ -28,7 +28,7 @@ export function ConfirmAttendanceButton({ appointmentId }: { appointmentId: stri
         {pending ? 'Confirmando…' : 'Confirmar presença'}
       </button>
       {error && (
-        <p className="font-body font-light text-[9px] tracking-[0.1em] text-error/80 mt-[6px]">{error}</p>
+        <p role="alert" className="font-body font-light text-[9px] tracking-[0.1em] text-error/80 mt-[6px]">{error}</p>
       )}
     </div>
   )

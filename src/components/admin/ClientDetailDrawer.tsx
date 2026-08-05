@@ -10,6 +10,7 @@ import { EditClientButton } from './EditClientButton'
 import { LoyaltyCard } from './LoyaltyCard'
 import { ClientAvatar } from './ClientsTable'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const DATE_FNS_LOCALE = { pt: ptBR, en: enUS, es }
 
@@ -103,6 +104,7 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
   }, [clientId, load])
 
   const open = !!clientId
+  const panelRef = useModalA11y(onClose, open)
 
   return (
     <div
@@ -115,9 +117,14 @@ export function ClientDetailDrawer({ clientId, onClose }: { clientId: string | n
       <div className="absolute inset-0 bg-charcoal-deep/70" onClick={onClose} />
 
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.clients.detail.eyebrow}
+        tabIndex={-1}
         className={cn(
           'absolute top-0 right-0 h-full w-full max-w-[480px] bg-charcoal border-l border-offwhite/10',
-          'overflow-y-auto transition-transform duration-300 ease-brand-out',
+          'overflow-y-auto transition-transform duration-300 ease-brand-out outline-none',
           open ? 'translate-x-0' : 'translate-x-full'
         )}
       >

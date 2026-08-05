@@ -11,7 +11,7 @@ const inputCls = (hasError: boolean) => cn(
   'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
   'outline-none transition-all duration-250 rounded-none',
   'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
-  hasError ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5',
+  hasError ? 'border-error/55 focus:border-error focus:bg-error/5' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5',
 )
 
 const labelCls = 'block font-body font-light text-xs tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]'
@@ -93,9 +93,9 @@ export function EntrarFlow() {
         <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]">
           Área do Cliente
         </p>
-        <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
+        <h1 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
           {step === 'phone' ? 'Entrar' : 'Confirme o código'}
-        </h2>
+        </h1>
         <p className="font-body font-light text-[12px] text-offwhite/55">
           {step === 'phone'
             ? 'Informe seu telefone para entrar ou criar sua conta.'
@@ -170,7 +170,7 @@ export function EntrarFlow() {
               </>
             )}
 
-            {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mb-[13px]">{error}</p>}
+            {error && <p role="alert" className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mb-[13px]">{error}</p>}
 
             <button
               onClick={checked && isNew ? handleContinueNew : handleCheckPhone}
@@ -207,7 +207,7 @@ export function EntrarFlow() {
               />
             </div>
 
-            {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mb-[13px]">{error}</p>}
+            {error && <p role="alert" className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mb-[13px]">{error}</p>}
 
             <button
               onClick={handleVerify}

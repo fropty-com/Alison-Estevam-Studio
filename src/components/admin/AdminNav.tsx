@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { PendingBadge } from './PendingBadge'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 import type { Dictionary } from '@/lib/i18n/getDictionary'
 
 function DashboardIcon() {
@@ -103,6 +104,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const asideRef = useModalA11y(() => setMobileOpen(false), mobileOpen)
 
   useEffect(() => {
     setCollapsed(localStorage.getItem('admin-nav-collapsed') === 'true')
@@ -145,8 +147,12 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       )}
 
       <aside
+        ref={asideRef}
+        role={mobileOpen ? 'dialog' : undefined}
+        aria-modal={mobileOpen ? true : undefined}
+        aria-label={mobileOpen ? t.nav.openMenu : undefined}
         className={cn(
-          'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen print:hidden',
+          'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen print:hidden outline-none',
           'fixed lg:sticky top-0 z-50 lg:z-auto',
           // Only `transform` transitions — animating `width` on a
           // `position: sticky` element makes Chromium fail to recompute the

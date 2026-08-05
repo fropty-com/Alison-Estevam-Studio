@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useCart } from '@/lib/cart/CartContext'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -20,6 +21,7 @@ function CloseIcon() {
 export function CartDrawer() {
   const { items, isOpen, close, removeItem, setQuantity, subtotal } = useCart()
   const router = useRouter()
+  const panelRef = useModalA11y(close, isOpen)
 
   const handleCheckout = () => {
     close()
@@ -37,11 +39,14 @@ export function CartDrawer() {
       <div className="absolute inset-0 bg-charcoal-deep/70" onClick={close} />
 
       <div
+        ref={panelRef}
         role="dialog"
+        aria-modal="true"
         aria-label="Carrinho de compras"
+        tabIndex={-1}
         className={cn(
           'absolute top-0 right-0 h-full w-full max-w-[420px] bg-charcoal border-l border-offwhite/10',
-          'flex flex-col transition-transform duration-300 ease-brand-out',
+          'flex flex-col transition-transform duration-300 ease-brand-out outline-none',
           isOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >

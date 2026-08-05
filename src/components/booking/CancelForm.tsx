@@ -57,7 +57,7 @@ export function CancelForm({ code }: { code: string }) {
           </div>
 
           {error && (
-            <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
+            <p role="alert" className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
           )}
 
           <div className="flex gap-3">

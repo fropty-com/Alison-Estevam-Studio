@@ -52,7 +52,7 @@ export function ReviewForm({ appointmentId, serviceName }: { appointmentId: stri
         placeholder="Conte como foi (opcional)"
         className="w-full mb-[10px] bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-[12px] px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none resize-none placeholder:text-offwhite/55"
       />
-      {error && <p className="font-body font-light text-[10px] text-error/70 mb-[10px]">{error}</p>}
+      {error && <p role="alert" className="font-body font-light text-[10px] text-error/70 mb-[10px]">{error}</p>}
       <button
         disabled={pending}
         onClick={handleSubmit}

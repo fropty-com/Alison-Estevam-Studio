@@ -21,6 +21,7 @@ export default async function FidelidadePage() {
       <ProfileHeader title="Cartão Fidelidade" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
+        <h1 className="sr-only">Cartão Fidelidade</h1>
         <LoyaltyCard loyalty={loyalty} />
       </div>
     </div>

@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { useCart } from '@/lib/cart/CartContext'
 import { Button } from '@/components/ui/Button'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const NAV_LINKS = [
   { href: '#sobre',       label: 'Sobre',             section: 'sobre' },
@@ -70,11 +71,7 @@ export function Nav() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && menuOpen) setMenuOpen(false) }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [menuOpen])
+  const drawerRef = useModalA11y(() => setMenuOpen(false), menuOpen)
 
   return (
     <>
@@ -168,10 +165,13 @@ export function Nav() {
 
       {/* Mobile drawer */}
       <div
+        ref={drawerRef}
         role="dialog"
+        aria-modal="true"
         aria-label="Menu"
+        tabIndex={-1}
         className={cn(
-          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-4',
+          'lg:hidden fixed inset-0 z-[190] flex flex-col items-center justify-center gap-4 outline-none',
           'bg-charcoal/95 backdrop-blur-[20px]',
           'transition-opacity duration-400 ease-brand-out',
           menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

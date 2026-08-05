@@ -46,6 +46,7 @@ export function ClientAvatar({ name, avatarUrl, size = 28 }: { name: string; ava
 }
 
 function VipToggle({ id, vip }: { id: string; vip: boolean }) {
+  const { t } = useTranslation()
   const [checked, setChecked] = useState(vip)
   const [pending, startTransition] = useTransition()
 
@@ -63,6 +64,7 @@ function VipToggle({ id, vip }: { id: string; vip: boolean }) {
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={t.clients.table.colVip}
       disabled={pending}
       onClick={toggle}
       className={cn(

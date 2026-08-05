@@ -17,9 +17,9 @@ export function StepHeader({ eyebrow, title, subtitle }: { eyebrow: string; titl
       <p className="font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-[6px]">
         {eyebrow}
       </p>
-      <h2 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
+      <h1 className="font-display font-light text-[26px] text-offwhite tracking-[0.02em] leading-[1.15] mb-[6px]">
         {title}
-      </h2>
+      </h1>
       <p className="font-body font-light text-[12px] text-offwhite/55">
         {subtitle}
       </p>

@@ -35,6 +35,7 @@ export default async function PedidosPage() {
       <ProfileHeader title="Meus Pedidos" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
+        <h1 className="sr-only">Meus Pedidos</h1>
         <OrdersListSection orders={orders} />
       </div>
     </div>

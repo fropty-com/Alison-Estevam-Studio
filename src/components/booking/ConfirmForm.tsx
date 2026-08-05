@@ -32,7 +32,7 @@ export function ConfirmForm({ code }: { code: string }) {
   return (
     <div className="space-y-4">
       {error && (
-        <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
+        <p role="alert" className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
       )}
       <Button onClick={handleConfirm} loading={pending} loadingText="Confirmando" size="lg" className="w-full">
         Confirmar presença

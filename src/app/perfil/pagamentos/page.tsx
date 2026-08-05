@@ -26,6 +26,7 @@ export default async function PagamentosPage() {
       <ProfileHeader title="Pagamentos" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
+        <h1 className="sr-only">Pagamentos</h1>
         <PaymentsListSection payments={payments} />
       </div>
     </div>

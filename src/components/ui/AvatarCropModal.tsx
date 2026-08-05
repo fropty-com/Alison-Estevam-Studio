@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 const FRAME = 260
 const OUTPUT = 480
@@ -33,6 +34,7 @@ export function AvatarCropModal({
   const [processing, setProcessing] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
   const dragRef = useRef<{ x: number; y: number; offX: number; offY: number } | null>(null)
+  const panelRef = useModalA11y(onCancel)
 
   useEffect(() => {
     const url = URL.createObjectURL(file)
@@ -101,7 +103,14 @@ export function AvatarCropModal({
 
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center bg-charcoal-deep/80 backdrop-blur-sm px-6">
-      <div className="w-full max-w-[360px] bg-charcoal border border-offwhite/[0.14] p-6">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ajustar foto"
+        tabIndex={-1}
+        className="w-full max-w-[360px] bg-charcoal border border-offwhite/[0.14] p-6 outline-none"
+      >
         <p className="font-body font-light text-[9px] tracking-[0.3em] uppercase text-offwhite/55 mb-4">Ajustar foto</p>
 
         <div

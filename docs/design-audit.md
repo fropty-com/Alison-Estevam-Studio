@@ -112,6 +112,24 @@ Pendente desde `docs/auditoria/02-responsividade-temas.md` (seção "Não cobert
 7. **Alt text em imagens** — confirmar em `Confirmation` (foto do Alison), galeria da home, avatares de cliente.
 8. **Leitor de tela** — teste manual básico (NVDA/VoiceOver) no fluxo de agendamento completo, não coberto por nenhuma ferramenta automatizada usada até aqui.
 
+### Fechamento — itens 1-7 concluídos em rodada posterior
+
+Varredura completa do projeto (não apenas dos arquivos já revisados), item a item:
+
+1. **Contraste WCAG AA** — já fechado na Fase 1 (piso `/55`, ver seção 10).
+2. **Foco visível** — auditados todos os usos de `outline-none` no projeto (39 arquivos). A esmagadora maioria já segue o padrão correto (`outline-none` + `focus:border-*`/`focus-visible:border-*` como substituto). Achado real: campos com erro de validação (`EntrarFlow`, `DetailsForm` em `AgendarFlow`) trocavam a borda para vermelho mas não tinham *nenhum* indicador de foco quando o campo já estava com erro — corrigido adicionando `focus:border-error focus:bg-error/5` ao branch de erro.
+3. **`aria-label` em ícones/botões sem texto** — varredura automatizada (script) + verificação manual encontrou 1 gap real: `VipToggle` (`ClientsTable.tsx`), um `role="switch"` sem nome acessível — corrigido com `aria-label`.
+4. **Navegação 100% por teclado / Escape + foco preso** — `useModalA11y` generalizado para aceitar um segundo argumento `active` (drawers que ficam sempre montados e só alternam via CSS, como `CartDrawer`/`ClientDetailDrawer`, precisavam disso para não roubar foco enquanto fechados). Adotado em 6 componentes que não tinham nenhum tratamento ou tinham tratamento parcial: `CartDrawer`, `ClientDetailDrawer`, `AppointmentDetailSheet` (tinha Escape, faltava trap de foco), `AvatarCropModal`, `Nav` (drawer mobile — tinha Escape, faltava trap), `AdminNav` (drawer mobile — não tinha nada). Testado ao vivo no browser: abrir o menu move o foco para o primeiro link, `Escape` fecha corretamente.
+5. **Ordem de tabulação** — varredura por `tabIndex` positivo (`{1}`, `{2}`...) no projeto inteiro: zero ocorrências. Nenhuma ordem de tab customizada existe para quebrar a ordem natural do DOM.
+6. **HTML semântico (headings)** — varredura de `<h1>` por rota: 13 páginas sem nenhum `h1` no arquivo servidor, a maioria delegando para um componente cliente. Achados reais confirmados: fluxo de agendamento inteiro (`/agendar`, `/cancelar`, `/confirmar`, `/reagendar`, tela de sucesso) usava `<h2>` como título mais alto da página — promovido para `<h1>` (`StepHeader` em `BookingChrome.tsx` + o header da tela de sucesso em `AgendarFlow.tsx`); `/entrar` tinha o mesmo problema (`EntrarFlow.tsx`); 6 sub-páginas de `/perfil` (`conta`, `avaliacoes`, `fidelidade`, `pagamentos`, `pagamentos/[id]`, `pedidos`) não tinham heading nenhum no corpo — o título só existia como texto visual na topbar (`<span>`, não semântico) — corrigido com um `<h1 className="sr-only">` no corpo de cada uma, sem alterar nada visualmente.
+7. **Alt text em imagens** — varredura de todo `<img>`/`<Image>` do projeto: nenhum gap encontrado. Avatares usam o nome da pessoa como alt, fotos de produto usam o nome do produto, a galeria da home já tinha alt descritivo único por imagem, ícones decorativos já usavam `aria-hidden`.
+
+Adicional (não estava na lista original, mas é parte do mesmo domínio): mensagens de erro dinâmicas (`{error && <p>...}`) em 12 componentes voltados ao cliente (`EntrarFlow`, `AgendarFlow`, `CancelForm`, `ConfirmForm`, `RescheduleFlow`, `ConfirmAttendanceButton`, `CheckoutClient`, formulários de `/perfil`) ganharam `role="alert"` para serem anunciadas por leitor de tela assim que aparecem, sem exigir que o usuário navegue até elas. Os equivalentes só-admin (mesmo padrão em ~20 arquivos de `src/components/admin`) ficam como recomendação futura — escopo desta rodada priorizou as telas que 90%+ dos usuários (clientes) realmente usam.
+
+**Item 8 (leitor de tela) continua pendente** — requer teste manual com ferramenta externa (NVDA/VoiceOver), fora do que é possível verificar nesta sessão.
+
+Validado com `tsc --noEmit` → `eslint` → `build` de produção → 65 testes, mais verificação ao vivo no browser (heading correto renderizado em `/entrar`, foco/Escape do drawer mobile confirmados via inspeção do DOM).
+
 ---
 
 ## 7. Tabela-resumo final

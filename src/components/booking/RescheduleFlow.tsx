@@ -104,7 +104,7 @@ export function RescheduleFlow({ code, serviceName = 'Agendamento', duration = 6
       {selSlot && (
         <div className="space-y-3">
           {error && (
-            <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
+            <p role="alert" className="font-body font-light text-[9px] tracking-[0.15em] text-error/70">{error}</p>
           )}
           <Button onClick={handleConfirm} loading={pending} loadingText="Reagendando" size="lg" className="w-full">
             {`Confirmar — ${selSlot.startTime.substring(0, 5).replace(':', 'h')}`}

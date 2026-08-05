@@ -180,7 +180,7 @@ export function EditClientProfileForm({
       </div>
 
       {error && (
-        <p className="font-body font-light text-[9px] tracking-[0.15em] text-error/70 mb-3">{error}</p>
+        <p role="alert" className="font-body font-light text-[9px] tracking-[0.15em] text-error/70 mb-3">{error}</p>
       )}
 
       <button

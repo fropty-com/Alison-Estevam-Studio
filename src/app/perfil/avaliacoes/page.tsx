@@ -43,6 +43,7 @@ export default async function AvaliacoesPage() {
       <ProfileHeader title="Avaliações" />
 
       <div className="max-w-[560px] mx-auto px-8 pt-[65px] pb-10">
+        <h1 className="sr-only">Avaliações</h1>
         <ReviewsSection pending={pending} reviews={reviews} />
       </div>
     </div>

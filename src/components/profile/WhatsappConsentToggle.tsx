@@ -53,7 +53,7 @@ export function WhatsappConsentToggle({ initialConsent }: { initialConsent: bool
         </span>
       </button>
       {error && (
-        <p className="font-body font-light text-[9.5px] text-error/70 mt-[6px]">{error}</p>
+        <p role="alert" className="font-body font-light text-[9.5px] text-error/70 mt-[6px]">{error}</p>
       )}
     </div>
   )

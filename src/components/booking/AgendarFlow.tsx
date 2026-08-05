@@ -521,7 +521,7 @@ function WaitlistForm({ date, serviceId }: { date: Date; serviceId: string }) {
           onChange={e => setWhatsapp(maskPhoneInput(e.target.value))}
           className="w-full bg-charcoal-mid border border-offwhite/20 text-offwhite font-body font-light text-lg px-[13px] py-[10px] outline-none focus:border-gold focus:bg-gold/5 transition-all duration-250 rounded-none placeholder:text-offwhite/55"
         />
-        {error && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
+        {error && <p role="alert" className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65">{error}</p>}
         <Button onClick={handleSubmit} loading={loading} loadingText="Enviando" className="w-full">
           Entrar na fila
         </Button>
@@ -571,7 +571,7 @@ function DetailsForm({
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
-            errors.name ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
+            errors.name ? 'border-error/55 focus:border-error focus:bg-error/5' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
         {errors.name && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.name}</p>}
@@ -594,7 +594,7 @@ function DetailsForm({
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
-            errors.whatsapp ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
+            errors.whatsapp ? 'border-error/55 focus:border-error focus:bg-error/5' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
         {errors.whatsapp && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.whatsapp}</p>}
@@ -616,7 +616,7 @@ function DetailsForm({
             'w-full bg-charcoal-mid border text-offwhite font-body font-light text-lg px-[15px] py-[12px]',
             'outline-none transition-all duration-250 rounded-none',
             'placeholder:text-offwhite/55 placeholder:font-body placeholder:font-light',
-            errors.email ? 'border-error/55' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
+            errors.email ? 'border-error/55 focus:border-error focus:bg-error/5' : 'border-offwhite/20 focus:border-gold focus:bg-gold/5'
           )}
         />
         {errors.email && <p className="font-body font-light text-[8.5px] tracking-[0.18em] text-error/65 mt-1">{errors.email}</p>}
@@ -809,9 +809,9 @@ function Confirmation({
           ✓
         </div>
       </div>
-      <h2 className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[12px]">
+      <h1 className="font-display font-light text-3xl text-offwhite leading-[1.2] mb-[12px]">
         Agendamento confirmado
-      </h2>
+      </h1>
       <p className="font-body font-light text-[13px] text-offwhite/55 mb-[30px] leading-[1.7] max-w-[300px]">
         Você vai receber a confirmação pelo WhatsApp informado. Até breve.
       </p>

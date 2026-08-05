@@ -29,7 +29,7 @@ export function DeleteAccountButton() {
         forma anônima, conforme nossa política de retenção. Essa ação não pode ser desfeita e você será
         desconectado imediatamente.
       </p>
-      {error && <p className="font-body font-light text-[10px] text-error/70 mb-[12px]">{error}</p>}
+      {error && <p role="alert" className="font-body font-light text-[10px] text-error/70 mb-[12px]">{error}</p>}
       <div className="flex gap-[10px]">
         <button
           disabled={pending}

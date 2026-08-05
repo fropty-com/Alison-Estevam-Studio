@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect } from 'react'
 import { AppointmentActions } from './AppointmentActions'
 import { ClientAvatar } from './ClientsTable'
 import { cn } from '@/lib/utils'
 import { useTranslation } from '@/lib/i18n/LanguageProvider'
+import { useModalA11y } from '@/lib/hooks/useModalA11y'
 
 export interface DetailAppointment {
   id: string
@@ -26,11 +26,7 @@ export interface DetailAppointment {
 /** Slide-over panel on desktop, bottom sheet on mobile — shows one appointment's full detail + actions on top of the day grid. */
 export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointment; onClose: () => void }) {
   const { t } = useTranslation()
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  const panelRef = useModalA11y(onClose)
 
   return (
     <>
@@ -40,10 +36,13 @@ export function AppointmentDetailSheet({ appt, onClose }: { appt: DetailAppointm
         aria-hidden="true"
       />
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
+        aria-label={appt.clientName}
+        tabIndex={-1}
         className={cn(
-          'fixed z-50 bg-charcoal border-offwhite/10 overflow-y-auto animate-fade-up',
+          'fixed z-50 bg-charcoal border-offwhite/10 overflow-y-auto animate-fade-up outline-none',
           'inset-x-0 bottom-0 max-h-[85vh] border-t',
           'md:inset-x-auto md:right-0 md:top-0 md:bottom-0 md:h-full md:max-h-none md:w-[420px] md:border-t-0 md:border-l',
         )}

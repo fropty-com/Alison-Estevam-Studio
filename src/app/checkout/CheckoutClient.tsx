@@ -253,7 +253,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
                 {couponError && <p className="font-body font-light text-[10px] text-error/70 mt-2">{couponError}</p>}
               </div>
 
-              {error && <p className="font-body font-light text-[11px] text-error/70">{error}</p>}
+              {error && <p role="alert" className="font-body font-light text-[11px] text-error/70">{error}</p>}
 
               <button
                 type="button"
@@ -272,7 +272,7 @@ export function CheckoutClient({ shippingRates, mercadoPagoPublicKey, initialNam
                 <p className="font-body font-light text-[11px] text-offwhite/55 mb-4">
                   Pedido {order.referenceCode} — {fmt(order.total)}
                 </p>
-                {error && <p className="font-body font-light text-[11px] text-error/70 mb-4">{error}</p>}
+                {error && <p role="alert" className="font-body font-light text-[11px] text-error/70 mb-4">{error}</p>}
                 <PaymentBrick
                   publicKey={mercadoPagoPublicKey}
                   orderId={order.id}
