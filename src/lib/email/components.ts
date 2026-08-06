@@ -102,21 +102,28 @@ export function emailAlertBlock(eyebrow: string, message: string): string {
   </table>`
 }
 
-type ButtonVariant = 'primary' | 'secondary' | 'light' | 'ghost'
+type ButtonVariant = 'primary' | 'secondary' | 'light' | 'outline' | 'destructive' | 'ghost'
 
-const BUTTON_STYLE: Record<ButtonVariant, { bg: string; fg: string }> = {
-  primary:   { bg: C.gold, fg: C.charcoalDeep },
-  secondary: { bg: C.sage, fg: C.charcoalDeep },
-  light:     { bg: C.offwhite, fg: C.charcoalDeep },
-  ghost:     { bg: 'rgba(245,240,232,0.05)', fg: 'rgba(245,240,232,0.45)' },
+// Mirrors the real Button.tsx variants used across the site (border/fill and
+// destructive red in particular) so links like "Reagendar"/"Cancelar" read
+// the same in an e-mail as they do in the client portal's own appointment
+// card (src/app/conta/page.tsx) — a bordered outline button next to a solid
+// bg-error one, not two identically-dim "ghost" links.
+const BUTTON_STYLE: Record<ButtonVariant, { bg: string; fg: string; border?: string }> = {
+  primary:     { bg: C.gold, fg: C.charcoalDeep },
+  secondary:   { bg: C.sage, fg: C.charcoalDeep },
+  light:       { bg: C.offwhite, fg: C.charcoalDeep },
+  outline:     { bg: C.charcoal, fg: 'rgba(245,240,232,0.55)', border: '1px solid rgba(245,240,232,0.15)' },
+  destructive: { bg: C.error, fg: C.offwhite },
+  ghost:       { bg: 'rgba(245,240,232,0.05)', fg: 'rgba(245,240,232,0.45)' },
 }
 
 export function emailButton(href: string, label: string, variant: ButtonVariant = 'primary'): string {
-  const { bg, fg } = BUTTON_STYLE[variant]
+  const { bg, fg, border } = BUTTON_STYLE[variant]
   return `
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
     <tr>
-      <td align="center" style="background:${bg};">
+      <td align="center" style="background:${bg};${border ? `border:${border};` : ''}">
         <a href="${href}" style="display:block;padding:16px 28px;font-size:9.5px;letter-spacing:0.38em;text-transform:uppercase;color:${fg};text-decoration:none;font-weight:500;">
           ${label}
         </a>
@@ -130,10 +137,10 @@ export function emailButtonRow(buttons: { href: string; label: string; variant?:
   <table cellpadding="0" cellspacing="0" style="border-collapse:separate;border-spacing:8px 0;">
     <tr>
       ${buttons.map(({ href, label, variant = 'ghost' }) => {
-        const { bg, fg } = BUTTON_STYLE[variant]
+        const { bg, fg, border } = BUTTON_STYLE[variant]
         return `
-      <td style="background:${bg};">
-        <a href="${href}" style="display:inline-block;padding:12px 20px;font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:${fg};text-decoration:none;font-weight:300;">
+      <td style="background:${bg};${border ? `border:${border};` : ''}">
+        <a href="${href}" style="display:inline-block;padding:${border ? '11px 19px' : '12px 20px'};font-size:8.5px;letter-spacing:0.32em;text-transform:uppercase;color:${fg};text-decoration:none;font-weight:300;">
           ${label}
         </a>
       </td>`

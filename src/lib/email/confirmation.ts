@@ -30,8 +30,8 @@ export async function sendConfirmationEmail(params: {
         emailButton(`${BRAND.siteUrl}/confirmar/${referenceCode}`, 'Confirmar presença', 'primary'),
         emailButtonRow([
           { href: `https://wa.me/${BRAND.whatsapp}`, label: 'Falar no WhatsApp', variant: 'secondary' },
-          { href: `${BRAND.siteUrl}/reagendar/${referenceCode}`, label: 'Reagendar', variant: 'ghost' },
-          { href: `${BRAND.siteUrl}/cancelar/${referenceCode}`, label: 'Cancelar', variant: 'ghost' },
+          { href: `${BRAND.siteUrl}/reagendar/${referenceCode}`, label: 'Reagendar', variant: 'outline' },
+          { href: `${BRAND.siteUrl}/cancelar/${referenceCode}`, label: 'Cancelar', variant: 'destructive' },
         ]),
       ].join('')),
       emailFooter(),

@@ -39,4 +39,5 @@ export const BRAND_COLORS = {
   gold:        '#CBA339',
   goldLight:   '#D9B761',
   olive:       '#4B4D39',
+  error:       '#8B3A3A',
 } as const
