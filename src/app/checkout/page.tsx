@@ -6,7 +6,7 @@ import { maskPhoneInput } from '@/lib/utils'
 import { CheckoutClient } from './CheckoutClient'
 
 export const dynamic = 'force-dynamic'
-export const metadata: Metadata = { title: `Finalizar compra — ${BRAND.fullName}` }
+export const metadata: Metadata = { title: { absolute: `Finalizar compra — ${BRAND.fullName}` } }
 
 export default async function CheckoutPage() {
   const db = await createServiceClient()

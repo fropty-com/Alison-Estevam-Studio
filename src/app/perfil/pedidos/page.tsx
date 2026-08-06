@@ -5,7 +5,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { OrdersListSection } from '@/components/profile/OrdersListSection'
 
-export const metadata: Metadata = { title: 'Meus Pedidos — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Meus Pedidos — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 export default async function PedidosPage() {

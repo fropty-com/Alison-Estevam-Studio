@@ -129,11 +129,12 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
 
   return (
     <>
-      {/* Mobile hamburger — always mounted so the drawer can be reopened */}
+      {/* Mobile hamburger — hidden from md: up, since the sidebar itself
+          becomes persistent (compact) there instead of a drawer. */}
       <button
         onClick={() => setMobileOpen(true)}
         aria-label={t.nav.openMenu}
-        className="lg:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70 print:hidden"
+        className="md:hidden fixed top-4 left-4 z-40 w-[36px] h-[36px] flex items-center justify-center bg-charcoal-mid border border-offwhite/[0.12] text-offwhite/70 print:hidden"
       >
         <MenuIcon />
       </button>
@@ -141,7 +142,7 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
       {/* Mobile backdrop */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-charcoal-deep/70"
+          className="md:hidden fixed inset-0 z-40 bg-charcoal-deep/70"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -153,38 +154,41 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
         aria-label={mobileOpen ? t.nav.openMenu : undefined}
         className={cn(
           'shrink-0 bg-charcoal-mid border-r border-offwhite/[0.06] flex flex-col min-h-screen print:hidden outline-none',
-          'fixed lg:sticky top-0 z-50 lg:z-auto',
+          // Persistent (not a hamburger drawer) from md: up — a tablet in a
+          // barbershop reception has the horizontal room for it, unlike a
+          // phone. It renders compact there regardless of the desktop
+          // collapse preference (see the width/inner-content overrides
+          // below); only lg: honors that preference.
+          'fixed md:sticky top-0 z-50 md:z-auto',
           // Only `transform` transitions — animating `width` on a
           // `position: sticky` element makes Chromium fail to recompute the
           // element's box size on the collapse/expand toggle, leaving it
           // visually stuck at the old width while its children render the
           // new (collapsed/expanded) layout, a real mismatched-size bug.
           mounted ? 'transition-transform duration-200' : '',
-          collapsed ? 'w-[64px]' : 'w-[220px]',
-          mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+          collapsed ? 'w-[64px]' : 'w-[220px] md:w-[64px] lg:w-[220px]',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         )}
       >
         {/* Brand + collapse toggle — a single row matching the topbar's
             height so the sidebar and content borders line up exactly. */}
         <div className={cn(
           'relative flex items-center h-[56px] border-b border-offwhite/[0.06] shrink-0 overflow-hidden',
-          collapsed ? 'justify-center gap-[6px] px-2' : 'justify-center px-4'
+          collapsed ? 'justify-center gap-[6px] px-2' : 'justify-center px-4 md:gap-[6px] md:px-2 lg:gap-0 lg:px-4'
         )}>
           <Link
             href="/admin"
-            className={cn(
-              'font-display font-normal uppercase text-offwhite/85 hover:text-offwhite transition-colors whitespace-nowrap',
-              collapsed ? 'text-[13px] tracking-[0.05em]' : 'text-[14px] tracking-[0.08em]'
-            )}
+            className="font-display font-normal uppercase text-offwhite/85 hover:text-offwhite transition-colors whitespace-nowrap"
           >
-            {collapsed ? 'AE' : 'Alison Estevam'}
+            <span className={cn('text-[14px] tracking-[0.08em]', collapsed ? 'hidden' : 'md:hidden lg:inline')}>Alison Estevam</span>
+            <span className={cn('text-[13px] tracking-[0.05em]', collapsed ? 'inline' : 'hidden md:inline lg:hidden')}>AE</span>
           </Link>
           <button
             onClick={toggleCollapsed}
             aria-label={collapsed ? t.nav.expand : t.nav.collapse}
             className={cn(
-              'shrink-0 w-[20px] h-[20px] flex items-center justify-center text-offwhite/55 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200',
-              !collapsed && 'absolute right-3 top-1/2 -translate-y-1/2'
+              'shrink-0 w-[20px] h-[20px] items-center justify-center text-offwhite/55 hover:text-gold hover:bg-offwhite/5 transition-colors duration-200',
+              collapsed ? 'flex' : 'flex absolute right-3 top-1/2 -translate-y-1/2 md:hidden lg:flex'
             )}
           >
             <ChevronIcon dir={collapsed ? 'right' : 'left'} />
@@ -202,16 +206,16 @@ export function AdminNav({ isOwner }: { isOwner: boolean }) {
                 'flex items-center gap-3 px-3 py-[10px] mb-[2px] rounded-none',
                 'font-body font-light text-[10px] tracking-[0.28em] uppercase',
                 'transition-all duration-200',
-                collapsed && 'justify-center px-0',
+                collapsed ? 'justify-center px-0' : 'md:justify-center md:px-0 lg:justify-start lg:px-3',
                 isActive(href)
                   ? 'bg-gold/15 text-gold-light border-l-[2px] border-gold pl-[10px]'
                   : 'text-offwhite/55 hover:text-offwhite/70 hover:bg-offwhite/5 border-l-[2px] border-transparent pl-[10px]',
-                collapsed && 'border-l-0 pl-0'
+                collapsed ? 'border-l-0 pl-0' : 'md:border-l-0 md:pl-0 lg:border-l-[2px] lg:pl-[10px]'
               )}
             >
               <span className="shrink-0"><Icon /></span>
-              <span className={cn('flex-1', collapsed && 'hidden')}>{label}</span>
-              {badge && <span className={cn(collapsed && 'hidden')}><PendingBadge /></span>}
+              <span className={cn('flex-1', collapsed ? 'hidden' : 'md:hidden lg:block')}>{label}</span>
+              {badge && <span className={cn(collapsed ? 'hidden' : 'md:hidden lg:inline-block')}><PendingBadge /></span>}
             </Link>
           ))}
         </nav>

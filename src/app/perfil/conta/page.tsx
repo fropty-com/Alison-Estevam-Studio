@@ -7,7 +7,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { AccountSettingsSection } from '@/components/profile/AccountSettingsSection'
 
-export const metadata: Metadata = { title: 'Detalhes da conta — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Detalhes da conta — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 export default async function ContaDetalhesPage() {

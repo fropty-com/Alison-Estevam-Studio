@@ -5,7 +5,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ClientHeader } from '@/components/layout/ClientHeader'
 
 export const metadata: Metadata = {
-  title: 'Entrar — Alison Estevam Studio',
+  title: { absolute: 'Entrar — Alison Estevam Studio' },
 }
 export const dynamic = 'force-dynamic'
 

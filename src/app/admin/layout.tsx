@@ -5,6 +5,7 @@ import { getAdminUser } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getLocale } from '@/lib/i18n/getLocale'
 import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
+import { SkipLink } from '@/components/ui/SkipLink'
 
 export const metadata: Metadata = {
   title: { default: 'Admin · Alison Estevam', template: '%s · Admin' },
@@ -52,6 +53,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <LanguageProvider initialLocale={locale}>
       <div className="min-h-screen bg-charcoal text-offwhite flex">
+        <SkipLink />
         <AdminNav isOwner={isOwner} />
         <div className="flex-1 min-w-0 flex flex-col">
           <AdminTopBar
@@ -60,7 +62,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             isOwner={isOwner}
             pending={pendingList}
           />
-          <main className="flex-1 min-w-0">
+          <main id="main-content" className="flex-1 min-w-0">
             {children}
           </main>
         </div>

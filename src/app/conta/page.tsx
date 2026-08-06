@@ -16,7 +16,7 @@ import { getLocale } from '@/lib/i18n/getLocale'
 import { LanguageProvider } from '@/lib/i18n/LanguageProvider'
 import { ConfirmAttendanceButton } from '@/components/booking/ConfirmAttendanceButton'
 
-export const metadata: Metadata = { title: 'Minha Conta — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Minha Conta — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 const STATUS_LABEL: Record<string, string> = {

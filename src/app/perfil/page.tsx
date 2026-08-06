@@ -15,7 +15,7 @@ import { PaymentsListSection } from '@/components/profile/PaymentsListSection'
 import { OrdersListSection } from '@/components/profile/OrdersListSection'
 import { maskPhoneInput } from '@/lib/utils'
 
-export const metadata: Metadata = { title: 'Perfil — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Perfil — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 const h2Cls = 'font-body font-light text-[9px] tracking-[0.38em] uppercase text-offwhite/55 mb-4'

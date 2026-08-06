@@ -6,7 +6,7 @@ import { BRAND } from '@/config/brand'
 import { ORDER_STATUS_LABEL, ORDER_STATUS_COLOR } from '@/lib/orders'
 
 export const dynamic = 'force-dynamic'
-export const metadata: Metadata = { title: `Seu pedido — ${BRAND.fullName}` }
+export const metadata: Metadata = { title: { absolute: `Seu pedido — ${BRAND.fullName}` } }
 
 function fmt(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })

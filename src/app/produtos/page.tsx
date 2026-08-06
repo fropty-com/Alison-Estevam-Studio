@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { AddToCartButton } from '@/components/cart/AddToCartButton'
 
 export const dynamic = 'force-dynamic'
-export const metadata: Metadata = { title: `Produtos — ${BRAND.fullName}` }
+export const metadata: Metadata = { title: { absolute: `Produtos — ${BRAND.fullName}` } }
 
 // formatCurrency() em src/lib/utils.ts usa minimumFractionDigits: 0, o que
 // trunca centavos redondos de forma inconsistente (R$ 69,9 em vez de

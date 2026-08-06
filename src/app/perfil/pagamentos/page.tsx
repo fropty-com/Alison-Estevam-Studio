@@ -5,7 +5,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { PaymentsListSection } from '@/components/profile/PaymentsListSection'
 
-export const metadata: Metadata = { title: 'Pagamentos — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Pagamentos — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 export default async function PagamentosPage() {

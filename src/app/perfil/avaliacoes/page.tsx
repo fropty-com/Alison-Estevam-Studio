@@ -5,7 +5,7 @@ import { getVerifiedClientSession } from '@/lib/client-auth/session'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { ReviewsSection } from '@/components/profile/ReviewsSection'
 
-export const metadata: Metadata = { title: 'Avaliações — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Avaliações — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 export default async function AvaliacoesPage() {

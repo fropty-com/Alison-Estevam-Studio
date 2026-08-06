@@ -33,8 +33,8 @@ async function getProduct(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const product = await getProduct(slug)
-  if (!product) return { title: `Produto — ${BRAND.fullName}` }
-  return { title: `${product.name} — ${BRAND.fullName}` }
+  if (!product) return { title: { absolute: `Produto — ${BRAND.fullName}` } }
+  return { title: { absolute: `${product.name} — ${BRAND.fullName}` } }
 }
 
 export default async function ProdutoDetalhePage({ params }: { params: Promise<{ slug: string }> }) {

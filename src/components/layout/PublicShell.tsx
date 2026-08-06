@@ -7,6 +7,7 @@ import { Footer }        from './Footer'
 import { FloatingWhatsapp } from './FloatingWhatsapp'
 import { CartProvider } from '@/lib/cart/CartContext'
 import { CartDrawer } from '@/components/cart/CartDrawer'
+import { SkipLink } from '@/components/ui/SkipLink'
 
 function ThemeInit() {
   useEffect(() => {
@@ -35,7 +36,8 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
     return (
       <CartProvider>
         <ThemeInit />
-        <main>{children}</main>
+        <SkipLink />
+        <main id="main-content">{children}</main>
         {!isClientArea && <FloatingWhatsapp />}
       </CartProvider>
     )
@@ -44,8 +46,9 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <CartProvider>
       <ThemeInit />
+      <SkipLink />
       <Nav />
-      <main>{children}</main>
+      <main id="main-content">{children}</main>
       <Footer />
       <FloatingWhatsapp />
       <CartDrawer />

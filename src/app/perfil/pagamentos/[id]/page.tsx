@@ -10,7 +10,7 @@ import { ReceiptEmailButton } from '@/components/profile/ReceiptEmailButton'
 import { BRAND } from '@/config/brand'
 import { dateAnchorInSaoPaulo, formatTimeInSaoPaulo } from '@/lib/timezone'
 
-export const metadata: Metadata = { title: 'Recibo — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Recibo — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 const METHOD_LABEL: Record<string, string> = {

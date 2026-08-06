@@ -5,7 +5,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { getVerifiedClientSession } from '@/lib/client-auth/session'
 
 export const metadata: Metadata = {
-  title: 'Agendamento — Alison Estevam Studio',
+  title: { absolute: 'Agendamento — Alison Estevam Studio' },
 }
 
 export const dynamic = 'force-dynamic'

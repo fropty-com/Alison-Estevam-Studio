@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { BRAND } from '@/config/brand'
 
-export const metadata: Metadata = { title: 'Sobre o sistema — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Sobre o sistema — Alison Estevam Studio' } }
 
 const h2Cls = 'font-body font-medium text-[10px] tracking-[0.32em] uppercase text-gold mt-10 mb-3'
 const pCls  = 'font-body font-light text-[14px] leading-[1.75] text-offwhite/65 mb-3'

@@ -6,7 +6,7 @@ import { getLoyaltyProgress } from '@/lib/loyalty'
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
 import { LoyaltyCard } from '@/components/profile/LoyaltyCard'
 
-export const metadata: Metadata = { title: 'Cartão Fidelidade — Alison Estevam Studio' }
+export const metadata: Metadata = { title: { absolute: 'Cartão Fidelidade — Alison Estevam Studio' } }
 export const dynamic = 'force-dynamic'
 
 export default async function FidelidadePage() {
